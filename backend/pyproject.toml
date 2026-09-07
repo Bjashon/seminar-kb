@@ -1,0 +1,22 @@
+[project]
+name = "seminar-kb"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.116",
+    "sqlalchemy>=2.0",
+    "pydantic-settings>=2.10",
+    "uvicorn>=0.34",
+    "alembic>=1.16",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.2"]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]

@@ -1,0 +1,806 @@
+{
+  "episode_code": "s01_ep01",
+  "source_language": "en",
+  "source_note": "Beites, Ferreira, Kaygorodov, \"Transposed Poisson algebra structures\" (arXiv, cited in the talk's Notion page). Extracted directly from the attached PDF tpa-structures.pdf. Per user instruction: all definitions and all theorems (with proofs) captured; lemmas/propositions/corollaries captured as statements only (no proof transcribed); open questions from section 3 not captured.",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "transposed-poisson-algebra",
+      "title_en": "Transposed Poisson algebra",
+      "title_ru": "Транспонированная пуассонова алгебра",
+      "statement_en": "Let $L$ be a vector space equipped with two nonzero bilinear operations $\\cdot$ and $[\\cdot,\\cdot]$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **transposed Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot])$ is a Lie algebra satisfying the compatibility condition\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]$$\n$\\forall x,y,z\\in L$. It is called *unital* if $(L,\\cdot)$ has a unit $1$, and *Poisson* (rather than merely transposed Poisson) when $[\\cdot,\\cdot]$ instead satisfies the ordinary Leibniz rule with $\\cdot$.",
+      "statement_ru": "Пусть $L$ — векторное пространство с двумя ненулевыми билинейными операциями $\\cdot$ и $[\\cdot,\\cdot]$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **транспонированной пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot])$ — алгебра Ли, удовлетворяющая условию совместности\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]$$\n$\\forall x,y,z\\in L$. Она называется *унитальной*, если $(L,\\cdot)$ обладает единицей $1$, и *пуассоновой* (в отличие от транспонированной пуассоновой), если вместо этого $[\\cdot,\\cdot]$ удовлетворяет обычному правилу Лейбница относительно $\\cdot$.",
+      "depends_on": [
+        "commutative associative algebra",
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Определение 1",
+        "document": "tpa-structures.pdf",
+        "page": 4
+      },
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "definition",
+      "slug": "half-derivation",
+      "title_en": "1/2-derivation",
+      "title_ru": "1/2-дифференцирование",
+      "statement_en": "Let $(L,[\\cdot,\\cdot])$ be an algebra. A linear map $\\varphi:L\\to L$ is a **$\\tfrac12$-derivation** if\n$$\\varphi[x,y]=\\tfrac12\\big([\\varphi(x),y]+[x,\\varphi(y)]\\big)$$\n$\\forall x,y\\in L$. Multiplication by a scalar from the ground field is always a $\\tfrac12$-derivation (a *trivial* one); a $\\tfrac12$-derivation is a particular case ($\\delta=\\tfrac12$) of a $\\delta$-derivation.",
+      "statement_ru": "Пусть $(L,[\\cdot,\\cdot])$ — алгебра. Линейное отображение $\\varphi:L\\to L$ называется **$\\tfrac12$-дифференцированием**, если\n$$\\varphi[x,y]=\\tfrac12\\big([\\varphi(x),y]+[x,\\varphi(y)]\\big)$$\n$\\forall x,y\\in L$. Умножение на скаляр из основного поля всегда является $\\tfrac12$-дифференцированием (*тривиальным*); $\\tfrac12$-дифференцирование — частный случай ($\\delta=\\tfrac12$) $\\delta$-дифференцирования.",
+      "depends_on": [],
+      "source": {
+        "label": "Определение 2",
+        "document": "tpa-structures.pdf",
+        "page": 4
+      },
+      "topic": "Дифференцирования и Hom-структуры Ли",
+      "topic_order": 3
+    },
+    {
+      "kind": "definition",
+      "slug": "half-biderivation",
+      "title_en": "1/2-biderivation",
+      "title_ru": "1/2-бидифференцирование",
+      "statement_en": "Let $(L,[\\cdot,\\cdot])$ be an algebra. A bilinear map $\\phi:L\\times L\\to L$ is a **$\\tfrac12$-biderivation** if it satisfies both:\n1. $\\phi([x,y],z)=\\tfrac12\\big([x,\\phi(y,z)]+[\\phi(x,z),y]\\big)$\n2. $\\phi(x,[y,z])=\\tfrac12\\big([\\phi(x,y),z]+[\\phi(x,z),y]\\big)$\n\n$\\forall x,y,z\\in L$.\n\n*Note:* the source PDF prints condition 2 as $\\phi(x,[y,z])=\\tfrac12([\\phi(x,y),z]+[\\phi(x,y),z])$ — both summands identical, which trivializes the identity and looks like a typesetting slip rather than the intended symmetric counterpart of condition 1 (reconstructed above). Recorded as printed in the source; not verified against the published version.",
+      "statement_ru": "Пусть $(L,[\\cdot,\\cdot])$ — алгебра. Билинейное отображение $\\phi:L\\times L\\to L$ называется **$\\tfrac12$-бидифференцированием**, если выполняются оба условия:\n1. $\\phi([x,y],z)=\\tfrac12\\big([x,\\phi(y,z)]+[\\phi(x,z),y]\\big)$\n2. $\\phi(x,[y,z])=\\tfrac12\\big([\\phi(x,y),z]+[\\phi(x,z),y]\\big)$\n\n$\\forall x,y,z\\in L$.\n\n*Примечание:* в исходном PDF условие 2 напечатано как $\\phi(x,[y,z])=\\tfrac12([\\phi(x,y),z]+[\\phi(x,y),z])$ — оба слагаемых одинаковые, из-за чего тождество вырождается; похоже на опечатку набора, а не на задуманный симметричный аналог условия 1 (восстановлен выше). Зафиксировано как напечатано в источнике, по опубликованной версии не сверялось.",
+      "depends_on": [
+        "1/2-derivation"
+      ],
+      "source": {
+        "label": "Определение 2",
+        "document": "tpa-structures.pdf",
+        "page": 4
+      },
+      "topic": "Дифференцирования и Hom-структуры Ли",
+      "topic_order": 3
+    },
+    {
+      "kind": "definition",
+      "slug": "isomorphism-of-transposed-poisson-algebras",
+      "title_en": "Isomorphism of transposed Poisson algebras",
+      "title_ru": "Изоморфизм транспонированных пуассоновых алгебр",
+      "statement_en": "Two transposed Poisson algebras $(L_1,\\cdot_1,[\\cdot,\\cdot]_1)$ and $(L_2,\\cdot_2,[\\cdot,\\cdot]_2)$ are **isomorphic** if\n$$\\exists\\ \\text{linear bijection}\\ \\varphi:L_1\\to L_2:\\quad \\varphi([x,y]_1)=[\\varphi(x),\\varphi(y)]_2,\\ \\ \\varphi(x\\cdot_1 y)=\\varphi(x)\\cdot_2\\varphi(y)\\ \\ \\forall x,y\\in L_1.$$",
+      "statement_ru": "Две транспонированные пуассоновы алгебры $(L_1,\\cdot_1,[\\cdot,\\cdot]_1)$ и $(L_2,\\cdot_2,[\\cdot,\\cdot]_2)$ называются **изоморфными**, если\n$$\\exists\\ \\text{линейная биекция}\\ \\varphi:L_1\\to L_2:\\quad \\varphi([x,y]_1)=[\\varphi(x),\\varphi(y)]_2,\\ \\ \\varphi(x\\cdot_1 y)=\\varphi(x)\\cdot_2\\varphi(y)\\ \\ \\forall x,y\\in L_1.$$",
+      "depends_on": [
+        "transposed Poisson algebra"
+      ],
+      "source": {
+        "label": "Определение 5",
+        "document": "tpa-structures.pdf",
+        "page": 4
+      },
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "definition",
+      "slug": "generalized-poisson-algebra",
+      "title_en": "Generalized Poisson bracket • algebra",
+      "title_ru": "Обобщённая пуассонова скобка • алгебра",
+      "statement_en": "Let $A$ be a unital associative commutative algebra. An anticommutative product $\\{\\cdot,\\cdot\\}:A\\otimes A\\to A$ is a **generalized Poisson bracket** (also called the *contact bracket*) if $(A,\\{\\cdot,\\cdot\\})$ is a Lie algebra and\n$$\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}-\\{x,1\\}\\cdot y\\cdot z$$\n$\\forall x,y,z\\in A$. $(A,\\cdot,\\{\\cdot,\\cdot\\})$ is then called a *generalized Poisson algebra*.",
+      "statement_ru": "Пусть $A$ — унитальная ассоциативная коммутативная алгебра. Антикоммутативное произведение $\\{\\cdot,\\cdot\\}:A\\otimes A\\to A$ называется **обобщённой пуассоновой скобкой** (также *контактной скобкой*), если $(A,\\{\\cdot,\\cdot\\})$ — алгебра Ли и\n$$\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}-\\{x,1\\}\\cdot y\\cdot z$$\n$\\forall x,y,z\\in A$. Тройку $(A,\\cdot,\\{\\cdot,\\cdot\\})$ тогда называют *обобщённой пуассоновой алгеброй*.",
+      "depends_on": [
+        "Lie algebra",
+        "commutative associative algebra"
+      ],
+      "source": {
+        "label": "Определение 7",
+        "document": "tpa-structures.pdf",
+        "page": 5
+      },
+      "aliases": [
+        "generalized Poisson algebra"
+      ],
+      "topic": "Пуассоновы и обобщённые пуассоновы структуры",
+      "topic_order": 2
+    },
+    {
+      "kind": "definition",
+      "slug": "algebra-of-jordan-brackets",
+      "title_en": "Jordan bracket • algebra of Jordan brackets",
+      "title_ru": "Йорданова скобка • алгебра йордановых скобок",
+      "statement_en": "Let $A$ be a unital associative commutative algebra. An anticommutative product $\\{\\cdot,\\cdot\\}:A\\otimes A\\to A$ is a **Jordan bracket** if\n$$\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}-\\{x,1\\}\\cdot y\\cdot z,$$\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+\\{b,\\{a,c\\}\\}+\\{a,1\\}\\cdot\\{b,c\\}+\\{b,1\\}\\cdot\\{c,a\\}+\\{c,1\\}\\cdot\\{a,b\\}$$\n$\\forall x,y,z,a,b,c\\in A$ (a Jordan bracket satisfies the generalized Poisson bracket identity plus this modified Jacobi-type identity). $(A,\\cdot,\\{\\cdot,\\cdot\\})$ is then an *algebra of Jordan brackets*. Every algebra of Jordan brackets embeds into a Poisson bracket algebra (Martínez–Shestakov–Zelmanov).",
+      "statement_ru": "Пусть $A$ — унитальная ассоциативная коммутативная алгебра. Антикоммутативное произведение $\\{\\cdot,\\cdot\\}:A\\otimes A\\to A$ называется **йордановой скобкой**, если\n$$\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}-\\{x,1\\}\\cdot y\\cdot z,$$\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+\\{b,\\{a,c\\}\\}+\\{a,1\\}\\cdot\\{b,c\\}+\\{b,1\\}\\cdot\\{c,a\\}+\\{c,1\\}\\cdot\\{a,b\\}$$\n$\\forall x,y,z,a,b,c\\in A$ (йорданова скобка удовлетворяет тождеству обобщённой пуассоновой скобки плюс этому видоизменённому тождеству якобиева типа). Тройку $(A,\\cdot,\\{\\cdot,\\cdot\\})$ тогда называют *алгеброй йордановых скобок*. Всякая алгебра йордановых скобок вкладывается в алгебру с пуассоновой скобкой (Мартинес–Шестаков–Зельманов).",
+      "depends_on": [
+        "generalized Poisson algebra"
+      ],
+      "source": {
+        "label": "Определение 7",
+        "document": "tpa-structures.pdf",
+        "page": 5
+      },
+      "aliases": [
+        "algebra of Jordan brackets",
+        "Jordan bracket"
+      ],
+      "topic": "Пуассоновы и обобщённые пуассоновы структуры",
+      "topic_order": 2
+    },
+    {
+      "kind": "definition",
+      "slug": "transposed-poisson-n-lie-algebra",
+      "title_en": "Transposed Poisson n-Lie algebra",
+      "title_ru": "Транспонированная пуассонова n-алгебра Ли",
+      "statement_en": "Let $L$ be a vector space with a bilinear operation $\\cdot$ and an $n$-linear operation $[\\cdot,\\dots,\\cdot]$. The triple $(L,\\cdot,[\\cdot,\\dots,\\cdot])$ is a **transposed Poisson $n$-Lie algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\dots,\\cdot])$ is an $n$-Lie algebra satisfying\n$$z\\cdot[x_1,\\dots,x_n]=\\tfrac1n\\sum_{i=1}^n[x_1,\\dots,z\\cdot x_i,\\dots,x_n]$$\n$\\forall z,x_1,\\dots,x_n\\in L$.",
+      "statement_ru": "Пусть $L$ — векторное пространство с билинейной операцией $\\cdot$ и $n$-линейной операцией $[\\cdot,\\dots,\\cdot]$. Тройка $(L,\\cdot,[\\cdot,\\dots,\\cdot])$ называется **транспонированной пуассоновой $n$-алгеброй Ли**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\dots,\\cdot])$ — $n$-алгебра Ли, удовлетворяющая\n$$z\\cdot[x_1,\\dots,x_n]=\\tfrac1n\\sum_{i=1}^n[x_1,\\dots,z\\cdot x_i,\\dots,x_n]$$\n$\\forall z,x_1,\\dots,x_n\\in L$.",
+      "depends_on": [
+        "commutative associative algebra",
+        "n-Lie algebra"
+      ],
+      "source": {
+        "label": "Определение 13",
+        "document": "tpa-structures.pdf",
+        "page": 9
+      },
+      "topic": "n-алгебры Ли",
+      "topic_order": 4
+    },
+    {
+      "kind": "definition",
+      "slug": "quasi-automorphism",
+      "title_en": "Quasi-automorphism (of a Lie algebra)",
+      "title_ru": "Квазиавтоморфизм (алгебры Ли)",
+      "statement_en": "Let $(L,[\\cdot,\\cdot])$ be a Lie algebra and $\\varphi:L\\to L$ a linear map. Then $\\varphi$ is a **quasi-automorphism** if\n$$\\exists\\ \\text{linear}\\ \\phi:L\\to L:\\quad [\\varphi(x),\\varphi(y)]=\\phi[x,y]\\ \\ \\forall x,y\\in L.$$\nAutomorphisms and scalar-multiplication maps are trivial quasi-automorphisms.",
+      "statement_ru": "Пусть $(L,[\\cdot,\\cdot])$ — алгебра Ли и $\\varphi:L\\to L$ — линейное отображение. Тогда $\\varphi$ называется **квазиавтоморфизмом**, если\n$$\\exists\\ \\text{линейное}\\ \\phi:L\\to L:\\quad [\\varphi(x),\\varphi(y)]=\\phi[x,y]\\ \\ \\forall x,y\\in L.$$\nАвтоморфизмы и отображения умножения на скаляр — тривиальные квазиавтоморфизмы.",
+      "depends_on": [
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Определение 15",
+        "document": "tpa-structures.pdf",
+        "page": 9
+      },
+      "aliases": [
+        "quasi-automorphism"
+      ],
+      "topic": "Дифференцирования и Hom-структуры Ли",
+      "topic_order": 3
+    },
+    {
+      "kind": "definition",
+      "slug": "hom-lie-structure",
+      "title_en": "Hom-Lie structure",
+      "title_ru": "Hom-структура Ли",
+      "statement_en": "Let $(L,[\\cdot,\\cdot])$ be a Lie algebra and $\\varphi:L\\to L$ linear. $(L,[\\cdot,\\cdot],\\varphi)$ is a **Hom-Lie structure** if\n$$[\\varphi(x),[y,z]]+[\\varphi(y),[z,x]]+[\\varphi(z),[x,y]]=0\\quad\\forall x,y,z\\in L.$$\nSpecial cases:\n1. *Trivial* if $\\varphi=C\\cdot\\mathrm{id}$.\n2. *Central* if $\\varphi(L)\\subseteq Z(L)$.\n3. *c-trivial* if $\\varphi$ is a linear combination of a trivial and a central one.",
+      "statement_ru": "Пусть $(L,[\\cdot,\\cdot])$ — алгебра Ли и $\\varphi:L\\to L$ — линейное отображение. Тройка $(L,[\\cdot,\\cdot],\\varphi)$ называется **Hom-структурой Ли**, если\n$$[\\varphi(x),[y,z]]+[\\varphi(y),[z,x]]+[\\varphi(z),[x,y]]=0\\quad\\forall x,y,z\\in L.$$\nЧастные случаи:\n1. *Тривиальная*, если $\\varphi=C\\cdot\\mathrm{id}$.\n2. *Центральная*, если $\\varphi(L)\\subseteq Z(L)$.\n3. *c-тривиальная*, если $\\varphi$ — линейная комбинация тривиальной и центральной.",
+      "depends_on": [
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Определение 18",
+        "document": "tpa-structures.pdf",
+        "page": 10
+      },
+      "topic": "Дифференцирования и Hom-структуры Ли",
+      "topic_order": 3
+    },
+    {
+      "kind": "definition",
+      "slug": "oscillator-lie-algebra",
+      "title_en": "Oscillator Lie algebra",
+      "title_ru": "Осцилляторная алгебра Ли",
+      "statement_en": "For $\\lambda=(\\lambda_1,\\dots,\\lambda_n)\\in\\mathbb R^n$ with $0<\\lambda_1\\le\\dots\\le\\lambda_n$, the **oscillator Lie algebra** $L_\\lambda$ is the $(2n+2)$-dimensional Lie algebra with canonical basis $\\{e_{-1},e_0,e_j,\\check e_j\\}_{j=1,\\dots,n}$ and brackets:\n1. $[e_{-1},e_j]=\\lambda_j\\check e_j$\n2. $[e_{-1},\\check e_j]=-\\lambda_j e_j$\n3. $[e_j,\\check e_j]=e_0$\n\n(all other brackets of basis elements vanish). $L_\\lambda$ is called *generic* if $0<\\lambda_1<\\dots<\\lambda_n$ and $\\lambda_i+\\lambda_j\\ne\\lambda_k$ $\\forall 1\\le i<j<k\\le n$.",
+      "statement_ru": "Для $\\lambda=(\\lambda_1,\\dots,\\lambda_n)\\in\\mathbb R^n$ с $0<\\lambda_1\\le\\dots\\le\\lambda_n$ **осцилляторная алгебра Ли** $L_\\lambda$ — это $(2n+2)$-мерная алгебра Ли с каноническим базисом $\\{e_{-1},e_0,e_j,\\check e_j\\}_{j=1,\\dots,n}$ и скобками:\n1. $[e_{-1},e_j]=\\lambda_j\\check e_j$\n2. $[e_{-1},\\check e_j]=-\\lambda_j e_j$\n3. $[e_j,\\check e_j]=e_0$\n\n(остальные скобки базисных элементов равны нулю). $L_\\lambda$ называется *общей (generic)*, если $0<\\lambda_1<\\dots<\\lambda_n$ и $\\lambda_i+\\lambda_j\\ne\\lambda_k$ $\\forall 1\\le i<j<k\\le n$.",
+      "depends_on": [
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Определение 26",
+        "document": "tpa-structures.pdf",
+        "page": 12
+      },
+      "topic": "Осцилляторные алгебры",
+      "topic_order": 5
+    },
+    {
+      "kind": "property",
+      "slug": "right-multiplication-is-half-derivation",
+      "title_en": "Right multiplication in a transposed Poisson algebra is a 1/2-derivation",
+      "title_ru": "Правое умножение в транспонированной пуассоновой алгебре — это 1/2-дифференцирование",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a transposed Poisson algebra and $z\\in L$. Then the right multiplication $R_z$ in $(L,\\cdot)$ is a $\\tfrac12$-derivation of the Lie algebra $(L,[\\cdot,\\cdot])$.",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра и $z\\in L$. Тогда правое умножение $R_z$ в $(L,\\cdot)$ является $\\tfrac12$-дифференцированием алгебры Ли $(L,[\\cdot,\\cdot])$.",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "1/2-derivation"
+      ],
+      "source": {
+        "label": "Лемма 3",
+        "document": "tpa-structures.pdf",
+        "page": 4
+      },
+      "aliases": [
+        "right multiplication is a 1/2-derivation"
+      ],
+      "topic": "Дифференцирования и Hom-структуры Ли",
+      "topic_order": 3
+    },
+    {
+      "kind": "theorem",
+      "slug": "no-half-derivations-implies-trivial-transposed-poisson",
+      "title_en": "No non-trivial 1/2-derivations ⟹ every transposed Poisson structure is trivial",
+      "title_ru": "Нет нетривиальных 1/2-дифференцирований ⟹ всякая транспонированная пуассонова структура тривиальна",
+      "statement_en": "Let $L$ be a Lie algebra without non-trivial $\\tfrac12$-derivations. Then every transposed Poisson algebra structure defined on $L$ is trivial.",
+      "statement_ru": "Пусть $L$ — алгебра Ли без нетривиальных $\\tfrac12$-дифференцирований. Тогда любая структура транспонированной пуассоновой алгебры, определённая на $L$, тривиальна.",
+      "proof_en": "No proof is given in the source paper — it is stated as an immediate consequence of the definitions (via right multiplications being $\\tfrac12$-derivations, Lemma 3) and used directly in the sequel.",
+      "proof_ru": "В исходной статье доказательство не приводится — утверждение даётся как непосредственное следствие определений (через то, что правые умножения являются $\\tfrac12$-дифференцированиями, см. лемму о правом умножении) и используется далее напрямую.",
+      "depends_on": [
+        "1/2-derivation",
+        "transposed Poisson algebra",
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Теорема 4",
+        "document": "tpa-structures.pdf",
+        "page": 4
+      },
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "theorem",
+      "slug": "unital-transposed-poisson-bracket-via-derivation",
+      "title_en": "Lie bracket of a unital transposed Poisson algebra is given by a derivation",
+      "title_ru": "Скобка Ли унитальной транспонированной пуассоновой алгебры задаётся дифференцированием",
+      "statement_en": "Let $(A,\\cdot,[\\cdot,\\cdot])$ be a complex transposed Poisson algebra with $(A,\\cdot)$ unital associative (not necessarily commutative). Then\n$$\\exists\\ \\text{derivation}\\ D\\ \\text{of}\\ (A,\\cdot):\\quad [x,y]=D(x)\\cdot y-x\\cdot D(y)\\ \\ \\forall x,y\\in A.$$\nIn particular, every transposed Poisson structure on a finite-dimensional semisimple commutative associative algebra is trivial.",
+      "statement_ru": "Пусть $(A,\\cdot,[\\cdot,\\cdot])$ — комплексная транспонированная пуассонова алгебра, где $(A,\\cdot)$ — унитальная ассоциативная (не обязательно коммутативная) алгебра. Тогда\n$$\\exists\\ \\text{дифференцирование}\\ D\\ \\text{алгебры}\\ (A,\\cdot):\\quad [x,y]=D(x)\\cdot y-x\\cdot D(y)\\ \\ \\forall x,y\\in A.$$\nВ частности, любая транспонированная пуассонова структура на конечномерной полупростой коммутативной ассоциативной алгебре тривиальна.",
+      "proof_en": "From the transposed Poisson identity applied to $[x\\cdot y,1]$ in two ways,\n$$[x\\cdot y,1]=2[x,1]\\cdot y-[x,y],\\qquad [x\\cdot y,1]=2x\\cdot[y,1]-[y,x].$$\nAdding and subtracting these gives $[x\\cdot y,1]=x\\cdot[y,1]+[x,1]\\cdot y$ and $[x,y]=[x,1]\\cdot y-x\\cdot[y,1]$. So the linear map $D(x):=[x,1]$ is a derivation and $[x,y]=D(x)\\cdot y-x\\cdot D(y)$. For the corollary: a finite-dimensional semisimple commutative associative algebra is a direct sum of one-dimensional (unital) ideals, all of whose derivations are trivial, giving $D=0$ and hence $[\\cdot,\\cdot]=0$.",
+      "proof_ru": "Применяя тождество транспонированной пуассоновой алгебры к $[x\\cdot y,1]$ двумя способами,\n$$[x\\cdot y,1]=2[x,1]\\cdot y-[x,y],\\qquad [x\\cdot y,1]=2x\\cdot[y,1]-[y,x].$$\nСкладывая и вычитая эти равенства, получаем $[x\\cdot y,1]=x\\cdot[y,1]+[x,1]\\cdot y$ и $[x,y]=[x,1]\\cdot y-x\\cdot[y,1]$. Значит, линейное отображение $D(x):=[x,1]$ является дифференцированием и $[x,y]=D(x)\\cdot y-x\\cdot D(y)$. Для следствия: конечномерная полупростая коммутативная ассоциативная алгебра — прямая сумма одномерных (унитальных) идеалов, все дифференцирования которых тривиальны, откуда $D=0$ и, следовательно, $[\\cdot,\\cdot]=0$.",
+      "depends_on": [
+        "transposed Poisson algebra"
+      ],
+      "source": {
+        "label": "Теорема 6",
+        "document": "tpa-structures.pdf",
+        "page": 5
+      },
+      "aliases": [
+        "unital transposed Poisson bracket via derivation"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "property",
+      "slug": "unital-transposed-poisson-is-generalized-poisson-and-jordan",
+      "title_en": "A unital transposed Poisson algebra is a generalized Poisson algebra and an algebra of Jordan brackets",
+      "title_ru": "Унитальная транспонированная пуассонова алгебра — это обобщённая пуассонова алгебра и алгебра йордановых скобок",
+      "statement_en": "Let $(A,\\cdot,[\\cdot,\\cdot])$ be a unital transposed Poisson algebra. Then $(A,\\cdot,[\\cdot,\\cdot])$ is a generalized Poisson algebra and an algebra of Jordan brackets (via the bracket $[x,y]=D(x)\\cdot y-x\\cdot D(y)$ from the previous theorem).",
+      "statement_ru": "Пусть $(A,\\cdot,[\\cdot,\\cdot])$ — унитальная транспонированная пуассонова алгебра. Тогда $(A,\\cdot,[\\cdot,\\cdot])$ является обобщённой пуассоновой алгеброй и алгеброй йордановых скобок (через скобку $[x,y]=D(x)\\cdot y-x\\cdot D(y)$ из предыдущей теоремы).",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "generalized Poisson algebra",
+        "algebra of Jordan brackets"
+      ],
+      "source": {
+        "label": "Следствие 8",
+        "document": "tpa-structures.pdf",
+        "page": 5
+      },
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "property",
+      "slug": "unital-transposed-poisson-embeds-in-poisson",
+      "title_en": "Unital transposed Poisson brackets embed into Poisson brackets",
+      "title_ru": "Унитальные транспонированные пуассоновы скобки вкладываются в пуассоновы скобки",
+      "statement_en": "Every unital transposed Poisson bracket is embeddable into a Poisson bracket (combining the previous property with the Martínez–Shestakov–Zelmanov embedding theorem for algebras of Jordan brackets).",
+      "statement_ru": "Всякая унитальная транспонированная пуассонова скобка вкладывается в пуассонову скобку (объединяя предыдущее свойство с теоремой Мартинеса–Шестакова–Зельманова о вложении алгебр йордановых скобок).",
+      "depends_on": [
+        "algebra of Jordan brackets",
+        "Poisson algebra"
+      ],
+      "source": {
+        "label": "Следствие 9",
+        "document": "tpa-structures.pdf",
+        "page": 6
+      },
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "theorem",
+      "slug": "customary-identities-for-unital-transposed-poisson-pi-algebras",
+      "title_en": "Customary polynomial identities for unital transposed Poisson PI-algebras",
+      "title_ru": "Кастомные тождества для унитальных транспонированных пуассоновых PI-алгебр",
+      "statement_en": "If a unital transposed Poisson algebra $A$ satisfies a polynomial identity, then $A$ satisfies identities $\\mathfrak g$ and $\\mathfrak f$ of the following types, where $D$ is the derivation from the earlier theorem:\n$$\\mathfrak g(x_1,\\dots,x_m)=\\sum_{\\sigma\\in S_m}c_\\sigma D(x_{\\sigma(1)})\\cdot\\ldots\\cdot D(x_{\\sigma(m)}),$$\n$$\\mathfrak f(x_1,\\dots,x_{3m})=\\sum_{\\sigma\\in S_m}c_\\sigma\\prod_{k=1}^m\\Big([x_{\\sigma(i)}\\cdot x_{m+2k-1},x_{m+2k}]+[x_{\\sigma(i)}\\cdot x_{m+2k},x_{m+2k-1}]\\Big).$$\nThis is the transposed-Poisson analogue of Farkas' customary-identity theorem for Poisson PI algebras.",
+      "statement_ru": "Если унитальная транспонированная пуассонова алгебра $A$ удовлетворяет полиномиальному тождеству, то $A$ удовлетворяет тождествам $\\mathfrak g$ и $\\mathfrak f$ следующего вида, где $D$ — дифференцирование из предыдущей теоремы:\n$$\\mathfrak g(x_1,\\dots,x_m)=\\sum_{\\sigma\\in S_m}c_\\sigma D(x_{\\sigma(1)})\\cdot\\ldots\\cdot D(x_{\\sigma(m)}),$$\n$$\\mathfrak f(x_1,\\dots,x_{3m})=\\sum_{\\sigma\\in S_m}c_\\sigma\\prod_{k=1}^m\\Big([x_{\\sigma(i)}\\cdot x_{m+2k-1},x_{m+2k}]+[x_{\\sigma(i)}\\cdot x_{m+2k},x_{m+2k-1}]\\Big).$$\nЭто аналог теоремы Фаркаша о кастомных тождествах (доказанной для пуассоновых PI-алгебр) для транспонированных пуассоновых алгебр.",
+      "proof_en": "Since $D$ is a derivation with $[x,y]=D(x)y-xD(y)$ (previous theorem), the bracket $\\langle x,y\\rangle:=\\{x,y\\}-(D(x)y-xD(y))$ used in Kaygorodov's customary identity for generalized Poisson / Jordan-bracket algebras vanishes identically here, so his identity $\\mathfrak g$ of that general type reduces to the stated $\\mathfrak g$. Multiplying $\\mathfrak g$ by $\\prod_{k=m+1}^{3m}x_i$ and using the auxiliary relation $D(x)\\cdot y\\cdot z=-\\tfrac12([x\\cdot y,z]+[x\\cdot z,y])$ (itself a consequence of the transposed Poisson and generalized Poisson identities) converts $\\mathfrak g$ into $\\mathfrak f$.",
+      "proof_ru": "Так как $D$ — дифференцирование с $[x,y]=D(x)y-xD(y)$ (предыдущая теорема), скобка $\\langle x,y\\rangle:=\\{x,y\\}-(D(x)y-xD(y))$, участвующая в кастомном тождестве Кайгородова для обобщённых пуассоновых алгебр / алгебр йордановых скобок, здесь тождественно обнуляется, поэтому его тождество $\\mathfrak g$ общего вида сводится к указанному $\\mathfrak g$. Умножение $\\mathfrak g$ на $\\prod_{k=m+1}^{3m}x_i$ и использование вспомогательного соотношения $D(x)\\cdot y\\cdot z=-\\tfrac12([x\\cdot y,z]+[x\\cdot z,y])$ (само являющегося следствием тождеств транспонированной и обобщённой пуассоновой алгебры) переводит $\\mathfrak g$ в $\\mathfrak f$.",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "generalized Poisson algebra",
+        "algebra of Jordan brackets"
+      ],
+      "source": {
+        "label": "Теорема 11",
+        "document": "tpa-structures.pdf",
+        "page": 6
+      },
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "theorem",
+      "slug": "transposed-poisson-field-of-fractions",
+      "title_en": "Extension of a unital transposed Poisson bracket to the field of fractions",
+      "title_ru": "Продолжение унитальной транспонированной пуассоновой скобки на поле частных",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a unital transposed Poisson algebra and $Q(L)$ its field of fractions. Then $(Q(L),\\bullet,\\llbracket\\cdot,\\cdot\\rrbracket)$, where\n$$\\frac ab\\bullet\\frac cd=\\frac{a\\cdot c}{b\\cdot d},\\qquad \\left\\llbracket\\frac ab,\\frac cd\\right\\rrbracket=\\frac{[a,b]\\cdot c\\cdot d-a\\cdot b\\cdot[c,d]}{b^2\\cdot d^2},$$\nis a unital transposed Poisson field (this defines a *transposed Poisson field*).",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — унитальная транспонированная пуассонова алгебра и $Q(L)$ — её поле частных. Тогда $(Q(L),\\bullet,\\llbracket\\cdot,\\cdot\\rrbracket)$, где\n$$\\frac ab\\bullet\\frac cd=\\frac{a\\cdot c}{b\\cdot d},\\qquad \\left\\llbracket\\frac ab,\\frac cd\\right\\rrbracket=\\frac{[a,b]\\cdot c\\cdot d-a\\cdot b\\cdot[c,d]}{b^2\\cdot d^2},$$\n— унитальное транспонированное пуассоново поле (это и определяет понятие *транспонированного пуассонова поля*).",
+      "proof_en": "Condensed: $\\bullet$ is clearly commutative-associative and $\\llbracket\\cdot,\\cdot\\rrbracket$ anticommutative. Writing $[x,y]=D(x)y-xD(y)$ (Theorem above), a direct — but lengthy — computation checks the transposed-Poisson compatibility identity for $\\bullet,\\llbracket\\cdot,\\cdot\\rrbracket$ (it telescopes to $0$ term by term after clearing denominators), and a second, longer computation verifies the Jacobi identity for $\\llbracket\\cdot,\\cdot\\rrbracket$ by splitting a cyclic sum into two subsums that cancel. Full symbolic derivation elided here (about two pages of routine fraction algebra in the source) — see the source PDF (proof of Theorem 12) for the complete computation.",
+      "proof_ru": "Кратко: $\\bullet$ очевидно коммутативно-ассоциативно, а $\\llbracket\\cdot,\\cdot\\rrbracket$ антикоммутативно. Записывая $[x,y]=D(x)y-xD(y)$ (по теореме выше), прямое, но длинное вычисление проверяет тождество совместности транспонированной пуассоновой структуры для $\\bullet,\\llbracket\\cdot,\\cdot\\rrbracket$ (после приведения к общему знаменателю оно почленно обнуляется), а второе, ещё более длинное вычисление проверяет тождество Якоби для $\\llbracket\\cdot,\\cdot\\rrbracket$, разбивая циклическую сумму на две подсуммы, которые взаимно уничтожаются. Полный символьный вывод здесь опущен (в источнике — около двух страниц рутинной алгебры дробей) — полное вычисление см. в исходном PDF (доказательство теоремы 12).",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "unital transposed Poisson bracket via derivation"
+      ],
+      "source": {
+        "label": "Теорема 12",
+        "document": "tpa-structures.pdf",
+        "page": 7
+      },
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1
+    },
+    {
+      "kind": "theorem",
+      "slug": "nilpotent-n-lie-algebra-admits-transposed-poisson-structure",
+      "title_en": "Every nilpotent finite-dimensional n-Lie algebra admits a non-trivial transposed Poisson n-Lie structure",
+      "title_ru": "Всякая нильпотентная конечномерная n-алгебра Ли допускает нетривиальную транспонированную пуассонову n-структуру",
+      "statement_en": "Let $L$ be a nilpotent $k$-dimensional $n$-Lie algebra. Then $L$ admits a non-trivial transposed Poisson $n$-Lie algebra structure.",
+      "statement_ru": "Пусть $L$ — нильпотентная $k$-мерная $n$-алгебра Ли. Тогда $L$ допускает нетривиальную структуру транспонированной пуассоновой $n$-алгебры Ли.",
+      "proof_en": "If $n\\ge k$, $L$ has zero multiplication and the claim is trivial. If $n<k$, choose a basis $\\{e_1,\\dots,e_k\\}$ with $e_1,\\dots,e_n\\in L\\setminus L^2$ and $e_k\\in\\mathrm{Ann}(L)$. The linear map $\\varphi(e_1)=\\dots=\\varphi(e_n)=e_k$ (else $0$) is a $\\tfrac1n$-derivation of $L$, and the commutative associative product $e_i\\cdot e_j=e_k$ for $1\\le i,j\\le n$ (else $0$) gives a non-trivial transposed Poisson $n$-Lie structure.",
+      "proof_ru": "Если $n\\ge k$, то $L$ имеет нулевое умножение и утверждение тривиально. Если $n<k$, выберем базис $\\{e_1,\\dots,e_k\\}$ так, что $e_1,\\dots,e_n\\in L\\setminus L^2$ и $e_k\\in\\mathrm{Ann}(L)$. Линейное отображение $\\varphi(e_1)=\\dots=\\varphi(e_n)=e_k$ (в остальном $0$) является $\\tfrac1n$-дифференцированием $L$, а коммутативное ассоциативное произведение $e_i\\cdot e_j=e_k$ при $1\\le i,j\\le n$ (в остальном $0$) даёт нетривиальную транспонированную пуассонову $n$-структуру.",
+      "depends_on": [
+        "transposed Poisson n-Lie algebra",
+        "1/2-derivation"
+      ],
+      "source": {
+        "label": "Теорема 14",
+        "document": "tpa-structures.pdf",
+        "page": 9
+      },
+      "topic": "n-алгебры Ли",
+      "topic_order": 4
+    },
+    {
+      "kind": "property",
+      "slug": "no-quasi-automorphisms-implies-no-transposed-poisson",
+      "title_en": "No non-trivial quasi-automorphisms ⟹ no non-trivial transposed Poisson structures",
+      "title_ru": "Нет нетривиальных квазиавтоморфизмов ⟹ нет нетривиальных транспонированных пуассоновых структур",
+      "statement_en": "If a Lie algebra $(L,[\\cdot,\\cdot])$ does not admit non-trivial quasi-automorphisms, then $(L,[\\cdot,\\cdot])$ does not admit non-trivial transposed Poisson structures. (Every transposed Poisson structure on $L$ produces a quasi-automorphism $\\varphi_h(x)=h\\cdot x$ satisfying $\\varphi_h^2[x,y]=[\\varphi_h(x),\\varphi_h(y)]$.) Consequently, Borel or parabolic subalgebras of a complex finite-dimensional simple Lie algebra of rank $l>1$ admit no non-trivial transposed Poisson algebra structures (their quasi-automorphisms are all trivial).",
+      "statement_ru": "Если алгебра Ли $(L,[\\cdot,\\cdot])$ не допускает нетривиальных квазиавтоморфизмов, то она не допускает и нетривиальных транспонированных пуассоновых структур. (Всякая транспонированная пуассонова структура на $L$ порождает квазиавтоморфизм $\\varphi_h(x)=h\\cdot x$, удовлетворяющий $\\varphi_h^2[x,y]=[\\varphi_h(x),\\varphi_h(y)]$.) Как следствие, борелевские и параболические подалгебры комплексной конечномерной простой алгебры Ли ранга $l>1$ не допускают нетривиальных транспонированных пуассоновых структур (все их квазиавтоморфизмы тривиальны).",
+      "depends_on": [
+        "quasi-automorphism",
+        "transposed Poisson algebra"
+      ],
+      "source": {
+        "label": "Предложение 16 + Лемма 17",
+        "document": "tpa-structures.pdf",
+        "page": 9
+      },
+      "topic": "Дифференцирования и Hom-структуры Ли",
+      "topic_order": 3
+    },
+    {
+      "kind": "property",
+      "slug": "no-hom-lie-implies-no-transposed-poisson",
+      "title_en": "No non-trivial Hom-Lie structures ⟹ no non-trivial transposed Poisson structures",
+      "title_ru": "Нет нетривиальных Hom-структур Ли ⟹ нет нетривиальных транспонированных пуассоновых структур",
+      "statement_en": "If a Lie algebra $(L,[\\cdot,\\cdot])$ does not admit non-trivial Hom-Lie structures, then it does not admit non-trivial transposed Poisson structures (every transposed Poisson structure gives a Hom-Lie structure $\\varphi_h(x)=h\\cdot x$). Known algebras without non-trivial Hom-Lie structures — hence without non-trivial transposed Poisson structures — include: complex finite-dimensional simple Lie algebras (dim $\\ne 3$) and superalgebras; infinite-dimensional Lie superalgebras of vector fields; infinite-dimensional Cartan algebras $W(n>1)$, $S(n)$, $H(2r)$, $K(2r+1)$. If, in addition, $L$ has one-dimensional center and admits only c-trivial Hom-Lie structures, $L$ again has no non-trivial transposed Poisson structures — in particular this rules them out for complex affine Kac–Moody algebras (all of whose Hom-Lie structures are c-trivial).",
+      "statement_ru": "Если алгебра Ли $(L,[\\cdot,\\cdot])$ не допускает нетривиальных Hom-структур Ли, то она не допускает и нетривиальных транспонированных пуассоновых структур (всякая транспонированная пуассонова структура даёт Hom-структуру Ли $\\varphi_h(x)=h\\cdot x$). Известные алгебры без нетривиальных Hom-структур Ли — а значит, и без нетривиальных транспонированных пуассоновых структур: комплексные конечномерные простые алгебры Ли (размерности $\\ne 3$) и супералгебры; бесконечномерные супералгебры Ли векторных полей; бесконечномерные алгебры Картана $W(n>1)$, $S(n)$, $H(2r)$, $K(2r+1)$. Если, кроме того, $L$ имеет одномерный центр и допускает только c-тривиальные Hom-структуры Ли, то у $L$ также нет нетривиальных транспонированных пуассоновых структур — в частности, это исключает их для комплексных аффинных алгебр Каца–Муди (все Hom-структуры Ли которых c-тривиальны).",
+      "depends_on": [
+        "Hom-Lie structure",
+        "transposed Poisson algebra"
+      ],
+      "source": {
+        "label": "Предложение 19 + Лемма 20 + Предложение 21 + Лемма 22",
+        "document": "tpa-structures.pdf",
+        "page": 10
+      },
+      "topic": "Дифференцирования и Hom-структуры Ли",
+      "topic_order": 3
+    },
+    {
+      "kind": "theorem",
+      "slug": "classification-simple-graded-lie-algebras-finite-growth",
+      "title_en": "Classification of simple graded Lie algebras of finite growth (Kac–Mathieu)",
+      "title_ru": "Классификация простых градуированных алгебр Ли конечного роста (Кац–Матьё)",
+      "statement_en": "A complex graded simple Lie algebra $L$ of finite growth is isomorphic to one of: (1) a finite-dimensional simple Lie algebra; (2) a loop algebra; (3) a Cartan algebra; (4) the Witt algebra $W$. (Conjectured by Kac, proved by Mathieu, 1992.)",
+      "statement_ru": "Комплексная градуированная простая алгебра Ли $L$ конечного роста изоморфна одной из следующих: (1) конечномерная простая алгебра Ли; (2) алгебра петель; (3) алгебра Картана; (4) алгебра Витта $W$. (Гипотеза Каца, доказана Матьё, 1992.)",
+      "proof_en": "Cited from O. Mathieu, \"Classification of simple graded Lie algebras of finite growth\", Inventiones Mathematicae 108 (1992) — not reproved in this paper.",
+      "proof_ru": "Цитируется по: O. Mathieu, «Classification of simple graded Lie algebras of finite growth», Inventiones Mathematicae 108 (1992) — в данной статье повторно не доказывается.",
+      "depends_on": [
+        "Lie algebra",
+        "Witt algebra",
+        "Cartan algebra"
+      ],
+      "source": {
+        "label": "Теорема 23 (Матьё, 1992 — цитируется)",
+        "document": "tpa-structures.pdf",
+        "page": 11
+      },
+      "aliases": [
+        "classification of simple graded Lie algebras of finite growth"
+      ],
+      "topic": "Градуированные алгебры конечного роста",
+      "topic_order": 6
+    },
+    {
+      "kind": "theorem",
+      "slug": "transposed-poisson-on-simple-graded-finite-growth",
+      "title_en": "Transposed Poisson structures on simple graded Lie algebras of finite growth",
+      "title_ru": "Транспонированные пуассоновы структуры на простых градуированных алгебрах Ли конечного роста",
+      "statement_en": "Let $L$ be a complex graded simple Lie algebra of finite growth. If $L$ admits a non-trivial transposed Poisson algebra structure, then $L$ is isomorphic to either the Witt algebra $W$ or the Cartan algebra $W(1)$ (which has multiplication table $[e_i,e_j]=(i-j)e_{i+j}$, $i,j\\ge-1$, and admits the additional multiplication $e_i\\cdot e_j=\\sum_{t>0}\\alpha_t e_{i+j+t}$ for any finite set $\\{\\alpha_t\\}$). $W(1)$ is an example of a simple Lie algebra admitting only *non-unital* transposed Poisson structures.",
+      "statement_ru": "Пусть $L$ — комплексная градуированная простая алгебра Ли конечного роста. Если $L$ допускает нетривиальную структуру транспонированной пуассоновой алгебры, то $L$ изоморфна либо алгебре Витта $W$, либо алгебре Картана $W(1)$ (с таблицей умножения $[e_i,e_j]=(i-j)e_{i+j}$, $i,j\\ge-1$, допускающей дополнительное умножение $e_i\\cdot e_j=\\sum_{t>0}\\alpha_t e_{i+j+t}$ для любого конечного набора $\\{\\alpha_t\\}$). $W(1)$ — пример простой алгебры Ли, допускающей только *неунитальные* транспонированные пуассоновы структуры.",
+      "proof_en": "By the Hom-Lie classification (Xie–Liu) only a loop algebra, $W$, and $W(1)$ carry non-trivial Hom-Lie structures among simple graded finite-growth Lie algebras; a loop algebra is checked directly to admit no non-trivial transposed Poisson structure; non-trivial transposed Poisson structures on $W$ were already classified (Ferreira–Kaygorodov–Lopatkin); for $W(1)$, the same method used for $W$ shows every transposed Poisson structure has the stated additional multiplication, and conversely every finite $\\{\\alpha_t\\}$ gives one.",
+      "proof_ru": "По классификации Hom-структур Ли (Се–Лю) среди простых градуированных алгебр Ли конечного роста нетривиальные Hom-структуры Ли несут только алгебра петель, $W$ и $W(1)$; для алгебры петель напрямую проверяется отсутствие нетривиальных транспонированных пуассоновых структур; нетривиальные транспонированные пуассоновы структуры на $W$ уже классифицированы (Феррейра–Кайгородов–Лопаткин); для $W(1)$ тот же метод, что и для $W$, показывает, что всякая транспонированная пуассонова структура имеет указанное дополнительное умножение, и обратно — всякий конечный набор $\\{\\alpha_t\\}$ его задаёт.",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "classification of simple graded Lie algebras of finite growth",
+        "Witt algebra",
+        "Cartan algebra",
+        "Hom-Lie structure"
+      ],
+      "source": {
+        "label": "Теорема 24",
+        "document": "tpa-structures.pdf",
+        "page": 11
+      },
+      "topic": "Градуированные алгебры конечного роста",
+      "topic_order": 6
+    },
+    {
+      "kind": "property",
+      "slug": "half-derivations-of-oscillator-lie-algebra",
+      "title_en": "Description of all 1/2-derivations of the oscillator Lie algebra",
+      "title_ru": "Описание всех 1/2-дифференцирований осцилляторной алгебры Ли",
+      "statement_en": "A linear map $\\varphi:L_\\lambda\\to L_\\lambda$ is a $\\tfrac12$-derivation of $(L_\\lambda,[\\cdot,\\cdot])$ iff, for scalars $\\gamma,\\mu,\\alpha_j,\\beta_j$,\n$$\\varphi(e_{-1})=\\gamma e_{-1}+\\mu e_0-\\sum_{j=1}^n2\\lambda_j\\alpha_je_j-\\sum_{j=1}^n2\\lambda_j\\beta_j\\check e_j,\\quad \\varphi(e_0)=\\gamma e_0,$$\n$$\\varphi(e_j)=\\alpha_je_0+\\gamma e_j,\\qquad \\varphi(\\check e_j)=\\beta_je_0+\\gamma\\check e_j\\qquad (j=1,\\dots,n).$$\nConsequently (Filippov: every $\\delta$-derivation, $\\delta\\ne0,1$, gives a non-trivial Hom-Lie structure), the oscillator Lie algebra admits non-trivial Hom-Lie structures.",
+      "statement_ru": "Линейное отображение $\\varphi:L_\\lambda\\to L_\\lambda$ является $\\tfrac12$-дифференцированием $(L_\\lambda,[\\cdot,\\cdot])$ тогда и только тогда, когда для некоторых скаляров $\\gamma,\\mu,\\alpha_j,\\beta_j$\n$$\\varphi(e_{-1})=\\gamma e_{-1}+\\mu e_0-\\sum_{j=1}^n2\\lambda_j\\alpha_je_j-\\sum_{j=1}^n2\\lambda_j\\beta_j\\check e_j,\\quad \\varphi(e_0)=\\gamma e_0,$$\n$$\\varphi(e_j)=\\alpha_je_0+\\gamma e_j,\\qquad \\varphi(\\check e_j)=\\beta_je_0+\\gamma\\check e_j\\qquad (j=1,\\dots,n).$$\nСледовательно (Филиппов: всякое $\\delta$-дифференцирование, $\\delta\\ne0,1$, даёт нетривиальную Hom-структуру Ли), осцилляторная алгебра Ли допускает нетривиальные Hom-структуры Ли.",
+      "depends_on": [
+        "oscillator Lie algebra",
+        "1/2-derivation",
+        "Hom-Lie structure"
+      ],
+      "source": {
+        "label": "Предложение 27 + Следствие 28",
+        "document": "tpa-structures.pdf",
+        "page": 12
+      },
+      "topic": "Осцилляторные алгебры",
+      "topic_order": 5
+    },
+    {
+      "kind": "theorem",
+      "slug": "transposed-poisson-multiplication-on-oscillator-lie-algebra",
+      "title_en": "Transposed Poisson multiplication table on the oscillator Lie algebra",
+      "title_ru": "Таблица умножения транспонированной пуассоновой структуры на осцилляторной алгебре Ли",
+      "statement_en": "On the oscillator Lie algebra $(L_\\lambda,[\\cdot,\\cdot])$, every symmetric $\\tfrac12$-biderivation gives a transposed Poisson algebra structure, and every transposed Poisson multiplication $(L_\\lambda,\\cdot)$ has the form (for scalars $\\gamma,\\mu,\\alpha_j,\\beta_j$):\n$$e_{-1}\\cdot e_{-1}=\\gamma e_{-1}+\\mu e_0-2\\sum_{k=1}^n\\lambda_k(\\alpha_ke_k+\\beta_k\\check e_k),\\quad e_{-1}\\cdot e_0=\\gamma e_0,$$\n$$e_{-1}\\cdot e_j=\\alpha_je_0+\\gamma e_j,\\quad e_{-1}\\cdot\\check e_j=\\beta_je_0+\\gamma\\check e_j,\\quad e_j\\cdot e_j=\\check e_j\\cdot\\check e_j=-\\tfrac{\\gamma}{2\\lambda_j}e_0.$$\n$(L_\\lambda,\\cdot,[\\cdot,\\cdot])$ is an (ordinary) Poisson algebra iff $(\\gamma,\\alpha_1,\\dots,\\alpha_n,\\beta_1,\\dots,\\beta_n)=0$.",
+      "statement_ru": "На осцилляторной алгебре Ли $(L_\\lambda,[\\cdot,\\cdot])$ всякое симметричное $\\tfrac12$-бидифференцирование задаёт структуру транспонированной пуассоновой алгебры, и всякое транспонированное пуассоново умножение $(L_\\lambda,\\cdot)$ имеет вид (для некоторых скаляров $\\gamma,\\mu,\\alpha_j,\\beta_j$):\n$$e_{-1}\\cdot e_{-1}=\\gamma e_{-1}+\\mu e_0-2\\sum_{k=1}^n\\lambda_k(\\alpha_ke_k+\\beta_k\\check e_k),\\quad e_{-1}\\cdot e_0=\\gamma e_0,$$\n$$e_{-1}\\cdot e_j=\\alpha_je_0+\\gamma e_j,\\quad e_{-1}\\cdot\\check e_j=\\beta_je_0+\\gamma\\check e_j,\\quad e_j\\cdot e_j=\\check e_j\\cdot\\check e_j=-\\tfrac{\\gamma}{2\\lambda_j}e_0.$$\n$(L_\\lambda,\\cdot,[\\cdot,\\cdot])$ — обычная пуассонова алгебра тогда и только тогда, когда $(\\gamma,\\alpha_1,\\dots,\\alpha_n,\\beta_1,\\dots,\\beta_n)=0$.",
+      "proof_en": "By Lemma 3, for each basis vector $\\ell$ there is a $\\tfrac12$-derivation $\\varphi_\\ell$ with $\\varphi_{\\ell_1}(\\ell_2)=\\ell_1\\cdot\\ell_2=\\varphi_{\\ell_2}(\\ell_1)$. Applying the description of $\\tfrac12$-derivations above to each pair of basis vectors and matching coefficients (e.g. comparing $\\varphi_{e_i}(e_j)$ with $\\varphi_{e_j}(e_i)$, then involving $e_0$ and $e_{-1}$) forces $\\gamma^{e_j}=\\gamma^{\\check e_j}=\\alpha^{e_0}_j=\\beta^{e_0}_j=\\gamma^{e_0}=0$, ties all remaining superscripted constants to a single set $(\\gamma,\\mu,\\alpha_j,\\beta_j)$, and yields exactly the multiplication table above; commutativity/associativity of $\\cdot$ is then immediate.",
+      "proof_ru": "По лемме о правом умножении для каждого базисного вектора $\\ell$ существует $\\tfrac12$-дифференцирование $\\varphi_\\ell$ с $\\varphi_{\\ell_1}(\\ell_2)=\\ell_1\\cdot\\ell_2=\\varphi_{\\ell_2}(\\ell_1)$. Применяя приведённое выше описание $\\tfrac12$-дифференцирований к каждой паре базисных векторов и сравнивая коэффициенты (например, $\\varphi_{e_i}(e_j)$ с $\\varphi_{e_j}(e_i)$, затем привлекая $e_0$ и $e_{-1}$), получаем $\\gamma^{e_j}=\\gamma^{\\check e_j}=\\alpha^{e_0}_j=\\beta^{e_0}_j=\\gamma^{e_0}=0$, все оставшиеся константы сводятся к единому набору $(\\gamma,\\mu,\\alpha_j,\\beta_j)$, что и даёт указанную таблицу умножения; коммутативность и ассоциативность $\\cdot$ проверяются непосредственно.",
+      "depends_on": [
+        "oscillator Lie algebra",
+        "right multiplication is a 1/2-derivation",
+        "1/2-biderivation"
+      ],
+      "source": {
+        "label": "Теорема 29",
+        "document": "tpa-structures.pdf",
+        "page": 13
+      },
+      "topic": "Осцилляторные алгебры",
+      "topic_order": 5
+    },
+    {
+      "kind": "property",
+      "slug": "automorphisms-of-oscillator-lie-algebra",
+      "title_en": "Description of the automorphisms of the oscillator Lie algebra",
+      "title_ru": "Описание автоморфизмов осцилляторной алгебры Ли",
+      "statement_en": "Every automorphism $\\phi$ of $(L_\\lambda,[\\cdot,\\cdot])$ has the form\n$$\\phi(e_{-1})=\\pm e_{-1}+\\nu e_0+\\sum_i\\nu_ie_i+\\sum_i\\check\\nu_i\\check e_i,\\qquad \\phi(e_0)=\\pm\\xi e_0,$$\n$$\\phi(e_i)=\\tfrac{\\check\\nu_i\\check\\mu_i\\mp\\nu_i\\mu_i}{\\lambda_i}e_0+\\mu_ie_i\\mp\\check\\mu_i\\check e_i,\\qquad \\phi(\\check e_i)=\\tfrac{-\\check\\nu_i\\check\\mu_i\\mp\\nu_i\\mu_i}{\\lambda_i}e_0+\\check\\mu_ie_i\\pm\\mu_i\\check e_i,$$\nwhere $\\xi=\\mu_i^2+\\check\\mu_i^2$ (independent of $i$).",
+      "statement_ru": "Всякий автоморфизм $\\phi$ алгебры $(L_\\lambda,[\\cdot,\\cdot])$ имеет вид\n$$\\phi(e_{-1})=\\pm e_{-1}+\\nu e_0+\\sum_i\\nu_ie_i+\\sum_i\\check\\nu_i\\check e_i,\\qquad \\phi(e_0)=\\pm\\xi e_0,$$\n$$\\phi(e_i)=\\tfrac{\\check\\nu_i\\check\\mu_i\\mp\\nu_i\\mu_i}{\\lambda_i}e_0+\\mu_ie_i\\mp\\check\\mu_i\\check e_i,\\qquad \\phi(\\check e_i)=\\tfrac{-\\check\\nu_i\\check\\mu_i\\mp\\nu_i\\mu_i}{\\lambda_i}e_0+\\check\\mu_ie_i\\pm\\mu_i\\check e_i,$$\nгде $\\xi=\\mu_i^2+\\check\\mu_i^2$ (не зависит от $i$).",
+      "depends_on": [
+        "oscillator Lie algebra"
+      ],
+      "source": {
+        "label": "Лемма 30",
+        "document": "tpa-structures.pdf",
+        "page": 14
+      },
+      "aliases": [
+        "automorphisms of the oscillator Lie algebra"
+      ],
+      "topic": "Осцилляторные алгебры",
+      "topic_order": 5
+    },
+    {
+      "kind": "theorem",
+      "slug": "classification-transposed-poisson-generic-oscillator",
+      "title_en": "Classification of transposed Poisson structures on generic oscillator Lie algebras",
+      "title_ru": "Классификация транспонированных пуассоновых структур на общих осцилляторных алгебрах Ли",
+      "statement_en": "Let $(L_\\lambda,[\\cdot,\\cdot])$ be a generic oscillator Lie algebra and $(L_\\lambda,\\cdot,[\\cdot,\\cdot])$ a transposed Poisson algebra.\n(A) If $(L_\\lambda,\\cdot)$ is non-nilpotent, then for some $\\gamma\\ne0$:\n$$e_{-1}\\cdot e_{-1}=\\gamma e_{-1},\\ e_{-1}\\cdot e_0=\\gamma e_0,\\ e_{-1}\\cdot e_j=\\gamma e_j,\\ e_{-1}\\cdot\\check e_j=\\gamma\\check e_j,\\ e_j\\cdot e_j=\\check e_j\\cdot\\check e_j=-\\tfrac{\\gamma}{2\\lambda_j}e_0;$$\nthe algebra for $\\gamma$ is isomorphic only to that for $-\\gamma$; none of these are Poisson.\n(B) If $(L_\\lambda,\\cdot)$ is nilpotent, there is a sequence $\\{\\beta_q\\in\\mathbb C_{>0}\\}_{1\\le q\\le n}$ (first nonzero entry $=1$, where $\\mathbb C_{>0}=\\{a+bi: a>0\\}\\cup\\{bi:b\\ge0\\}$) with either\n(a) $e_{-1}\\cdot e_{-1}=e_0-2\\sum_j\\lambda_j\\beta_j\\check e_j,\\ e_{-1}\\cdot\\check e_j=\\beta_j\\check e_j$, or\n(b) $e_{-1}\\cdot e_{-1}=-2\\sum_j\\lambda_j\\beta_j\\check e_j,\\ e_{-1}\\cdot\\check e_j=\\beta_j\\check e_j$;\nthese algebras (for varying $\\beta$) are pairwise non-isomorphic, and non-Poisson exactly when some $\\beta_j\\ne0$.",
+      "statement_ru": "Пусть $(L_\\lambda,[\\cdot,\\cdot])$ — общая (generic) осцилляторная алгебра Ли и $(L_\\lambda,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра.\n(A) Если $(L_\\lambda,\\cdot)$ ненильпотентна, то при некотором $\\gamma\\ne0$:\n$$e_{-1}\\cdot e_{-1}=\\gamma e_{-1},\\ e_{-1}\\cdot e_0=\\gamma e_0,\\ e_{-1}\\cdot e_j=\\gamma e_j,\\ e_{-1}\\cdot\\check e_j=\\gamma\\check e_j,\\ e_j\\cdot e_j=\\check e_j\\cdot\\check e_j=-\\tfrac{\\gamma}{2\\lambda_j}e_0;$$\nалгебра для $\\gamma$ изоморфна только алгебре для $-\\gamma$; ни одна из них не пуассонова.\n(B) Если $(L_\\lambda,\\cdot)$ нильпотентна, найдётся последовательность $\\{\\beta_q\\in\\mathbb C_{>0}\\}_{1\\le q\\le n}$ (первый ненулевой член $=1$, где $\\mathbb C_{>0}=\\{a+bi: a>0\\}\\cup\\{bi:b\\ge0\\}$) вида либо\n(a) $e_{-1}\\cdot e_{-1}=e_0-2\\sum_j\\lambda_j\\beta_j\\check e_j,\\ e_{-1}\\cdot\\check e_j=\\beta_j\\check e_j$, либо\n(b) $e_{-1}\\cdot e_{-1}=-2\\sum_j\\lambda_j\\beta_j\\check e_j,\\ e_{-1}\\cdot\\check e_j=\\beta_j\\check e_j$;\nэти алгебры (при разных $\\beta$) попарно неизоморфны и не пуассоновы ровно тогда, когда некоторое $\\beta_j\\ne0$.",
+      "proof_en": "Under the action of automorphisms of $(L_\\lambda,[\\cdot,\\cdot])$ (described above), the general multiplication table from the previous theorem is normalized. Condensed: for $\\gamma\\ne0$, choosing $\\nu_k=2\\alpha_k\\lambda_k/\\gamma$, $\\check\\nu_k=2\\beta_k\\lambda_k/\\gamma$ and matching $\\nu$ eliminates all free parameters except $\\gamma$, giving case (A); a negative automorphism identifies $\\gamma$ with $-\\gamma$. For $\\gamma=0$ ($(L_\\lambda,\\cdot)$ nilpotent), a case split on whether $\\mu=0$ and on the first index $t$ with $(\\alpha_t,\\beta_t)\\ne0$ produces cases (B.a)/(B.b). Full multi-case computation elided here — see the source PDF (proof of Theorem 31) for the complete derivation.",
+      "proof_ru": "Под действием автоморфизмов $(L_\\lambda,[\\cdot,\\cdot])$ (описанных выше) общая таблица умножения из предыдущей теоремы нормализуется. Кратко: при $\\gamma\\ne0$ выбор $\\nu_k=2\\alpha_k\\lambda_k/\\gamma$, $\\check\\nu_k=2\\beta_k\\lambda_k/\\gamma$ и подбор $\\nu$ устраняет все свободные параметры, кроме $\\gamma$, что даёт случай (A); автоморфизм с отрицательным знаком отождествляет $\\gamma$ и $-\\gamma$. При $\\gamma=0$ (когда $(L_\\lambda,\\cdot)$ нильпотентна) разбор случаев по тому, $\\mu=0$ или нет, и по первому индексу $t$ с $(\\alpha_t,\\beta_t)\\ne0$, даёт случаи (B.a)/(B.b). Полное многоступенчатое вычисление здесь опущено — см. исходный PDF (доказательство теоремы 31) для полного вывода.",
+      "depends_on": [
+        "oscillator Lie algebra",
+        "transposed Poisson multiplication table on the oscillator Lie algebra",
+        "automorphisms of the oscillator Lie algebra"
+      ],
+      "source": {
+        "label": "Теорема 31",
+        "document": "tpa-structures.pdf",
+        "page": 15
+      },
+      "topic": "Осцилляторные алгебры",
+      "topic_order": 5
+    },
+    {
+      "kind": "definition",
+      "slug": "field",
+      "title_en": "Field",
+      "title_ru": "Поле",
+      "statement_en": "A **field** is a set $F$ with two operations $+,\\cdot$ such that:\n1. $(F,+)$ is an abelian group; its identity is written $0$.\n2. $(F\\setminus\\{0\\},\\cdot)$ is an abelian group; its identity is written $1$.\n3. Multiplication distributes over addition: $a(b+c)=ab+ac$ $\\forall a,b,c\\in F$.\n\nStandard examples: $\\mathbb{Q}$, $\\mathbb{R}$, $\\mathbb{C}$ — algebras in this seminar are usually taken over $\\mathbb{C}$.",
+      "statement_ru": "**Полем** называется множество $F$ с двумя операциями $+,\\cdot$, такими что:\n1. $(F,+)$ — абелева группа; её нейтральный элемент обозначается $0$.\n2. $(F\\setminus\\{0\\},\\cdot)$ — абелева группа; её нейтральный элемент обозначается $1$.\n3. Умножение дистрибутивно относительно сложения: $a(b+c)=ab+ac$ $\\forall a,b,c\\in F$.\n\nСтандартные примеры: $\\mathbb{Q}$, $\\mathbb{R}$, $\\mathbb{C}$ — алгебры в этом семинаре обычно рассматриваются над $\\mathbb{C}$.",
+      "depends_on": [
+        "abelian group"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "vector-space",
+      "title_en": "Vector space",
+      "title_ru": "Векторное пространство",
+      "statement_en": "Let $F$ be a field. A **vector space** over $F$ is a set $V$ with an addition $V\\times V\\to V$ making $(V,+)$ an abelian group, together with a scalar multiplication $F\\times V\\to V$ such that $\\forall a,b\\in F$ and $u,v\\in V$:\n1. $a(u+v)=au+av$\n2. $(a+b)v=av+bv$\n3. $(ab)v=a(bv)$\n4. $1v=v$",
+      "statement_ru": "Пусть $F$ — поле. **Векторным пространством** над $F$ называется множество $V$ со сложением $V\\times V\\to V$, относительно которого $(V,+)$ — абелева группа, и умножением на скаляр $F\\times V\\to V$, такими что $\\forall a,b\\in F$ и $u,v\\in V$:\n1. $a(u+v)=au+av$\n2. $(a+b)v=av+bv$\n3. $(ab)v=a(bv)$\n4. $1v=v$",
+      "depends_on": [
+        "field",
+        "abelian group"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "bilinear-operation",
+      "title_en": "Bilinear operation",
+      "title_ru": "Билинейная операция",
+      "statement_en": "Let $U,V,W$ be vector spaces over a field $F$. A map $\\beta:U\\times V\\to W$ is **bilinear** if it is linear in each argument separately:\n1. $\\beta(au_1+u_2,v)=a\\beta(u_1,v)+\\beta(u_2,v)$\n2. $\\beta(u,av_1+v_2)=a\\beta(u,v_1)+\\beta(u,v_2)$\n\n$\\forall a\\in F$. A *bilinear operation on $V$* is a bilinear map $V\\times V\\to V$ — exactly what an algebra's multiplication is.",
+      "statement_ru": "Пусть $U,V,W$ — векторные пространства над полем $F$. Отображение $\\beta:U\\times V\\to W$ называется **билинейным**, если оно линейно по каждому аргументу в отдельности:\n1. $\\beta(au_1+u_2,v)=a\\beta(u_1,v)+\\beta(u_2,v)$\n2. $\\beta(u,av_1+v_2)=a\\beta(u,v_1)+\\beta(u,v_2)$\n\n$\\forall a\\in F$. *Билинейная операция на $V$* — это билинейное отображение $V\\times V\\to V$ — именно так устроено умножение в алгебре.",
+      "depends_on": [
+        "vector space"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "algebra",
+      "title_en": "Algebra (over a field)",
+      "title_ru": "Алгебра (над полем)",
+      "statement_en": "An **algebra** over a field $F$ is a vector space $A$ over $F$ equipped with a bilinear operation $A\\times A\\to A$ (its *multiplication*), with no assumption of associativity or commutativity. This is the most general sense of 'algebra' used throughout the seminar — Lie algebras, Poisson algebras, transposed Poisson algebras etc. are all algebras in this sense, distinguished by extra axioms imposed on the multiplication.",
+      "statement_ru": "**Алгеброй** над полем $F$ называется векторное пространство $A$ над $F$ с билинейной операцией $A\\times A\\to A$ (её *умножением*), без каких-либо предположений об ассоциативности или коммутативности. Это самое общее значение слова «алгебра», используемое в семинаре — алгебры Ли, пуассоновы алгебры, транспонированные пуассоновы алгебры и т.д. — все они алгебры в этом смысле, отличающиеся дополнительными аксиомами на умножение.",
+      "depends_on": [
+        "vector space",
+        "bilinear operation"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0,
+      "aliases": [
+        "algebra"
+      ]
+    },
+    {
+      "kind": "definition",
+      "slug": "associative-algebra",
+      "title_en": "Associative algebra",
+      "title_ru": "Ассоциативная алгебра",
+      "statement_en": "An algebra $(A,\\cdot)$ is **associative** if\n$$(x\\cdot y)\\cdot z = x\\cdot(y\\cdot z)\\quad\\forall x,y,z\\in A.$$",
+      "statement_ru": "Алгебра $(A,\\cdot)$ называется **ассоциативной**, если\n$$(x\\cdot y)\\cdot z = x\\cdot(y\\cdot z)\\quad\\forall x,y,z\\in A.$$",
+      "depends_on": [
+        "algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "commutative-algebra",
+      "title_en": "Commutative algebra (structure)",
+      "title_ru": "Коммутативная алгебра (структура)",
+      "statement_en": "An algebra $(A,\\cdot)$ is **commutative** if $x\\cdot y = y\\cdot x$ $\\forall x,y\\in A$. (This names a property of an algebra's multiplication — not to be confused with *commutative algebra* the branch of mathematics that studies commutative rings.)",
+      "statement_ru": "Алгебра $(A,\\cdot)$ называется **коммутативной**, если $x\\cdot y = y\\cdot x$ $\\forall x,y\\in A$. (Это свойство умножения в алгебре — не путать с *коммутативной алгеброй* как разделом математики, изучающим коммутативные кольца.)",
+      "depends_on": [
+        "algebra"
+      ],
+      "aliases": [
+        "commutative algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "commutative-associative-algebra",
+      "title_en": "Commutative associative algebra",
+      "title_ru": "Коммутативная ассоциативная алгебра",
+      "statement_en": "An algebra $(A,\\cdot)$ is a **commutative associative algebra** if $\\forall x,y,z\\in A$:\n1. $(x\\cdot y)\\cdot z=x\\cdot(y\\cdot z)$ (associativity)\n2. $x\\cdot y=y\\cdot x$ (commutativity)",
+      "statement_ru": "Алгебра $(A,\\cdot)$ называется **коммутативной ассоциативной алгеброй**, если $\\forall x,y,z\\in A$:\n1. $(x\\cdot y)\\cdot z=x\\cdot(y\\cdot z)$ (ассоциативность)\n2. $x\\cdot y=y\\cdot x$ (коммутативность)",
+      "depends_on": [
+        "associative algebra",
+        "commutative algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "lie-algebra",
+      "title_en": "Lie algebra",
+      "title_ru": "Алгебра Ли",
+      "statement_en": "A **Lie algebra** is an algebra $(L,[\\cdot,\\cdot])$ whose multiplication (the *Lie bracket*) satisfies:\n1. *Anticommutativity*: $[x,y]=-[y,x]$\n2. *Jacobi identity*: $[[x,y],z]+[[y,z],x]+[[z,x],y]=0$\n\n$\\forall x,y,z\\in L$.",
+      "statement_ru": "**Алгеброй Ли** называется алгебра $(L,[\\cdot,\\cdot])$, умножение которой (*скобка Ли*) удовлетворяет:\n1. *Антикоммутативность*: $[x,y]=-[y,x]$\n2. *Тождество Якоби*: $[[x,y],z]+[[y,z],x]+[[z,x],y]=0$\n\n$\\forall x,y,z\\in L$.",
+      "depends_on": [
+        "algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "n-lie-algebra",
+      "title_en": "n-Lie algebra • Filippov algebra",
+      "title_ru": "n-алгебра Ли • алгебра Филиппова",
+      "statement_en": "Let $L$ be a vector space and $[\\cdot,\\dots,\\cdot]:L^n\\to L$ an alternating $n$-linear operation (it vanishes whenever two arguments coincide). $(L,[\\cdot,\\dots,\\cdot])$ is an **$n$-Lie algebra** (or *Filippov algebra*) if it satisfies the generalized Jacobi identity\n$$[[x_1,\\dots,x_n],y_2,\\dots,y_n]=\\sum_{i=1}^n[x_1,\\dots,[x_i,y_2,\\dots,y_n],\\dots,x_n]$$\n$\\forall x_1,\\dots,x_n,y_2,\\dots,y_n\\in L$. For $n=2$ this is exactly the Jacobi identity, so a $2$-Lie algebra is an ordinary Lie algebra.",
+      "statement_ru": "Пусть $L$ — векторное пространство и $[\\cdot,\\dots,\\cdot]:L^n\\to L$ — знакопеременная $n$-линейная операция (обращается в нуль, если два аргумента совпадают). $(L,[\\cdot,\\dots,\\cdot])$ называется **$n$-алгеброй Ли** (или *алгеброй Филиппова*), если она удовлетворяет обобщённому тождеству Якоби\n$$[[x_1,\\dots,x_n],y_2,\\dots,y_n]=\\sum_{i=1}^n[x_1,\\dots,[x_i,y_2,\\dots,y_n],\\dots,x_n]$$\n$\\forall x_1,\\dots,x_n,y_2,\\dots,y_n\\in L$. При $n=2$ это в точности тождество Якоби, так что $2$-алгебра Ли — это обычная алгебра Ли.",
+      "depends_on": [
+        "vector space"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0,
+      "aliases": [
+        "n-Lie algebra"
+      ]
+    },
+    {
+      "kind": "definition",
+      "slug": "poisson-algebra",
+      "title_en": "Poisson algebra",
+      "title_ru": "Пуассонова алгебра",
+      "statement_en": "A **Poisson algebra** is a triple $(A,\\cdot,\\{\\cdot,\\cdot\\})$ where:\n1. $(A,\\cdot)$ is a commutative associative algebra.\n2. $(A,\\{\\cdot,\\cdot\\})$ is a Lie algebra.\n3. The two are linked by the Leibniz rule: $\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}$ $\\forall x,y,z\\in A$.\n\nThe transposed Poisson algebra studied in this talk swaps the roles of $\\cdot$ and $\\{\\cdot,\\cdot\\}$ in condition 3.",
+      "statement_ru": "**Пуассонова алгебра** — это тройка $(A,\\cdot,\\{\\cdot,\\cdot\\})$, где:\n1. $(A,\\cdot)$ — коммутативная ассоциативная алгебра.\n2. $(A,\\{\\cdot,\\cdot\\})$ — алгебра Ли.\n3. Они связаны правилом Лейбница: $\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}$ $\\forall x,y,z\\in A$.\n\nТранспонированная пуассонова алгебра, которой посвящён этот доклад, меняет местами роли $\\cdot$ и $\\{\\cdot,\\cdot\\}$ в условии 3.",
+      "depends_on": [
+        "commutative associative algebra",
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Пуассоновы и обобщённые пуассоновы структуры",
+      "topic_order": 2
+    },
+    {
+      "kind": "definition",
+      "slug": "witt-algebra",
+      "title_en": "Witt algebra",
+      "title_ru": "Алгебра Витта",
+      "statement_en": "The **Witt algebra** $W$ is the complex, infinite-dimensional Lie algebra with basis $\\{e_i\\}_{i\\in\\mathbb{Z}}$ and bracket $[e_i,e_j]=(j-i)e_{i+j}$. It is realized as the Lie algebra of polynomial vector fields $e_i=-t^{i+1}\\tfrac{d}{dt}$ on $\\mathbb{C}[t,t^{-1}]$; its central extension is the Virasoro algebra.",
+      "statement_ru": "**Алгебра Витта** $W$ — это комплексная бесконечномерная алгебра Ли с базисом $\\{e_i\\}_{i\\in\\mathbb{Z}}$ и скобкой $[e_i,e_j]=(j-i)e_{i+j}$. Реализуется как алгебра Ли полиномиальных векторных полей $e_i=-t^{i+1}\\tfrac{d}{dt}$ на $\\mathbb{C}[t,t^{-1}]$; её центральное расширение — алгебра Вирасоро.",
+      "depends_on": [
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Градуированные алгебры конечного роста",
+      "topic_order": 6
+    },
+    {
+      "kind": "definition",
+      "slug": "cartan-algebra",
+      "title_en": "Cartan algebra",
+      "title_ru": "Алгебра Картана",
+      "statement_en": "The **Cartan algebras** are four families of infinite-dimensional simple graded Lie algebras of vector fields, denoted $W(n)$, $S(n)$, $H(2r)$, $K(2r+1)$. The simplest, $W(1)$, has basis $\\{e_i\\}_{i\\ge-1}$ and bracket $[e_i,e_j]=(i-j)e_{i+j}$ — the 'positive half' of the Witt algebra.",
+      "statement_ru": "**Алгебры Картана** — четыре серии бесконечномерных простых градуированных алгебр Ли векторных полей, обозначаемые $W(n)$, $S(n)$, $H(2r)$, $K(2r+1)$. Простейшая из них, $W(1)$, имеет базис $\\{e_i\\}_{i\\ge-1}$ и скобку $[e_i,e_j]=(i-j)e_{i+j}$ — «положительную половину» алгебры Витта.",
+      "depends_on": [
+        "Lie algebra",
+        "Witt algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Градуированные алгебры конечного роста",
+      "topic_order": 6
+    },
+    {
+      "kind": "definition",
+      "slug": "group",
+      "title_en": "Group",
+      "title_ru": "Группа",
+      "statement_en": "A **group** is a set $G$ with a binary operation $G\\times G\\to G$, $(g,h)\\mapsto gh$, satisfying:\n1. $(gh)k=g(hk)\\ \\forall g,h,k\\in G$ (associativity)\n2. $\\exists\\,e\\in G:\\ eg=ge=g\\ \\forall g\\in G$ (identity)\n3. $\\forall g\\in G\\ \\exists\\,g^{-1}\\in G:\\ gg^{-1}=g^{-1}g=e$ (inverses)",
+      "statement_ru": "**Группой** называется множество $G$ с бинарной операцией $G\\times G\\to G$, $(g,h)\\mapsto gh$, такой что:\n1. $(gh)k=g(hk)\\ \\forall g,h,k\\in G$ (ассоциативность)\n2. $\\exists\\,e\\in G:\\ eg=ge=g\\ \\forall g\\in G$ (единица)\n3. $\\forall g\\in G\\ \\exists\\,g^{-1}\\in G:\\ gg^{-1}=g^{-1}g=e$ (обратные элементы)",
+      "depends_on": [],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "abelian-group",
+      "title_en": "Abelian group",
+      "title_ru": "Абелева группа",
+      "statement_en": "A group $(G,\\cdot)$ is **abelian** (or *commutative*) if, in addition, $gh=hg$ $\\forall g,h\\in G$.",
+      "statement_ru": "Группа $(G,\\cdot)$ называется **абелевой** (или *коммутативной*), если, кроме того, $gh=hg$ $\\forall g,h\\in G$.",
+      "depends_on": [
+        "group"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    }
+  ],
+  "bibliography": "Beites P., Ferreira B.L.M., Kaygorodov I. — «Transposed Poisson algebra structures» (arXiv:2201.11540)",
+  "source_document": "tpa-structures.pdf"
+}

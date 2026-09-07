@@ -1,0 +1,26 @@
+import type { EntityDetail, EntitySummary, ReviewCardOut } from "./types";
+
+// In prod the backend serves the built frontend from the same origin, so
+// relative paths just work. In dev, Vite serves the frontend on :5173 while
+// FastAPI runs separately on :8000.
+const API_BASE = import.meta.env.VITE_API_BASE ?? (import.meta.env.DEV ? "http://localhost:8000" : "");
+
+async function json<T>(res: Response): Promise<T> {
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.json() as Promise<T>;
+}
+
+export const api = {
+  listEntities: () => fetch(`${API_BASE}/entities`).then((r) => json<EntitySummary[]>(r)),
+  getEntity: (slug: string) => fetch(`${API_BASE}/entities/${slug}`).then((r) => json<EntityDetail>(r)),
+  search: (q: string) =>
+    fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`).then((r) => json<EntitySummary[]>(r)),
+  dueCards: () => fetch(`${API_BASE}/review/due`).then((r) => json<ReviewCardOut[]>(r)),
+  grade: (slug: string, grade: "again" | "good" | "easy") =>
+    fetch(`${API_BASE}/review/${slug}/grade`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ grade }),
+    }).then((r) => json<ReviewCardOut>(r)),
+  sourceUrl: (episodeCode: string, document: string) => `${API_BASE}/sources/${episodeCode}/${document}`,
+};
