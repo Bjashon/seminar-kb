@@ -1,4 +1,4 @@
-import { memo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { memo, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import type { CanvasNode, EntityDetail, EntitySummary, Lang } from "./types";
 import { KIND_LABEL_RU } from "./types";
 import { mdBody } from "./markdown";
@@ -19,6 +19,7 @@ interface Props {
 export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMove, onClose, onSetLang, onToggleProof, onGoto, onOpenSource }: Props) {
   const [dragging, setDragging] = useState(false);
   const dragState = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const title = node.lang === "ru" ? detail.title_ru : detail.title_en;
   const statement = node.lang === "ru" ? detail.statement_ru : detail.statement_en;
@@ -29,6 +30,32 @@ export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMo
   const proofHtml = proof ? mdBody(proof, node.lang, allEntities, node.slug) : "";
   const body = useTypesetHtml(bodyHtml);
   const proofBox = useTypesetHtml(proofHtml);
+
+  // Cards stay compact by default (CSS max-width). Only a formula that
+  // genuinely doesn't fit at that width should widen the card -- so measure
+  // the true rendered width of any display-mode formula after MathJax has
+  // typeset it, and grow only when one of them actually overflows.
+  useLayoutEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    const displays: HTMLElement[] = [];
+    if (body.ref.current) {
+      displays.push(...(Array.from(body.ref.current.querySelectorAll('mjx-container[display="true"]')) as HTMLElement[]));
+    }
+    if (node.proofOpen && proofBox.ref.current) {
+      displays.push(...(Array.from(proofBox.ref.current.querySelectorAll('mjx-container[display="true"]')) as HTMLElement[]));
+    }
+    const widest = displays.reduce((max, el) => Math.max(max, el.scrollWidth), 0);
+    const COMPACT_CONTENT_WIDTH = 592; // 640px card minus horizontal padding
+    const CARD_PADDING = 40;
+    if (widest > COMPACT_CONTENT_WIDTH) {
+      card.style.width = `${Math.min(widest + CARD_PADDING, window.innerWidth * 0.95)}px`;
+      card.style.maxWidth = "95vw";
+    } else {
+      card.style.width = "";
+      card.style.maxWidth = "";
+    }
+  }, [body.ready, proofBox.ready, node.proofOpen, node.lang]);
 
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
     if ((e.target as HTMLElement).closest("button")) return;
@@ -57,7 +84,7 @@ export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMo
   }
 
   return (
-    <div className={"node-card" + (dragging ? " dragging" : "")} data-slug={node.slug} style={{ left: node.x, top: node.y }}>
+    <div ref={cardRef} className={"node-card" + (dragging ? " dragging" : "")} data-slug={node.slug} style={{ left: node.x, top: node.y }}>
       <div
         className="node-drag-handle"
         onPointerDown={handlePointerDown}

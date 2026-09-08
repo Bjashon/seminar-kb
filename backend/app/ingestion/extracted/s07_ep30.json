@@ -1,0 +1,498 @@
+{
+  "episode_code": "s07_ep30",
+  "source_language": "en",
+  "source_note": "V. Ovsienko, \"Lie antialgebras: Prémices\" (J. Algebra 325 (2011) 216-247) -- the single paper behind all three talk parts (s07_ep30/31/32, 2026-08-17/24/31). Extracted per the usual rule: all core definitions down to Z2-graded-commutative-algebra and Lie superalgebra bricks, the two named example algebras (K3, AK(1)) that the whole paper revolves around, the clean theorems with real given proofs (Thm 1, Thm 4, Thm 5 -- condensed where long), the two structural theorems whose proofs the author explicitly deferred to a companion paper (Thm 2, Thm 3 -- noted as such rather than fabricated), and lemma/proposition-level facts as properties (statement only). Skipped: the symplectic-geometry and contact-geometry realizations of section 2 (specialized, low reusability), and the detailed multi-lemma proof of the rank-1 classification (Theorem 6) -- captured as one property with the classification list but no proof chain.",
+  "bibliography": "Ovsienko V. — «Lie antialgebras: Prémices» (J. Algebra 325 (2011) 216-247)",
+  "source_document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "z2-graded-commutative-algebra",
+      "title_en": "Z2-graded commutative algebra",
+      "title_ru": "Z2-градуированная коммутативная алгебра",
+      "statement_en": "Let $\\mathbb{K}=\\mathbb{R}$ or $\\mathbb{C}$. An algebra $(\\mathfrak{a},\\cdot)$ is **$\\mathbb{Z}_2$-graded** if $\\mathfrak{a}=\\mathfrak{a}_0\\oplus\\mathfrak{a}_1$ with $\\mathfrak{a}_i\\cdot\\mathfrak{a}_j\\subset\\mathfrak{a}_{i+j\\,(\\mathrm{mod}\\,2)}$. Writing $p$ for the parity function ($p|_{\\mathfrak{a}_i}=i$), it is **graded-commutative** if for all homogeneous $x,y$\n$$x\\cdot y=(-1)^{p(x)p(y)}\\,y\\cdot x.$$\nIn particular $\\mathfrak{a}_0$ is an ordinary commutative subalgebra, and the map $\\mathfrak{a}_1\\times\\mathfrak{a}_1\\to\\mathfrak{a}_0$ is skew-symmetric.",
+      "statement_ru": "Пусть $\\mathbb{K}=\\mathbb{R}$ или $\\mathbb{C}$. Алгебра $(\\mathfrak{a},\\cdot)$ называется **$\\mathbb{Z}_2$-градуированной**, если $\\mathfrak{a}=\\mathfrak{a}_0\\oplus\\mathfrak{a}_1$ и $\\mathfrak{a}_i\\cdot\\mathfrak{a}_j\\subset\\mathfrak{a}_{i+j\\,(\\mathrm{mod}\\,2)}$. Обозначая через $p$ функцию чётности ($p|_{\\mathfrak{a}_i}=i$), она называется **градуированно-коммутативной**, если для всех однородных $x,y$\n$$x\\cdot y=(-1)^{p(x)p(y)}\\,y\\cdot x.$$\nВ частности, $\\mathfrak{a}_0$ — обычная коммутативная подалгебра, а отображение $\\mathfrak{a}_1\\times\\mathfrak{a}_1\\to\\mathfrak{a}_0$ кососимметрично.",
+      "depends_on": [
+        "Algebra (over a field)",
+        "Field"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (1.1)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "derivation-of-a-graded-algebra",
+      "title_en": "Derivation (of a Z2-graded algebra)",
+      "title_ru": "Дифференцирование (Z2-градуированной алгебры)",
+      "statement_en": "Let $\\mathfrak{a}$ be a $\\mathbb{Z}_2$-graded algebra. A homogeneous $D\\in\\mathrm{End}(\\mathfrak{a})$ of parity $p(D)$ is a **derivation** if for all homogeneous $x,y\\in\\mathfrak{a}$\n$$D(x\\cdot y)=D(x)\\cdot y+(-1)^{p(D)p(x)}\\,x\\cdot D(y),$$\nextended by linearity to all of $\\mathfrak{a}$. The space of all derivations of $\\mathfrak{a}$, denoted $\\mathrm{Der}(\\mathfrak{a})$, is a Lie superalgebra.",
+      "statement_ru": "Пусть $\\mathfrak{a}$ — $\\mathbb{Z}_2$-градуированная алгебра. Однородный $D\\in\\mathrm{End}(\\mathfrak{a})$ чётности $p(D)$ называется **дифференцированием**, если для всех однородных $x,y\\in\\mathfrak{a}$\n$$D(x\\cdot y)=D(x)\\cdot y+(-1)^{p(D)p(x)}\\,x\\cdot D(y),$$\nпродолженным по линейности на всю $\\mathfrak{a}$. Пространство всех дифференцирований $\\mathfrak{a}$, обозначаемое $\\mathrm{Der}(\\mathfrak{a})$, является алгеброй Ли superалгеброй.",
+      "depends_on": [
+        "Z2-graded commutative algebra",
+        "Lie superalgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (1.7)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "lie-superalgebra",
+      "title_en": "Lie superalgebra",
+      "title_ru": "Супералгебра Ли",
+      "statement_en": "A **Lie superalgebra** is a $\\mathbb{Z}_2$-graded vector space $\\mathfrak{g}=\\mathfrak{g}_0\\oplus\\mathfrak{g}_1$ with a bilinear bracket $[\\cdot,\\cdot]:\\mathfrak{g}\\otimes\\mathfrak{g}\\to\\mathfrak{g}$ respecting the grading, satisfying for homogeneous $x,y,z$:\n1. graded antisymmetry: $[x,y]=-(-1)^{p(x)p(y)}[y,x]$\n2. graded Jacobi identity: $(-1)^{p(x)p(z)}[x,[y,z]]+(-1)^{p(y)p(x)}[y,[z,x]]+(-1)^{p(z)p(y)}[z,[x,y]]=0$.\n\n$\\mathfrak{g}_0$ is then an ordinary Lie algebra, and $\\mathfrak{g}_1$ is a $\\mathfrak{g}_0$-module.",
+      "statement_ru": "**Алгеброй Ли супералгеброй** называется $\\mathbb{Z}_2$-градуированное векторное пространство $\\mathfrak{g}=\\mathfrak{g}_0\\oplus\\mathfrak{g}_1$ с билинейной скобкой $[\\cdot,\\cdot]:\\mathfrak{g}\\otimes\\mathfrak{g}\\to\\mathfrak{g}$, согласованной с градуировкой и удовлетворяющей для однородных $x,y,z$:\n1. градуированная антисимметрия: $[x,y]=-(-1)^{p(x)p(y)}[y,x]$\n2. градуированное тождество Якоби: $(-1)^{p(x)p(z)}[x,[y,z]]+(-1)^{p(y)p(x)}[y,[z,x]]+(-1)^{p(z)p(y)}[z,[x,y]]=0$.\n\nТогда $\\mathfrak{g}_0$ — обычная алгебра Ли, а $\\mathfrak{g}_1$ — $\\mathfrak{g}_0$-модуль.",
+      "depends_on": [
+        "Vector space",
+        "Lie algebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Общее понятие (использовано на протяжении статьи)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "lie-antialgebra",
+      "title_en": "Lie antialgebra",
+      "title_ru": "Ли-антиалгебра",
+      "statement_en": "A $\\mathbb{Z}_2$-graded commutative algebra $\\mathfrak{a}=\\mathfrak{a}_0\\oplus\\mathfrak{a}_1$ is a **Lie antialgebra** if for all $\\alpha,\\beta,\\gamma\\in\\mathfrak{a}_0$ and $a,b,c\\in\\mathfrak{a}_1$:\n1. $\\alpha\\cdot(\\beta\\cdot\\gamma)=(\\alpha\\cdot\\beta)\\cdot\\gamma$\n2. $\\alpha\\cdot(\\beta\\cdot a)=\\tfrac12(\\alpha\\cdot\\beta)\\cdot a$\n3. $\\alpha\\cdot(a\\cdot b)=(\\alpha\\cdot a)\\cdot b+a\\cdot(\\alpha\\cdot b)$\n4. $a\\cdot(b\\cdot c)+b\\cdot(c\\cdot a)+c\\cdot(a\\cdot b)=0$\n\nSo $\\mathfrak{a}_0$ is a (commutative, associative) subalgebra by axiom 1; the odd part $\\mathfrak{a}_1\\times\\mathfrak{a}_1\\to\\mathfrak{a}_0$ is skew-symmetric (from graded commutativity) and satisfies a Jacobi-type identity (axiom 4) -- yet $\\mathfrak{a}$ itself is **not** associative. Axioms 3+4 together are equivalent to: every $T_a:x\\mapsto x\\cdot a$ ($a\\in\\mathfrak{a}_1$) is a derivation of $\\mathfrak{a}$.",
+      "statement_ru": "$\\mathbb{Z}_2$-градуированная коммутативная алгебра $\\mathfrak{a}=\\mathfrak{a}_0\\oplus\\mathfrak{a}_1$ называется **Ли-антиалгеброй**, если для всех $\\alpha,\\beta,\\gamma\\in\\mathfrak{a}_0$ и $a,b,c\\in\\mathfrak{a}_1$:\n1. $\\alpha\\cdot(\\beta\\cdot\\gamma)=(\\alpha\\cdot\\beta)\\cdot\\gamma$\n2. $\\alpha\\cdot(\\beta\\cdot a)=\\tfrac12(\\alpha\\cdot\\beta)\\cdot a$\n3. $\\alpha\\cdot(a\\cdot b)=(\\alpha\\cdot a)\\cdot b+a\\cdot(\\alpha\\cdot b)$\n4. $a\\cdot(b\\cdot c)+b\\cdot(c\\cdot a)+c\\cdot(a\\cdot b)=0$\n\nТаким образом, $\\mathfrak{a}_0$ — (коммутативная, ассоциативная) подалгебра по аксиоме 1; нечётная часть $\\mathfrak{a}_1\\times\\mathfrak{a}_1\\to\\mathfrak{a}_0$ кососимметрична (из градуированной коммутативности) и удовлетворяет тождеству якобиева типа (аксиома 4) — при этом сама $\\mathfrak{a}$ **не** ассоциативна. Аксиомы 3+4 вместе равносильны тому, что каждый оператор $T_a:x\\mapsto x\\cdot a$ ($a\\in\\mathfrak{a}_1$) — дифференцирование $\\mathfrak{a}$.",
+      "depends_on": [
+        "Z2-graded commutative algebra",
+        "Derivation (of a Z2-graded algebra)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формулы (1.2)-(1.5)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "ample-lie-antialgebra",
+      "title_en": "Ample Lie antialgebra",
+      "title_ru": "Обильная Ли-антиалгебра",
+      "statement_en": "A Lie antialgebra $\\mathfrak{a}$ is **ample** if every even element is a linear combination of products of odd ones: $\\alpha=\\sum a_i\\cdot a_j$ for $a_i,a_j\\in\\mathfrak{a}_1$ -- equivalently, the map $\\mathfrak{a}_1\\otimes\\mathfrak{a}_1\\to\\mathfrak{a}_0$ is surjective. If $\\mathfrak{a}$ is ample, the associativity axiom 1 of a Lie antialgebra follows automatically from axioms 2-4.",
+      "statement_ru": "Ли-антиалгебра $\\mathfrak{a}$ называется **обильной**, если каждый чётный элемент — линейная комбинация произведений нечётных: $\\alpha=\\sum a_i\\cdot a_j$ для $a_i,a_j\\in\\mathfrak{a}_1$ — эквивалентно, отображение $\\mathfrak{a}_1\\otimes\\mathfrak{a}_1\\to\\mathfrak{a}_0$ сюръективно. Если $\\mathfrak{a}$ обильна, аксиома ассоциативности 1 в определении Ли-антиалгебры автоматически следует из аксиом 2-4.",
+      "depends_on": [
+        "Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Определение перед Замечанием 1.1",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "tiny-kaplansky-superalgebra",
+      "title_en": "Tiny Kaplansky superalgebra (K3)",
+      "title_ru": "Малая супералгебра Капланского (K3)",
+      "statement_en": "The **tiny Kaplansky superalgebra** $K_3$ is the 3-dimensional Lie antialgebra with basis $\\{\\varepsilon;a,b\\}$ ($\\varepsilon$ even, $a,b$ odd) and relations\n$$\\varepsilon\\cdot\\varepsilon=\\varepsilon,\\qquad \\varepsilon\\cdot a=\\tfrac12a,\\qquad \\varepsilon\\cdot b=\\tfrac12b,\\qquad a\\cdot b=\\tfrac12\\varepsilon.$$\n$K_3$ is **simple** (no non-trivial ideal), and $\\mathrm{Der}(K_3)\\cong\\mathfrak{osp}(1|2)$ -- in fact (Theorem below) this property characterizes $K_3$ uniquely.",
+      "statement_ru": "**Малой супералгеброй Капланского** $K_3$ называется 3-мерная Ли-антиалгебра с базисом $\\{\\varepsilon;a,b\\}$ ($\\varepsilon$ чётный, $a,b$ нечётные) и соотношениями\n$$\\varepsilon\\cdot\\varepsilon=\\varepsilon,\\qquad \\varepsilon\\cdot a=\\tfrac12a,\\qquad \\varepsilon\\cdot b=\\tfrac12b,\\qquad a\\cdot b=\\tfrac12\\varepsilon.$$\n$K_3$ **проста** (не имеет нетривиального идеала), и $\\mathrm{Der}(K_3)\\cong\\mathfrak{osp}(1|2)$ — более того (теорема ниже), это свойство однозначно характеризует $K_3$.",
+      "depends_on": [
+        "Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (1.9)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 3
+      },
+      "aliases": [
+        "K3",
+        "asl(2,K)"
+      ]
+    },
+    {
+      "kind": "definition",
+      "slug": "full-derivation-algebra-AK1",
+      "title_en": "Full derivation algebra AK(1)",
+      "title_ru": "Полная алгебра дифференцирований AK(1)",
+      "statement_en": "The **full derivation algebra** $\\mathcal{AK}(1)$ is the infinite-dimensional Lie antialgebra with basis $\\{\\varepsilon_n,\\ n\\in\\mathbb{Z};\\ a_i,\\ i\\in\\mathbb{Z}+\\tfrac12\\}$ ($\\varepsilon_n$ even, $a_i$ odd) and relations\n$$\\varepsilon_n\\cdot\\varepsilon_m=\\varepsilon_{n+m},\\qquad \\varepsilon_n\\cdot a_i=\\tfrac12a_{n+i},\\qquad a_i\\cdot a_j=(j-i)\\varepsilon_{i+j}.$$\nIt is simple, and contains infinitely many copies of $K_3$ (one for each half-integer $i$, on $\\{\\varepsilon_0;a_i,a_{-i}\\}$).",
+      "statement_ru": "**Полной алгеброй дифференцирований** $\\mathcal{AK}(1)$ называется бесконечномерная Ли-антиалгебра с базисом $\\{\\varepsilon_n,\\ n\\in\\mathbb{Z};\\ a_i,\\ i\\in\\mathbb{Z}+\\tfrac12\\}$ ($\\varepsilon_n$ чётные, $a_i$ нечётные) и соотношениями\n$$\\varepsilon_n\\cdot\\varepsilon_m=\\varepsilon_{n+m},\\qquad \\varepsilon_n\\cdot a_i=\\tfrac12a_{n+i},\\qquad a_i\\cdot a_j=(j-i)\\varepsilon_{i+j}.$$\nОна проста и содержит бесконечно много копий $K_3$ (по одной на каждое полуцелое $i$, на $\\{\\varepsilon_0;a_i,a_{-i}\\}$).",
+      "depends_on": [
+        "Lie antialgebra",
+        "Tiny Kaplansky superalgebra (K3)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (1.10)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "conformal-lie-superalgebra-K1",
+      "title_en": "Conformal Lie superalgebra K(1)",
+      "title_ru": "Конформная супералгебра Ли K(1)",
+      "statement_en": "The **conformal Lie superalgebra** $\\mathcal{K}(1)$ (centerless Neveu-Schwarz algebra) has basis $\\{x_n,\\ n\\in\\mathbb{Z};\\ \\xi_i,\\ i\\in\\mathbb{Z}+\\tfrac12\\}$ and brackets\n$$[x_n,x_m]=(m-n)x_{n+m},\\qquad [x_n,\\xi_i]=\\Bigl(i-\\tfrac n2\\Bigr)\\xi_{i+n},\\qquad [\\xi_i,\\xi_j]=x_{i+j}.$$\nIt contains infinitely many copies of $\\mathfrak{osp}(1|2)$. Its relation to $K_3$ and $\\mathcal{AK}(1)$: $\\mathrm{Der}(K_3)=\\mathfrak{osp}(1|2)$ and $\\mathrm{Der}(\\mathcal{AK}(1))=\\mathcal{K}(1)$ -- so $\\mathcal{K}(1)$ plays for $\\mathcal{AK}(1)$ exactly the role $\\mathfrak{osp}(1|2)$ plays for $K_3$.",
+      "statement_ru": "**Конформная супералгебра Ли** $\\mathcal{K}(1)$ (бесцентровая алгебра Невё-Шварца) имеет базис $\\{x_n,\\ n\\in\\mathbb{Z};\\ \\xi_i,\\ i\\in\\mathbb{Z}+\\tfrac12\\}$ и скобки\n$$[x_n,x_m]=(m-n)x_{n+m},\\qquad [x_n,\\xi_i]=\\Bigl(i-\\tfrac n2\\Bigr)\\xi_{i+n},\\qquad [\\xi_i,\\xi_j]=x_{i+j}.$$\nОна содержит бесконечно много копий $\\mathfrak{osp}(1|2)$. Её связь с $K_3$ и $\\mathcal{AK}(1)$: $\\mathrm{Der}(K_3)=\\mathfrak{osp}(1|2)$ и $\\mathrm{Der}(\\mathcal{AK}(1))=\\mathcal{K}(1)$ — то есть $\\mathcal{K}(1)$ играет для $\\mathcal{AK}(1)$ ровно ту же роль, какую $\\mathfrak{osp}(1|2)$ играет для $K_3$.",
+      "depends_on": [
+        "Lie superalgebra",
+        "Full derivation algebra AK(1)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (2.6)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 8
+      },
+      "aliases": [
+        "Neveu-Schwarz algebra"
+      ]
+    },
+    {
+      "kind": "theorem",
+      "slug": "uniqueness-of-K3-with-osp12-derivations",
+      "title_en": "K3 is the unique Lie antialgebra with derivation algebra osp(1|2)",
+      "title_ru": "K3 — единственная Ли-антиалгебра с алгеброй дифференцирований osp(1|2)",
+      "statement_en": "$K_3$ is the unique finite-dimensional $\\mathbb{Z}_2$-graded commutative algebra $\\mathfrak{a}$ such that $\\mathrm{Der}(\\mathfrak{a})\\cong\\mathfrak{osp}(1|2)$.",
+      "statement_ru": "$K_3$ — единственная конечномерная $\\mathbb{Z}_2$-градуированная коммутативная алгебра $\\mathfrak{a}$ такая, что $\\mathrm{Der}(\\mathfrak{a})\\cong\\mathfrak{osp}(1|2)$.",
+      "depends_on": [
+        "Tiny Kaplansky superalgebra (K3)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Теорема 1",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 4
+      },
+      "proof_en": "As an $\\mathfrak{osp}(1|2)$-module, $\\mathfrak{a}$ decomposes into irreducibles; the finite-dimensional irreducible $\\mathfrak{osp}(1|2)$-modules are $\\mathcal{D}(h/2)$ ($h$ a positive integer), of dimension $2h+1$. For $x_1\\in\\mathcal{D}(h_1/2)$, $x_2\\in\\mathcal{D}(h_2/2)$, the product lands in $\\mathcal{D}((h_1+h_2)/2)$. Taking a non-zero submodule $\\mathcal{D}(h'/2)\\subset\\mathfrak{a}$ with $h'$ maximal, this closure property forces $\\mathcal{D}(h'/2)$ into the center of $\\mathfrak{a}$ if $h'\\ne0$ -- but then $\\mathrm{End}(Z(\\mathfrak{a}))$ would be a proper subalgebra of $\\mathrm{Der}(\\mathfrak{a})$, contradicting $\\mathrm{Der}(\\mathfrak{a})\\cong\\mathfrak{osp}(1|2)$ (which has no non-trivial center acting this way). Hence $h'=0$, forcing $\\mathfrak{a}=K_3$.",
+      "proof_ru": "Как $\\mathfrak{osp}(1|2)$-модуль, $\\mathfrak{a}$ раскладывается в сумму неприводимых; конечномерные неприводимые $\\mathfrak{osp}(1|2)$-модули — это $\\mathcal{D}(h/2)$ ($h$ — положительное целое), размерности $2h+1$. Для $x_1\\in\\mathcal{D}(h_1/2)$, $x_2\\in\\mathcal{D}(h_2/2)$ произведение попадает в $\\mathcal{D}((h_1+h_2)/2)$. Взяв ненулевой подмодуль $\\mathcal{D}(h'/2)\\subset\\mathfrak{a}$ с максимальным $h'$, это свойство замкнутости заставляет $\\mathcal{D}(h'/2)$ лежать в центре $\\mathfrak{a}$, если $h'\\ne0$ — но тогда $\\mathrm{End}(Z(\\mathfrak{a}))$ была бы собственной подалгеброй $\\mathrm{Der}(\\mathfrak{a})$, что противоречит $\\mathrm{Der}(\\mathfrak{a})\\cong\\mathfrak{osp}(1|2)$ (у которой нет такого нетривиального центрального действия). Значит, $h'=0$, откуда $\\mathfrak{a}=K_3$."
+    },
+    {
+      "kind": "property",
+      "slug": "AK1-simple-with-derivations-K1",
+      "title_en": "AK(1) is simple with derivation algebra K(1)",
+      "title_ru": "AK(1) проста, и её алгебра дифференцирований — K(1)",
+      "statement_en": "The full derivation algebra $\\mathcal{AK}(1)$ is a simple Lie antialgebra, and $\\mathrm{Der}(\\mathcal{AK}(1))=\\mathcal{K}(1)$: formula (2.7) defines an action of $\\mathcal{K}(1)$ on $\\mathcal{AK}(1)$ by derivations, and it is (conjecturally, uniquely -- in analogy with $K_3$) the full derivation algebra.",
+      "statement_ru": "Полная алгебра дифференцирований $\\mathcal{AK}(1)$ — простая Ли-антиалгебра, и $\\mathrm{Der}(\\mathcal{AK}(1))=\\mathcal{K}(1)$: формула (2.7) задаёт действие $\\mathcal{K}(1)$ на $\\mathcal{AK}(1)$ дифференцированиями, и это (предположительно, единственным образом — по аналогии с $K_3$) вся алгебра дифференцирований.",
+      "depends_on": [
+        "Full derivation algebra AK(1)",
+        "Conformal Lie superalgebra K(1)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Предложения 2.4-2.5",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 8
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "associated-lie-superalgebra-of-a-lie-antialgebra",
+      "title_en": "Lie superalgebra associated to a Lie antialgebra (g_a)",
+      "title_ru": "Супералгебра Ли, ассоциированная с Ли-антиалгеброй (g_a)",
+      "statement_en": "Let $\\mathfrak{a}$ be a Lie antialgebra. Define $\\mathfrak{g}_\\mathfrak{a}=(\\mathfrak{g}_\\mathfrak{a})_0\\oplus(\\mathfrak{g}_\\mathfrak{a})_1$ by $(\\mathfrak{g}_\\mathfrak{a})_1:=\\mathfrak{a}_1$ and $(\\mathfrak{g}_\\mathfrak{a})_0:=\\mathfrak{a}_1\\odot_{\\mathfrak{a}_0}\\mathfrak{a}_1$ (the symmetric tensor square of $\\mathfrak{a}_1$ over $\\mathfrak{a}_0$, i.e. spans of $a\\otimes b+b\\otimes a$ modulo $\\alpha\\cdot a\\otimes b\\sim a\\otimes\\alpha\\cdot b$), with bracket\n$$[a\\odot b,c\\odot d]=a\\cdot(b\\cdot c)\\odot d+b\\cdot(a\\cdot c)\\odot d-c\\cdot(d\\cdot a)\\odot b-d\\cdot(c\\cdot a)\\odot b,$$\n$$[a\\odot b,c]=a\\cdot(b\\cdot c)+b\\cdot(a\\cdot c),\\qquad [a,b]=a\\odot b.$$",
+      "statement_ru": "Пусть $\\mathfrak{a}$ — Ли-антиалгебра. Определим $\\mathfrak{g}_\\mathfrak{a}=(\\mathfrak{g}_\\mathfrak{a})_0\\oplus(\\mathfrak{g}_\\mathfrak{a})_1$ как $(\\mathfrak{g}_\\mathfrak{a})_1:=\\mathfrak{a}_1$ и $(\\mathfrak{g}_\\mathfrak{a})_0:=\\mathfrak{a}_1\\odot_{\\mathfrak{a}_0}\\mathfrak{a}_1$ (симметричный тензорный квадрат $\\mathfrak{a}_1$ над $\\mathfrak{a}_0$, т.е. оболочка $a\\otimes b+b\\otimes a$ по модулю $\\alpha\\cdot a\\otimes b\\sim a\\otimes\\alpha\\cdot b$), со скобкой\n$$[a\\odot b,c\\odot d]=a\\cdot(b\\cdot c)\\odot d+b\\cdot(a\\cdot c)\\odot d-c\\cdot(d\\cdot a)\\odot b-d\\cdot(c\\cdot a)\\odot b,$$\n$$[a\\odot b,c]=a\\cdot(b\\cdot c)+b\\cdot(a\\cdot c),\\qquad [a,b]=a\\odot b.$$",
+      "depends_on": [
+        "Lie antialgebra",
+        "Lie superalgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Определение 3.1",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 17
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "g-a-is-a-lie-superalgebra",
+      "title_en": "g_a is a Lie superalgebra",
+      "title_ru": "g_a — супералгебра Ли",
+      "statement_en": "For any Lie antialgebra $\\mathfrak{a}$, the space $\\mathfrak{g}_\\mathfrak{a}$ with the bracket of the construction above is a Lie superalgebra.",
+      "statement_ru": "Для любой Ли-антиалгебры $\\mathfrak{a}$ пространство $\\mathfrak{g}_\\mathfrak{a}$ со скобкой из построения выше — супералгебра Ли.",
+      "depends_on": [
+        "Lie superalgebra associated to a Lie antialgebra (g_a)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Теорема 2",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 17
+      },
+      "proof_en": "Proof omitted by the author: \"the Jacobi identity and the compatibility with the equivalence $\\sim$ ... can be checked by a complicated but straightforward calculation that we omit.\" (Full verification deferred to a companion paper, Leidwanger-Morier-Genoud.)",
+      "proof_ru": "Доказательство опущено автором: «тождество Якоби и совместимость с отношением эквивалентности $\\sim$ ... проверяются сложным, но прямым вычислением, которое мы опускаем» (полная проверка отнесена к отдельной статье Leidwanger-Morier-Genoud)."
+    },
+    {
+      "kind": "property",
+      "slug": "g-a-acts-on-a-by-derivations",
+      "title_en": "g_a acts on a by derivations",
+      "title_ru": "g_a действует на a дифференцированиями",
+      "statement_en": "There is a canonical Lie superalgebra homomorphism $T:\\mathfrak{g}_\\mathfrak{a}\\to\\mathrm{Der}(\\mathfrak{a})$, given on the odd part by $T_a=$ right multiplication by $a$ (formula 1.8), and on the even part by $T_{a\\odot b}:=[T_a,T_b]$, explicitly\n$$T_{a\\odot b}\\,x=(x\\cdot a)\\cdot b+(x\\cdot b)\\cdot a.$$\nIn particular every representation of $\\mathfrak{a}$ is naturally a representation of $\\mathfrak{g}_\\mathfrak{a}$ (Theorem 3), and for the simple algebras $K_3,\\mathcal{AK}(1)$ this map is an isomorphism onto the *whole* derivation algebra: $\\mathfrak{g}_{K_3}=\\mathfrak{osp}(1|2)$, $\\mathfrak{g}_{\\mathcal{AK}(1)}=\\mathcal{K}(1)$.",
+      "statement_ru": "Существует канонический гомоморфизм алгебр Ли супералгебр $T:\\mathfrak{g}_\\mathfrak{a}\\to\\mathrm{Der}(\\mathfrak{a})$, заданный на нечётной части как $T_a=$ правое умножение на $a$ (формула 1.8), а на чётной — как $T_{a\\odot b}:=[T_a,T_b]$, явно\n$$T_{a\\odot b}\\,x=(x\\cdot a)\\cdot b+(x\\cdot b)\\cdot a.$$\nВ частности, всякое представление $\\mathfrak{a}$ естественным образом является представлением $\\mathfrak{g}_\\mathfrak{a}$ (теорема 3), а для простых алгебр $K_3,\\mathcal{AK}(1)$ это отображение — изоморфизм на *всю* алгебру дифференцирований: $\\mathfrak{g}_{K_3}=\\mathfrak{osp}(1|2)$, $\\mathfrak{g}_{\\mathcal{AK}(1)}=\\mathcal{K}(1)$.",
+      "depends_on": [
+        "Lie superalgebra associated to a Lie antialgebra (g_a)",
+        "Derivation (of a Z2-graded algebra)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (3.2) + Пример 3.4",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 18
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "representation-of-a-lie-antialgebra",
+      "title_en": "Representation of a Lie antialgebra",
+      "title_ru": "Представление Ли-антиалгебры",
+      "statement_en": "Let $V=V_0\\oplus V_1$ be $\\mathbb{Z}_2$-graded, and equip $\\mathrm{End}(V)$ with the graded anticommutator $[A,B]_+=AB+(-1)^{p(A)p(B)}BA$. An even linear map $\\chi:\\mathfrak{a}\\to\\mathrm{End}(V)$ is a **representation** of a Lie antialgebra $\\mathfrak{a}$ if\n$$\\chi_{x\\cdot y}=[\\chi_x,\\chi_y]_+\\quad\\forall x,y\\in\\mathfrak{a},$$\nand additionally the images of even elements commute: $\\chi_\\alpha\\chi_\\beta=\\chi_\\beta\\chi_\\alpha\\ \\forall\\alpha,\\beta\\in\\mathfrak{a}_0$. (Without this second condition, $\\chi$ is merely a *specialization* of the associated Jordan algebra $(\\mathrm{End}(V),[\\cdot,\\cdot]_+)$ -- a strictly weaker notion.)",
+      "statement_ru": "Пусть $V=V_0\\oplus V_1$ — $\\mathbb{Z}_2$-градуировано, и снабдим $\\mathrm{End}(V)$ градуированным антикоммутатором $[A,B]_+=AB+(-1)^{p(A)p(B)}BA$. Чётное линейное отображение $\\chi:\\mathfrak{a}\\to\\mathrm{End}(V)$ называется **представлением** Ли-антиалгебры $\\mathfrak{a}$, если\n$$\\chi_{x\\cdot y}=[\\chi_x,\\chi_y]_+\\quad\\forall x,y\\in\\mathfrak{a},$$\nи, дополнительно, образы чётных элементов коммутируют: $\\chi_\\alpha\\chi_\\beta=\\chi_\\beta\\chi_\\alpha\\ \\forall\\alpha,\\beta\\in\\mathfrak{a}_0$. (Без этого второго условия $\\chi$ — лишь *специализация* ассоциированной йордановой алгебры $(\\mathrm{End}(V),[\\cdot,\\cdot]_+)$ — строго более слабое понятие.)",
+      "depends_on": [
+        "Lie antialgebra",
+        "Vector space"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формулы (3.3)-(3.5)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 19
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "representations-extend-to-g-a",
+      "title_en": "Every representation of a is a representation of g_a",
+      "title_ru": "Всякое представление a является представлением g_a",
+      "statement_en": "Every representation $\\chi$ of a Lie antialgebra $\\mathfrak{a}$ is naturally a representation of the associated Lie superalgebra $\\mathfrak{g}_\\mathfrak{a}$, via $\\chi|_{(\\mathfrak{g}_\\mathfrak{a})_1}=\\chi|_{\\mathfrak{a}_1}$ and $\\chi_{a\\odot b}:=[\\chi_a,\\chi_b]=\\chi_a\\circ\\chi_b+\\chi_b\\circ\\chi_a$ on the even part.",
+      "statement_ru": "Всякое представление $\\chi$ Ли-антиалгебры $\\mathfrak{a}$ естественным образом является представлением ассоциированной алгебры Ли супералгебры $\\mathfrak{g}_\\mathfrak{a}$, через $\\chi|_{(\\mathfrak{g}_\\mathfrak{a})_1}=\\chi|_{\\mathfrak{a}_1}$ и $\\chi_{a\\odot b}:=[\\chi_a,\\chi_b]=\\chi_a\\circ\\chi_b+\\chi_b\\circ\\chi_a$ на чётной части.",
+      "depends_on": [
+        "Representation of a Lie antialgebra",
+        "Lie superalgebra associated to a Lie antialgebra (g_a)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Теорема 3",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 19
+      },
+      "proof_en": "Proof omitted by the author (\"a very complicated but straightforward computation, that we omit\"); the odd part of the claim is definitional, and details for the even part are deferred to a companion paper.",
+      "proof_ru": "Доказательство опущено автором («очень сложное, но прямое вычисление, которое мы опускаем»); утверждение для нечётной части — по определению, а детали для чётной части отнесены к отдельной статье."
+    },
+    {
+      "kind": "property",
+      "slug": "representations-of-K3-correspond-to-osp12-modules-with-casimir-zero",
+      "title_en": "Representations of K3 correspond to osp(1|2)-modules with vanishing Casimir",
+      "title_ru": "Представления K3 соответствуют osp(1|2)-модулям с нулевым оператором Казимира",
+      "statement_en": "There is a one-to-one correspondence between representations of $K_3$ and representations of $\\mathfrak{osp}(1|2)$ such that $\\chi(C)=0$ for the classical Casimir element $C\\in U(\\mathfrak{osp}(1|2))$. Concretely, a representation of $K_3$ amounts to one even operator $\\mathcal{E}$ and two odd operators $A,B$ satisfying\n$$AB-BA=\\mathcal{E},\\qquad A\\mathcal{E}+\\mathcal{E}A=A,\\qquad B\\mathcal{E}+\\mathcal{E}B=B,\\qquad \\mathcal{E}^2=\\mathcal{E},$$\nand up to isomorphism $\\mathcal{E}$ is always the projector onto the odd part of $V$ ($\\mathcal{E}|_{V_0}=0$, $\\mathcal{E}|_{V_1}=\\mathrm{Id}$) -- these relations resemble the Heisenberg canonical commutation relations, with $\\mathcal{E}$ playing the role of the identity.",
+      "statement_ru": "Существует взаимно однозначное соответствие между представлениями $K_3$ и представлениями $\\mathfrak{osp}(1|2)$ такими, что $\\chi(C)=0$ для классического элемента Казимира $C\\in U(\\mathfrak{osp}(1|2))$. Конкретно, представление $K_3$ — это один чётный оператор $\\mathcal{E}$ и два нечётных оператора $A,B$, удовлетворяющих\n$$AB-BA=\\mathcal{E},\\qquad A\\mathcal{E}+\\mathcal{E}A=A,\\qquad B\\mathcal{E}+\\mathcal{E}B=B,\\qquad \\mathcal{E}^2=\\mathcal{E},$$\nи с точностью до изоморфизма $\\mathcal{E}$ всегда является проектором на нечётную часть $V$ ($\\mathcal{E}|_{V_0}=0$, $\\mathcal{E}|_{V_1}=\\mathrm{Id}$) — эти соотношения напоминают канонические коммутационные соотношения Гейзенберга, где роль единицы играет $\\mathcal{E}$.",
+      "depends_on": [
+        "Tiny Kaplansky superalgebra (K3)",
+        "Representation of a Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Результат из [9] (Morier-Genoud), цит. в §3.2",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 20
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "tensor-density-modules-representing-AK1",
+      "title_en": "Tensor-density modules of K(1) that are representations of AK(1)",
+      "title_ru": "Модули тензорных плотностей K(1), являющиеся представлениями AK(1)",
+      "statement_en": "$\\mathcal{K}(1)$'s tensor-density modules $\\mathcal{F}_\\lambda$ ($\\lambda\\in\\mathbb{C}$, basis $\\{f_n,\\phi_i\\}$) are given by\n$$\\chi_{x_n}(f_m)=(m+\\lambda n)f_{n+m},\\qquad \\chi_{\\xi_i}(f_n)=\\Bigl(\\tfrac n2+\\lambda i\\Bigr)\\phi_{i+n},\\qquad \\chi_{\\xi_i}(\\phi_j)=f_{i+j},$$\n(the adjoint representation is $\\mathcal{F}_{-1}$, and the $\\mathcal{K}(1)$-action on $\\mathcal{AK}(1)$ itself is $\\mathcal{F}_{-1/2}$ with inverted parity). The $\\mathcal{K}(1)$-module $\\mathcal{F}_\\lambda$ is a representation of the Lie antialgebra $\\mathcal{AK}(1)$ if and only if $\\lambda=0$ or $\\lambda=\\tfrac12$ -- and $\\mathcal{F}_0$, $\\mathcal{F}_{1/2}$ are dual to each other.",
+      "statement_ru": "Модули тензорных плотностей $\\mathcal{K}(1)$ $\\mathcal{F}_\\lambda$ ($\\lambda\\in\\mathbb{C}$, базис $\\{f_n,\\phi_i\\}$) заданы формулами\n$$\\chi_{x_n}(f_m)=(m+\\lambda n)f_{n+m},\\qquad \\chi_{\\xi_i}(f_n)=\\Bigl(\\tfrac n2+\\lambda i\\Bigr)\\phi_{i+n},\\qquad \\chi_{\\xi_i}(\\phi_j)=f_{i+j},$$\n(присоединённое представление — это $\\mathcal{F}_{-1}$, а действие $\\mathcal{K}(1)$ на самой $\\mathcal{AK}(1)$ — это $\\mathcal{F}_{-1/2}$ с обращённой чётностью). $\\mathcal{K}(1)$-модуль $\\mathcal{F}_\\lambda$ является представлением Ли-антиалгебры $\\mathcal{AK}(1)$ тогда и только тогда, когда $\\lambda=0$ или $\\lambda=\\tfrac12$ — причём $\\mathcal{F}_0$ и $\\mathcal{F}_{1/2}$ дуальны друг другу.",
+      "depends_on": [
+        "Conformal Lie superalgebra K(1)",
+        "Full derivation algebra AK(1)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Пример (§3.2, стр. 235-236)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 20
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "module-over-a-lie-antialgebra",
+      "title_en": "Module over a Lie antialgebra",
+      "title_ru": "Модуль над Ли-антиалгеброй",
+      "statement_en": "A $\\mathbb{Z}_2$-graded vector space $V$ is an **$\\mathfrak{a}$-module** for a Lie antialgebra $\\mathfrak{a}$ if there is an even linear map $\\rho:\\mathfrak{a}\\to\\mathrm{End}(V)$ such that $\\mathfrak{a}\\oplus V$, equipped with\n$$(a,v)\\cdot(b,w)=\\bigl(a\\cdot b,\\ \\rho_a w+(-1)^{p(b)p(v)}\\rho_b v\\bigr)\\qquad (a,b\\in\\mathfrak{a},\\ v,w\\in V\\text{ homogeneous}),$$\nis again a Lie antialgebra -- called the **semi-direct product** $\\mathfrak{a}\\ltimes V$. (Unlike for representations, the maps $\\mathrm{ad}$ and $\\mathrm{ad}^*$ making $\\mathfrak{a}$ and $\\mathfrak{a}^*$ into $\\mathfrak{a}$-modules are *not* representations.)",
+      "statement_ru": "$\\mathbb{Z}_2$-градуированное векторное пространство $V$ называется **$\\mathfrak{a}$-модулем** для Ли-антиалгебры $\\mathfrak{a}$, если существует чётное линейное отображение $\\rho:\\mathfrak{a}\\to\\mathrm{End}(V)$ такое, что $\\mathfrak{a}\\oplus V$ с операцией\n$$(a,v)\\cdot(b,w)=\\bigl(a\\cdot b,\\ \\rho_a w+(-1)^{p(b)p(v)}\\rho_b v\\bigr)\\qquad (a,b\\in\\mathfrak{a},\\ v,w\\in V\\text{ однородны}),$$\nснова является Ли-антиалгеброй — называемой **полупрямым произведением** $\\mathfrak{a}\\ltimes V$. (В отличие от представлений, отображения $\\mathrm{ad}$ и $\\mathrm{ad}^*$, превращающие $\\mathfrak{a}$ и $\\mathfrak{a}^*$ в $\\mathfrak{a}$-модули, представлениями *не* являются.)",
+      "depends_on": [
+        "Lie antialgebra",
+        "Vector space"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (3.8)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 21
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "rank-of-a-lie-antialgebra",
+      "title_en": "Rank of a Lie antialgebra",
+      "title_ru": "Ранг Ли-антиалгебры",
+      "statement_en": "The **rank** of a Lie antialgebra $\\mathfrak{a}$ is $\\mathrm{rk}\\,\\mathfrak{a}:=\\dim\\mathfrak{a}_0$.",
+      "statement_ru": "**Рангом** Ли-антиалгебры $\\mathfrak{a}$ называется $\\mathrm{rk}\\,\\mathfrak{a}:=\\dim\\mathfrak{a}_0$.",
+      "depends_on": [
+        "Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Определение (§3.3)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 21
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "linear-functions-on-odd-lie-poisson-bivector-recover-a",
+      "title_en": "Linear functions on (IIa*, Lambda_a) recover a",
+      "title_ru": "Линейные функции на (Пa*, Лямбда_a) восстанавливают a",
+      "statement_en": "For a Lie antialgebra $\\mathfrak{a}$ of rank $r$, fixing a basis $\\varepsilon_1,\\dots,\\varepsilon_r$ of $\\mathfrak{a}_0$ gives a pencil of skew forms $\\omega_i$ on $\\mathfrak{a}_1$ via $a\\cdot b=\\sum\\omega_i(a,b)\\varepsilon_i$, and even vector fields $A_\\alpha$ on $\\mathfrak{a}^*$ (via $A_\\alpha|_{\\mathfrak{a}_0}=\\mathrm{ad}_\\alpha$, $A_\\alpha|_{\\mathfrak{a}_1}=2\\,\\mathrm{ad}_\\alpha$). On the parity-reversed dual $\\Pi\\mathfrak{a}^*$ (Grassmann coordinates $\\tau_1,\\dots,\\tau_r$ dual to the $\\varepsilon_i$, linear coordinates $x_1,\\dots,x_n$ on $\\Pi\\mathfrak{a}_1^*$), define the canonical odd bivector\n$$\\Lambda_\\mathfrak{a}=\\sum_{i=1}^r\\Bigl(\\frac\\partial{\\partial\\tau_i}\\wedge A_i+\\tau_i\\pi_i\\Bigr).$$\nThen the linear functions on $(\\Pi\\mathfrak{a}^*,\\Lambda_\\mathfrak{a})$, equipped with the corresponding antibracket, form a Lie antialgebra isomorphic to $\\mathfrak{a}$ -- and $\\Lambda_\\mathfrak{a}$ is independent of the choice of basis. ($K_3$ and its bivector $\\Lambda=\\partial_\\tau\\wedge\\mathcal{E}+\\tau\\,\\partial_p\\wedge\\partial_q$ realize this for $r=1$.)",
+      "statement_ru": "Для Ли-антиалгебры $\\mathfrak{a}$ ранга $r$ выбор базиса $\\varepsilon_1,\\dots,\\varepsilon_r$ в $\\mathfrak{a}_0$ даёт пучок кососимметричных форм $\\omega_i$ на $\\mathfrak{a}_1$ через $a\\cdot b=\\sum\\omega_i(a,b)\\varepsilon_i$, и чётные векторные поля $A_\\alpha$ на $\\mathfrak{a}^*$ (через $A_\\alpha|_{\\mathfrak{a}_0}=\\mathrm{ad}_\\alpha$, $A_\\alpha|_{\\mathfrak{a}_1}=2\\,\\mathrm{ad}_\\alpha$). На дуальном пространстве с обращённой чётностью $\\Pi\\mathfrak{a}^*$ (грассмановы координаты $\\tau_1,\\dots,\\tau_r$, дуальные $\\varepsilon_i$, линейные координаты $x_1,\\dots,x_n$ на $\\Pi\\mathfrak{a}_1^*$) определим канонический нечётный бивектор\n$$\\Lambda_\\mathfrak{a}=\\sum_{i=1}^r\\Bigl(\\frac\\partial{\\partial\\tau_i}\\wedge A_i+\\tau_i\\pi_i\\Bigr).$$\nТогда линейные функции на $(\\Pi\\mathfrak{a}^*,\\Lambda_\\mathfrak{a})$ с соответствующей антискобкой образуют Ли-антиалгебру, изоморфную $\\mathfrak{a}$ — причём $\\Lambda_\\mathfrak{a}$ не зависит от выбора базиса. ($K_3$ с бивектором $\\Lambda=\\partial_\\tau\\wedge\\mathcal{E}+\\tau\\,\\partial_p\\wedge\\partial_q$ реализует это при $r=1$.)",
+      "depends_on": [
+        "Rank of a Lie antialgebra",
+        "Tiny Kaplansky superalgebra (K3)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Предложение 3.10 + Следствие 3.11",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 22
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "central-extension-of-a-lie-antialgebra",
+      "title_en": "Central extension of a Lie antialgebra",
+      "title_ru": "Центральное расширение Ли-антиалгебры",
+      "statement_en": "Let $\\mathfrak{a}$ be a Lie antialgebra and $V$ an $\\mathfrak{a}$-module regarded as an abelian Lie antialgebra. An exact sequence $0\\to V\\to\\tilde{\\mathfrak{a}}\\to\\mathfrak{a}\\to0$ (so $\\tilde{\\mathfrak{a}}=\\mathfrak{a}\\oplus V$ as a vector space) is an **abelian extension** of $\\mathfrak{a}$ by $V$; it is **non-trivial** if $\\tilde{\\mathfrak{a}}\\not\\cong\\mathfrak{a}\\ltimes V$, and a **central extension** if $V$ lies in the center of $\\tilde{\\mathfrak{a}}$. A one-dimensional central extension is of **type I** if $\\dim V=0|1$ (even) or **type II** if $\\dim V=1|0$ (odd) -- every central extension is built by iterating these.",
+      "statement_ru": "Пусть $\\mathfrak{a}$ — Ли-антиалгебра и $V$ — $\\mathfrak{a}$-модуль, рассматриваемый как абелева Ли-антиалгебра. Точная последовательность $0\\to V\\to\\tilde{\\mathfrak{a}}\\to\\mathfrak{a}\\to0$ (так что $\\tilde{\\mathfrak{a}}=\\mathfrak{a}\\oplus V$ как векторное пространство) называется **абелевым расширением** $\\mathfrak{a}$ с помощью $V$; оно **нетривиально**, если $\\tilde{\\mathfrak{a}}\\not\\cong\\mathfrak{a}\\ltimes V$, и **центральным расширением**, если $V$ лежит в центре $\\tilde{\\mathfrak{a}}$. Одномерное центральное расширение имеет **тип I**, если $\\dim V=0|1$ (чётное), или **тип II**, если $\\dim V=1|0$ (нечётное) — всякое центральное расширение строится итерацией таких.",
+      "depends_on": [
+        "Lie antialgebra",
+        "Module over a Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Определение 3.15",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 23
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "unit-element-forces-no-nontrivial-central-extension",
+      "title_en": "A unit in a0 splits off the center and kills central extensions",
+      "title_ru": "Единица в a0 отщепляет центр и убивает центральные расширения",
+      "statement_en": "If a Lie antialgebra $\\mathfrak{a}$ contains a unit element $\\varepsilon\\in\\mathfrak{a}_0$ (so $\\varepsilon\\cdot x=x\\ \\forall x$... more precisely $\\varepsilon\\cdot\\varepsilon=\\varepsilon$, acting as identity on $\\mathfrak{a}_0$), then $\\mathfrak{a}$ splits as a direct sum $$\\mathfrak{a}=\\bar{\\mathfrak{a}}\\oplus Z(\\mathfrak{a})$$ of its center and a Lie antialgebra $\\bar{\\mathfrak{a}}=\\mathfrak{a}/Z(\\mathfrak{a})$ that has **no** non-trivial central extensions (of either type).",
+      "statement_ru": "Если Ли-антиалгебра $\\mathfrak{a}$ содержит единичный элемент $\\varepsilon\\in\\mathfrak{a}_0$ (т.е. $\\varepsilon\\cdot\\varepsilon=\\varepsilon$, действующий как тождество на $\\mathfrak{a}_0$), то $\\mathfrak{a}$ раскладывается в прямую сумму $$\\mathfrak{a}=\\bar{\\mathfrak{a}}\\oplus Z(\\mathfrak{a})$$ своего центра и Ли-антиалгебры $\\bar{\\mathfrak{a}}=\\mathfrak{a}/Z(\\mathfrak{a})$, у которой **нет** нетривиальных центральных расширений (ни одного из двух типов).",
+      "depends_on": [
+        "Lie antialgebra",
+        "Central extension of a Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Теорема 4",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 25
+      },
+      "proof_en": "Identity (2) applied to $\\varepsilon$ gives the \"half-projector\" relation $\\mathrm{ad}_\\varepsilon^2=\\tfrac12\\mathrm{ad}_\\varepsilon$ on $\\mathfrak{a}_1$, splitting it into $\\tfrac12$- and $0$-eigenspaces $\\mathfrak{a}_{1,1/2}\\oplus\\mathfrak{a}_{1,0}$; a short lemma identifies $\\mathfrak{a}_{1,0}$ exactly with the center of $\\mathfrak{a}$. For a type-I 2-cocycle $C$, evaluating its defining identity at $\\beta=\\varepsilon$ shows $C(\\alpha,a)=0$ for central $a$, and $C(\\alpha,a)=2C(\\varepsilon,\\alpha\\cdot a)$ otherwise -- exhibiting $C$ as a coboundary (trivial). For type-II cocycles, decomposing $C=(C_0,C_1)$ and evaluating the defining identities at $\\varepsilon$ shows $C_1$ is determined by $C_0$, and $C_0$ is again a coboundary. Hence $\\bar{\\mathfrak{a}}$ (which has no center) admits no non-trivial extension of either type.",
+      "proof_ru": "Тождество (2), применённое к $\\varepsilon$, даёт соотношение «полупроектора» $\\mathrm{ad}_\\varepsilon^2=\\tfrac12\\mathrm{ad}_\\varepsilon$ на $\\mathfrak{a}_1$, разбивающее его на собственные подпространства с собственными числами $\\tfrac12$ и $0$: $\\mathfrak{a}_{1,1/2}\\oplus\\mathfrak{a}_{1,0}$; короткая лемма отождествляет $\\mathfrak{a}_{1,0}$ ровно с центром $\\mathfrak{a}$. Для 2-коцикла $C$ типа I подстановка $\\beta=\\varepsilon$ в определяющее тождество показывает $C(\\alpha,a)=0$ для центральных $a$, а иначе $C(\\alpha,a)=2C(\\varepsilon,\\alpha\\cdot a)$ — то есть $C$ является кограницей (тривиален). Для коциклов типа II разложение $C=(C_0,C_1)$ и подстановка $\\varepsilon$ в определяющие тождества показывают, что $C_1$ определяется через $C_0$, а $C_0$ снова кограница. Следовательно, $\\bar{\\mathfrak{a}}$ (у которой нет центра) не допускает нетривиальных расширений ни одного из типов."
+    },
+    {
+      "kind": "theorem",
+      "slug": "classification-of-finite-dimensional-simple-lie-antialgebras",
+      "title_en": "Classification of finite-dimensional simple Lie antialgebras",
+      "title_ru": "Классификация конечномерных простых Ли-антиалгебр",
+      "statement_en": "1. $K_3(\\mathbb{C})$ is the unique finite-dimensional **complex** simple Lie antialgebra.\n2. There are exactly two finite-dimensional **real** simple Lie antialgebras: $K_3(\\mathbb{R})$, and $K_3(\\mathbb{C})$ viewed as a real algebra.\n\n(This mirrors the classification of simple finite-dimensional commutative algebras: only $\\mathbb{R}$ and $\\mathbb{C}=\\mathbb{R}+i\\mathbb{R}$ over $\\mathbb{R}$, only $\\mathbb{C}$ itself over $\\mathbb{C}$.)",
+      "statement_ru": "1. $K_3(\\mathbb{C})$ — единственная конечномерная **комплексная** простая Ли-антиалгебра.\n2. Существуют ровно две конечномерные **вещественные** простые Ли-антиалгебры: $K_3(\\mathbb{R})$ и $K_3(\\mathbb{C})$, рассматриваемая как вещественная алгебра.\n\n(Это отражает классификацию простых конечномерных коммутативных алгебр: только $\\mathbb{R}$ и $\\mathbb{C}=\\mathbb{R}+i\\mathbb{R}$ над $\\mathbb{R}$, только сама $\\mathbb{C}$ над $\\mathbb{C}$.)",
+      "depends_on": [
+        "Tiny Kaplansky superalgebra (K3)",
+        "Ample Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Теорема 5",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 27
+      },
+      "proof_en": "In the complex case, assuming first that $\\mathfrak{a}_0$ has no nilpotents (so $\\mathfrak{a}_0\\cong\\mathbb{C}^{\\oplus r}$), fix an idempotent basis $\\varepsilon_1,\\dots,\\varepsilon_r$ and the associated presymplectic forms $\\omega_i$ on $\\mathfrak{a}_1$ (as in the bivector construction). If $r>1$, $\\mathcal{I}=\\ker\\omega_1\\oplus\\langle\\varepsilon_2,\\dots,\\varepsilon_r\\rangle$ is shown to be a proper non-trivial ideal (Lemma 4.1) -- ruling out $r>1$ for a simple algebra, so $\\dim\\mathfrak{a}_0=1$. A further lemma (4.2) uses a Darboux basis for the remaining rank-1 form $\\omega$ to show $\\omega$ must have rank exactly 2 (any larger Darboux block forces $\\varepsilon$ into the center, contradicting simplicity), which pins down $\\mathfrak{a}=K_3(\\mathbb{C})$ exactly. Nilpotent elements in $\\mathfrak{a}_0$ are ruled out by the same ideal argument applied to $\\mathbb{C}^n\\ltimes\\mathcal{N}$. The real case follows since a real simple Lie antialgebra's complexification is either simple or splits into two isomorphic simple ideals.",
+      "proof_ru": "В комплексном случае, предполагая сперва, что $\\mathfrak{a}_0$ не имеет нильпотентов (т.е. $\\mathfrak{a}_0\\cong\\mathbb{C}^{\\oplus r}$), фиксируем идемпотентный базис $\\varepsilon_1,\\dots,\\varepsilon_r$ и связанные с ним пресимплектические формы $\\omega_i$ на $\\mathfrak{a}_1$ (как в построении бивектора). Если $r>1$, показывается (лемма 4.1), что $\\mathcal{I}=\\ker\\omega_1\\oplus\\langle\\varepsilon_2,\\dots,\\varepsilon_r\\rangle$ — собственный нетривиальный идеал, что исключает $r>1$ для простой алгебры, значит $\\dim\\mathfrak{a}_0=1$. Далее (лемма 4.2), используя базис Дарбу для оставшейся формы $\\omega$ ранга 1, показывается, что $\\omega$ обязана иметь ранг ровно 2 (любой больший блок Дарбу загоняет $\\varepsilon$ в центр, что противоречит простоте), что однозначно фиксирует $\\mathfrak{a}=K_3(\\mathbb{C})$. Нильпотентные элементы в $\\mathfrak{a}_0$ исключаются тем же аргументом с идеалом, применённым к $\\mathbb{C}^n\\ltimes\\mathcal{N}$. Вещественный случай следует из того, что комплексификация вещественной простой Ли-антиалгебры либо проста, либо распадается на два изоморфных простых идеала."
+    },
+    {
+      "kind": "property",
+      "slug": "classification-of-rank-1-lie-antialgebras",
+      "title_en": "Classification of rank-1 Lie antialgebras",
+      "title_ru": "Классификация Ли-антиалгебр ранга 1",
+      "statement_en": "Every finite-dimensional Lie antialgebra of rank 1 (i.e. $\\dim\\mathfrak{a}_0=1$) decomposes as $\\mathfrak{a}=\\bar{\\mathfrak{a}}\\oplus Z$ for a center $Z$, with $\\bar{\\mathfrak{a}}$ one of: $K_3$; the **Heisenberg antialgebra** $\\mathrm{ah}_n$ (non-degenerate skew form, $\\mathfrak{a}_1$ nilpotent); the **twisted Heisenberg antialgebras** $\\widetilde{\\mathrm{ah}}_1^+,\\widetilde{\\mathrm{ah}}_1^-$ (isomorphic over $\\mathbb{C}$, distinct over $\\mathbb{R}$); the **affine antialgebra** $\\mathrm{aaf}(n)$ (degenerate form, unit element present); or one of the central extensions $\\widehat{\\mathrm{ah}}_1,\\widehat{\\widehat{\\mathrm{ah}}}_1$ of $\\mathrm{ah}_1$ (the unique non-trivial type-I central extensions in this family -- $\\mathrm{ah}_n$ for $n\\ge2$ and the twisted algebras admit none).",
+      "statement_ru": "Всякая конечномерная Ли-антиалгебра ранга 1 (т.е. $\\dim\\mathfrak{a}_0=1$) раскладывается как $\\mathfrak{a}=\\bar{\\mathfrak{a}}\\oplus Z$ с центром $Z$, где $\\bar{\\mathfrak{a}}$ — одна из: $K_3$; **Гейзенбергова антиалгебра** $\\mathrm{ah}_n$ (невырожденная кососимметричная форма, $\\mathfrak{a}_1$ нильпотентна); **скрученные гейзенберговы антиалгебры** $\\widetilde{\\mathrm{ah}}_1^+,\\widetilde{\\mathrm{ah}}_1^-$ (изоморфны над $\\mathbb{C}$, различны над $\\mathbb{R}$); **аффинная антиалгебра** $\\mathrm{aaf}(n)$ (вырожденная форма, есть единичный элемент); либо одно из центральных расширений $\\widehat{\\mathrm{ah}}_1,\\widehat{\\widehat{\\mathrm{ah}}}_1$ алгебры $\\mathrm{ah}_1$ (единственные нетривиальные центральные расширения типа I в этом семействе — $\\mathrm{ah}_n$ при $n\\ge2$ и скрученные алгебры их не допускают).",
+      "depends_on": [
+        "Rank of a Lie antialgebra",
+        "Central extension of a Lie antialgebra",
+        "Heisenberg antialgebra (ah_n)",
+        "K3 is the unique Lie antialgebra with derivation algebra osp(1|2)"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Теорема 6 (+ Леммы 4.1-4.9, Предложения 4.4-4.5)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 31
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "heisenberg-antialgebra",
+      "title_en": "Heisenberg antialgebra (ah_n)",
+      "title_ru": "Гейзенбергова антиалгебра (ah_n)",
+      "statement_en": "The **Heisenberg antialgebra** $\\mathrm{ah}_n$ is the $(2n)|1$-dimensional nilpotent Lie antialgebra with basis $\\{a_1,b_1,\\dots,a_n,b_n;\\alpha\\}$ and relations\n$$a_i\\cdot b_j=\\delta_{ij}\\,\\alpha,$$\nall other products of basic elements vanishing. It is ample, and is the odd-central analogue of the ordinary Heisenberg Lie algebra (the relations are identical, but the central element $\\alpha$ is odd rather than even).",
+      "statement_ru": "**Гейзенберговой антиалгеброй** $\\mathrm{ah}_n$ называется $(2n)|1$-мерная нильпотентная Ли-антиалгебра с базисом $\\{a_1,b_1,\\dots,a_n,b_n;\\alpha\\}$ и соотношениями\n$$a_i\\cdot b_j=\\delta_{ij}\\,\\alpha,$$\nвсе прочие произведения базисных элементов равны нулю. Она обильна и является нечётно-центральным аналогом обычной алгебры Ли Гейзенберга (соотношения те же, но центральный элемент $\\alpha$ нечётен, а не чётен).",
+      "depends_on": [
+        "Lie antialgebra",
+        "Ample Lie antialgebra"
+      ],
+      "topic": "Ли-антиалгебры",
+      "topic_order": 10,
+      "source": {
+        "label": "Формула (4.2)",
+        "document": "2011_-_Lie_antialgebras_-_Premices.pdf",
+        "page": 29
+      }
+    }
+  ]
+}

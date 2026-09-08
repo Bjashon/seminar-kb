@@ -696,10 +696,12 @@
       "slug": "witt-algebra",
       "title_en": "Witt algebra",
       "title_ru": "Алгебра Витта",
-      "statement_en": "The **Witt algebra** $W$ is the complex, infinite-dimensional Lie algebra with basis $\\{e_i\\}_{i\\in\\mathbb{Z}}$ and bracket $[e_i,e_j]=(j-i)e_{i+j}$. It is realized as the Lie algebra of polynomial vector fields $e_i=-t^{i+1}\\tfrac{d}{dt}$ on $\\mathbb{C}[t,t^{-1}]$; its central extension is the Virasoro algebra.",
-      "statement_ru": "**Алгебра Витта** $W$ — это комплексная бесконечномерная алгебра Ли с базисом $\\{e_i\\}_{i\\in\\mathbb{Z}}$ и скобкой $[e_i,e_j]=(j-i)e_{i+j}$. Реализуется как алгебра Ли полиномиальных векторных полей $e_i=-t^{i+1}\\tfrac{d}{dt}$ на $\\mathbb{C}[t,t^{-1}]$; её центральное расширение — алгебра Вирасоро.",
+      "statement_en": "The **Witt algebra** $W$ is the complex, infinite-dimensional Lie algebra with basis $\\{e_i\\}_{i\\in\\mathbb{Z}}$ and bracket\n$$[e_i,e_j]=(j-i)e_{i+j}.$$\n\nIt is realized as the Lie algebra of polynomial vector fields $e_i=-t^{i+1}\\tfrac{d}{dt}$ on $\\mathbb{C}[t,t^{-1}]$.\n\nIts unique non-trivial central extension is the Virasoro algebra.",
+      "statement_ru": "**Алгебра Витта** $W$ — это комплексная бесконечномерная алгебра Ли с базисом $\\{e_i\\}_{i\\in\\mathbb{Z}}$ и скобкой\n$$[e_i,e_j]=(j-i)e_{i+j}.$$\n\nРеализуется как алгебра Ли полиномиальных векторных полей $e_i=-t^{i+1}\\tfrac{d}{dt}$ на $\\mathbb{C}[t,t^{-1}]$.\n\nЕё единственное нетривиальное центральное расширение — алгебра Вирасоро.",
       "depends_on": [
-        "Lie algebra"
+        "Lie algebra",
+        "Infinite-dimensional vector space",
+        "Virasoro algebra"
       ],
       "source": {
         "label": "Стандартное определение",
@@ -761,6 +763,42 @@
       },
       "topic": "Основы: алгебры и векторные пространства",
       "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "infinite-dimensional-vector-space",
+      "title_en": "Infinite-dimensional vector space",
+      "title_ru": "Бесконечномерное векторное пространство",
+      "statement_en": "A vector space $V$ over a field $F$ is **infinite-dimensional** if it has no finite basis -- equivalently, for every $n$ there exist $n$ linearly independent vectors in $V$. Its dimension is then the cardinality of any basis, written $\\dim V=\\infty$.",
+      "statement_ru": "Векторное пространство $V$ над полем $F$ называется **бесконечномерным**, если у него нет конечного базиса -- эквивалентно, для любого $n$ в $V$ найдутся $n$ линейно независимых векторов. Его размерность тогда равна мощности любого базиса, что записывают как $\\dim V=\\infty$.",
+      "depends_on": [
+        "Vector space"
+      ],
+      "source": {
+        "label": "Общее понятие линейной алгебры",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "virasoro-algebra",
+      "title_en": "Virasoro algebra",
+      "title_ru": "Алгебра Вирасоро",
+      "statement_en": "The **Virasoro algebra** $\\mathrm{Vir}$ is the (unique, up to isomorphism) non-trivial one-dimensional central extension of the Witt algebra $W$.\n\nIt has basis $\\{L_i\\}_{i\\in\\mathbb{Z}}\\cup\\{c\\}$, with $c$ central ($[c,L_i]=0\\ \\forall i$) and\n$$[L_m,L_n]=(n-m)L_{m+n}+\\frac{c}{12}(m^3-m)\\,\\delta_{m+n,0}.$$\n\nSetting $c=0$ recovers the Witt algebra exactly. The Virasoro algebra is the symmetry algebra of 2-dimensional conformal field theory, where $c$ is the *central charge*.",
+      "statement_ru": "**Алгеброй Вирасоро** $\\mathrm{Vir}$ называется (единственное, с точностью до изоморфизма) нетривиальное одномерное центральное расширение алгебры Витта $W$.\n\nУ неё базис $\\{L_i\\}_{i\\in\\mathbb{Z}}\\cup\\{c\\}$, причём $c$ централен ($[c,L_i]=0\\ \\forall i$), и\n$$[L_m,L_n]=(n-m)L_{m+n}+\\frac{c}{12}(m^3-m)\\,\\delta_{m+n,0}.$$\n\nПри $c=0$ получается ровно алгебра Витта. Алгебра Вирасоро — алгебра симметрий двумерной конформной теории поля, где $c$ — *центральный заряд*.",
+      "depends_on": [
+        "Witt algebra"
+      ],
+      "source": {
+        "label": "Стандартное определение",
+        "document": null,
+        "page": null
+      },
+      "topic": "Градуированные алгебры конечного роста",
+      "topic_order": 6
     }
   ],
   "bibliography": "Beites P., Ferreira B.L.M., Kaygorodov I. — «Transposed Poisson algebra structures» (arXiv:2201.11540)",
