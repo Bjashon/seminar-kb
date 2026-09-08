@@ -41,7 +41,7 @@ button { font-family: inherit; }
 
 .canvas-wrap { position: relative; min-width: 100%; min-height: 100%; width: 3200px; height: 2200px; background: #efefef; }
 .canvas-edges { position: absolute; top: 0; left: 0; pointer-events: none; }
-.node-card { position: absolute; width: fit-content; min-width: 440px; max-width: min(90vw, 640px); background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 6px 22px -6px rgba(0,0,0,.22); overflow: hidden; }
+.node-card { position: absolute; width: fit-content; min-width: 440px; max-width: 95vw; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 6px 22px -6px rgba(0,0,0,.22); overflow: hidden; }
 .node-card.dragging { box-shadow: 0 12px 32px -6px rgba(0,0,0,.3); z-index: 5; }
 .node-drag-handle { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 0; cursor: grab; touch-action: none; user-select: none; }
 .node-drag-handle:active { cursor: grabbing; }
