@@ -4,13 +4,14 @@ import type { EntitySummary, Lang } from "./types";
 interface Props {
   entities: EntitySummary[];
   onOpen: (slug: string) => void;
+  onOpenSource: (slug: string) => void;
 }
 
 type GroupBy = "topic" | "source";
 
 const NO_SOURCE_GROUP = "Без источника (общие определения)";
 
-export function IndexPage({ entities, onOpen }: Props) {
+export function IndexPage({ entities, onOpen, onOpenSource }: Props) {
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState<Lang>("ru");
   const [groupBy, setGroupBy] = useState<GroupBy>("topic");
@@ -83,13 +84,23 @@ export function IndexPage({ entities, onOpen }: Props) {
           </div>
           <div className="index-rows">
             {items.map((e) => (
-              <button className="index-row" key={e.slug} onClick={() => onOpen(e.slug)}>
-                <span className="dot" style={{ background: `var(--${e.kind})` }} />
-                {lang === "ru" ? e.title_ru : e.title_en}
-                {groupBy === "source" && e.source_page != null && (
-                  <span className="index-row-page"> · стр. {e.source_page}</span>
+              <div className="index-row" key={e.slug}>
+                <button className="index-row-open" onClick={() => onOpen(e.slug)}>
+                  <span className="dot" style={{ background: `var(--${e.kind})` }} />
+                  {lang === "ru" ? e.title_ru : e.title_en}
+                </button>
+                {e.source_page != null && (
+                  <button
+                    className="index-row-page has-source"
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      onOpenSource(e.slug);
+                    }}
+                  >
+                    стр. {e.source_page}
+                  </button>
                 )}
-              </button>
+              </div>
             ))}
           </div>
         </div>

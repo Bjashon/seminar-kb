@@ -76,6 +76,14 @@ export default function App() {
     [gotoFromCard]
   );
 
+  const openSourceFromIndex = useCallback(
+    (slug: string) => {
+      ensureDetail(slug);
+      setSourceSlug(slug);
+    },
+    [ensureDetail]
+  );
+
   // Seed the canvas with the first entity once the list is loaded.
   useEffect(() => {
     if (entities.length && nodes.length === 0) {
@@ -114,7 +122,9 @@ export default function App() {
               onOpenSource={openSource}
             />
           )}
-          {mode === "index" && <IndexPage entities={entities} onOpen={openFromIndex} />}
+          {mode === "index" && (
+            <IndexPage entities={entities} onOpen={openFromIndex} onOpenSource={openSourceFromIndex} />
+          )}
           {mode === "trainer" && (
             <div className="main-inner">
               <Trainer allEntities={entities} details={details} ensureDetail={ensureDetail} />

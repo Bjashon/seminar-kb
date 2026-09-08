@@ -100,10 +100,13 @@ h3.title { font-size: 19px; }
 .index-group-header { display: flex; align-items: center; gap: 7px; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--ink-soft); margin-bottom: 10px; }
 .index-group-count { font-weight: 400; color: var(--link-missing); }
 .index-rows { columns: 220px; column-gap: 24px; }
-.index-row { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; padding: 7px 2px; border: none; background: none; cursor: pointer; color: var(--ink); font-size: 14px; font-family: "Literata", Georgia, serif; break-inside: avoid; }
-.index-row .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
-.index-row:hover { text-decoration: underline; text-decoration-style: dotted; }
-.index-row-page { color: var(--ink-soft); font-family: "Source Sans 3", sans-serif; font-size: 12.5px; }
+.index-row { display: flex; align-items: center; gap: 6px; width: 100%; break-inside: avoid; }
+.index-row-open { display: flex; align-items: center; gap: 9px; flex: 1; min-width: 0; text-align: left; padding: 7px 2px; border: none; background: none; cursor: pointer; color: var(--ink); font-size: 14px; font-family: "Literata", Georgia, serif; }
+.index-row-open .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.index-row-open:hover { text-decoration: underline; text-decoration-style: dotted; }
+.index-row-page { flex: none; border: none; background: none; padding: 0; color: var(--ink-soft); font-family: "Source Sans 3", sans-serif; font-size: 12.5px; }
+.index-row-page.has-source { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.index-row-page.has-source:hover { color: var(--ink); }
 .index-empty { padding: 20px 4px; color: var(--ink-soft); font-size: 13.5px; }
 
 .trainer { display: flex; flex-direction: column; align-items: center; padding-top: 6vh; }
