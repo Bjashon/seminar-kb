@@ -667,7 +667,8 @@
       "statement_en": "A **Lie algebra** is an algebra $(L,[\\cdot,\\cdot])$ whose multiplication (the *Lie bracket*) satisfies:\n1. *Anticommutativity*: $[x,y]=-[y,x]$\n2. *Jacobi identity*: $[[x,y],z]+[[y,z],x]+[[z,x],y]=0$\n\n$\\forall x,y,z\\in L$.",
       "statement_ru": "**Алгеброй Ли** называется алгебра $(L,[\\cdot,\\cdot])$, умножение которой (*скобка Ли*) удовлетворяет:\n1. *Антикоммутативность*: $[x,y]=-[y,x]$\n2. *Тождество Якоби*: $[[x,y],z]+[[y,z],x]+[[z,x],y]=0$\n\n$\\forall x,y,z\\in L$.",
       "depends_on": [
-        "algebra"
+        "algebra",
+        "Commutator (of an associative algebra) • Lie bracket it induces"
       ],
       "source": {
         "label": "Стандартное определение",
@@ -811,6 +812,182 @@
       },
       "topic": "Градуированные алгебры конечного роста",
       "topic_order": 6
+    },
+    {
+      "kind": "definition",
+      "slug": "commutator-of-an-associative-algebra",
+      "title_en": "Commutator (of an associative algebra) • Lie bracket it induces",
+      "title_ru": "Коммутатор (ассоциативной алгебры) • индуцированная скобка Ли",
+      "statement_en": "Let $(A,\\cdot)$ be an associative algebra. Its **commutator** is\n$$[x,y]:=x\\cdot y-y\\cdot x,\\qquad x,y\\in A.$$\n\nThis bracket is automatically antisymmetric and satisfies the Jacobi identity (a short direct check), so $(A,[\\cdot,\\cdot])$ is always a Lie algebra.\n\nThis is the single most common source of Lie algebras: whenever a paper writes $[x,y]=xy-yx$ for elements of some associative algebra, it is defining a Lie algebra structure this way.",
+      "statement_ru": "Пусть $(A,\\cdot)$ — ассоциативная алгебра. Её **коммутатором** называется\n$$[x,y]:=x\\cdot y-y\\cdot x,\\qquad x,y\\in A.$$\n\nЭта скобка автоматически антисимметрична и удовлетворяет тождеству Якоби (проверяется прямым вычислением), так что $(A,[\\cdot,\\cdot])$ — всегда алгебра Ли.\n\nЭто самый распространённый источник алгебр Ли: когда в статье пишут $[x,y]=xy-yx$ для элементов некоторой ассоциативной алгебры, тем самым именно так и задают структуру алгебры Ли.",
+      "depends_on": [
+        "Associative algebra",
+        "Lie algebra"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0,
+      "aliases": [
+        "Lie bracket"
+      ]
+    },
+    {
+      "kind": "definition",
+      "slug": "homomorphism-and-isomorphism-of-algebras",
+      "title_en": "Homomorphism • isomorphism of algebras",
+      "title_ru": "Гомоморфизм • изоморфизм алгебр",
+      "statement_en": "Let $(A,\\cdot)$ and $(B,*)$ be algebras over the same field $F$. A linear map $\\varphi:A\\to B$ is a **homomorphism** if\n$$\\varphi(x\\cdot y)=\\varphi(x)*\\varphi(y)\\qquad\\forall x,y\\in A$$\n-- it respects both the vector-space structure (linearity) and the multiplication.\n\n$\\varphi$ is an **isomorphism** if it is additionally bijective; $A$ and $B$ are then called **isomorphic**, written $A\\cong B$, and are considered \"the same algebra\" for essentially all purposes.\n\nThe **kernel** $\\ker\\varphi:=\\{x\\in A:\\varphi(x)=0\\}$ is always a two-sided ideal, and $A/\\ker\\varphi\\cong\\mathrm{im}(\\varphi)$ (First Isomorphism Theorem).",
+      "statement_ru": "Пусть $(A,\\cdot)$ и $(B,*)$ — алгебры над одним полем $F$. Линейное отображение $\\varphi:A\\to B$ называется **гомоморфизмом**, если\n$$\\varphi(x\\cdot y)=\\varphi(x)*\\varphi(y)\\qquad\\forall x,y\\in A$$\n— оно уважает и структуру векторного пространства (линейность), и умножение.\n\n$\\varphi$ называется **изоморфизмом**, если оно вдобавок биективно; $A$ и $B$ тогда называются **изоморфными**, что записывают $A\\cong B$, и считаются «одной и той же алгеброй» практически для всех целей.\n\n**Ядро** $\\ker\\varphi:=\\{x\\in A:\\varphi(x)=0\\}$ всегда является двусторонним идеалом, и $A/\\ker\\varphi\\cong\\mathrm{im}(\\varphi)$ (первая теорема об изоморфизме).",
+      "depends_on": [
+        "Algebra (over a field)",
+        "Two-sided ideal",
+        "Quotient algebra"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "basis-and-dimension-of-a-vector-space",
+      "title_en": "Basis • dimension of a vector space",
+      "title_ru": "Базис • размерность векторного пространства",
+      "statement_en": "Let $V$ be a vector space over a field $F$. A subset $\\{e_1,\\dots,e_n\\}\\subset V$ is a **basis** if:\n1. it is linearly independent: $\\sum_i a_ie_i=0\\ (a_i\\in F)\\implies a_1=\\dots=a_n=0$;\n2. it spans $V$: every $v\\in V$ is a linear combination $v=\\sum_i a_ie_i$.\n\nEvery vector space has a basis, and any two bases of $V$ have the same cardinality -- called the **dimension** $\\dim V$. Given a basis, every element of $V$ has *unique* coordinates $(a_1,\\dots,a_n)$.",
+      "statement_ru": "Пусть $V$ — векторное пространство над полем $F$. Подмножество $\\{e_1,\\dots,e_n\\}\\subset V$ называется **базисом**, если:\n1. оно линейно независимо: $\\sum_i a_ie_i=0\\ (a_i\\in F)\\implies a_1=\\dots=a_n=0$;\n2. оно порождает $V$: всякий $v\\in V$ — линейная комбинация $v=\\sum_i a_ie_i$.\n\nУ любого векторного пространства есть базис, причём любые два базиса $V$ имеют одинаковую мощность — она называется **размерностью** $\\dim V$. При фиксированном базисе у каждого элемента $V$ есть *единственные* координаты $(a_1,\\dots,a_n)$.",
+      "depends_on": [
+        "Vector space",
+        "Field"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "matrix-algebra",
+      "title_en": "Matrix algebra M_n(F)",
+      "title_ru": "Матричная алгебра M_n(F)",
+      "statement_en": "$M_n(F)$ denotes the set of $n\\times n$ matrices with entries in a field $F$, with the usual entrywise addition and matrix multiplication.\n\n$M_n(F)$ is an associative (but for $n\\ge2$ non-commutative) algebra over $F$, of dimension $n^2$, with identity element the identity matrix. It has a distinguished basis of **matrix units** $E_{i,j}$ (the matrix with $1$ in row $i$, column $j$, and $0$ elsewhere), satisfying $E_{i,j}E_{k,l}=\\delta_{j,k}E_{i,l}$.",
+      "statement_ru": "$M_n(F)$ обозначает множество матриц $n\\times n$ с элементами из поля $F$, с обычным покомпонентным сложением и матричным умножением.\n\n$M_n(F)$ — ассоциативная (но при $n\\ge2$ некоммутативная) алгебра над $F$ размерности $n^2$, с единичным элементом — единичной матрицей. У неё есть выделенный базис **матричных единиц** $E_{i,j}$ (матрица с $1$ на пересечении строки $i$ и столбца $j$, и $0$ на остальных местах), удовлетворяющих $E_{i,j}E_{k,l}=\\delta_{j,k}E_{i,l}$.",
+      "depends_on": [
+        "Associative algebra",
+        "Basis • dimension of a vector space",
+        "Field"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "direct-sum-of-algebras",
+      "title_en": "Direct sum of algebras",
+      "title_ru": "Прямая сумма алгебр",
+      "statement_en": "Given algebras $A_1,\\dots,A_k$ over the same field, their **direct sum**\n$$A_1\\oplus\\dots\\oplus A_k$$\nis the algebra whose underlying vector space is the direct sum of the $A_i$ as vector spaces (tuples $(a_1,\\dots,a_k)$, $a_i\\in A_i$), with componentwise multiplication:\n$$(a_1,\\dots,a_k)\\cdot(b_1,\\dots,b_k):=(a_1b_1,\\dots,a_kb_k).$$\n\nElements of different summands always annihilate each other under this product (e.g. $A_i\\cdot A_j=0$ for $i\\ne j$, viewing each $A_i$ as a subalgebra via $a\\mapsto(0,\\dots,a,\\dots,0)$), and $\\dim(A_1\\oplus\\dots\\oplus A_k)=\\sum_i\\dim A_i$.",
+      "statement_ru": "Для алгебр $A_1,\\dots,A_k$ над одним полем их **прямая сумма**\n$$A_1\\oplus\\dots\\oplus A_k$$\n— это алгебра, чьё векторное пространство является прямой суммой $A_i$ как векторных пространств (кортежи $(a_1,\\dots,a_k)$, $a_i\\in A_i$), с покомпонентным умножением:\n$$(a_1,\\dots,a_k)\\cdot(b_1,\\dots,b_k):=(a_1b_1,\\dots,a_kb_k).$$\n\nЭлементы разных слагаемых всегда аннулируют друг друга при этом умножении (например, $A_i\\cdot A_j=0$ при $i\\ne j$, если рассматривать каждую $A_i$ как подалгебру через $a\\mapsto(0,\\dots,a,\\dots,0)$), и $\\dim(A_1\\oplus\\dots\\oplus A_k)=\\sum_i\\dim A_i$.",
+      "depends_on": [
+        "Algebra (over a field)",
+        "Basis • dimension of a vector space"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "center-of-an-algebra",
+      "title_en": "Center of an algebra",
+      "title_ru": "Центр алгебры",
+      "statement_en": "Let $(A,\\cdot)$ be an algebra. Its **center** is\n$$Z(A):=\\{z\\in A:\\ z\\cdot a=a\\cdot z\\ \\ \\forall a\\in A\\}$$\n-- the elements that commute with everything.\n\n$Z(A)$ is always a commutative subalgebra of $A$; for a Lie algebra $(L,[\\cdot,\\cdot])$, the same definition reads $Z(L)=\\{z\\in L:[z,a]=0\\ \\forall a\\in L\\}$, and $Z(A)=A$ exactly when $A$ itself is commutative.",
+      "statement_ru": "Пусть $(A,\\cdot)$ — алгебра. Её **центром** называется\n$$Z(A):=\\{z\\in A:\\ z\\cdot a=a\\cdot z\\ \\ \\forall a\\in A\\}$$\n— элементы, коммутирующие со всем.\n\n$Z(A)$ всегда является коммутативной подалгеброй $A$; для алгебры Ли $(L,[\\cdot,\\cdot])$ то же определение читается как $Z(L)=\\{z\\in L:[z,a]=0\\ \\forall a\\in L\\}$, и $Z(A)=A$ ровно тогда, когда сама $A$ коммутативна.",
+      "depends_on": [
+        "Algebra (over a field)",
+        "Commutative algebra (structure)"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "idempotent-element",
+      "title_en": "Idempotent element",
+      "title_ru": "Идемпотент",
+      "statement_en": "An element $e$ of an algebra $(A,\\cdot)$ is **idempotent** if\n$$e\\cdot e=e.$$\n\nTwo idempotents $e,f$ are **orthogonal** if $ef=fe=0$. The identity element $1_A$ of a unital algebra is always idempotent; more generally, the matrix units $E_{i,i}$ (diagonal entries) in $M_n(F)$ are pairwise orthogonal idempotents summing to $1$.",
+      "statement_ru": "Элемент $e$ алгебры $(A,\\cdot)$ называется **идемпотентом**, если\n$$e\\cdot e=e.$$\n\nДва идемпотента $e,f$ называются **ортогональными**, если $ef=fe=0$. Единичный элемент $1_A$ унитальной алгебры всегда идемпотентен; более общо, матричные единицы $E_{i,i}$ (диагональные элементы) в $M_n(F)$ — попарно ортогональные идемпотенты, дающие в сумме $1$.",
+      "depends_on": [
+        "Algebra (over a field)",
+        "Matrix algebra M_n(F)"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "nilpotent-element",
+      "title_en": "Nilpotent element • nilpotent algebra",
+      "title_ru": "Нильпотентный элемент • нильпотентная алгебра",
+      "statement_en": "An element $x$ of an algebra $A$ is **nilpotent** if\n$$x^n=0$$\nfor some integer $n\\ge1$ (where $x^n$ means $x\\cdot x\\cdots x$, $n$ times -- this requires associativity to be unambiguous).\n\n$A$ itself is a **nilpotent algebra** if there is a single $n$ with $a_1\\cdots a_n=0$ for *every* choice of $a_1,\\dots,a_n\\in A$ -- a stronger condition than every individual element merely being nilpotent.",
+      "statement_ru": "Элемент $x$ алгебры $A$ называется **нильпотентным**, если\n$$x^n=0$$\nдля некоторого целого $n\\ge1$ (где $x^n$ означает $x\\cdot x\\cdots x$, $n$ раз — для однозначности это требует ассоциативности).\n\nСама $A$ называется **нильпотентной алгеброй**, если существует единое $n$, при котором $a_1\\cdots a_n=0$ для *любого* выбора $a_1,\\dots,a_n\\in A$ — более сильное условие, чем просто нильпотентность каждого отдельного элемента.",
+      "depends_on": [
+        "Associative algebra"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
+    },
+    {
+      "kind": "definition",
+      "slug": "tensor-product-of-vector-spaces",
+      "title_en": "Tensor product of vector spaces",
+      "title_ru": "Тензорное произведение векторных пространств",
+      "statement_en": "For vector spaces $U,V$ over a field $F$, the **tensor product** $U\\otimes V$ is the vector space spanned by symbols $u\\otimes v$ ($u\\in U,v\\in V$), subject only to bilinearity:\n$$(au_1+u_2)\\otimes v=a(u_1\\otimes v)+u_2\\otimes v,\\qquad u\\otimes(av_1+v_2)=a(u\\otimes v_1)+u\\otimes v_2.$$\n\nIf $\\{e_i\\}$, $\\{f_j\\}$ are bases of $U,V$, then $\\{e_i\\otimes f_j\\}$ is a basis of $U\\otimes V$, so $\\dim(U\\otimes V)=\\dim U\\cdot\\dim V$. Every bilinear map $\\beta:U\\times V\\to W$ factors uniquely through a *linear* map $U\\otimes V\\to W$ -- this is the universal property that makes tensor products the standard way to turn bilinear problems into linear ones.",
+      "statement_ru": "Для векторных пространств $U,V$ над полем $F$ **тензорное произведение** $U\\otimes V$ — это векторное пространство, порождённое символами $u\\otimes v$ ($u\\in U,v\\in V$), с единственным условием билинейности:\n$$(au_1+u_2)\\otimes v=a(u_1\\otimes v)+u_2\\otimes v,\\qquad u\\otimes(av_1+v_2)=a(u\\otimes v_1)+u\\otimes v_2.$$\n\nЕсли $\\{e_i\\}$, $\\{f_j\\}$ — базисы $U,V$, то $\\{e_i\\otimes f_j\\}$ — базис $U\\otimes V$, так что $\\dim(U\\otimes V)=\\dim U\\cdot\\dim V$. Всякое билинейное отображение $\\beta:U\\times V\\to W$ единственным образом пропускается через *линейное* отображение $U\\otimes V\\to W$ — это универсальное свойство, которое делает тензорное произведение стандартным способом сводить билинейные задачи к линейным.",
+      "depends_on": [
+        "Vector space",
+        "Bilinear operation",
+        "Basis • dimension of a vector space"
+      ],
+      "source": {
+        "label": "Общее понятие",
+        "document": null,
+        "page": null
+      },
+      "topic": "Основы: алгебры и векторные пространства",
+      "topic_order": 0
     }
   ],
   "bibliography": "Beites P., Ferreira B.L.M., Kaygorodov I. — «Transposed Poisson algebra structures» (arXiv:2201.11540)",
