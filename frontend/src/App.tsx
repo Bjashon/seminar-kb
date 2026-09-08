@@ -129,7 +129,12 @@ export default function App() {
       </div>
       <div className="layout">
         <main className="main">
-          {mode === "reader" && (
+          {/* All three views stay mounted (just hidden, never unmounted) so
+              switching tabs neither loses state (Trainer's queue/index) nor
+              drags one view's scroll position onto another -- each pane
+              keeps its own native scroll offset and is exactly as you left
+              it when you come back. */}
+          <div className="main-pane" hidden={mode !== "reader"}>
             <Canvas
               nodes={nodes}
               edges={edges}
@@ -142,15 +147,14 @@ export default function App() {
               onGoto={gotoFromCard}
               onOpenSource={openSource}
             />
-          )}
-          {mode === "index" && (
+          </div>
+          <div className="main-pane" hidden={mode !== "index"}>
             <IndexPage entities={entities} onOpen={openFromIndex} onOpenSource={openSourceFromIndex} />
-          )}
-          {/* Always mounted (just hidden) so an in-progress review session
-              isn't lost -- switching tabs used to unmount Trainer and reset
-              its queue/index/reveal state from scratch. */}
-          <div className="main-inner" hidden={mode !== "trainer"}>
-            <Trainer allEntities={entities} details={details} ensureDetail={ensureDetail} onOpenCard={openFromTrainer} />
+          </div>
+          <div className="main-pane" hidden={mode !== "trainer"}>
+            <div className="main-inner">
+              <Trainer allEntities={entities} details={details} ensureDetail={ensureDetail} onOpenCard={openFromTrainer} />
+            </div>
           </div>
         </main>
         {sourceDetail && <SourcePanel detail={sourceDetail} onClose={closeSource} />}

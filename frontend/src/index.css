@@ -35,7 +35,12 @@ button { font-family: inherit; }
 .top-nav .hint-small { font-size: 11.5px; color: var(--link-missing); }
 
 .layout { display: flex; align-items: stretch; height: calc(100vh - 53px); }
-.main { flex: 1 1 auto; min-width: 0; overflow: auto; position: relative; }
+.main { flex: 1 1 auto; min-width: 0; position: relative; }
+/* Reader/Index/Trainer each get their own always-mounted, independently
+   scrolling pane (toggled with [hidden], never unmounted) so switching
+   tabs doesn't drag one view's scroll position onto another, and coming
+   back to a tab restores exactly where you left it. */
+.main-pane { height: 100%; overflow: auto; position: relative; }
 .main-inner { max-width: 700px; margin: 0 auto; padding: 48px clamp(20px, 5vw, 76px) 100px; }
 .main-inner.wide { max-width: 1680px; }
 
