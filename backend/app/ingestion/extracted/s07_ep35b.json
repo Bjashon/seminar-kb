@@ -1,0 +1,168 @@
+{
+  "episode_code": "s07_ep35b",
+  "source_language": "en",
+  "source_note": "Smoktunowicz, \"On constructing deformations of noncommutative algebras\" (arXiv:2507.04436) -- Part II of the deformations talk (2026-09-28), a direct sequel to Bowman-Puljic-Smoktunowicz (s07_ep35, 2026-09-21): same author, explicitly builds Method 2 and Method 3 as generalizations of that paper's Method 1. Reuses that talk's foundational bricks (formal deformation, flat deformation, ideal, quotient algebra, free algebra, Jacobi algebra) via depends_on rather than redefining them. Extracted per the usual rule: the two new constructions as definitions, their correctness theorems (proofs heavily condensed -- the paper's own proofs literally say 'the same proof as Theorem 17/18 works' for long stretches, and the genuinely novel semisimple-target argument is a 15-page chain of propositions/lemmas not independently reusable), the polynomial-type-deformation and ideal-characterization results as properties, and the resolved Wemyss conjecture for the dimension-8 contraction algebra A8 as a property (statement only, proof is an extremely specific parametrized computation). Sections 1-2 (introduction, background, notation already covered by s07_ep35) not re-extracted.",
+  "bibliography": "Smoktunowicz A. — «On constructing deformations of noncommutative algebras» (arXiv:2507.04436)",
+  "source_document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "semisimple-algebra",
+      "title_en": "Semisimple algebra",
+      "title_ru": "Полупростая алгебра",
+      "statement_en": "A finite-dimensional associative $\\mathbb{C}$-algebra $A$ is **semisimple** if\n$$A\\cong\\bigoplus_{i=1}^{k}M_{n_i}(\\mathbb{C})$$\nfor some $n_1,\\dots,n_k$ -- a direct sum of full matrix algebras over $\\mathbb{C}$ (Artin-Wedderburn form). Contraction algebras are conjectured to deform flatly into algebras of exactly this shape.",
+      "statement_ru": "Конечномерная ассоциативная $\\mathbb{C}$-алгебра $A$ называется **полупростой**, если\n$$A\\cong\\bigoplus_{i=1}^{k}M_{n_i}(\\mathbb{C})$$\nдля некоторых $n_1,\\dots,n_k$ — прямая сумма полных матричных алгебр над $\\mathbb{C}$ (форма Артина-Веддербёрна). Предполагается, что алгебры сжатия плоско деформируются именно в алгебры такого вида.",
+      "depends_on": [
+        "Associative algebra",
+        "Field"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Раздел 3 (обозначение Ā)",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "deformation-construction-method-2",
+      "title_en": "Construction of a deformation to any finite-dimensional algebra (Method 2)",
+      "title_ru": "Построение деформации к произвольной конечномерной алгебре (Метод 2)",
+      "statement_en": "A generalization of Method 1 (dropping its extra assumptions) that deforms into *any* finite-dimensional unital $\\mathbb{C}$-algebra $A$, not just ones reachable by the Diamond-Lemma relation-finding step. Given $A$ with two generators $a,b$ and unit $1_A$:\n1. Define $f:\\mathbb{C}\\langle x,y\\rangle\\{t\\}\\to A\\{t\\}$ (power series, not just polynomials) by $f(x)=\\sum_i b_it^i$, $f(y)=\\sum_i c_it^i$ for chosen $b_i,c_i\\in A$, and $f(1)=1_A$.\n2. Assume $\\sum_i b_is^i$ and $\\sum_i c_is^i$ generate $A$ for some real $s\\ne0$.\n3. Set $N:=\\mathbb{C}\\langle x,y\\rangle\\{t\\}/\\ker f$, presented by generators $x+I,y+I$ and whatever relations vanish in $N$.\n\nThe family $\\{N_t\\}$ (evaluating $t$) is the output, exactly as in Method 1.",
+      "statement_ru": "Обобщение Метода 1 (без его дополнительных предположений), деформирующее в *любую* конечномерную унитальную $\\mathbb{C}$-алгебру $A$, а не только в те, что достижимы шагом поиска соотношений в духе леммы о ромбах. Пусть $A$ с двумя образующими $a,b$ и единицей $1_A$:\n1. Определить $f:\\mathbb{C}\\langle x,y\\rangle\\{t\\}\\to A\\{t\\}$ (степенные ряды, а не только многочлены) как $f(x)=\\sum_i b_it^i$, $f(y)=\\sum_i c_it^i$ для выбранных $b_i,c_i\\in A$, и $f(1)=1_A$.\n2. Предположить, что $\\sum_i b_is^i$ и $\\sum_i c_is^i$ порождают $A$ при некотором вещественном $s\\ne0$.\n3. Положить $N:=\\mathbb{C}\\langle x,y\\rangle\\{t\\}/\\ker f$, представленную образующими $x+I,y+I$ и соотношениями, обращающимися в нуль в $N$.\n\nСемейство $\\{N_t\\}$ (при вычислении $t$) — результат, в точности как в Методе 1.",
+      "depends_on": [
+        "Construction of a deformation from a finite-dimensional algebra (Method 1)",
+        "Formal deformation of an algebra"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Метод 2 (§5, Notation 24)",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 22
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "deformation-construction-method-3",
+      "title_en": "Construction of a deformation to a semisimple algebra (Method 3)",
+      "title_ru": "Построение деформации к полупростой алгебре (Метод 3)",
+      "statement_en": "Constructs a flat deformation from $N$ to a **semisimple** target $\\bar A=\\bigoplus_iM_{n_i}(E_i)$, $E_i=\\bigoplus^{d_i}\\mathbb{C}$, by adjoining, for each $i$, a root $u_i$ of a polynomial $g_i(x)$ (coefficients in $\\mathbb{C}[t]$, no multiple roots, not divisible by $x$) in $F[x]/(g_i)$ ($F=\\mathbb{C}\\{t\\}[t^{-1}]$), with $u_iu_j=0$ for $i\\ne j$:\n1. Define $f:\\mathbb{C}\\langle x,y\\rangle\\{t\\}\\to A':=\\bigoplus_iM_{n_i}(\\mathbb{C}\\{t\\}[u_i][t^{-1}])$ by $f(x)=\\sum_ib_i(u_i,t)$, $f(y)=\\sum_ic_i(u_i,t)$, $f(1)=1_{A'}$.\n2. Assume that specializing $t=s$ (for some $s\\ne0$, arbitrarily close to $0$) and $u_i=v_i$ (a root of $g_i(x)$ at $t=s$) makes $f(x)(s),f(y)(s)$ generate an $n$-dimensional algebra, where $n=\\dim\\bar A$.\n3. Set $N:=\\mathbb{C}\\langle x,y\\rangle\\{t\\}/\\ker f$; the family $\\{N_t\\}$ is the output. For $t$ near $0$, $N_t\\cong\\bar A$.\n\nMethod 2 and Method 3 can be combined to deform into a direct product of several target algebras $A_1,\\dots,A_n$ at once.",
+      "statement_ru": "Строит плоскую деформацию из $N$ в **полупростую** цель $\\bar A=\\bigoplus_iM_{n_i}(E_i)$, $E_i=\\bigoplus^{d_i}\\mathbb{C}$, присоединяя для каждого $i$ корень $u_i$ многочлена $g_i(x)$ (коэффициенты из $\\mathbb{C}[t]$, без кратных корней, не делящегося на $x$) в $F[x]/(g_i)$ ($F=\\mathbb{C}\\{t\\}[t^{-1}]$), с $u_iu_j=0$ при $i\\ne j$:\n1. Определить $f:\\mathbb{C}\\langle x,y\\rangle\\{t\\}\\to A':=\\bigoplus_iM_{n_i}(\\mathbb{C}\\{t\\}[u_i][t^{-1}])$ как $f(x)=\\sum_ib_i(u_i,t)$, $f(y)=\\sum_ic_i(u_i,t)$, $f(1)=1_{A'}$.\n2. Предположить, что при специализации $t=s$ (некоторое $s\\ne0$, сколь угодно близкое к $0$) и $u_i=v_i$ (корень $g_i(x)$ при $t=s$) элементы $f(x)(s),f(y)(s)$ порождают $n$-мерную алгебру, где $n=\\dim\\bar A$.\n3. Положить $N:=\\mathbb{C}\\langle x,y\\rangle\\{t\\}/\\ker f$; семейство $\\{N_t\\}$ — результат. При $t$ вблизи $0$ имеем $N_t\\cong\\bar A$.\n\nМетоды 2 и 3 можно комбинировать, чтобы деформировать сразу в прямое произведение нескольких целевых алгебр $A_1,\\dots,A_n$.",
+      "depends_on": [
+        "Semisimple algebra",
+        "Formal deformation of an algebra",
+        "Construction of a deformation from a finite-dimensional algebra (Method 1)"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Метод 3 (§3.1)",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "method-2-produces-a-flat-deformation",
+      "title_en": "Method 2 produces a flat deformation to any finite-dimensional algebra",
+      "title_ru": "Метод 2 даёт плоскую деформацию к произвольной конечномерной алгебре",
+      "statement_en": "Let $A$, $f$, $N$ be as in Method 2, with $\\zeta_{i,k,m}\\in\\mathbb{C}$, $\\xi_{i,k,m}(t)\\in\\mathbb{C}\\{t\\}$ the coefficients such that $q_kq_m-\\sum_i(\\zeta_{i,k,m}q_i+t\\xi_{i,k,m}(t)q_i)\\in\\ker f$ for a spanning set $q_1,\\dots,q_n$ of $\\mathrm{im}(f)$ ($n=\\dim A$). On free generators $d_1,\\dots,d_n$ define $$d_k*_td_m:=\\sum_{i=1}^n\\bigl(\\zeta_{i,k,m}d_i+t\\,\\xi_{i,k,m}(t)\\,d_i\\bigr).$$ Then $*_0$ is the multiplication on $N$, and $*_s$ (for the same $s$ at which the generators of $A$ were assumed to generate) gives an algebra isomorphic to $A$.",
+      "statement_ru": "Пусть $A$, $f$, $N$ — как в Методе 2, с коэффициентами $\\zeta_{i,k,m}\\in\\mathbb{C}$, $\\xi_{i,k,m}(t)\\in\\mathbb{C}\\{t\\}$ такими, что $q_kq_m-\\sum_i(\\zeta_{i,k,m}q_i+t\\xi_{i,k,m}(t)q_i)\\in\\ker f$ для порождающего набора $q_1,\\dots,q_n$ образа $f$ ($n=\\dim A$). На свободных образующих $d_1,\\dots,d_n$ определим $$d_k*_td_m:=\\sum_{i=1}^n\\bigl(\\zeta_{i,k,m}d_i+t\\,\\xi_{i,k,m}(t)\\,d_i\\bigr).$$ Тогда $*_0$ — умножение на $N$, а $*_s$ (при том же $s$, при котором образующие $A$ предполагались порождающими) даёт алгебру, изоморфную $A$.",
+      "depends_on": [
+        "Construction of a deformation to any finite-dimensional algebra (Method 2)",
+        "Method 1 produces a flat associative deformation to A"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Теоремы 27 и 28",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 24
+      },
+      "proof_en": "Condensed. The authors note explicitly: \"the same proof as in Theorem 17 [Method 1's correctness theorem] works\" for the $*_0=N$ half, and the $*_s\\cong A$ half is proved \"in an analogous way as Theorem 18 but the proof is simpler as it does not use the homomorphism $\\sigma$\" -- the extra machinery Method 1 needed to handle the Diamond-Lemma relation-finding step is simply unnecessary here, since $A$'s structure constants are given directly as the power series $f(x),f(y)$.",
+      "proof_ru": "Сокращённо. Авторы явно отмечают: «то же доказательство, что и в теореме 17 [теорема корректности Метода 1], работает» для половины $*_0=N$, а половина $*_s\\cong A$ доказывается «аналогично теореме 18, но доказательство проще, так как не использует гомоморфизм $\\sigma$» — дополнительная техника, нужная Методу 1 для работы с шагом поиска соотношений в духе леммы о ромбах, здесь попросту не нужна, поскольку структурные константы $A$ заданы напрямую степенными рядами $f(x),f(y)$."
+    },
+    {
+      "kind": "theorem",
+      "slug": "method-3-produces-a-flat-deformation-to-semisimple-algebra",
+      "title_en": "Method 3 produces a flat deformation to a semisimple algebra",
+      "title_ru": "Метод 3 даёт плоскую деформацию к полупростой алгебре",
+      "statement_en": "Let notation be as in Method 3. Then:\n1. $\\{N_t\\}$ is a formal deformation of $N=N_0$ (Theorem 17-analogue).\n2. There is $0<\\epsilon\\in\\mathbb{R}$ such that $N_s\\cong\\bar A$ for all $s\\in(0,\\epsilon)$ (Theorem 18-analogue), and $N=N_0$ has the same dimension as $\\bar A$.\n\nConsequently, Method 3 produces a flat deformation from $N$ to $\\bar A$ for $t\\in[0,\\epsilon]$ -- and (Theorem 19/Corollary 20) this deformation can always be arranged to be of polynomial type.",
+      "statement_ru": "Обозначения — как в Методе 3. Тогда:\n1. $\\{N_t\\}$ — формальная деформация $N=N_0$ (аналог теоремы 17).\n2. Существует $0<\\epsilon\\in\\mathbb{R}$ такое, что $N_s\\cong\\bar A$ для всех $s\\in(0,\\epsilon)$ (аналог теоремы 18), причём $N=N_0$ имеет ту же размерность, что и $\\bar A$.\n\nСледовательно, Метод 3 даёт плоскую деформацию из $N$ в $\\bar A$ при $t\\in[0,\\epsilon]$ — и (теорема 19/следствие 20) эту деформацию всегда можно устроить так, чтобы она была полиномиального типа.",
+      "depends_on": [
+        "Construction of a deformation to a semisimple algebra (Method 3)",
+        "Flat deformation",
+        "Semisimple algebra"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Теоремы 17 и 18 (+ Теорема 19, Следствие 20)",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 15
+      },
+      "proof_en": "Condensed -- the full argument runs pages 4-19 (Propositions 6, 7, 11, 15, 16; Lemmas 8, 9, 10, 21, 22). Skeleton, closely paralleling Method 1's proof but over power series instead of polynomials, and tracking a whole family of adjoined roots $u_i$ rather than a single generator pair: (i) Proposition 6 finds finitely many $q_1,\\dots,q_n\\in\\mathbb{C}\\langle x,y\\rangle[t]$ ($n=\\dim\\bar A$) spanning $\\mathrm{im}(f)$ over $\\mathbb{C}\\{t\\}$, via a \"leading pseudoterm\" induction (repeatedly extracting the lowest surviving power of $t$ not yet accounted for). (ii) Proposition 7 shows the kernel $I=\\ker f$ is generated, as a $\\mathbb{C}\\{t\\}$-module, by $p_k-\\sum_i(\\zeta_{i,k}q_i+t\\xi_{i,k}(t)q_i)$ for monomials $p_k$. (iii) Lemmas 8-10 establish convergence: for $t$ near $0$ the auxiliary polynomials $g_{i,s}(x)$ keep their degree and stay multiple-root-free (via Bezout / the resultant), which lets all the $\\xi$-coefficients be treated as honestly convergent power series on some interval $(-e,e)$, not just formal ones. (iv) Propositions 15-16 present $N$ by generators $d_1,\\dots,d_n$ with relations $d_kd_m=\\sum\\zeta_{i,k,m}d_i$ -- giving $*_0$. (v) Specializing the same relations at $t=s$ and matching against the assumed generation of $\\bar A$ (via the homomorphism $\\sigma$ in Lemma 9) gives $*_s\\cong\\bar A$.",
+      "proof_ru": "Сокращённо — полное рассуждение занимает страницы 4-19 (предложения 6, 7, 11, 15, 16; леммы 8, 9, 10, 21, 22). Каркас, близко повторяющий доказательство Метода 1, но над степенными рядами вместо многочленов, и отслеживающий целое семейство присоединённых корней $u_i$, а не одну пару образующих: (i) предложение 6 находит конечный набор $q_1,\\dots,q_n\\in\\mathbb{C}\\langle x,y\\rangle[t]$ ($n=\\dim\\bar A$), порождающий $\\mathrm{im}(f)$ над $\\mathbb{C}\\{t\\}$, индукцией по «старшему псевдочлену» (последовательное извлечение наименьшей ещё не учтённой степени $t$). (ii) предложение 7 показывает, что ядро $I=\\ker f$ порождается как $\\mathbb{C}\\{t\\}$-модуль элементами $p_k-\\sum_i(\\zeta_{i,k}q_i+t\\xi_{i,k}(t)q_i)$ для мономов $p_k$. (iii) леммы 8-10 устанавливают сходимость: при $t$ вблизи $0$ вспомогательные многочлены $g_{i,s}(x)$ сохраняют степень и остаются без кратных корней (через тождество Безу/результант), что позволяет считать все коэффициенты $\\xi$ настоящими сходящимися степенными рядами на некотором интервале $(-e,e)$, а не только формальными. (iv) предложения 15-16 представляют $N$ образующими $d_1,\\dots,d_n$ с соотношениями $d_kd_m=\\sum\\zeta_{i,k,m}d_i$ — это даёт $*_0$. (v) специализация тех же соотношений при $t=s$ и сопоставление с предполагаемой порождённостью $\\bar A$ (через гомоморфизм $\\sigma$ в лемме 9) даёт $*_s\\cong\\bar A$."
+    },
+    {
+      "kind": "property",
+      "slug": "methods-give-polynomial-type-deformations",
+      "title_en": "Methods 1, 2 and 3 all give deformations of polynomial type",
+      "title_ru": "Методы 1, 2 и 3 все дают деформации полиномиального типа",
+      "statement_en": "Every deformation produced by Method 1, 2 or 3 can be arranged to be of *polynomial type* (finitely many nonzero terms $\\mu_i$, rather than a genuine power series): writing the rational coefficients $\\zeta_{i,j,k}+t\\xi_{i,j,k}(t)=h(t)^{-1}\\sigma_{i,j,k}(t)$ with $h(t)=1+\\bar h(t)\\in1+t\\mathbb{C}[t]$, the multiplication $d_k\\circ_td_m:=\\sum_i\\sigma_{i,k,m}(t)d_i$ agrees with $*_0$ at $t=0$ and still specializes to the same target algebra at $t$ sufficiently close to $0$.",
+      "statement_ru": "Всякая деформация, полученная Методом 1, 2 или 3, может быть устроена так, чтобы иметь **полиномиальный тип** (конечное число ненулевых членов $\\mu_i$, а не настоящий степенной ряд): записывая рациональные коэффициенты $\\zeta_{i,j,k}+t\\xi_{i,j,k}(t)=h(t)^{-1}\\sigma_{i,j,k}(t)$ с $h(t)=1+\\bar h(t)\\in1+t\\mathbb{C}[t]$, умножение $d_k\\circ_td_m:=\\sum_i\\sigma_{i,k,m}(t)d_i$ совпадает с $*_0$ при $t=0$ и по-прежнему специализируется в ту же целевую алгебру при $t$, достаточно близком к $0$.",
+      "depends_on": [
+        "Formal deformation of an algebra",
+        "Construction of a deformation to a semisimple algebra (Method 3)"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Теорема 19 + Следствие 20",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 18
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "ideal-characterization-of-N",
+      "title_en": "N is the quotient by any small-enough ideal of elements vanishing to order t",
+      "title_ru": "N — фактор по любому достаточно маленькому идеалу из элементов, обращающихся в 0 с порядком t",
+      "statement_en": "Let $J':=\\{s\\in\\mathbb{C}\\langle x,y\\rangle: f(s)\\in t\\cdot\\mathrm{im}(f)\\}$. Then $\\mathbb{C}\\langle x,y\\rangle/J'\\cong N$. More usefully: if $s_1,\\dots,s_m\\in\\mathbb{C}\\langle x,y\\rangle$ all satisfy $f(s_i)\\in t\\cdot\\mathrm{im}(f)$, and $S$ is the ideal they generate, with $\\dim(\\mathbb{C}\\langle x,y\\rangle/S)\\le n=\\dim N$, then automatically $S=J'$ and $\\mathbb{C}\\langle x,y\\rangle/S\\cong N$ -- a practical route to identifying $N$ explicitly by finitely many relations, without computing $q_1,\\dots,q_n$ by hand.",
+      "statement_ru": "Пусть $J':=\\{s\\in\\mathbb{C}\\langle x,y\\rangle: f(s)\\in t\\cdot\\mathrm{im}(f)\\}$. Тогда $\\mathbb{C}\\langle x,y\\rangle/J'\\cong N$. Практичнее: если $s_1,\\dots,s_m\\in\\mathbb{C}\\langle x,y\\rangle$ все удовлетворяют $f(s_i)\\in t\\cdot\\mathrm{im}(f)$, а $S$ — порождённый ими идеал, причём $\\dim(\\mathbb{C}\\langle x,y\\rangle/S)\\le n=\\dim N$, то автоматически $S=J'$ и $\\mathbb{C}\\langle x,y\\rangle/S\\cong N$ — практичный способ явно определить $N$ конечным числом соотношений, не вычисляя $q_1,\\dots,q_n$ вручную.",
+      "depends_on": [
+        "Construction of a deformation to a semisimple algebra (Method 3)",
+        "Two-sided ideal"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Леммы 21 и 22",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 19
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "wemyss-conjecture-A8-contraction-algebra-deformation",
+      "title_en": "Wemyss's conjectured deformation of the smallest contraction algebra A8 (resolved)",
+      "title_ru": "Гипотеза Вемисса о деформации наименьшей алгебры сжатия A8 (доказана)",
+      "statement_en": "Let $$A_8=\\mathbb{C}\\langle x,y\\rangle/\\langle y^3x,\\ y^4+y^2x-x^2-y^2,\\ x^3+x^2+y^2,\\ yx^2+y^3,\\ xy+yx\\rangle,$$ the smallest contraction algebra suggested by M. Wemyss (dimension $8$ over $\\mathbb{C}$, with identity). Applying Method 3 with two adjoined roots ($u_1$ of a quartic $g_1(x)$ built from parameters $\\alpha,\\beta$ depending on $t$, and a trivial $u_2$) and explicit $f(x),f(y)$ built from matrix units $E_{1,2},E_{2,1}$ and $u_1$: $A_8$ deforms flatly into $\\bar A=M_2(\\mathbb{C})\\oplus\\mathbb{C}\\oplus\\mathbb{C}\\oplus\\mathbb{C}\\oplus\\mathbb{C}$ (dimension $4+4=8$). This confirms a conjecture Wemyss made from geometric methods.",
+      "statement_ru": "Пусть $$A_8=\\mathbb{C}\\langle x,y\\rangle/\\langle y^3x,\\ y^4+y^2x-x^2-y^2,\\ x^3+x^2+y^2,\\ yx^2+y^3,\\ xy+yx\\rangle,$$ наименьшая алгебра сжатия, предложенная М. Вемиссом (размерность $8$ над $\\mathbb{C}$, с единицей). Применение Метода 3 с двумя присоединёнными корнями ($u_1$ многочлена четвёртой степени $g_1(x)$, построенного из зависящих от $t$ параметров $\\alpha,\\beta$, и тривиальным $u_2$) и явными $f(x),f(y)$, построенными из матричных единиц $E_{1,2},E_{2,1}$ и $u_1$: $A_8$ плоско деформируется в $\\bar A=M_2(\\mathbb{C})\\oplus\\mathbb{C}\\oplus\\mathbb{C}\\oplus\\mathbb{C}\\oplus\\mathbb{C}$ (размерность $4+4=8$). Это подтверждает гипотезу, которую Вемисс выдвинул геометрическими методами.",
+      "depends_on": [
+        "Construction of a deformation to a semisimple algebra (Method 3)",
+        "Semisimple algebra",
+        "Jacobi algebra (of a potential)"
+      ],
+      "topic": "Деформации алгебр",
+      "topic_order": 9,
+      "source": {
+        "label": "Раздел 4 (Applications)",
+        "document": "2025_-_On_constructing_deformations_of_noncommutative.pdf",
+        "page": 20
+      }
+    }
+  ]
+}
