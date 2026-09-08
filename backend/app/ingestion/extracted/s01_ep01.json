@@ -5,25 +5,6 @@
   "entities": [
     {
       "kind": "definition",
-      "slug": "transposed-poisson-algebra",
-      "title_en": "Transposed Poisson algebra",
-      "title_ru": "Транспонированная пуассонова алгебра",
-      "statement_en": "Let $L$ be a vector space equipped with two nonzero bilinear operations $\\cdot$ and $[\\cdot,\\cdot]$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **transposed Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot])$ is a Lie algebra satisfying the compatibility condition\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]$$\n$\\forall x,y,z\\in L$. It is called *unital* if $(L,\\cdot)$ has a unit $1$, and *Poisson* (rather than merely transposed Poisson) when $[\\cdot,\\cdot]$ instead satisfies the ordinary Leibniz rule with $\\cdot$.",
-      "statement_ru": "Пусть $L$ — векторное пространство с двумя ненулевыми билинейными операциями $\\cdot$ и $[\\cdot,\\cdot]$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **транспонированной пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot])$ — алгебра Ли, удовлетворяющая условию совместности\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]$$\n$\\forall x,y,z\\in L$. Она называется *унитальной*, если $(L,\\cdot)$ обладает единицей $1$, и *пуассоновой* (в отличие от транспонированной пуассоновой), если вместо этого $[\\cdot,\\cdot]$ удовлетворяет обычному правилу Лейбница относительно $\\cdot$.",
-      "depends_on": [
-        "commutative associative algebra",
-        "Lie algebra"
-      ],
-      "source": {
-        "label": "Определение 1",
-        "document": "tpa-structures.pdf",
-        "page": 4
-      },
-      "topic": "Транспонированные пуассоновы алгебры",
-      "topic_order": 1
-    },
-    {
-      "kind": "definition",
       "slug": "half-derivation",
       "title_en": "1/2-derivation",
       "title_ru": "1/2-дифференцирование",
@@ -709,25 +690,6 @@
       "aliases": [
         "n-Lie algebra"
       ]
-    },
-    {
-      "kind": "definition",
-      "slug": "poisson-algebra",
-      "title_en": "Poisson algebra",
-      "title_ru": "Пуассонова алгебра",
-      "statement_en": "A **Poisson algebra** is a triple $(A,\\cdot,\\{\\cdot,\\cdot\\})$ where:\n1. $(A,\\cdot)$ is a commutative associative algebra.\n2. $(A,\\{\\cdot,\\cdot\\})$ is a Lie algebra.\n3. The two are linked by the Leibniz rule: $\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}$ $\\forall x,y,z\\in A$.\n\nThe transposed Poisson algebra studied in this talk swaps the roles of $\\cdot$ and $\\{\\cdot,\\cdot\\}$ in condition 3.",
-      "statement_ru": "**Пуассонова алгебра** — это тройка $(A,\\cdot,\\{\\cdot,\\cdot\\})$, где:\n1. $(A,\\cdot)$ — коммутативная ассоциативная алгебра.\n2. $(A,\\{\\cdot,\\cdot\\})$ — алгебра Ли.\n3. Они связаны правилом Лейбница: $\\{x,y\\cdot z\\}=\\{x,y\\}\\cdot z+y\\cdot\\{x,z\\}$ $\\forall x,y,z\\in A$.\n\nТранспонированная пуассонова алгебра, которой посвящён этот доклад, меняет местами роли $\\cdot$ и $\\{\\cdot,\\cdot\\}$ в условии 3.",
-      "depends_on": [
-        "commutative associative algebra",
-        "Lie algebra"
-      ],
-      "source": {
-        "label": "Стандартное определение",
-        "document": null,
-        "page": null
-      },
-      "topic": "Пуассоновы и обобщённые пуассоновы структуры",
-      "topic_order": 2
     },
     {
       "kind": "definition",

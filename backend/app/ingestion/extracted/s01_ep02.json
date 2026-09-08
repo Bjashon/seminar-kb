@@ -1,0 +1,657 @@
+{
+  "episode_code": "s01_ep02",
+  "source_language": "en",
+  "source_note": "Bai, Bai, Guo, Wu, \"Transposed Poisson algebras, Novikov-Poisson algebras and 3-Lie algebras\" (arXiv:2005.01110) -- the paper that originally introduced transposed Poisson algebras. Extracted per the same rule as s01_ep01: all definitions, all theorems with proofs (two of the longest computational proofs condensed with a pointer to the source), lemma/proposition/corollary statements without proof, open questions/examples not captured. poisson-algebra and transposed-poisson-algebra are re-sourced here from the glossary/s01_ep01 since this is their actual origin.",
+  "bibliography": "Bai C., Bai R., Guo L., Wu Y. — «Transposed Poisson algebras, Novikov-Poisson algebras and 3-Lie algebras» (arXiv:2005.01110)",
+  "source_document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "novikov-algebra",
+      "title_en": "Novikov algebra",
+      "title_ru": "Алгебра Новикова",
+      "statement_en": "An algebra $(L,\\circ)$ is a **Novikov algebra** if for all $x,y,z\\in L$:\n1. $(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)$ (left-symmetry)\n2. $(x\\circ y)\\circ z=(x\\circ z)\\circ y$ (right-commutativity)",
+      "statement_ru": "Алгебра $(L,\\circ)$ называется **алгеброй Новикова**, если для всех $x,y,z\\in L$:\n1. $(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)$ (левая симметричность)\n2. $(x\\circ y)\\circ z=(x\\circ z)\\circ y$ (правая коммутативность)",
+      "depends_on": [
+        "algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Определение 3.1(2)",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 11
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "pre-lie-algebra",
+      "title_en": "Pre-Lie algebra",
+      "title_ru": "Pre-Lie алгебра",
+      "statement_en": "An algebra $(L,\\circ)$ is a **pre-Lie algebra** if\n$$(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)\\quad\\forall x,y,z\\in L$$\n(left-symmetry alone, without the right-commutativity required of a Novikov algebra). The commutator $[x,y]:=x\\circ y-y\\circ x$ of a pre-Lie algebra is always a Lie bracket; every Novikov algebra is in particular a pre-Lie algebra.",
+      "statement_ru": "Алгебра $(L,\\circ)$ называется **pre-Lie алгеброй**, если\n$$(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)\\quad\\forall x,y,z\\in L$$\n(только левая симметричность, без правой коммутативности, требуемой для алгебры Новикова). Коммутатор $[x,y]:=x\\circ y-y\\circ x$ pre-Lie алгебры всегда является скобкой Ли; всякая алгебра Новикова, в частности, является pre-Lie алгеброй.",
+      "depends_on": [
+        "algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Определение (§3, до Def 3.6)",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 13
+      },
+      "aliases": [
+        "left-symmetric algebra"
+      ]
+    },
+    {
+      "kind": "definition",
+      "slug": "novikov-poisson-algebra",
+      "title_en": "Novikov-Poisson algebra",
+      "title_ru": "Пуассонова алгебра Новикова",
+      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **Novikov-Poisson algebra** if:\n1. $(L,\\cdot)$ is a commutative associative algebra\n2. $(L,\\circ)$ is a Novikov algebra\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$",
+      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **пуассоновой алгеброй Новикова**, если:\n1. $(L,\\cdot)$ — коммутативная ассоциативная алгебра\n2. $(L,\\circ)$ — алгебра Новикова\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$",
+      "depends_on": [
+        "commutative associative algebra",
+        "Novikov algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Определение 3.1",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 11
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "prelie-commutative-algebra",
+      "title_en": "Pre-Lie commutative algebra",
+      "title_ru": "Pre-Lie коммутативная алгебра",
+      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **pre-Lie commutative algebra** (PreLie-Com algebra) if $(L,\\cdot)$ is a commutative associative algebra, $(L,\\circ)$ is a pre-Lie algebra, and\n$$x\\circ(yz)-(x\\circ y)z-y(x\\circ z)=0\\quad\\forall x,y,z\\in L$$\n(the left multiplications of $\\circ$ are derivations of $\\cdot$).",
+      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **pre-Lie коммутативной алгеброй** (PreLie-Com алгеброй), если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $(L,\\circ)$ — pre-Lie алгебра, и\n$$x\\circ(yz)-(x\\circ y)z-y(x\\circ z)=0\\quad\\forall x,y,z\\in L$$\n(левые умножения на $\\circ$ являются дифференцированиями $\\cdot$).",
+      "depends_on": [
+        "commutative associative algebra",
+        "pre-Lie algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Определение 3.6",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 13
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "prelie-poisson-algebra",
+      "title_en": "Pre-Lie Poisson algebra",
+      "title_ru": "Pre-Lie пуассонова алгебра",
+      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **pre-Lie Poisson algebra** if:\n1. $(L,\\cdot)$ is a commutative associative algebra\n2. $(L,\\circ)$ is a pre-Lie algebra\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$\n\nA Novikov-Poisson algebra is a pre-Lie Poisson algebra; so is a pre-Lie commutative algebra satisfying condition 3, and so is a differential Novikov-Poisson algebra.",
+      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **pre-Lie пуассоновой алгеброй**, если:\n1. $(L,\\cdot)$ — коммутативная ассоциативная алгебра\n2. $(L,\\circ)$ — pre-Lie алгебра\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$\n\nПуассонова алгебра Новикова — это pre-Lie пуассонова алгебра; так же как и pre-Lie коммутативная алгебра, удовлетворяющая условию 3, и дифференциальная пуассонова алгебра Новикова.",
+      "depends_on": [
+        "commutative associative algebra",
+        "pre-Lie algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Определение 3.8",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 13
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "differential-novikov-poisson-algebra",
+      "title_en": "Differential Novikov-Poisson algebra",
+      "title_ru": "Дифференциальная пуассонова алгебра Новикова",
+      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **differential Novikov-Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,\\circ)$ is a Novikov algebra satisfying, for all $x,y,z\\in L$:\n1. $(xy)\\circ z=x(y\\circ z)$\n2. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)$\n3. $x\\circ(yz)-(x\\circ y)z-y(x\\circ z)=0$",
+      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **дифференциальной пуассоновой алгеброй Новикова**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,\\circ)$ — алгебра Новикова, удовлетворяющая для всех $x,y,z\\in L$:\n1. $(xy)\\circ z=x(y\\circ z)$\n2. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)$\n3. $x\\circ(yz)-(x\\circ y)z-y(x\\circ z)=0$",
+      "depends_on": [
+        "commutative associative algebra",
+        "Novikov algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Определение (§3, цит. по [8])",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 13
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "three-lie-algebra",
+      "title_en": "3-Lie algebra",
+      "title_ru": "3-алгебра Ли",
+      "statement_en": "A **3-Lie algebra** is a vector space $A$ with a skew-symmetric linear map $[\\cdot,\\cdot,\\cdot]:\\otimes^3A\\to A$ satisfying the Fundamental Identity:\n$$[[x,y,z],u,v]=[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]\\quad\\forall x,y,z,u,v\\in A$$\n(equivalently: the adjoint action of any pair $u,v$ is a derivation of the ternary bracket). This is the $n=3$ case of an $n$-Lie algebra.",
+      "statement_ru": "**3-алгеброй Ли** называется векторное пространство $A$ со знакопеременным линейным отображением $[\\cdot,\\cdot,\\cdot]:\\otimes^3A\\to A$, удовлетворяющим фундаментальному тождеству:\n$$[[x,y,z],u,v]=[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]\\quad\\forall x,y,z,u,v\\in A$$\n(эквивалентно: присоединённое действие любой пары $u,v$ является дифференцированием тернарной скобки). Это частный случай $n$-алгебры Ли при $n=3$.",
+      "depends_on": [
+        "n-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Определение 4.1",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 15
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "strong-poisson-algebra",
+      "title_en": "Strong Poisson algebra",
+      "title_ru": "Сильная пуассонова алгебра",
+      "statement_en": "A Poisson algebra $(L,\\cdot,[\\cdot,\\cdot])$ is **strong** if\n$$[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0\\quad\\forall x,y,z,h\\in L.$$\nEvery transposed Poisson algebra automatically satisfies this identity; for an ordinary Poisson algebra it is an extra condition.",
+      "statement_ru": "Пуассонова алгебра $(L,\\cdot,[\\cdot,\\cdot])$ называется **сильной**, если\n$$[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0\\quad\\forall x,y,z,h\\in L.$$\nВсякая транспонированная пуассонова алгебра автоматически удовлетворяет этому тождеству; для обычной пуассоновой алгебры это дополнительное условие.",
+      "depends_on": [
+        "Poisson algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Определение 4.2",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 16
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "poisson-three-lie-algebra",
+      "title_en": "Poisson 3-Lie algebra",
+      "title_ru": "Пуассонова 3-алгебра Ли",
+      "statement_en": "A triple $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ is a **Poisson 3-Lie algebra** if $(L,\\cdot)$ is a commutative associative algebra, $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra, and\n$$[x,y,uv]=u[x,y,v]+[x,y,u]v\\quad\\forall x,y,u,v\\in L$$\n(the adjoint action of any pair $x,y$ on $\\cdot$ is a derivation). It is **strong** if additionally\n$$-[x,y,u_1][u_2,u_3,u_4]+[x,y,u_2][u_1,u_3,u_4]-[x,y,u_3][u_1,u_2,u_4]+[x,y,u_4][u_1,u_2,u_3]=0$$\nfor all $x,y,u_1,u_2,u_3,u_4\\in L$.",
+      "statement_ru": "Тройка $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ называется **пуассоновой 3-алгеброй Ли**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли, и\n$$[x,y,uv]=u[x,y,v]+[x,y,u]v\\quad\\forall x,y,u,v\\in L$$\n(присоединённое действие любой пары $x,y$ на $\\cdot$ является дифференцированием). Она называется **сильной**, если дополнительно\n$$-[x,y,u_1][u_2,u_3,u_4]+[x,y,u_2][u_1,u_3,u_4]-[x,y,u_3][u_1,u_2,u_4]+[x,y,u_4][u_1,u_2,u_3]=0$$\nдля всех $x,y,u_1,u_2,u_3,u_4\\in L$.",
+      "depends_on": [
+        "commutative associative algebra",
+        "3-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Определение 4.3",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 16
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "transposed-poisson-three-lie-algebra",
+      "title_en": "Transposed Poisson 3-Lie algebra",
+      "title_ru": "Транспонированная пуассонова 3-алгебра Ли",
+      "statement_en": "A triple $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$, where $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra, is a **transposed Poisson 3-Lie algebra** if\n$$3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu]\\quad\\forall x,y,z,u\\in L$$\n(the ternary analogue of the transposed Leibniz rule). This is the $n=3$ case of a transposed Poisson $n$-Lie algebra applied to a genuinely 3-ary bracket built from a binary one.",
+      "statement_ru": "Тройка $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$, где $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли, называется **транспонированной пуассоновой 3-алгеброй Ли**, если\n$$3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu]\\quad\\forall x,y,z,u\\in L$$\n(тернарный аналог транспонированного правила Лейбница). Это то же понятие, что транспонированная пуассонова $n$-алгебра Ли при $n=3$, применённое к подлинно тернарной скобке.",
+      "depends_on": [
+        "commutative associative algebra",
+        "3-Lie algebra",
+        "transposed Poisson n-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Определение (§4.1, после Prop. 4.7)",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 19
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "identities-in-transposed-poisson-algebras",
+      "title_en": "Six identities in transposed Poisson algebras",
+      "title_ru": "Шесть тождеств в транспонированных пуассоновых алгебрах",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a transposed Poisson algebra. Then for all $x,y,z,h,u,v\\in L$:\n1. $x[y,z]+y[z,x]+z[x,y]=0$\n2. $[h[x,y],z]+[h[y,z],x]+[h[z,x],y]=0$\n3. $[hx,[y,z]]+[hy,[z,x]]+[hz,[x,y]]=0$\n4. $[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0$\n5. $[xu,yv]+[xv,yu]=2uv[x,y]$\n6. $x[u,yv]+v[xy,u]+yu[v,x]=0$",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра. Тогда для всех $x,y,z,h,u,v\\in L$:\n1. $x[y,z]+y[z,x]+z[x,y]=0$\n2. $[h[x,y],z]+[h[y,z],x]+[h[z,x],y]=0$\n3. $[hx,[y,z]]+[hy,[z,x]]+[hz,[x,y]]=0$\n4. $[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0$\n5. $[xu,yv]+[xv,yu]=2uv[x,y]$\n6. $x[u,yv]+v[xy,u]+yu[v,x]=0$",
+      "depends_on": [
+        "transposed Poisson algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Теорема 2.5",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 7
+      },
+      "proof_en": "(1) follows by cyclically summing $[xz,y]+[x,yz]=2z[x,y]$ over $(x,y,z)\\to(y,z,x)\\to(z,x,y)$. (2) is the hardest: expand $[[x,y]h,z]+[[x,y],zh]=2h[[x,y],z]$ cyclically, sum, and separately apply the Jacobi identity plus the transposed Leibniz rule to $[[x,y],zh]$ to get a second relation; the difference of the two eliminates the $[[x,y],zh]$-type terms and leaves exactly identity (2). (3) follows by substituting (2) back into the first cyclic sum used to prove it. (4) follows by expanding $[h[x,y],z]+[h,z[x,y]]=2[x,y][h,z]$ cyclically and applying (2). (5)-(6): expand $[xu,yv]+[x,yvu]=2u[x,yv]$ and $[xv,yu]+[xvu,y]=2u[xv,y]$, add them, simplify $[x,yvu]+[xvu,y]=2vu[x,y]$, and (5) follows; (6) is then a direct consequence of (2) and (5).",
+      "proof_ru": "(1) получается циклическим суммированием $[xz,y]+[x,yz]=2z[x,y]$ по $(x,y,z)\\to(y,z,x)\\to(z,x,y)$. (2) самое сложное: раскрыть $[[x,y]h,z]+[[x,y],zh]=2h[[x,y],z]$ циклически, просуммировать, и отдельно применить тождество Якоби и транспонированное правило Лейбница к $[[x,y],zh]$, получив второе соотношение; разность двух соотношений убирает слагаемые типа $[[x,y],zh]$ и даёт ровно тождество (2). (3) следует подстановкой (2) обратно в первую циклическую сумму, использованную при её доказательстве. (4) следует раскрытием $[h[x,y],z]+[h,z[x,y]]=2[x,y][h,z]$ циклически и применением (2). (5)-(6): раскрыть $[xu,yv]+[x,yvu]=2u[x,yv]$ и $[xv,yu]+[xvu,y]=2u[xv,y]$, сложить, упростить $[x,yvu]+[xvu,y]=2vu[x,y]$ — получаем (5); (6) — прямое следствие (2) и (5)."
+    },
+    {
+      "kind": "theorem",
+      "slug": "tensor-product-of-transposed-poisson-algebras",
+      "title_en": "Tensor product of transposed Poisson algebras",
+      "title_ru": "Тензорное произведение транспонированных пуассоновых алгебр",
+      "statement_en": "Let $(L_1,\\cdot_1,[\\cdot,\\cdot]_1)$ and $(L_2,\\cdot_2,[\\cdot,\\cdot]_2)$ be transposed Poisson algebras. Define on $L_1\\otimes L_2$:\n$$(x_1\\otimes x_2)\\cdot(y_1\\otimes y_2)=x_1y_1\\otimes x_2y_2,$$\n$$[x_1\\otimes x_2,y_1\\otimes y_2]=[x_1,y_1]\\otimes x_2y_2+x_1y_1\\otimes[x_2,y_2].$$\nThen $(L_1\\otimes L_2,\\cdot,[\\cdot,\\cdot])$ is a transposed Poisson algebra.",
+      "statement_ru": "Пусть $(L_1,\\cdot_1,[\\cdot,\\cdot]_1)$ и $(L_2,\\cdot_2,[\\cdot,\\cdot]_2)$ — транспонированные пуассоновы алгебры. Определим на $L_1\\otimes L_2$:\n$$(x_1\\otimes x_2)\\cdot(y_1\\otimes y_2)=x_1y_1\\otimes x_2y_2,$$\n$$[x_1\\otimes x_2,y_1\\otimes y_2]=[x_1,y_1]\\otimes x_2y_2+x_1y_1\\otimes[x_2,y_2].$$\nТогда $(L_1\\otimes L_2,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра.",
+      "depends_on": [
+        "transposed Poisson algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Теорема 2.8",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 7
+      },
+      "proof_en": "$(L_1\\otimes L_2,\\cdot)$ is clearly commutative associative. The Jacobi identity for the tensor bracket splits into four groups of terms $(A1)$-$(A4)$; $(A1),(A2)$ vanish since each factor is a Lie algebra, and $(A3)+(A4)=0$ after rewriting each via identity (1) of Theorem 2.5 on each side and using the transposed Leibniz rule -- both reduce to the same expression with opposite sign. The transposed Leibniz rule for the tensor structure is checked the same way, reducing (after applying the Leibniz-type identity in each factor) to $2(z_1\\otimes z_2)[x_1\\otimes x_2,y_1\\otimes y_2]$ on both sides.",
+      "proof_ru": "$(L_1\\otimes L_2,\\cdot)$ очевидно коммутативна и ассоциативна. Тождество Якоби для тензорной скобки распадается на четыре группы слагаемых $(A1)$-$(A4)$; $(A1),(A2)$ обнуляются, поскольку каждый сомножитель — алгебра Ли, а $(A3)+(A4)=0$ после переписывания каждого через тождество (1) теоремы 2.5 в каждом сомножителе и использования транспонированного правила Лейбница — оба сводятся к одному и тому же выражению с противоположным знаком. Транспонированное правило Лейбница для тензорной структуры проверяется так же и сводится (после применения лейбницевского тождества в каждом сомножителе) к $2(z_1\\otimes z_2)[x_1\\otimes x_2,y_1\\otimes y_2]$ с обеих сторон."
+    },
+    {
+      "kind": "theorem",
+      "slug": "novikov-poisson-commutator-is-transposed-poisson",
+      "title_en": "Commutator of a Novikov-Poisson algebra is a transposed Poisson algebra",
+      "title_ru": "Коммутатор пуассоновой алгебры Новикова — транспонированная пуассонова алгебра",
+      "statement_en": "Let $(L,\\cdot,\\circ)$ be a Novikov-Poisson algebra. Define\n$$[x,y]=x\\circ y-y\\circ x\\quad\\forall x,y\\in L.$$\nThen $(L,\\cdot,[\\cdot,\\cdot])$ is a transposed Poisson algebra.",
+      "statement_ru": "Пусть $(L,\\cdot,\\circ)$ — пуассонова алгебра Новикова. Определим\n$$[x,y]=x\\circ y-y\\circ x\\quad\\forall x,y\\in L.$$\nТогда $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра.",
+      "depends_on": [
+        "Novikov-Poisson algebra",
+        "transposed Poisson algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Теорема 3.2",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 12
+      },
+      "proof_en": "$(L,[\\cdot,\\cdot])$ is a Lie algebra since a Novikov algebra's commutator always is (this uses only the left-symmetry axiom, Eq. (23)). For the transposed Leibniz rule, expand $[xz,y]+[x,yz]-2z[x,y]$ in terms of $\\circ$ using $x\\circ y-y\\circ x=[x,y]$; regrouping via the two Novikov-Poisson compatibility axioms $(xy)\\circ z=x(y\\circ z)$ and $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)$ makes every term cancel, giving $0$.",
+      "proof_ru": "$(L,[\\cdot,\\cdot])$ — алгебра Ли, поскольку коммутатор алгебры Новикова всегда ею является (используется только аксиома левой симметричности, форм. (23)). Для транспонированного правила Лейбница раскрываем $[xz,y]+[x,yz]-2z[x,y]$ через $\\circ$, используя $x\\circ y-y\\circ x=[x,y]$; перегруппировка с помощью двух аксиом совместности пуассоновой алгебры Новикова $(xy)\\circ z=x(y\\circ z)$ и $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)$ обнуляет каждое слагаемое."
+    },
+    {
+      "kind": "theorem",
+      "slug": "three-lie-from-transposed-poisson-with-derivation",
+      "title_en": "3-Lie algebra from a transposed Poisson algebra with a derivation",
+      "title_ru": "3-алгебра Ли из транспонированной пуассоновой алгебры с дифференцированием",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a transposed Poisson algebra and $D$ a derivation of both $(L,\\cdot)$ and $(L,[\\cdot,\\cdot])$. Define\n$$[x,y,z]:=D(x)[y,z]+D(y)[z,x]+D(z)[x,y]\\quad\\forall x,y,z\\in L.$$\nThen $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra -- with **no** extra \"strongness\" condition needed (unlike the analogous construction from an ordinary Poisson algebra). Moreover $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ is a transposed Poisson 3-Lie algebra.",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра и $D$ — дифференцирование как $(L,\\cdot)$, так и $(L,[\\cdot,\\cdot])$. Определим\n$$[x,y,z]:=D(x)[y,z]+D(y)[z,x]+D(z)[x,y]\\quad\\forall x,y,z\\in L.$$\nТогда $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли, причём **без** дополнительного условия «силы» (в отличие от аналогичной конструкции из обычной пуассоновой алгебры). Более того, $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ — транспонированная пуассонова 3-алгебра Ли.",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "3-Lie algebra",
+        "transposed Poisson 3-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Теорема 4.5 (+ Предложение 4.7)",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 16
+      },
+      "proof_en": "Condensed -- the full argument is a page of index manipulation. Key steps: (i) using the Leibniz rule for $D$ together with identity (2) of Theorem 2.5, one shows $D(x)D([y,z])+D(y)D([z,x])+D(z)D([x,y])=-x[D(y),D(z)]-y[D(z),D(x)]-z[D(x),D(y)]$; (ii) expanding $[[x,y,z],u,v]$ and the three terms $[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]$ fully by the definition of $[\\cdot,\\cdot,\\cdot]$ and step (i), both sides reduce (after applying identities (6),(7),(9) of Theorem 2.5 to cancel matching groups of terms) to the same sum of eight terms, proving the Fundamental Identity. The transposed Poisson 3-Lie property $3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu]$ then follows quickly: expanding each bracket on the right via $D$'s Leibniz rule and the definition of $[\\cdot,\\cdot,\\cdot]$, all cross terms collect into $3u(D(x)[y,z]+D(y)[z,x]+D(z)[x,y])+D(u)\\cdot(\\text{identity (1)}) = 3u[x,y,z]$, since identity (1) of Theorem 2.5 makes the second summand vanish. Full derivation: source PDF, proofs of Thm 4.5 and Prop 4.7.",
+      "proof_ru": "Сокращённо -- полное рассуждение занимает страницу возни с индексами. Ключевые шаги: (i) используя правило Лейбница для $D$ вместе с тождеством (2) теоремы 2.5, показывается $D(x)D([y,z])+D(y)D([z,x])+D(z)D([x,y])=-x[D(y),D(z)]-y[D(z),D(x)]-z[D(x),D(y)]$; (ii) полностью раскрывая $[[x,y,z],u,v]$ и три слагаемых $[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]$ по определению $[\\cdot,\\cdot,\\cdot]$ и шагу (i), обе стороны сводятся (после применения тождеств (6),(7),(9) теоремы 2.5 для сокращения совпадающих групп слагаемых) к одной и той же сумме из восьми слагаемых, что и доказывает фундаментальное тождество. Свойство транспонированной пуассоновой 3-алгебры Ли $3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu]$ затем следует быстро: раскрывая каждую скобку справа через правило Лейбница для $D$ и определение $[\\cdot,\\cdot,\\cdot]$, все перекрёстные слагаемые собираются в $3u(D(x)[y,z]+D(y)[z,x]+D(z)[x,y])+D(u)\\cdot(\\text{тождество (1)}) = 3u[x,y,z]$, поскольку тождество (1) теоремы 2.5 обнуляет второе слагаемое. Полный вывод: исходный PDF, доказательства теоремы 4.5 и предложения 4.7."
+    },
+    {
+      "kind": "theorem",
+      "slug": "three-lie-from-transposed-poisson-with-involution",
+      "title_en": "3-Lie algebra from a transposed Poisson algebra with an involution",
+      "title_ru": "3-алгебра Ли из транспонированной пуассоновой алгебры с инволюцией",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a transposed Poisson algebra and $f$ an involutive endomorphism of $(L,\\cdot)$ (i.e. $f^2=\\mathrm{id}$) satisfying $f([x,y])=-[f(x),f(y)]\\ \\forall x,y\\in L$. Define\n$$[x,y,z]:=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]\\quad\\forall x,y,z\\in L.$$\nThen $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra. (It need not be a transposed Poisson 3-Lie algebra unless $f$ satisfies the extra condition $(f(u)-u)(f(x)[y,z]+f(y)[z,x]+f(z)[x,y])=0$ for all $u,x,y,z\\in L$.)",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра и $f$ — инволютивный эндоморфизм $(L,\\cdot)$ (т.е. $f^2=\\mathrm{id}$), удовлетворяющий $f([x,y])=-[f(x),f(y)]\\ \\forall x,y\\in L$. Определим\n$$[x,y,z]:=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]\\quad\\forall x,y,z\\in L.$$\nТогда $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли. (Она не обязана быть транспонированной пуассоновой 3-алгеброй Ли, если $f$ не удовлетворяет дополнительному условию $(f(u)-u)(f(x)[y,z]+f(y)[z,x]+f(z)[x,y])=0$ для всех $u,x,y,z\\in L$.)",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "3-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Теорема 4.10",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 20
+      },
+      "proof_en": "Condensed. Expanding $[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]-[[x,y,z],u,v]$ via the definition and $f^2=\\mathrm{id}$, $f([\\cdot,\\cdot])=-[f(\\cdot),f(\\cdot)]$ produces ten groups of terms $(A1)$-$(A10)$. $(A1)=0$ by identity (1) of Theorem 2.5; $(A2)=(A3)=(A4)=0$ by rewriting each via (2) and (1) of Theorem 2.5 so they telescope to zero; $(A5)$ reduces via identity (7) of Theorem 2.5 to a multiple of $(A2)$, hence vanishes, and $(A6)$-$(A10)$ vanish the same way by symmetry. All ten groups cancel, so the difference is zero, proving the Fundamental Identity. Full case-by-case algebra: source PDF, proof of Theorem 4.10.",
+      "proof_ru": "Сокращённо. Раскрывая $[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]-[[x,y,z],u,v]$ по определению и используя $f^2=\\mathrm{id}$, $f([\\cdot,\\cdot])=-[f(\\cdot),f(\\cdot)]$, получаем десять групп слагаемых $(A1)$-$(A10)$. $(A1)=0$ по тождеству (1) теоремы 2.5; $(A2)=(A3)=(A4)=0$ после переписывания каждого через (2) и (1) теоремы 2.5, так что они телескопически обнуляются; $(A5)$ сводится через тождество (7) теоремы 2.5 к кратному $(A2)$ и потому обнуляется, а $(A6)$-$(A10)$ обнуляются так же по симметрии. Все десять групп сокращаются, так что разность равна нулю, что и доказывает фундаментальное тождество. Полный разбор случаев: исходный PDF, доказательство теоремы 4.10."
+    },
+    {
+      "kind": "theorem",
+      "slug": "poisson-to-transposed-poisson-three-lie",
+      "title_en": "From a Poisson algebra to a transposed Poisson 3-Lie algebra",
+      "title_ru": "От пуассоновой алгебры к транспонированной пуассоновой 3-алгебре Ли",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a Poisson algebra such that\n$$[x,y,z]:=x[y,z]+y[z,x]+z[x,y]\\quad\\forall x,y,z\\in L$$\ndefines a 3-Lie algebra $(L,[\\cdot,\\cdot,\\cdot])$. Then $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ is a **transposed** Poisson 3-Lie algebra -- not, in general, a Poisson 3-Lie algebra. (If $(L,\\cdot,[\\cdot,\\cdot])$ is moreover a strong Poisson algebra, such a 3-Lie algebra always exists, by Proposition 4.13.)",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — пуассонова алгебра такая, что\n$$[x,y,z]:=x[y,z]+y[z,x]+z[x,y]\\quad\\forall x,y,z\\in L$$\nзадаёт 3-алгебру Ли $(L,[\\cdot,\\cdot,\\cdot])$. Тогда $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ — **транспонированная** пуассонова 3-алгебра Ли, а не, вообще говоря, пуассонова 3-алгебра Ли. (Если $(L,\\cdot,[\\cdot,\\cdot])$ к тому же сильная пуассонова алгебра, такая 3-алгебра Ли существует всегда, по предложению 4.13.)",
+      "depends_on": [
+        "Poisson algebra",
+        "3-Lie algebra",
+        "transposed Poisson 3-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Теорема 4.14",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 22
+      },
+      "proof_en": "Direct computation: expand $[ux,y,z]$, $[x,uy,z]$, $[x,y,uz]$ by the given formula for $[\\cdot,\\cdot,\\cdot]$ and the Poisson Leibniz rule; summing the three expansions, every cross term cancels except $3u(x[y,z]+y[z,x]+z[x,y])=3u[x,y,z]$, which is exactly the transposed Poisson 3-Lie identity $[ux,y,z]+[x,uy,z]+[x,y,uz]=3u[x,y,z]$.",
+      "proof_ru": "Прямое вычисление: раскрыть $[ux,y,z]$, $[x,uy,z]$, $[x,y,uz]$ по данной формуле для $[\\cdot,\\cdot,\\cdot]$ и правилу Лейбница пуассоновой алгебры; при суммировании трёх раскрытий все перекрёстные слагаемые сокращаются, кроме $3u(x[y,z]+y[z,x]+z[x,y])=3u[x,y,z]$ — а это в точности тождество транспонированной пуассоновой 3-алгебры Ли $[ux,y,z]+[x,uy,z]+[x,y,uz]=3u[x,y,z]$."
+    },
+    {
+      "kind": "property",
+      "slug": "transposed-poisson-from-single-derivation",
+      "title_en": "A commutative associative algebra with one derivation gives a transposed Poisson algebra",
+      "title_ru": "Коммутативная ассоциативная алгебра с одним дифференцированием даёт транспонированную пуассонову алгебру",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra and $D$ a derivation. Define\n$$[x,y]:=xD(y)-D(x)y\\quad\\forall x,y\\in L.$$\nThen $(L,\\cdot,[\\cdot,\\cdot])$ is a transposed Poisson algebra. (Contrast with the ordinary Poisson algebra construction $[x,y]=D_1(x)D_2(y)-D_1(y)D_2(x)$, which needs *two* commuting derivations.)",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра и $D$ — дифференцирование. Определим\n$$[x,y]:=xD(y)-D(x)y\\quad\\forall x,y\\in L.$$\nТогда $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра. (Сравните с построением обычной пуассоновой алгебры $[x,y]=D_1(x)D_2(y)-D_1(y)D_2(x)$, для которого нужны *два* коммутирующих дифференцирования.)",
+      "depends_on": [
+        "commutative associative algebra",
+        "1/2-derivation",
+        "transposed Poisson algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Предложение 2.2 (= Следствие 3.4)",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 5
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "trivial-cases-of-transposed-poisson",
+      "title_en": "Trivial cases of transposed Poisson algebras",
+      "title_ru": "Тривиальные случаи транспонированных пуассоновых алгебр",
+      "statement_en": "For a vector space $L$ with a commutative associative product $\\cdot$ and a Lie bracket $[\\cdot,\\cdot]$:\n1. If either $\\cdot$ or $[\\cdot,\\cdot]$ is zero, then $(L,\\cdot,[\\cdot,\\cdot])$ is both a transposed Poisson algebra and a Poisson algebra.\n2. More generally, if $x\\cdot[y,z]=[x\\cdot y,z]=0\\ \\forall x,y,z\\in L$, the same conclusion holds (and, by Proposition 2.11, this condition is not just sufficient but *necessary* for a structure to be simultaneously Poisson and transposed Poisson).",
+      "statement_ru": "Для векторного пространства $L$ с коммутативным ассоциативным произведением $\\cdot$ и скобкой Ли $[\\cdot,\\cdot]$:\n1. Если $\\cdot$ или $[\\cdot,\\cdot]$ равны нулю, то $(L,\\cdot,[\\cdot,\\cdot])$ — одновременно транспонированная пуассонова алгебра и пуассонова алгебра.\n2. В более общем случае, если $x\\cdot[y,z]=[x\\cdot y,z]=0\\ \\forall x,y,z\\in L$, вывод тот же (и, по предложению 2.11, это условие не просто достаточно, а *необходимо* для того, чтобы структура была одновременно пуассоновой и транспонированной пуассоновой).",
+      "depends_on": [
+        "commutative associative algebra",
+        "Lie algebra",
+        "transposed Poisson algebra",
+        "Poisson algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Предложение 2.4",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 6
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "rescaled-bracket-is-transposed-poisson",
+      "title_en": "Rescaling the bracket preserves the transposed Poisson structure",
+      "title_ru": "Масштабирование скобки сохраняет транспонированную пуассонову структуру",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a transposed Poisson algebra. For any $h\\in L$, define $[x,y]_h:=h[x,y]$. Then $(L,\\cdot,[\\cdot,\\cdot]_h)$ is again a transposed Poisson algebra.",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра. Для любого $h\\in L$ определим $[x,y]_h:=h[x,y]$. Тогда $(L,\\cdot,[\\cdot,\\cdot]_h)$ — снова транспонированная пуассонова алгебра.",
+      "depends_on": [
+        "transposed Poisson algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Предложение 2.6",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 8
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "hom-lie-from-transposed-poisson",
+      "title_en": "A transposed Poisson algebra gives a Hom-Lie structure",
+      "title_ru": "Транспонированная пуассонова алгебра даёт Hom-структуру Ли",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a transposed Poisson algebra. For any $h\\in L$, define $\\varphi_h(x):=hx$. Then $(L,[\\cdot,\\cdot],\\varphi_h)$ is a Hom-Lie structure, and\n$$\\varphi_h^2([x,y])=[\\varphi_h(x),\\varphi_h(y)]\\quad\\forall x,y\\in L.$$\nHence if $\\varphi_h^2=\\varphi_h$ (i.e. $h(hx)=hx$ for all $x$), $(L,[\\cdot,\\cdot],\\varphi_h)$ is a *multiplicative* Hom-Lie structure.",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра. Для любого $h\\in L$ определим $\\varphi_h(x):=hx$. Тогда $(L,[\\cdot,\\cdot],\\varphi_h)$ — Hom-структура Ли, причём\n$$\\varphi_h^2([x,y])=[\\varphi_h(x),\\varphi_h(y)]\\quad\\forall x,y\\in L.$$\nСледовательно, если $\\varphi_h^2=\\varphi_h$ (т.е. $h(hx)=hx$ для всех $x$), то $(L,[\\cdot,\\cdot],\\varphi_h)$ — *мультипликативная* Hom-структура Ли.",
+      "depends_on": [
+        "transposed Poisson algebra",
+        "Hom-Lie structure"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Предложение 2.9",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 10
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "poisson-and-transposed-poisson-are-incompatible",
+      "title_en": "Poisson and transposed Poisson compatibility conditions are mutually exclusive",
+      "title_ru": "Условия совместности пуассоновой и транспонированной пуассоновой алгебры несовместимы",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra and $(L,[\\cdot,\\cdot])$ a Lie algebra. Then $(L,\\cdot,[\\cdot,\\cdot])$ is *both* a Poisson algebra and a transposed Poisson algebra if and only if\n$$x[y,z]=[xy,z]=0\\quad\\forall x,y,z\\in L.$$\nIn other words, apart from this trivial intersection, the two compatibility conditions cannot hold simultaneously: the operad of transposed Poisson algebras together with Poisson algebras is the direct sum of the commutative associative operad and the Lie operad.",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра и $(L,[\\cdot,\\cdot])$ — алгебра Ли. Тогда $(L,\\cdot,[\\cdot,\\cdot])$ является *одновременно* пуассоновой и транспонированной пуассоновой алгеброй тогда и только тогда, когда\n$$x[y,z]=[xy,z]=0\\quad\\forall x,y,z\\in L.$$\nИными словами, помимо этого тривиального пересечения, два условия совместности не могут выполняться одновременно: оператада транспонированных пуассоновых алгебр вместе с пуассоновыми алгебрами является прямой суммой коммутативной ассоциативной оператады и оператады Ли.",
+      "depends_on": [
+        "commutative associative algebra",
+        "Lie algebra",
+        "Poisson algebra",
+        "transposed Poisson algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Предложение 2.11 (+ Замечание 2.12)",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 11
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "single-derivation-novikov-poisson",
+      "title_en": "A single derivation gives a Novikov-Poisson algebra",
+      "title_ru": "Одно дифференцирование даёт пуассонову алгебру Новикова",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra and $D$ a derivation. Define $x\\circ y:=xD(y)$. Then $(L,\\circ)$ is a Novikov algebra (S. Gelfand), and $(L,\\cdot,\\circ)$ is a Novikov-Poisson algebra.",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра и $D$ — дифференцирование. Определим $x\\circ y:=xD(y)$. Тогда $(L,\\circ)$ — алгебра Новикова (С. Гельфанд), а $(L,\\cdot,\\circ)$ — пуассонова алгебра Новикова.",
+      "depends_on": [
+        "commutative associative algebra",
+        "Novikov algebra",
+        "Novikov-Poisson algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Лемма 3.3",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 12
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "relations-between-novikov-prelie-poisson-variants",
+      "title_en": "How Novikov-Poisson, PreLie-Com and differential Novikov-Poisson algebras relate",
+      "title_ru": "Как связаны пуассонова алгебра Новикова, PreLie-Com и дифференциальная пуассонова алгебра Новикова",
+      "statement_en": "1. Every Novikov-Poisson algebra is a pre-Lie Poisson algebra.\n2. Every pre-Lie commutative algebra $(L,\\cdot,\\circ)$ additionally satisfying $(xy)\\circ z=x(y\\circ z)$ is a pre-Lie Poisson algebra.\n3. Every differential Novikov-Poisson algebra is a pre-Lie commutative algebra satisfying that same extra condition, hence is a pre-Lie Poisson algebra.",
+      "statement_ru": "1. Всякая пуассонова алгебра Новикова является pre-Lie пуассоновой алгеброй.\n2. Всякая pre-Lie коммутативная алгебра $(L,\\cdot,\\circ)$, дополнительно удовлетворяющая $(xy)\\circ z=x(y\\circ z)$, является pre-Lie пуассоновой алгеброй.\n3. Всякая дифференциальная пуассонова алгебра Новикова является pre-Lie коммутативной алгеброй, удовлетворяющей тому же дополнительному условию, а значит — pre-Lie пуассоновой алгеброй.",
+      "depends_on": [
+        "Novikov-Poisson algebra",
+        "pre-Lie Poisson algebra",
+        "pre-Lie commutative algebra",
+        "differential Novikov-Poisson algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Лемма 3.9",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 13
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "prelie-poisson-commutator-is-transposed-poisson",
+      "title_en": "Commutator of a pre-Lie Poisson algebra is a transposed Poisson algebra",
+      "title_ru": "Коммутатор pre-Lie пуассоновой алгебры — транспонированная пуассонова алгебра",
+      "statement_en": "Let $(L,\\cdot,\\circ)$ be a pre-Lie Poisson algebra. Define $[x,y]:=x\\circ y-y\\circ x$. Then $(L,\\cdot,[\\cdot,\\cdot])$ is a transposed Poisson algebra. (Same proof as for Novikov-Poisson algebras: it only uses the two shared compatibility axioms, not the Novikov-specific right-commutativity.)",
+      "statement_ru": "Пусть $(L,\\cdot,\\circ)$ — pre-Lie пуассонова алгебра. Определим $[x,y]:=x\\circ y-y\\circ x$. Тогда $(L,\\cdot,[\\cdot,\\cdot])$ — транспонированная пуассонова алгебра. (То же доказательство, что и для пуассоновых алгебр Новикова: используются только два общих аксиом-условия совместности, а не специфичная для Новикова правая коммутативность.)",
+      "depends_on": [
+        "pre-Lie Poisson algebra",
+        "transposed Poisson algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Предложение 3.10",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 14
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "tensor-product-of-prelie-poisson-algebras",
+      "title_en": "Tensor product of pre-Lie Poisson algebras",
+      "title_ru": "Тензорное произведение pre-Lie пуассоновых алгебр",
+      "statement_en": "Let $(L_1,\\cdot,\\circ)$ and $(L_2,\\cdot,\\circ)$ be pre-Lie Poisson algebras. Define on $L_1\\otimes L_2$ the product $\\cdot$ as usual and\n$$(x_1\\otimes x_2)\\circ(y_1\\otimes y_2)=x_1\\circ y_1\\otimes x_2y_2+x_1y_1\\otimes x_2\\circ y_2.$$\nThen $(L_1\\otimes L_2,\\cdot,\\circ)$ is a pre-Lie Poisson algebra.",
+      "statement_ru": "Пусть $(L_1,\\cdot,\\circ)$ и $(L_2,\\cdot,\\circ)$ — pre-Lie пуассоновы алгебры. Определим на $L_1\\otimes L_2$ произведение $\\cdot$ обычным образом и\n$$(x_1\\otimes x_2)\\circ(y_1\\otimes y_2)=x_1\\circ y_1\\otimes x_2y_2+x_1y_1\\otimes x_2\\circ y_2.$$\nТогда $(L_1\\otimes L_2,\\cdot,\\circ)$ — pre-Lie пуассонова алгебра.",
+      "depends_on": [
+        "pre-Lie Poisson algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Предложение 3.13",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 14
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "prelie-com-with-extra-condition-is-transposed-poisson",
+      "title_en": "A PreLie-Com algebra with one extra identity gives a transposed Poisson algebra",
+      "title_ru": "PreLie-Com алгебра с одним дополнительным тождеством даёт транспонированную пуассонову алгебру",
+      "statement_en": "Let $(L,\\cdot,\\circ)$ be a pre-Lie commutative algebra additionally satisfying $(xy)\\circ z=x(y\\circ z)$. Then $(L,\\cdot,[\\cdot,\\cdot])$, with $[x,y]:=x\\circ y-y\\circ x$, is a transposed Poisson algebra. In particular this holds whenever $(L,\\cdot,\\circ)$ is a differential Novikov-Poisson algebra.",
+      "statement_ru": "Пусть $(L,\\cdot,\\circ)$ — pre-Lie коммутативная алгебра, дополнительно удовлетворяющая $(xy)\\circ z=x(y\\circ z)$. Тогда $(L,\\cdot,[\\cdot,\\cdot])$ с $[x,y]:=x\\circ y-y\\circ x$ — транспонированная пуассонова алгебра. В частности, это верно, когда $(L,\\cdot,\\circ)$ — дифференциальная пуассонова алгебра Новикова.",
+      "depends_on": [
+        "pre-Lie commutative algebra",
+        "transposed Poisson algebra",
+        "differential Novikov-Poisson algebra"
+      ],
+      "topic": "Алгебры Новикова, pre-Lie и обобщения Пуассона",
+      "topic_order": 7,
+      "source": {
+        "label": "Следствие 3.12",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 14
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "three-lie-via-determinant-two-derivations",
+      "title_en": "3-Lie bracket via a 2x2 derivation determinant",
+      "title_ru": "3-скобка Ли через определитель 2x2 из дифференцирований",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra and $D_1,D_2$ two commuting derivations. Then\n$$[x,y,z]:=\\det\\begin{pmatrix}x&y&z\\\\D_1(x)&D_1(y)&D_1(z)\\\\D_2(x)&D_2(y)&D_2(z)\\end{pmatrix}=(\\mathrm{id}\\wedge D_1\\wedge D_2)(x,y,z)$$\ndefines a 3-Lie algebra $(L,[\\cdot,\\cdot,\\cdot])$. (This is Theorem three-lie-from-transposed-poisson-with-derivation applied to the transposed Poisson bracket $[x,y]=xD_1(y)-D_1(x)y$ with $D=D_2$.)",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра и $D_1,D_2$ — два коммутирующих дифференцирования. Тогда\n$$[x,y,z]:=\\det\\begin{pmatrix}x&y&z\\\\D_1(x)&D_1(y)&D_1(z)\\\\D_2(x)&D_2(y)&D_2(z)\\end{pmatrix}=(\\mathrm{id}\\wedge D_1\\wedge D_2)(x,y,z)$$\nзадаёт 3-алгебру Ли $(L,[\\cdot,\\cdot,\\cdot])$. (Это теорема о 3-алгебре Ли из транспонированной пуассоновой алгебры с дифференцированием, применённая к скобке $[x,y]=xD_1(y)-D_1(x)y$ при $D=D_2$.)",
+      "depends_on": [
+        "commutative associative algebra",
+        "3-Lie algebra",
+        "3-Lie algebra from a transposed Poisson algebra with a derivation"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Следствие 4.6",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 18
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "three-lie-via-determinant-derivation-and-involution",
+      "title_en": "3-Lie bracket via a determinant of a derivation and an anti-commuting involution",
+      "title_ru": "3-скобка Ли через определитель из дифференцирования и антикоммутирующей инволюции",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra, $D$ a derivation, and $f$ an involutive endomorphism with $Df=-fD$. Then, with $[x,y]:=xD(y)-D(x)y$,\n$$[x,y,z]=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]=\\det\\begin{pmatrix}D(x)&D(y)&D(z)\\\\f(x)&f(y)&f(z)\\\\x&y&z\\end{pmatrix}=(D\\wedge f\\wedge\\mathrm{id})(x,y,z)$$\ndefines a 3-Lie algebra.",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $D$ — дифференцирование, а $f$ — инволютивный эндоморфизм с $Df=-fD$. Тогда при $[x,y]:=xD(y)-D(x)y$\n$$[x,y,z]=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]=\\det\\begin{pmatrix}D(x)&D(y)&D(z)\\\\f(x)&f(y)&f(z)\\\\x&y&z\\end{pmatrix}=(D\\wedge f\\wedge\\mathrm{id})(x,y,z)$$\nзадаёт 3-алгебру Ли.",
+      "depends_on": [
+        "commutative associative algebra",
+        "3-Lie algebra from a transposed Poisson algebra with an involution"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Следствие 4.12",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 20
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "three-lie-from-strong-poisson",
+      "title_en": "3-Lie algebra from a strong Poisson algebra with a derivation",
+      "title_ru": "3-алгебра Ли из сильной пуассоновой алгебры с дифференцированием",
+      "statement_en": "Let $(L,\\cdot,[\\cdot,\\cdot])$ be a strong Poisson algebra and $D$ a derivation of both $(L,\\cdot)$ and $(L,[\\cdot,\\cdot])$. Then, with $[x,y,z]:=D(x)[y,z]+D(y)[z,x]+D(z)[x,y]$, the triple $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ is a strong Poisson 3-Lie algebra.",
+      "statement_ru": "Пусть $(L,\\cdot,[\\cdot,\\cdot])$ — сильная пуассонова алгебра и $D$ — дифференцирование как $(L,\\cdot)$, так и $(L,[\\cdot,\\cdot])$. Тогда при $[x,y,z]:=D(x)[y,z]+D(y)[z,x]+D(z)[x,y]$ тройка $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ — сильная пуассонова 3-алгебра Ли.",
+      "depends_on": [
+        "strong Poisson algebra",
+        "Poisson 3-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Предложение 4.4",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 16
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "poisson-and-transposed-poisson-three-lie-are-incompatible",
+      "title_en": "Poisson 3-Lie and transposed Poisson 3-Lie compatibility conditions are mutually exclusive",
+      "title_ru": "Условия совместности пуассоновой и транспонированной пуассоновой 3-алгебры Ли несовместимы",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra and $(L,[\\cdot,\\cdot,\\cdot])$ a 3-Lie algebra. Then $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ is *both* a Poisson 3-Lie algebra and a transposed Poisson 3-Lie algebra if and only if\n$$u[x,y,z]=[ux,y,z]=0\\quad\\forall u,x,y,z\\in L.$$\nConsequently, if $(L,\\cdot,[\\cdot,\\cdot])$ is a strong Poisson algebra and $[\\cdot,\\cdot,\\cdot]$ is built from it by $x[y,z]+y[z,x]+z[x,y]$ (Proposition 4.13/Theorem 4.14), the result is a Poisson 3-Lie algebra only in the trivial case where this condition holds.",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра и $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли. Тогда $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ является *одновременно* пуассоновой 3-алгеброй Ли и транспонированной пуассоновой 3-алгеброй Ли тогда и только тогда, когда\n$$u[x,y,z]=[ux,y,z]=0\\quad\\forall u,x,y,z\\in L.$$\nСледовательно, если $(L,\\cdot,[\\cdot,\\cdot])$ — сильная пуассонова алгебра, а $[\\cdot,\\cdot,\\cdot]$ построена из неё как $x[y,z]+y[z,x]+z[x,y]$ (предложение 4.13/теорема 4.14), результат является пуассоновой 3-алгеброй Ли только в тривиальном случае, когда это условие выполнено.",
+      "depends_on": [
+        "commutative associative algebra",
+        "Poisson 3-Lie algebra",
+        "transposed Poisson 3-Lie algebra"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Предложение 4.17 (+ Замечание 4.18)",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 23
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "conjecture-transposed-poisson-n-plus-one-lie",
+      "title_en": "Conjecture: transposed Poisson (n+1)-Lie algebras from n-Lie ones",
+      "title_ru": "Гипотеза: транспонированные пуассоновы (n+1)-алгебры Ли из n-алгебр Ли",
+      "statement_en": "**Conjecture** (not proved in this paper). Let $n\\ge2$, $(L,\\cdot,\\mu_n)$ a transposed Poisson $n$-Lie algebra, and $D$ a derivation of both $(L,\\cdot)$ and $(L,\\mu_n)$. Define\n$$\\mu_{n+1}(x_1,\\dots,x_{n+1}):=\\sum_{i=1}^{n+1}D(x_i)\\,\\mu_n(x_1,\\dots,\\widehat{x_i},\\dots,x_{n+1})$$\n(the hat means the $i$-th entry is omitted). Then $(L,\\cdot,\\mu_{n+1})$ is conjectured to be a transposed Poisson $(n+1)$-Lie algebra. This is proved for $n=2$ (Theorem three-lie-from-transposed-poisson-with-derivation) and gives a natural reading of the factor 2 in the transposed Leibniz rule as \"the arity of the Lie bracket.\"",
+      "statement_ru": "**Гипотеза** (в статье не доказана). Пусть $n\\ge2$, $(L,\\cdot,\\mu_n)$ — транспонированная пуассонова $n$-алгебра Ли, и $D$ — дифференцирование как $(L,\\cdot)$, так и $(L,\\mu_n)$. Определим\n$$\\mu_{n+1}(x_1,\\dots,x_{n+1}):=\\sum_{i=1}^{n+1}D(x_i)\\,\\mu_n(x_1,\\dots,\\widehat{x_i},\\dots,x_{n+1})$$\n(шляпка означает пропуск $i$-го аргумента). Предполагается, что $(L,\\cdot,\\mu_{n+1})$ — транспонированная пуассонова $(n+1)$-алгебра Ли. Это доказано при $n=2$ (теорема о 3-алгебре Ли из транспонированной пуассоновой алгебры с дифференцированием) и даёт естественное прочтение множителя 2 в транспонированном правиле Лейбница как «арности скобки Ли».",
+      "depends_on": [
+        "transposed Poisson n-Lie algebra",
+        "3-Lie algebra from a transposed Poisson algebra with a derivation"
+      ],
+      "topic": "3-алгебры Ли из транспонированных пуассоновых",
+      "topic_order": 8,
+      "source": {
+        "label": "Гипотеза 4.9",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 20
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "poisson-algebra",
+      "title_en": "Poisson algebra",
+      "title_ru": "Пуассонова алгебра",
+      "statement_en": "Let $L$ be a vector space with two bilinear operations $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot])$ is a Lie algebra satisfying the Leibniz rule\n$$[x,y\\cdot z]=[x,y]\\cdot z+y\\cdot[x,z]\\quad\\forall x,y,z\\in L$$\n(so equivalently, the adjoint operators of the Lie algebra are derivations of the commutative associative algebra). The transposed Poisson algebra studied in this paper swaps the roles of $\\cdot$ and $[\\cdot,\\cdot]$ in this compatibility condition.",
+      "statement_ru": "Пусть $L$ — векторное пространство с двумя билинейными операциями $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot])$ — алгебра Ли, удовлетворяющая правилу Лейбница\n$$[x,y\\cdot z]=[x,y]\\cdot z+y\\cdot[x,z]\\quad\\forall x,y,z\\in L$$\n(эквивалентно: присоединённые операторы алгебры Ли являются дифференцированиями коммутативной ассоциативной алгебры). Транспонированная пуассонова алгебра, изучаемая в этой статье, меняет местами роли $\\cdot$ и $[\\cdot,\\cdot]$ в этом условии совместности.",
+      "depends_on": [
+        "commutative associative algebra",
+        "Lie algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Определение 1.1",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "transposed-poisson-algebra",
+      "title_en": "Transposed Poisson algebra",
+      "title_ru": "Транспонированная пуассонова алгебра",
+      "statement_en": "Let $L$ be a vector space with two bilinear operations $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **(derivation-)transposed Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot])$ is a Lie algebra satisfying the *transposed Leibniz rule*\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]\\quad\\forall x,y,z\\in L$$\n-- the roles of the two operations in the ordinary Leibniz rule of a Poisson algebra are switched, and the result is rescaled by a factor $2$ (this factor cannot be dropped -- see the related property below about a single derivation). It is called *unital* if $(L,\\cdot)$ has a unit $1$.",
+      "statement_ru": "Пусть $L$ — векторное пространство с двумя билинейными операциями $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **(дифференциально-)транспонированной пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot])$ — алгебра Ли, удовлетворяющая *транспонированному правилу Лейбница*\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]\\quad\\forall x,y,z\\in L$$\n— роли двух операций в обычном правиле Лейбница пуассоновой алгебры меняются местами, а результат масштабируется множителем $2$ (этот множитель — как раз то, из-за чего тождество нельзя упростить, убрав его — см. следующее свойство про одно дифференцирование). Она называется *унитальной*, если $(L,\\cdot)$ обладает единицей $1$.",
+      "depends_on": [
+        "commutative associative algebra",
+        "Lie algebra"
+      ],
+      "topic": "Транспонированные пуассоновы алгебры",
+      "topic_order": 1,
+      "source": {
+        "label": "Определение 1.2",
+        "document": "2020_-_TRANSPOSED_POISSON_ALGEBRAS_NOVIKOV-POISSON_ALGEBRAS.pdf",
+        "page": 2
+      }
+    }
+  ]
+}
