@@ -9,6 +9,7 @@ export interface EntitySummary {
   topic_order: number;
   source_citation: string | null;
   source_page: number | null;
+  episode_code: string | null;
 }
 
 export interface LinkRef {

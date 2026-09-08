@@ -76,6 +76,14 @@ export default function App() {
     [gotoFromCard]
   );
 
+  const openFromTrainer = useCallback(
+    (slug: string) => {
+      gotoFromCard(null, slug);
+      setMode("reader");
+    },
+    [gotoFromCard]
+  );
+
   const openSourceFromIndex = useCallback(
     (slug: string) => {
       ensureDetail(slug);
@@ -83,13 +91,6 @@ export default function App() {
     },
     [ensureDetail]
   );
-
-  // Seed the canvas with the first entity once the list is loaded.
-  useEffect(() => {
-    if (entities.length && nodes.length === 0) {
-      gotoFromCard(null, entities[0].slug);
-    }
-  }, [entities, nodes.length, gotoFromCard]);
 
   const sourceDetail = sourceSlug ? details[sourceSlug] : null;
 
@@ -125,11 +126,12 @@ export default function App() {
           {mode === "index" && (
             <IndexPage entities={entities} onOpen={openFromIndex} onOpenSource={openSourceFromIndex} />
           )}
-          {mode === "trainer" && (
-            <div className="main-inner">
-              <Trainer allEntities={entities} details={details} ensureDetail={ensureDetail} />
-            </div>
-          )}
+          {/* Always mounted (just hidden) so an in-progress review session
+              isn't lost -- switching tabs used to unmount Trainer and reset
+              its queue/index/reveal state from scratch. */}
+          <div className="main-inner" hidden={mode !== "trainer"}>
+            <Trainer allEntities={entities} details={details} ensureDetail={ensureDetail} onOpenCard={openFromTrainer} />
+          </div>
         </main>
         {sourceDetail && <SourcePanel detail={sourceDetail} onClose={closeSource} />}
       </div>

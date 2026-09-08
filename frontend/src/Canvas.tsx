@@ -72,6 +72,9 @@ export function Canvas({ nodes, edges, details, allEntities, onMove, onClose, on
 
   return (
     <div className="canvas-wrap" ref={wrapRef}>
+      {nodes.length === 0 && (
+        <div className="canvas-empty-hint">Пусто — найдите определение или теорему в Указателе</div>
+      )}
       <svg className="canvas-edges" width={3200} height={2200}>
         {lines.map(([x1, y1, x2, y2], i) => (
           <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#d0d0d0" strokeWidth={2} />

@@ -66,6 +66,10 @@ class Entity(Base):
     source_document: Mapped[str | None] = mapped_column(String(512), nullable=True)
     source_page: Mapped[int | None] = mapped_column(Integer, nullable=True)
     source_citation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Curated flag for the trainer's "basics" mode -- drilled regardless of
+    # whether the entity was ever looked up, unlike the default history-only
+    # queue. Set by hand for now (see load_entities.py); may grow a UI toggle.
+    is_foundational: Mapped[bool] = mapped_column(default=False)
 
     talk: Mapped["Talk"] = relationship(back_populates="entities")
 
@@ -101,3 +105,8 @@ class ReviewCard(Base):
     # 1 = recognition (flip card), 2 = recall (cloze blank) -- promoted after a streak of good/easy grades.
     level: Mapped[int] = mapped_column(Integer, default=1)
     streak: Mapped[int] = mapped_column(Integer, default=0)
+    # "Postpone" is deliberately separate from grading (apply_grade/SM-2):
+    # the user isn't saying they know or don't know the card, just that they
+    # don't want it in the queue right now -- so it must not touch
+    # ease_factor/interval_days/repetitions/streak/level at all.
+    snoozed_until: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

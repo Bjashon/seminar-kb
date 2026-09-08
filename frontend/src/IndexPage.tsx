@@ -97,7 +97,7 @@ export function IndexPage({ entities, onOpen, onOpenSource }: Props) {
                       onOpenSource(e.slug);
                     }}
                   >
-                    стр. {e.source_page}
+                    {groupBy === "source" && e.episode_code ? `${e.episode_code}, стр. ${e.source_page}` : `стр. ${e.source_page}`}
                   </button>
                 )}
               </div>

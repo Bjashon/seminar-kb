@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db.models import Entity, EntityLink, ReviewCard
 from app.db.session import get_db
@@ -14,12 +14,18 @@ def _link_out(entity: Entity) -> LinkOut:
 
 @router.get("", response_model=list[EntitySummaryOut])
 def list_entities(db: Session = Depends(get_db)) -> list[EntitySummaryOut]:
-    entities = db.query(Entity).order_by(Entity.topic_order, Entity.title_ru).all()
+    entities = (
+        db.query(Entity)
+        .options(joinedload(Entity.talk))
+        .order_by(Entity.topic_order, Entity.title_ru)
+        .all()
+    )
     return [
         EntitySummaryOut(
             slug=e.slug, kind=e.kind.value, title_ru=e.title_ru, title_en=e.title_en,
             topic=e.topic, topic_order=e.topic_order,
             source_citation=e.source_citation, source_page=e.source_page,
+            episode_code=e.talk.episode_code if e.talk else None,
         )
         for e in entities
     ]

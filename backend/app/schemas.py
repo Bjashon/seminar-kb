@@ -27,6 +27,7 @@ class EntitySummaryOut(BaseModel):
     topic_order: int
     source_citation: str | None
     source_page: int | None
+    episode_code: str | None
 
 
 class EntityDetailOut(BaseModel):
@@ -51,6 +52,10 @@ class ReviewCardOut(BaseModel):
     kind: str
     level: int
     due_at: datetime
+
+
+class SnoozeIn(BaseModel):
+    days: int = 3
 
 
 class GradeIn(BaseModel):

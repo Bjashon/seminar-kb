@@ -15,12 +15,19 @@ export const api = {
   getEntity: (slug: string) => fetch(`${API_BASE}/entities/${slug}`).then((r) => json<EntityDetail>(r)),
   search: (q: string) =>
     fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`).then((r) => json<EntitySummary[]>(r)),
-  dueCards: () => fetch(`${API_BASE}/review/due`).then((r) => json<ReviewCardOut[]>(r)),
+  dueCards: (mode: "history" | "foundational" = "history") =>
+    fetch(`${API_BASE}/review/due?mode=${mode}`).then((r) => json<ReviewCardOut[]>(r)),
   grade: (slug: string, grade: "again" | "good" | "easy") =>
     fetch(`${API_BASE}/review/${slug}/grade`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ grade }),
+    }).then((r) => json<ReviewCardOut>(r)),
+  snooze: (slug: string, days = 3) =>
+    fetch(`${API_BASE}/review/${slug}/snooze`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ days }),
     }).then((r) => json<ReviewCardOut>(r)),
   sourceUrl: (episodeCode: string, document: string) => `${API_BASE}/sources/${episodeCode}/${document}`,
 };

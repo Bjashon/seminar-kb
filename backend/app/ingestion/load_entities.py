@@ -87,6 +87,13 @@ def main() -> None:
                 # citation -- hand-authored glossary bricks (source.document
                 # is null) share the same JSON file but aren't from it.
                 entity.source_citation = payload.get("bibliography") if source.get("document") else None
+                # Preserve whatever's already in the DB when the JSON doesn't
+                # mention it, so a routine reload can't silently wipe out a
+                # foundational flag set by a separate curation pass.
+                if "is_foundational" in item:
+                    entity.is_foundational = item["is_foundational"]
+                elif is_new:
+                    entity.is_foundational = False
 
                 depends_on_map[slug] = item.get("depends_on", [])
                 created += is_new

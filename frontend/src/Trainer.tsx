@@ -9,6 +9,7 @@ interface Props {
   allEntities: EntitySummary[];
   details: Record<string, EntityDetail>;
   ensureDetail: (slug: string) => void;
+  onOpenCard: (slug: string) => void;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -20,21 +21,24 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-export function Trainer({ allEntities, details, ensureDetail }: Props) {
+type TrainerMode = "history" | "foundational";
+
+export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Props) {
+  const [mode, setMode] = useState<TrainerMode>("history");
   const [queue, setQueue] = useState<ReviewCardOut[] | null>(null);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [clozeResult, setClozeResult] = useState<{ correct: boolean; term: string } | null>(null);
 
-  function load() {
-    api.dueCards().then((cards) => {
+  function load(m: TrainerMode) {
+    api.dueCards(m).then((cards) => {
       setQueue(shuffle(cards));
       setIndex(0);
       setRevealed(false);
       setClozeResult(null);
     });
   }
-  useEffect(load, []);
+  useEffect(() => load(mode), [mode]);
 
   const current = queue?.[index];
   useEffect(() => {
@@ -51,6 +55,12 @@ export function Trainer({ allEntities, details, ensureDetail }: Props) {
   const answerBox = useTypesetHtml(answerHtml);
   const clozeBox = useTypesetHtml(clozeHtml);
 
+  function onLinkClick(e: React.MouseEvent<HTMLDivElement>) {
+    const target = e.target as HTMLElement;
+    const gotoEl = target.closest("[data-goto]") as HTMLElement | null;
+    if (gotoEl) onOpenCard(gotoEl.dataset.goto!);
+  }
+
   function next() {
     setIndex((i) => i + 1);
     setRevealed(false);
@@ -62,12 +72,29 @@ export function Trainer({ allEntities, details, ensureDetail }: Props) {
     api.grade(current.slug, g).finally(next);
   }
 
+  function snooze() {
+    if (!current) return;
+    api.snooze(current.slug).finally(next);
+  }
+
+  const modeSwitch = (
+    <div className="lang-switch">
+      <button aria-selected={mode === "history"} onClick={() => setMode("history")}>По истории</button>
+      <button aria-selected={mode === "foundational"} onClick={() => setMode("foundational")}>Базовые понятия</button>
+    </div>
+  );
+
   if (queue === null) return null;
   if (queue.length === 0) {
     return (
       <div className="trainer">
+        {modeSwitch}
         <div className="done">
-          <p>Пока нечего повторять — открой несколько карточек во вкладке «Карточки», и они появятся здесь.</p>
+          <p>
+            {mode === "history"
+              ? "Пока нечего повторять — открой несколько карточек во вкладке «Карточки», и они появятся здесь."
+              : "Базовые понятия ещё не размечены."}
+          </p>
         </div>
       </div>
     );
@@ -75,9 +102,10 @@ export function Trainer({ allEntities, details, ensureDetail }: Props) {
   if (!current) {
     return (
       <div className="trainer">
+        {modeSwitch}
         <div className="done">
           <p>Колода пройдена — {queue.length} карточек.</p>
-          <button onClick={load}>Начать заново</button>
+          <button onClick={() => load(mode)}>Начать заново</button>
         </div>
       </div>
     );
@@ -86,6 +114,7 @@ export function Trainer({ allEntities, details, ensureDetail }: Props) {
 
   return (
     <div className="trainer">
+      {modeSwitch}
       <div className="progress">{index + 1} / {queue.length}</div>
 
       {!isLevel2 && (
@@ -95,15 +124,21 @@ export function Trainer({ allEntities, details, ensureDetail }: Props) {
             {KIND_LABEL_RU[current.kind]}
           </div>
           <h3>{current.title_ru}</h3>
-          {!revealed && <button className="reveal-btn" onClick={() => setRevealed(true)}>Показать</button>}
+          {!revealed && (
+            <>
+              <button className="reveal-btn" onClick={() => setRevealed(true)}>Показать</button>
+              <button className="snooze-btn" onClick={snooze}>Отложить</button>
+            </>
+          )}
           {revealed && (
             <>
-              <div className="answer" ref={answerBox.ref} style={{ opacity: answerBox.ready ? 1 : 0 }} />
+              <div className="answer" ref={answerBox.ref} onClick={onLinkClick} style={{ opacity: answerBox.ready ? 1 : 0 }} />
               <div className="grade-row">
                 <button className="grade-btn" onClick={() => grade("again")}>Ещё раз</button>
                 <button className="grade-btn" onClick={() => grade("good")}>Хорошо</button>
                 <button className="grade-btn" onClick={() => grade("easy")}>Легко</button>
               </div>
+              <button className="snooze-btn" onClick={snooze}>Отложить</button>
             </>
           )}
         </div>
@@ -116,20 +151,23 @@ export function Trainer({ allEntities, details, ensureDetail }: Props) {
             {KIND_LABEL_RU[current.kind]}
             <span className="level-tag">· уровень 2 · впиши термин</span>
           </div>
-          <div className="cloze-body" ref={clozeBox.ref} style={{ opacity: clozeBox.ready ? 1 : 0 }} />
+          <div className="cloze-body" ref={clozeBox.ref} onClick={onLinkClick} style={{ opacity: clozeBox.ready ? 1 : 0 }} />
           {!clozeResult && (
-            <button
-              className="check-btn"
-              onClick={() => {
-                const input = document.getElementById("cloze-input") as HTMLInputElement | null;
-                const term = clozeTerm(detail.statement_ru) ?? "";
-                const correct = (input?.value ?? "").trim().toLowerCase() === term.trim().toLowerCase();
-                if (input) input.disabled = true;
-                setClozeResult({ correct, term });
-              }}
-            >
-              Проверить
-            </button>
+            <>
+              <button
+                className="check-btn"
+                onClick={() => {
+                  const input = document.getElementById("cloze-input") as HTMLInputElement | null;
+                  const term = clozeTerm(detail.statement_ru) ?? "";
+                  const correct = (input?.value ?? "").trim().toLowerCase() === term.trim().toLowerCase();
+                  if (input) input.disabled = true;
+                  setClozeResult({ correct, term });
+                }}
+              >
+                Проверить
+              </button>
+              <button className="snooze-btn" onClick={snooze}>Отложить</button>
+            </>
           )}
           {clozeResult && (
             <>

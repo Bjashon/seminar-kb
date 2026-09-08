@@ -533,7 +533,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -552,7 +553,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -570,7 +572,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -592,7 +595,8 @@
       "topic_order": 0,
       "aliases": [
         "algebra"
-      ]
+      ],
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -610,7 +614,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -631,7 +636,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -650,7 +656,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -668,7 +675,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -689,7 +697,8 @@
       "topic_order": 0,
       "aliases": [
         "n-Lie algebra"
-      ]
+      ],
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -744,7 +753,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -762,7 +772,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
@@ -780,7 +791,8 @@
         "page": null
       },
       "topic": "Основы: алгебры и векторные пространства",
-      "topic_order": 0
+      "topic_order": 0,
+      "is_foundational": true
     },
     {
       "kind": "definition",
