@@ -8,6 +8,17 @@ import { SourcePanel } from "./SourcePanel";
 
 type Mode = "reader" | "index" | "trainer";
 
+// New-card spawn positions cycle through a small grid anchored near the
+// canvas origin, instead of drifting indefinitely (fromNode.x + 470 forever,
+// or 60 + prev.length * 30 forever) -- that used to walk cards off the edge
+// of whatever's currently scrolled into view, making them look "invisible".
+const SPAWN_ORIGIN_X = 60;
+const SPAWN_ORIGIN_Y = 60;
+const SPAWN_STEP_X = 470;
+const SPAWN_STEP_Y = 260;
+const SPAWN_COLS = 3;
+const SPAWN_ROWS = 3;
+
 export default function App() {
   const [entities, setEntities] = useState<EntitySummary[]>([]);
   const [details, setDetails] = useState<Record<string, EntityDetail>>({});
@@ -37,8 +48,17 @@ export default function App() {
       setNodes((prev) => {
         if (prev.some((n) => n.slug === toSlug)) return prev;
         const fromNode = fromSlug ? prev.find((n) => n.slug === fromSlug) : null;
-        const x = fromNode ? fromNode.x + 470 : 60 + prev.length * 30;
-        const y = fromNode ? fromNode.y : 60 + prev.length * 30;
+        let x: number, y: number;
+        if (fromNode) {
+          const col = Math.round((fromNode.x - SPAWN_ORIGIN_X) / SPAWN_STEP_X);
+          const nextCol = (col + 1) % SPAWN_COLS;
+          x = SPAWN_ORIGIN_X + nextCol * SPAWN_STEP_X;
+          y = nextCol === 0 ? SPAWN_ORIGIN_Y : fromNode.y;
+        } else {
+          const i = prev.length % (SPAWN_COLS * SPAWN_ROWS);
+          x = SPAWN_ORIGIN_X + (i % SPAWN_COLS) * SPAWN_STEP_X;
+          y = SPAWN_ORIGIN_Y + Math.floor(i / SPAWN_COLS) * SPAWN_STEP_Y;
+        }
         return [...prev, { slug: toSlug, x, y, lang: "ru" as Lang, proofOpen: false }];
       });
       if (fromSlug && fromSlug !== toSlug) {
