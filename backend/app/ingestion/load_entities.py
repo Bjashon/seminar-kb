@@ -36,7 +36,20 @@ def main() -> None:
 
     db = SessionLocal()
     try:
-        talks_by_code = {t.episode_code: t for t in db.query(Talk).all() if t.episode_code}
+        # Two Notion talks can share the same season/episode code -- verified
+        # for s07_ep35, whose "Part I" and "Part II" rows are both titled
+        # with that prefix. A plain dict comprehension would pick whichever
+        # row the query happens to return last, flipping which duplicate new
+        # entities land on between runs. Resolve known ambiguous codes
+        # explicitly instead.
+        AMBIGUOUS_CODE_TITLE_HINT = {"s07_ep35": "Part II"}
+        talks_by_code: dict[str, Talk] = {}
+        for t in db.query(Talk).all():
+            if not t.episode_code:
+                continue
+            hint = AMBIGUOUS_CODE_TITLE_HINT.get(t.episode_code)
+            if t.episode_code not in talks_by_code or (hint and hint in t.title):
+                talks_by_code[t.episode_code] = t
 
         all_payloads = []
         for path in files:

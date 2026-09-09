@@ -45,6 +45,7 @@ export interface TalkSummary {
   episode_code: string;
   title: string;
   season_number: number | null;
+  date: string | null;
   entity_count: number;
 }
 

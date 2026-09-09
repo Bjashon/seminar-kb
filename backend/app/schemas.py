@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -50,6 +50,7 @@ class TalkSummaryOut(BaseModel):
     episode_code: str
     title: str
     season_number: int | None
+    date: date | None
     entity_count: int
 
 

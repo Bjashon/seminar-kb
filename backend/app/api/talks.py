@@ -24,6 +24,9 @@ def list_talks(db: Session = Depends(get_db)) -> list[TalkSummaryOut]:
         .all()
     )
     return [
-        TalkSummaryOut(episode_code=talk.episode_code, title=talk.title, season_number=season_number, entity_count=count)
+        TalkSummaryOut(
+            episode_code=talk.episode_code, title=talk.title, season_number=season_number,
+            date=talk.date, entity_count=count,
+        )
         for talk, season_number, count in rows
     ]

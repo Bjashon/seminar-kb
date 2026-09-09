@@ -12,6 +12,10 @@ interface Props {
   onOpenCard: (slug: string) => void;
 }
 
+function formatArticleDate(iso: string): string {
+  return new Intl.DateTimeFormat("ru", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
+}
+
 function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -112,7 +116,10 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
           {talks !== null && talks.length === 0 && <p>Пока нет статей с определениями или свойствами.</p>}
           {talks?.map((t) => (
             <button key={t.episode_code} className="article-row" onClick={() => pickArticle(t.episode_code)}>
-              <span className="article-title">{t.title}</span>
+              <span className="article-title">
+                {t.title}
+                {t.date && <span className="article-date">{formatArticleDate(t.date)}</span>}
+              </span>
               <span className="article-count">{t.entity_count}</span>
             </button>
           ))}
