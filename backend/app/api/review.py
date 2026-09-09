@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from app.db.models import Entity, ReviewCard
+from app.db.models import Entity, EntityKind, ReviewCard, Talk
 from app.db.session import get_db
 from app.schemas import GradeIn, ReviewCardOut, SnoozeIn
 from app.services.srs import apply_grade, cloze_term
@@ -11,33 +11,51 @@ from app.services.srs import apply_grade, cloze_term
 router = APIRouter(prefix="/review", tags=["review"])
 
 
+def _bypass_due_cards(db: Session, entities: list[Entity], now: datetime) -> list[ReviewCardOut]:
+    """Shared by the "foundational" and "article" modes: both drill a fixed
+    pool of entities regardless of SRS due date -- that's the point of
+    picking them explicitly -- but a snooze still holds, same as history mode."""
+    out: list[ReviewCardOut] = []
+    for entity in entities:
+        card = db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).one_or_none()
+        if card is None:
+            card = ReviewCard(entity_id=entity.id)
+            db.add(card)
+            db.flush()
+        if card.snoozed_until and card.snoozed_until > now:
+            continue
+        out.append(
+            ReviewCardOut(slug=entity.slug, title_ru=entity.title_ru, kind=entity.kind.value,
+                          level=card.level, due_at=card.due_at)
+        )
+    db.commit()
+    out.sort(key=lambda c: c.due_at)
+    return out
+
+
 @router.get("/due", response_model=list[ReviewCardOut])
 def due_cards(
-    mode: str = Query("history", pattern="^(history|foundational)$"),
+    mode: str = Query("history", pattern="^(history|foundational|article)$"),
+    episode_code: str | None = Query(None),
     db: Session = Depends(get_db),
 ) -> list[ReviewCardOut]:
     now = datetime.utcnow()
 
     if mode == "foundational":
-        # Drilled regardless of SRS due date -- that's the point of this
-        # mode -- but a snooze still holds, same as in history mode.
         entities = db.query(Entity).filter(Entity.is_foundational.is_(True)).all()
-        out: list[ReviewCardOut] = []
-        for entity in entities:
-            card = db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).one_or_none()
-            if card is None:
-                card = ReviewCard(entity_id=entity.id)
-                db.add(card)
-                db.flush()
-            if card.snoozed_until and card.snoozed_until > now:
-                continue
-            out.append(
-                ReviewCardOut(slug=entity.slug, title_ru=entity.title_ru, kind=entity.kind.value,
-                              level=card.level, due_at=card.due_at)
-            )
-        db.commit()
-        out.sort(key=lambda c: c.due_at)
-        return out
+        return _bypass_due_cards(db, entities, now)
+
+    if mode == "article":
+        if not episode_code:
+            raise HTTPException(status_code=400, detail="episode_code is required for mode=article")
+        entities = (
+            db.query(Entity)
+            .join(Talk, Talk.id == Entity.talk_id)
+            .filter(Talk.episode_code == episode_code)
+            .filter(Entity.kind.in_([EntityKind.definition, EntityKind.property]))
+            .all()
+        )
+        return _bypass_due_cards(db, entities, now)
 
     rows = (
         db.query(ReviewCard, Entity)

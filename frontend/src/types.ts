@@ -41,6 +41,13 @@ export interface EntityDetail {
   used_by: LinkRef[];
 }
 
+export interface TalkSummary {
+  episode_code: string;
+  title: string;
+  season_number: number | null;
+  entity_count: number;
+}
+
 export interface ReviewCardOut {
   slug: string;
   title_ru: string | null;

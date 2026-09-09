@@ -1,4 +1,4 @@
-import type { EntityDetail, EntitySummary, ReviewCardOut } from "./types";
+import type { EntityDetail, EntitySummary, ReviewCardOut, TalkSummary } from "./types";
 
 // In prod the backend serves the built frontend from the same origin, so
 // relative paths just work. In dev, Vite serves the frontend on :5173 while
@@ -15,8 +15,11 @@ export const api = {
   getEntity: (slug: string) => fetch(`${API_BASE}/entities/${slug}`).then((r) => json<EntityDetail>(r)),
   search: (q: string) =>
     fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`).then((r) => json<EntitySummary[]>(r)),
-  dueCards: (mode: "history" | "foundational" = "history") =>
-    fetch(`${API_BASE}/review/due?mode=${mode}`).then((r) => json<ReviewCardOut[]>(r)),
+  dueCards: (mode: "history" | "foundational" | "article" = "history", episodeCode?: string) =>
+    fetch(`${API_BASE}/review/due?mode=${mode}${episodeCode ? `&episode_code=${encodeURIComponent(episodeCode)}` : ""}`).then((r) =>
+      json<ReviewCardOut[]>(r)
+    ),
+  listTalks: () => fetch(`${API_BASE}/talks`).then((r) => json<TalkSummary[]>(r)),
   grade: (slug: string, grade: "again" | "good" | "easy") =>
     fetch(`${API_BASE}/review/${slug}/grade`, {
       method: "POST",

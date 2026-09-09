@@ -46,6 +46,13 @@ class EntityDetailOut(BaseModel):
     used_by: list[LinkOut]
 
 
+class TalkSummaryOut(BaseModel):
+    episode_code: str
+    title: str
+    season_number: int | None
+    entity_count: int
+
+
 class ReviewCardOut(BaseModel):
     slug: str
     title_ru: str | None

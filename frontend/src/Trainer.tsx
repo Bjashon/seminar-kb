@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { EntityDetail, EntitySummary, ReviewCardOut } from "./types";
+import type { EntityDetail, EntitySummary, ReviewCardOut, TalkSummary } from "./types";
 import { KIND_LABEL_RU } from "./types";
 import { api } from "./api";
 import { clozeStatement, clozeTerm, mdBody } from "./markdown";
@@ -21,7 +21,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-type TrainerMode = "history" | "foundational";
+type TrainerMode = "history" | "foundational" | "article";
 
 export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
@@ -29,16 +29,34 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [clozeResult, setClozeResult] = useState<{ correct: boolean; term: string } | null>(null);
+  const [talks, setTalks] = useState<TalkSummary[] | null>(null);
+  const [selectedEpisode, setSelectedEpisode] = useState<string | null>(null);
 
-  function load(m: TrainerMode) {
-    api.dueCards(m).then((cards) => {
+  function load(m: TrainerMode, episodeCode?: string) {
+    api.dueCards(m, episodeCode).then((cards) => {
       setQueue(shuffle(cards));
       setIndex(0);
       setRevealed(false);
       setClozeResult(null);
     });
   }
-  useEffect(() => load(mode), [mode]);
+  useEffect(() => {
+    if (mode === "article") {
+      // Picking an article is a separate step (see the picker below) --
+      // nothing to drill yet until one is chosen.
+      setQueue(null);
+      setSelectedEpisode(null);
+      if (!talks) api.listTalks().then(setTalks);
+      return;
+    }
+    load(mode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
+
+  function pickArticle(episodeCode: string) {
+    setSelectedEpisode(episodeCode);
+    load("article", episodeCode);
+  }
 
   const current = queue?.[index];
   useEffect(() => {
@@ -81,19 +99,43 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
     <div className="lang-switch">
       <button aria-selected={mode === "history"} onClick={() => setMode("history")}>По истории</button>
       <button aria-selected={mode === "foundational"} onClick={() => setMode("foundational")}>Базовые понятия</button>
+      <button aria-selected={mode === "article"} onClick={() => setMode("article")}>По статьям</button>
     </div>
   );
+
+  if (mode === "article" && selectedEpisode === null) {
+    return (
+      <div className="trainer">
+        {modeSwitch}
+        <div className="article-picker">
+          {talks === null && <p>Загрузка списка статей…</p>}
+          {talks !== null && talks.length === 0 && <p>Пока нет статей с определениями или свойствами.</p>}
+          {talks?.map((t) => (
+            <button key={t.episode_code} className="article-row" onClick={() => pickArticle(t.episode_code)}>
+              <span className="article-title">{t.title}</span>
+              <span className="article-count">{t.entity_count}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (queue === null) return null;
   if (queue.length === 0) {
     return (
       <div className="trainer">
         {modeSwitch}
+        {mode === "article" && (
+          <button className="article-back" onClick={() => setSelectedEpisode(null)}>&larr; К списку статей</button>
+        )}
         <div className="done">
           <p>
             {mode === "history"
               ? "Пока нечего повторять — открой несколько карточек во вкладке «Карточки», и они появятся здесь."
-              : "Базовые понятия ещё не размечены."}
+              : mode === "foundational"
+              ? "Базовые понятия ещё не размечены."
+              : "В этой статье нет определений или свойств."}
           </p>
         </div>
       </div>
@@ -103,9 +145,12 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
     return (
       <div className="trainer">
         {modeSwitch}
+        {mode === "article" && (
+          <button className="article-back" onClick={() => setSelectedEpisode(null)}>&larr; К списку статей</button>
+        )}
         <div className="done">
           <p>Колода пройдена — {queue.length} карточек.</p>
-          <button onClick={() => load(mode)}>Начать заново</button>
+          <button onClick={() => load(mode, selectedEpisode ?? undefined)}>Начать заново</button>
         </div>
       </div>
     );
@@ -115,6 +160,9 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
   return (
     <div className="trainer">
       {modeSwitch}
+      {mode === "article" && (
+        <button className="article-back" onClick={() => setSelectedEpisode(null)}>&larr; К списку статей</button>
+      )}
       <div className="progress">{index + 1} / {queue.length}</div>
 
       {!isLevel2 && (

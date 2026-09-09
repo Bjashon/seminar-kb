@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api import entities, review, search
+from app.api import entities, review, search, talks
 
 app = FastAPI(title="Seminar KB")
 
@@ -24,6 +24,7 @@ if SOURCES_DIR.is_dir():
 app.include_router(entities.router)
 app.include_router(search.router)
 app.include_router(review.router)
+app.include_router(talks.router)
 
 
 @app.get("/health")
