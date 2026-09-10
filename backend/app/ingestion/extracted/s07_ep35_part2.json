@@ -1,5 +1,6 @@
 {
-  "episode_code": "s07_ep35b",
+  "episode_code": "s07_ep35",
+  "talk_title_hint": "Part II",
   "source_language": "en",
   "source_note": "Smoktunowicz, \"On constructing deformations of noncommutative algebras\" (arXiv:2507.04436) -- Part II of the deformations talk (2026-09-28), a direct sequel to Bowman-Puljic-Smoktunowicz (s07_ep35, 2026-09-21): same author, explicitly builds Method 2 and Method 3 as generalizations of that paper's Method 1. Reuses that talk's foundational bricks (formal deformation, flat deformation, ideal, quotient algebra, free algebra, Jacobi algebra) via depends_on rather than redefining them. Extracted per the usual rule: the two new constructions as definitions, their correctness theorems (proofs heavily condensed -- the paper's own proofs literally say 'the same proof as Theorem 17/18 works' for long stretches, and the genuinely novel semisimple-target argument is a 15-page chain of propositions/lemmas not independently reusable), the polynomial-type-deformation and ideal-characterization results as properties, and the resolved Wemyss conjecture for the dimension-8 contraction algebra A8 as a property (statement only, proof is an extremely specific parametrized computation). Sections 1-2 (introduction, background, notation already covered by s07_ep35) not re-extracted.",
   "bibliography": "Smoktunowicz A. — «On constructing deformations of noncommutative algebras» (arXiv:2507.04436)",

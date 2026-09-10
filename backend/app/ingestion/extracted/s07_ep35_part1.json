@@ -1,5 +1,6 @@
 {
   "episode_code": "s07_ep35",
+  "talk_title_hint": "Part I",
   "source_language": "en",
   "source_note": "Bowman, Puljic, Smoktunowicz, \"A Construction of Deformations to General Algebras\" (IMRN 2024) -- Part I of the talk (2026-09-21). Extracted per the usual rule: all definitions (going down to ideal/quotient-algebra/free-algebra bricks not yet needed elsewhere), the paper's central theorem with a condensed proof pointer (the real proof is a 6-page chain of internal propositions/lemmas that are pure scaffolding, not independently reusable facts, so they were not each given their own entity), the n-generator generalization and the resolved Wemyss conjecture as properties (statement only -- the conjecture's proof is an extremely specific numeric computation), and the open questions in section 6 skipped as problems.",
   "bibliography": "Bowman D., Puljić D., Smoktunowicz A. — «A Construction of Deformations to General Algebras» (IMRN 2024, doi:10.1093/imrn/rnae077)",

@@ -37,19 +37,16 @@ def main() -> None:
     db = SessionLocal()
     try:
         # Two Notion talks can share the same season/episode code -- verified
-        # for s07_ep35, whose "Part I" and "Part II" rows are both titled
-        # with that prefix. A plain dict comprehension would pick whichever
-        # row the query happens to return last, flipping which duplicate new
-        # entities land on between runs. Resolve known ambiguous codes
-        # explicitly instead.
-        AMBIGUOUS_CODE_TITLE_HINT = {"s07_ep35": "Part II"}
-        talks_by_code: dict[str, Talk] = {}
+        # for s07_ep35, whose "Part I" and "Part II" rows (two different
+        # papers) are both titled with that prefix. A payload whose code is
+        # ambiguous must say which one it means via "talk_title_hint" (a
+        # substring of the intended Talk.title); plain dict-building would
+        # otherwise pick whichever row the query happens to return last,
+        # flipping which duplicate new entities land on between runs.
+        talks_by_code: dict[str, list[Talk]] = {}
         for t in db.query(Talk).all():
-            if not t.episode_code:
-                continue
-            hint = AMBIGUOUS_CODE_TITLE_HINT.get(t.episode_code)
-            if t.episode_code not in talks_by_code or (hint and hint in t.title):
-                talks_by_code[t.episode_code] = t
+            if t.episode_code:
+                talks_by_code.setdefault(t.episode_code, []).append(t)
 
         all_payloads = []
         for path in files:
@@ -61,7 +58,21 @@ def main() -> None:
 
         for path, payload in all_payloads:
             episode_code = payload.get("episode_code")
-            talk = talks_by_code.get(episode_code) if episode_code else None
+            candidates = talks_by_code.get(episode_code, []) if episode_code else []
+            talk: Talk | None = None
+            if len(candidates) == 1:
+                talk = candidates[0]
+            elif len(candidates) > 1:
+                # endswith, not a plain substring check: "Part I" is itself a
+                # substring of "Part II", so "in" would match both.
+                hint = payload.get("talk_title_hint")
+                matches = [t for t in candidates if hint and t.title.rstrip().endswith(hint)]
+                if len(matches) != 1:
+                    raise ValueError(
+                        f"{path.name}: episode_code {episode_code!r} matches {len(candidates)} talks "
+                        f"({[t.title for t in candidates]}) -- add a distinguishing 'talk_title_hint' to the JSON"
+                    )
+                talk = matches[0]
             if episode_code and not talk:
                 # parse_export.py (run against the full Notion export, which
                 # isn't in the repo) normally seeds seasons/talks with real
@@ -71,7 +82,7 @@ def main() -> None:
                 talk = Talk(episode_code=episode_code, title=episode_code)
                 db.add(talk)
                 db.flush()
-                talks_by_code[episode_code] = talk
+                talks_by_code.setdefault(episode_code, []).append(talk)
 
             for item in payload["entities"]:
                 slug = item["slug"]
