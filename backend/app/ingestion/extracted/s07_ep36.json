@@ -1,0 +1,171 @@
+{
+  "episode_code": "s07_ep36",
+  "source_language": "en",
+  "source_note": "Centrone, Fertunani, Fideles, \"Gradings and graded identities of null-filiform Leibniz algebras\" (Linear Algebra Appl. 2026). This paper is presented across three talks sharing the identical PDF (ep28 2026-08-03, ep29 2026-08-10, ep36 2026-10-05); entities are attached to ep36 only, and the trainer's article picker merges the three by matching PDF filename. Extracted per the usual rule: the definitions needed to even state the results (Leibniz algebra, nilpotency, null-filiform, grading, graded identity/T_G-ideal, Specht property), the paper's headline classification theorem with a condensed proof (the technical machinery of Sections 4-5 -- a long chain of lemmas building minimal identity bases and a Higman-style finite-basis argument for the Specht property -- is internal scaffolding, not independently reusable, so it's condensed into the statement of two property entities rather than given as separate entities), and the infinite-dimensional analog as one more definition. Open problems: none stated in the paper.",
+  "bibliography": "Centrone L., Fertunani L., Fideles C. — «Gradings and graded identities of null-filiform Leibniz algebras» (Linear Algebra Appl. 731 (2026), 59–89, doi:10.1016/j.laa.2025.11.003)",
+  "source_document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "leibniz-algebra",
+      "title_en": "Leibniz algebra",
+      "title_ru": "Алгебра Лейбница",
+      "statement_en": "A **Leibniz algebra** is a vector space $L$ with a bilinear product satisfying the (right) Leibniz identity\n$$x(yz)=(xy)z-(xz)y\\qquad\\forall x,y,z\\in L,$$\nequivalently: right multiplication by any element is a derivation of $L$.\n\nThis drops the antisymmetry $[x,y]=-[y,x]$ required of a Lie algebra, but keeps the Jacobi-type identity -- so every Lie algebra is a Leibniz algebra, and a Leibniz algebra is a Lie algebra exactly when $xx=0$ for all $x$.\n\nFirst introduced by A. Bloh (1965) as *D-algebras*, and independently rediscovered and named by J.-L. Loday (1993).",
+      "statement_ru": "**Алгеброй Лейбница** называется векторное пространство $L$ с билинейным умножением, удовлетворяющим (правому) тождеству Лейбница\n$$x(yz)=(xy)z-(xz)y\\qquad\\forall x,y,z\\in L,$$\nэквивалентно: правое умножение на любой элемент является дифференцированием $L$.\n\nЭто отказ от антисимметрии $[x,y]=-[y,x]$, требуемой от алгебры Ли, но с сохранением тождества якобиева типа — так что любая алгебра Ли является алгеброй Лейбница, а алгебра Лейбница является алгеброй Ли ровно тогда, когда $xx=0$ для всех $x$.\n\nВпервые введена А. Блохом (1965) под названием *D-алгебры*, независимо переоткрыта и названа Ж.-Л. Лоде (1993).",
+      "depends_on": ["Lie algebra"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "Введение (Loday 1993, Bloh 1965)",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 60
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "nilpotent-algebra-lower-central-series",
+      "title_en": "Nilpotent algebra (lower central series)",
+      "title_ru": "Нильпотентная алгебра (нижний центральный ряд)",
+      "statement_en": "For an algebra $L$, define its **lower central series** by $L^{\\langle 1\\rangle}=L$, $L^{\\langle k+1\\rangle}=L^{\\langle k\\rangle}L$ ($k\\ge 1$). $L$ is **nilpotent** if $L^{\\langle m\\rangle}=0$ for some $m>0$, and the **nilpotency index** of $L$ is the smallest such $m$; it is at most $n+1$ for an $n$-dimensional nilpotent algebra.\n\nFor a Leibniz algebra this is really *right* nilpotency: left, right and strong nilpotency need not coincide (unlike for associative or Lie algebras). Example: the $2$-dimensional Leibniz algebra with $[x,x]=[y,y]=[y,x]=0$, $[x,y]=x$ is left nilpotent but *not* right nilpotent.",
+      "statement_ru": "Для алгебры $L$ **нижний центральный ряд** определяется как $L^{\\langle 1\\rangle}=L$, $L^{\\langle k+1\\rangle}=L^{\\langle k\\rangle}L$ ($k\\ge 1$). Алгебра $L$ называется **нильпотентной**, если $L^{\\langle m\\rangle}=0$ для некоторого $m>0$, а **индексом нильпотентности** — наименьшее такое $m$; он не превосходит $n+1$ для $n$-мерной нильпотентной алгебры.\n\nДля алгебры Лейбница это на самом деле *правая* нильпотентность: левая, правая и сильная нильпотентность в общем случае не совпадают (в отличие от ассоциативных алгебр и алгебр Ли). Пример: 2-мерная алгебра Лейбница с $[x,x]=[y,y]=[y,x]=0$, $[x,y]=x$ левонильпотентна, но *не* правонильпотентна.",
+      "depends_on": ["Algebra (over a field)"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "§2, Замечание 2.1",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 61
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "null-filiform-leibniz-algebra",
+      "title_en": "Null-filiform Leibniz algebra",
+      "title_ru": "Нульфилиформная алгебра Лейбница",
+      "statement_en": "An $n$-dimensional Leibniz algebra $L$ is **null-filiform** if $\\dim L^{\\langle i\\rangle}=(n+1)-i$ for $1\\le i\\le n+1$ -- i.e. its nilpotency index is the maximum possible, $n+1$ (compare: the maximal index for an $n$-dimensional *Lie* algebra is only $n$, so a null-filiform Leibniz algebra of dimension $>1$ is never a Lie algebra).\n\nUp to isomorphism there is exactly **one** null-filiform Leibniz algebra in each dimension $n$, denoted $\\mathcal L_0^n$: it has a basis $e_1,\\dots,e_n$ with\n$$e_ie_1=e_{i+1}\\ (1\\le i\\le n-1),\\qquad e_je_k=0\\ (j\\ge1,\\ k\\ge2),$$\nso $\\mathcal L_0^n$ is generated by the single element $e_1$.",
+      "statement_ru": "$n$-мерная алгебра Лейбница $L$ называется **нульфилиформной**, если $\\dim L^{\\langle i\\rangle}=(n+1)-i$ при $1\\le i\\le n+1$ — то есть её индекс нильпотентности максимален и равен $n+1$ (для сравнения: максимальный индекс $n$-мерной алгебры *Ли* равен лишь $n$, поэтому нульфилиформная алгебра Лейбница размерности $>1$ никогда не является алгеброй Ли).\n\nС точностью до изоморфизма в каждой размерности $n$ существует ровно **одна** нульфилиформная алгебра Лейбница, обозначаемая $\\mathcal L_0^n$: у неё есть базис $e_1,\\dots,e_n$ с\n$$e_ie_1=e_{i+1}\\ (1\\le i\\le n-1),\\qquad e_je_k=0\\ (j\\ge1,\\ k\\ge2),$$\nтак что $\\mathcal L_0^n$ порождается единственным элементом $e_1$.",
+      "depends_on": ["Leibniz algebra", "Nilpotent algebra (lower central series)"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "Определение 2.2, Лемма 2.3 (Ayupov-Omirov 2001)",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 62
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "grading-of-an-algebra-by-a-group",
+      "title_en": "Grading of an algebra by a group",
+      "title_ru": "Градуировка алгебры группой",
+      "statement_en": "A **$G$-grading** of an algebra $L$ (for a group $G$) is a vector-space decomposition $\\Gamma:L=\\bigoplus_{g\\in G}L_g$ with $L_gL_h\\subseteq L_{gh}$ for all $g,h$. Each $L_g$ is a *homogeneous component*; a nonzero $a\\in L_g$ is *homogeneous of degree $g$*. The **support** is $\\operatorname{supp}\\Gamma=\\{g\\mid L_g\\ne0\\}$; the grading has *full support* if $\\operatorname{supp}\\Gamma=G$.\n\nTwo graded algebras $(L,\\Gamma_G)$, $(L',\\Gamma_H)$ are **equivalent** if some bijection $\\rho:\\operatorname{supp}\\Gamma_G\\to\\operatorname{supp}\\Gamma_H$ and algebra isomorphism $\\varphi:L\\to L'$ satisfy $\\varphi(L_g)=(L')_{\\rho(g)}$ for every $g$ -- so equivalence identifies gradings up to relabelling the group.",
+      "statement_ru": "**$G$-градуировкой** алгебры $L$ (для группы $G$) называется разложение векторного пространства $\\Gamma:L=\\bigoplus_{g\\in G}L_g$ с $L_gL_h\\subseteq L_{gh}$ для всех $g,h$. Каждое $L_g$ — *однородная компонента*; ненулевой элемент $a\\in L_g$ — *однородный степени $g$*. **Носитель** — это $\\operatorname{supp}\\Gamma=\\{g\\mid L_g\\ne0\\}$; градуировка имеет *полный носитель*, если $\\operatorname{supp}\\Gamma=G$.\n\nДве градуированные алгебры $(L,\\Gamma_G)$, $(L',\\Gamma_H)$ **эквивалентны**, если найдутся биекция $\\rho:\\operatorname{supp}\\Gamma_G\\to\\operatorname{supp}\\Gamma_H$ и изоморфизм алгебр $\\varphi:L\\to L'$ такие, что $\\varphi(L_g)=(L')_{\\rho(g)}$ для всех $g$ — то есть эквивалентность отождествляет градуировки с точностью до переобозначения группы.",
+      "depends_on": ["Algebra (over a field)"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "§2, определения перед Определением 3.1",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 63
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "graded-identity-and-t-g-ideal",
+      "title_en": "Graded identity and T_G-ideal",
+      "title_ru": "Градуированное тождество и T_G-идеал",
+      "statement_en": "Given a $G$-grading of $L$, an **admissible substitution** for a polynomial $f(x_1^{g_1},\\dots,x_n^{g_n})$ of the free $G$-graded algebra is an $n$-tuple $(l_1,\\dots,l_n)\\in L_{g_1}\\times\\cdots\\times L_{g_n}$ (each variable is only ever replaced by an element of matching degree). $f$ is a **graded identity** of $L$ if it vanishes on every admissible substitution.\n\nThe set $T_G(\\Gamma)$ of all graded identities of a $G$-graded algebra is a **$T_G$-ideal**: an ideal of the free graded algebra invariant under every graded endomorphism. A **basis** of $T_G(\\Gamma)$ is a set generating it as a $T_G$-ideal.",
+      "statement_ru": "Для $G$-градуированной алгебры $L$ **допустимой подстановкой** для многочлена $f(x_1^{g_1},\\dots,x_n^{g_n})$ свободной $G$-градуированной алгебры называется набор $(l_1,\\dots,l_n)\\in L_{g_1}\\times\\cdots\\times L_{g_n}$ (каждая переменная подставляется только элементом того же degree). $f$ — **градуированное тождество** алгебры $L$, если оно обращается в 0 на любой допустимой подстановке.\n\nМножество $T_G(\\Gamma)$ всех градуированных тождеств $G$-градуированной алгебры — это **$T_G$-идеал**: идеал свободной градуированной алгебры, инвариантный относительно всех градуированных эндоморфизмов. **Базис** идеала $T_G(\\Gamma)$ — это множество, порождающее его как $T_G$-идеал.",
+      "depends_on": ["Grading of an algebra by a group"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "§2, определения перед §3",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 64
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "specht-property",
+      "title_en": "Specht property (of a T-ideal)",
+      "title_ru": "Свойство Шпехта (T-идеала)",
+      "statement_en": "A $T_G$-ideal $T_G(A)$ has the **Specht property** if every $T_G$-ideal $J\\supseteq T_G(A)$ has a *finite basis* (is finitely generated as a $T_G$-ideal). The name refers to the **Specht problem**: whether the ideal of identities of every associative algebra over a field of characteristic $0$ is finitely generated -- answered positively by A. Kemer.",
+      "statement_ru": "$T_G$-идеал $T_G(A)$ обладает **свойством Шпехта**, если каждый $T_G$-идеал $J\\supseteq T_G(A)$ имеет *конечный базис* (конечно порождён как $T_G$-идеал). Название отсылает к **проблеме Шпехта**: конечно ли порождён идеал тождеств любой ассоциативной алгебры над полем характеристики $0$ — на этот вопрос положительно ответил А. Кемер.",
+      "depends_on": ["Graded identity and T_G-ideal"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "§5, Определение 5.1 (проблема Шпехта: Кемер)",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 81
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "gradings-on-null-filiform-leibniz-algebra-are-cyclic-toral",
+      "title_en": "Every abelian-group grading on a null-filiform Leibniz algebra is cyclic toral",
+      "title_ru": "Любая абелева градуировка нульфилиформной алгебры Лейбница циклическая торическая",
+      "statement_en": "Let $\\mathcal L_0^n$ be graded by an arbitrary group $G$. Then there is a basis $e_1,\\dots,e_n$ (with $e_ie_1=e_{i+1}$, all other products $0$) such that $e_1$ itself is homogeneous. Consequently, up to equivalence, every abelian-group grading of $\\mathcal L_0^n$ is one of exactly three kinds:\n1. the **trivial** grading;\n2. the **fine $\\mathbb Z$-grading** $\\mathcal L_0^n=\\langle e_1\\rangle_1\\oplus\\cdots\\oplus\\langle e_n\\rangle_n$ (every homogeneous component is $1$-dimensional);\n3. for $2\\le i\\le n-1$, a **$\\mathbb Z_i$-grading** with $e_j$ lying in the component indexed by $j\\bmod i$.\n\nIn particular every such grading is *cyclic* (equivalent to one by a cyclic group) and *toral* (generated by a single automorphism in a torus of $\\operatorname{Aut}(\\mathcal L_0^n)$).",
+      "statement_ru": "Пусть $\\mathcal L_0^n$ градуирована произвольной группой $G$. Тогда существует базис $e_1,\\dots,e_n$ (с $e_ie_1=e_{i+1}$, все прочие произведения $0$), для которого сам $e_1$ однороден. Следовательно, с точностью до эквивалентности, любая абелева градуировка $\\mathcal L_0^n$ — это ровно один из трёх типов:\n1. **тривиальная** градуировка;\n2. **точная $\\mathbb Z$-градуировка** $\\mathcal L_0^n=\\langle e_1\\rangle_1\\oplus\\cdots\\oplus\\langle e_n\\rangle_n$ (каждая однородная компонента одномерна);\n3. при $2\\le i\\le n-1$ — **$\\mathbb Z_i$-градуировка**, где $e_j$ лежит в компоненте с номером $j\\bmod i$.\n\nВ частности, любая такая градуировка *циклическая* (эквивалентна градуировке циклической группой) и *торическая* (порождена одним автоморфизмом в торе $\\operatorname{Aut}(\\mathcal L_0^n)$).",
+      "proof_en": "Some $a\\in L^{\\langle1\\rangle}\\setminus L^{\\langle2\\rangle}$ must already be homogeneous (else writing it as a sum of homogeneous parts, all of them would lie in $L^{\\langle2\\rangle}$, forcing $a\\in L^{\\langle2\\rangle}$ too -- contradiction). Set $e_1:=a$; then $e_i:=\\underbrace{e_1e_1\\cdots e_1}_{i\\text{ times}}$ is automatically homogeneous, and $e_ie_j=0$ for $j\\ge2$ follows from the Leibniz identity by induction on $j$. Writing $\\|e_i\\|=g^i$ (additively, $g^i$ = the degree of $e_i$): if every $g^i\\ne\\varepsilon$ the grading is fine ($\\mathbb Z$); if $g^i=\\varepsilon$ for some $1\\le i<n$, writing $n=mi+r$ gives the $\\mathbb Z_i$-grading with $L^{\\bar r}=\\operatorname{span}\\{e_r,e_{i+r},\\dots\\}$. The three families have pairwise different support sizes, so they're inequivalent.",
+      "proof_ru": "Некоторый элемент $a\\in L^{\\langle1\\rangle}\\setminus L^{\\langle2\\rangle}$ обязан быть однородным (иначе, разложив его на однородные слагаемые, все они лежали бы в $L^{\\langle2\\rangle}$, откуда и сам $a\\in L^{\\langle2\\rangle}$ — противоречие). Положим $e_1:=a$; тогда $e_i:=\\underbrace{e_1e_1\\cdots e_1}_{i\\text{ раз}}$ автоматически однороден, а $e_ie_j=0$ при $j\\ge2$ следует из тождества Лейбница индукцией по $j$. Записав $\\|e_i\\|=g^i$ (аддитивно, $g^i$ — степень $e_i$): если все $g^i\\ne\\varepsilon$, градуировка точная ($\\mathbb Z$); если $g^i=\\varepsilon$ при некотором $1\\le i<n$, то при $n=mi+r$ получаем $\\mathbb Z_i$-градуировку с $L^{\\bar r}=\\operatorname{span}\\{e_r,e_{i+r},\\dots\\}$. У трёх семейств попарно разные размеры носителя, так что они неэквивалентны.",
+      "depends_on": ["Null-filiform Leibniz algebra", "Grading of an algebra by a group"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "Лемма 3.2 (Calderón et al. 2021), Теорема 3.3",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 65
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "basis-of-graded-identities-of-null-filiform-leibniz-algebra",
+      "title_en": "Explicit minimal basis of the graded identities of a null-filiform Leibniz algebra",
+      "title_ru": "Явный минимальный базис градуированных тождеств нульфилиформной алгебры Лейбница",
+      "statement_en": "For $\\mathcal L_0^n$ with the fine $\\mathbb Z$-grading, over a field $K$ with $|K|>n$, the graded identities\n$$x^i\\ (i\\notin\\{1,\\dots,n\\}),\\qquad x_1^jx_2^k\\ (1\\le j\\le n,\\ 2\\le k\\le n),\\qquad x_1^1x_2^1-x_2^1x_1^1$$\nform a **minimal basis** of $T_{\\mathbb Z}(\\Gamma_{\\mathbb Z}^n)$ as a $T_{\\mathbb Z}$-ideal (over a finite field of size $q\\le n$, two further identities involving $q$-fold products must be added). Analogous explicit minimal bases are obtained for every $\\mathbb Z_i$-grading and for the ordinary, ungraded identities $T(\\mathcal L_0^n)$ -- in each case a short, explicit list rather than an implicit description.",
+      "statement_ru": "Для $\\mathcal L_0^n$ с точной $\\mathbb Z$-градуировкой, над полем $K$ с $|K|>n$, градуированные тождества\n$$x^i\\ (i\\notin\\{1,\\dots,n\\}),\\qquad x_1^jx_2^k\\ (1\\le j\\le n,\\ 2\\le k\\le n),\\qquad x_1^1x_2^1-x_2^1x_1^1$$\nобразуют **минимальный базис** $T_{\\mathbb Z}(\\Gamma_{\\mathbb Z}^n)$ как $T_{\\mathbb Z}$-идеала (над конечным полем размера $q\\le n$ нужно добавить ещё два тождества с $q$-кратными произведениями). Аналогичные явные минимальные базисы получены для каждой $\\mathbb Z_i$-градуировки и для обычных, неградуированных тождеств $T(\\mathcal L_0^n)$ — в каждом случае короткий явный список, а не неявное описание.",
+      "depends_on": ["Every abelian-group grading on a null-filiform Leibniz algebra is cyclic toral"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "Теорема 4.5, 4.14, 4.18",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 71
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "specht-property-holds-for-null-filiform-leibniz-algebra",
+      "title_en": "The Specht property holds for every T_G-ideal of a null-filiform Leibniz algebra",
+      "title_ru": "Свойство Шпехта выполнено для каждого T_G-идеала нульфилиформной алгебры Лейбница",
+      "statement_en": "For every abelian-group grading of $\\mathcal L_0^n$ (and for the ungraded case), the corresponding $T_G$-ideal of identities has the Specht property. This is *not* shown by exhibiting a finite basis for every over-ideal directly; instead each explicit minimal basis is used to set up a quasi-order on multi-index sequences and invoke Higman's theorem (finite basis property for sequences ordered by an order-preserving embedding, à la Dickson's lemma) to conclude every closed set of identities above it is finitely generated.",
+      "statement_ru": "Для каждой абелевой градуировки $\\mathcal L_0^n$ (и в неградуированном случае) соответствующий $T_G$-идеал тождеств обладает свойством Шпехта. Это доказывается *не* прямым предъявлением конечного базиса для каждого объемлющего идеала; вместо этого явный минимальный базис используется, чтобы задать квазипорядок на последовательностях мультииндексов и применить теорему Хигмана (свойство конечного базиса для последовательностей, упорядоченных вложением, сохраняющим порядок, — в духе леммы Диксона), откуда следует, что каждое замкнутое множество тождеств над ним конечно порождено.",
+      "depends_on": ["Specht property (of a T-ideal)", "Explicit minimal basis of the graded identities of a null-filiform Leibniz algebra"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "§5, Теоремы 5.7, 5.12, 5.13 (лемма Хигмана 1952)",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 81
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "infinite-dimensional-null-filiform-leibniz-algebra",
+      "title_en": "Infinite-dimensional null-filiform Leibniz algebra",
+      "title_ru": "Бесконечномерная нульфилиформная алгебра Лейбница",
+      "statement_en": "The infinite-dimensional analog $\\mathcal L_0^\\infty$ (Omirov) has basis $e_1,e_2,e_3,\\dots$ with $e_ie_1=e_{i+1}$ ($i\\ge1$) and all other products $0$; it is *potentially nilpotent*: $\\bigcap_{i\\ge1}(\\mathcal L_0^\\infty)^{\\langle i\\rangle}=0$, even though no finite nilpotency index exists. As with the finite-dimensional case, every grading is again equivalent to the trivial, a fine $\\mathbb Z$-, or a $\\mathbb Z_i$-grading, and analogous explicit minimal bases (with the Specht property) are obtained for its graded and ordinary identities -- simply dropping the dimension bound $n$ from every statement.",
+      "statement_ru": "Бесконечномерный аналог $\\mathcal L_0^\\infty$ (Омиров) имеет базис $e_1,e_2,e_3,\\dots$ с $e_ie_1=e_{i+1}$ ($i\\ge1$) и всеми прочими произведениями, равными $0$; она *потенциально нильпотентна*: $\\bigcap_{i\\ge1}(\\mathcal L_0^\\infty)^{\\langle i\\rangle}=0$, хотя конечного индекса нильпотентности не существует. Как и в конечномерном случае, любая градуировка вновь эквивалентна тривиальной, точной $\\mathbb Z$- или $\\mathbb Z_i$-градуировке, и получены аналогичные явные минимальные базисы (со свойством Шпехта) для её градуированных и обычных тождеств — просто без ограничения на размерность $n$ в каждой формулировке.",
+      "depends_on": ["Null-filiform Leibniz algebra"],
+      "topic": "Градуировки и тождества алгебр Лейбница",
+      "topic_order": 11,
+      "source": {
+        "label": "§6 (Omirov 2006, «Thin Leibniz algebras»)",
+        "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
+        "page": 86
+      }
+    }
+  ]
+}
