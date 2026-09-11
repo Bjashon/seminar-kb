@@ -10,6 +10,7 @@ export interface EntitySummary {
   source_citation: string | null;
   source_page: number | null;
   episode_code: string | null;
+  talk_date: string | null;
 }
 
 export interface LinkRef {
@@ -44,8 +45,10 @@ export interface EntityDetail {
 export interface TalkSummary {
   episode_code: string;
   title: string;
+  episode_codes: string[];
   season_number: number | null;
   date: string | null;
+  dates: string[];
   entity_count: number;
 }
 

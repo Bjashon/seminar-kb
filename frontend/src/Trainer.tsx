@@ -4,16 +4,13 @@ import { KIND_LABEL_RU } from "./types";
 import { api } from "./api";
 import { clozeStatement, clozeTerm, mdBody } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
+import { formatDate } from "./dates";
 
 interface Props {
   allEntities: EntitySummary[];
   details: Record<string, EntityDetail>;
   ensureDetail: (slug: string) => void;
   onOpenCard: (slug: string) => void;
-}
-
-function formatArticleDate(iso: string): string {
-  return new Intl.DateTimeFormat("ru", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -38,7 +35,11 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
 
   function load(m: TrainerMode, episodeCode?: string) {
     api.dueCards(m, episodeCode).then((cards) => {
-      setQueue(shuffle(cards));
+      // Only "history" is a grab-bag of whatever's due -- shuffling it is
+      // fine. "foundational" and "article" are a designed learning sequence
+      // (the backend topologically orders them by "uses" dependency), so
+      // scrambling them would defeat the point.
+      setQueue(m === "history" ? shuffle(cards) : cards);
       setIndex(0);
       setRevealed(false);
       setClozeResult(null);
@@ -117,8 +118,10 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
           {talks?.map((t) => (
             <button key={t.episode_code} className="article-row" onClick={() => pickArticle(t.episode_code)}>
               <span className="article-title">
-                {t.title}
-                {t.date && <span className="article-date">{formatArticleDate(t.date)}</span>}
+                {t.episode_codes.join(", ")} — {t.title}
+                {t.dates.length > 0 && (
+                  <span className="article-date">{t.dates.map(formatDate).join(", ")}</span>
+                )}
               </span>
               <span className="article-count">{t.entity_count}</span>
             </button>

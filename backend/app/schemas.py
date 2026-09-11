@@ -28,6 +28,7 @@ class EntitySummaryOut(BaseModel):
     source_citation: str | None
     source_page: int | None
     episode_code: str | None
+    talk_date: date | None
 
 
 class EntityDetailOut(BaseModel):
@@ -49,8 +50,14 @@ class EntityDetailOut(BaseModel):
 class TalkSummaryOut(BaseModel):
     episode_code: str
     title: str
+    # All episode codes covering this same paper, self included, e.g. a talk
+    # split into "Part I/II/III" across several dated seminar sessions --
+    # entities are attached to just one of them (see load_entities.py), so
+    # the picker needs these to show it's really one training on N talks.
+    episode_codes: list[str]
     season_number: int | None
     date: date | None
+    dates: list[date]
     entity_count: int
 
 

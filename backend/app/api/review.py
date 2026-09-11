@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.db.models import Entity, EntityKind, ReviewCard, Talk
 from app.db.session import get_db
 from app.schemas import GradeIn, ReviewCardOut, SnoozeIn
+from app.services.ordering import topo_order
 from app.services.srs import apply_grade, cloze_term
 
 router = APIRouter(prefix="/review", tags=["review"])
@@ -14,7 +15,10 @@ router = APIRouter(prefix="/review", tags=["review"])
 def _bypass_due_cards(db: Session, entities: list[Entity], now: datetime) -> list[ReviewCardOut]:
     """Shared by the "foundational" and "article" modes: both drill a fixed
     pool of entities regardless of SRS due date -- that's the point of
-    picking them explicitly -- but a snooze still holds, same as history mode."""
+    picking them explicitly -- but a snooze still holds, same as history
+    mode. `entities` must already be in the order to present them (see
+    topo_order) -- this does not reshuffle or reorder by due date, unlike
+    history mode, since a designed learning sequence beats a random one."""
     out: list[ReviewCardOut] = []
     for entity in entities:
         card = db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).one_or_none()
@@ -29,7 +33,6 @@ def _bypass_due_cards(db: Session, entities: list[Entity], now: datetime) -> lis
                           level=card.level, due_at=card.due_at)
         )
     db.commit()
-    out.sort(key=lambda c: c.due_at)
     return out
 
 
@@ -42,8 +45,13 @@ def due_cards(
     now = datetime.utcnow()
 
     if mode == "foundational":
-        entities = db.query(Entity).filter(Entity.is_foundational.is_(True)).all()
-        return _bypass_due_cards(db, entities, now)
+        entities = (
+            db.query(Entity)
+            .filter(Entity.is_foundational.is_(True))
+            .order_by(Entity.topic_order, Entity.source_page, Entity.id)
+            .all()
+        )
+        return _bypass_due_cards(db, topo_order(db, entities), now)
 
     if mode == "article":
         if not episode_code:
@@ -53,9 +61,10 @@ def due_cards(
             .join(Talk, Talk.id == Entity.talk_id)
             .filter(Talk.episode_code == episode_code)
             .filter(Entity.kind.in_([EntityKind.definition, EntityKind.property]))
+            .order_by(Entity.source_page, Entity.id)
             .all()
         )
-        return _bypass_due_cards(db, entities, now)
+        return _bypass_due_cards(db, topo_order(db, entities), now)
 
     rows = (
         db.query(ReviewCard, Entity)
