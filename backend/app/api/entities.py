@@ -26,7 +26,6 @@ def list_entities(db: Session = Depends(get_db)) -> list[EntitySummaryOut]:
             topic=e.topic, topic_order=e.topic_order,
             source_citation=e.source_citation, source_page=e.source_page,
             episode_code=e.talk.episode_code if e.talk else None,
-            talk_date=e.talk.date if e.talk else None,
         )
         for e in entities
     ]

@@ -28,7 +28,6 @@ class EntitySummaryOut(BaseModel):
     source_citation: str | None
     source_page: int | None
     episode_code: str | None
-    talk_date: date | None
 
 
 class EntityDetailOut(BaseModel):

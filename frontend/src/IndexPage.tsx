@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import type { EntitySummary, Lang } from "./types";
-import { formatDate } from "./dates";
 
 interface Props {
   entities: EntitySummary[];
@@ -98,9 +97,7 @@ export function IndexPage({ entities, onOpen, onOpenSource }: Props) {
                       onOpenSource(e.slug);
                     }}
                   >
-                    {groupBy === "source" && e.episode_code
-                      ? `${e.episode_code}${e.talk_date ? `, ${formatDate(e.talk_date)}` : ""}, стр. ${e.source_page}`
-                      : `стр. ${e.source_page}`}
+                    {groupBy === "source" && e.episode_code ? `${e.episode_code}, стр. ${e.source_page}` : `стр. ${e.source_page}`}
                   </button>
                 )}
               </div>
