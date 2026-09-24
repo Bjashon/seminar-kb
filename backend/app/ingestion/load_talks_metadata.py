@@ -52,10 +52,38 @@ def main() -> None:
     db = SessionLocal()
     try:
         seasons_by_number = {s.number: s for s in db.query(Season).all()}
-        talks_by_code = {t.episode_code: t for t in db.query(Talk).all() if t.episode_code}
+
+        # Several talks can share one episode code (Notion titles both the
+        # 2026-09-21 and 2026-09-28 talks "s07_ep35 ... Part I/II", two
+        # different papers), so talks can't be keyed by code alone -- that
+        # used to collapse both into one row. Pair each snapshot row with an
+        # existing talk of the same code by exact title first, then any
+        # leftovers in order (e.g. a bare placeholder load_entities.py made),
+        # and create the rest.
+        existing_by_code: dict[str, list[Talk]] = {}
+        for t in db.query(Talk).order_by(Talk.id).all():
+            if t.episode_code:
+                existing_by_code.setdefault(t.episode_code, []).append(t)
+        rows_by_code: dict[str, list[dict]] = {}
+        for row in rows:
+            rows_by_code.setdefault(row["episode_code"], []).append(row)
+
+        pairs: list[tuple[dict, Talk | None]] = []
+        for code, code_rows in rows_by_code.items():
+            free = list(existing_by_code.get(code, []))
+            matched: dict[int, Talk] = {}
+            for i, row in enumerate(code_rows):
+                same_title = next((t for t in free if t.title == row["title"]), None)
+                if same_title is not None:
+                    matched[i] = same_title
+                    free.remove(same_title)
+            for i, row in enumerate(code_rows):
+                if i not in matched and free:
+                    matched[i] = free.pop(0)
+                pairs.append((row, matched.get(i)))
 
         applied = 0
-        for row in rows:
+        for row, talk in pairs:
             code = row["episode_code"]
             season = None
             if row.get("season_number") is not None:
@@ -66,11 +94,9 @@ def main() -> None:
                     db.flush()
                     seasons_by_number[row["season_number"]] = season
 
-            talk = talks_by_code.get(code)
             if talk is None:
                 talk = Talk(episode_code=code)
                 db.add(talk)
-                talks_by_code[code] = talk
 
             talk.title = row["title"]
             talk.date = datetime.strptime(row["date"], "%Y-%m-%d").date() if row.get("date") else None

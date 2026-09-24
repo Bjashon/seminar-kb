@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Board, CanvasEdge, CanvasNode, EntityDetail, EntitySummary, Lang } from "./types";
 import { api } from "./api";
 import { Canvas, type FocusRequest } from "./Canvas";
+import { formatDate } from "./dates";
 import { IndexPage } from "./IndexPage";
 import { Trainer } from "./Trainer";
 import { SourcePanel } from "./SourcePanel";
@@ -18,6 +19,29 @@ const SPAWN_STEP_X = 470;
 const SPAWN_STEP_Y = 260;
 const SPAWN_COLS = 3;
 const SPAWN_ROWS = 3;
+
+/** The summary card a board opens with. Not a real entity (nothing to fetch,
+ *  no /entities/ row) -- just shaped like one so NodeCard can render it,
+ *  which also makes every entity title mentioned in it a clickable link. */
+function briefDetail(slug: string, brief: NonNullable<Board["brief"]>): EntityDetail {
+  const parts = brief.parts.map((p) => (p.date ? `${p.episode_code} · ${formatDate(p.date)}` : p.episode_code)).join(", ");
+  const withCitation = (text: string) => (brief.bibliography ? `${text}\n\n*${brief.bibliography}*` : text);
+  return {
+    slug,
+    kind: "brief",
+    title_ru: brief.title,
+    title_en: brief.title,
+    statement_ru: withCitation(brief.brief_ru),
+    statement_en: withCitation(brief.brief_en ?? brief.brief_ru),
+    proof_ru: null,
+    proof_en: null,
+    aliases: [],
+    topic: null,
+    source: { label: parts, document: null, page: null, episode_code: null, citation: null },
+    uses: [],
+    used_by: [],
+  };
+}
 
 export default function App() {
   const [entities, setEntities] = useState<EntitySummary[]>([]);
@@ -90,9 +114,16 @@ export default function App() {
     (talkId: number) => {
       api.getBoard(talkId).then((board: Board) => {
         board.slugs.forEach(ensureDetail);
-        setNodes(board.slugs.map((slug, i) => ({ slug, x: 40, y: 40 + i * 4, lang: "ru" as Lang, proofOpen: false })));
+        let slugs = board.slugs;
+        if (board.brief) {
+          const briefSlug = `brief-${talkId}`;
+          const brief = briefDetail(briefSlug, board.brief);
+          setDetails((prev) => ({ ...prev, [briefSlug]: brief }));
+          slugs = [briefSlug, ...slugs];
+        }
+        setNodes(slugs.map((slug, i) => ({ slug, x: 40, y: 40 + i * 4, lang: "ru" as Lang, proofOpen: false })));
         setEdges(board.edges.map((e) => ({ from: e.from_slug, to: e.to_slug })));
-        setPendingLayout(board.slugs);
+        setPendingLayout(slugs);
         setMode("reader");
       });
     },

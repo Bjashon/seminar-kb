@@ -1,4 +1,6 @@
-export type Kind = "definition" | "theorem" | "property";
+// "brief" is never a real entity: it's the synthetic summary card a paper's
+// board opens with (see App.openBoard).
+export type Kind = "definition" | "theorem" | "property" | "brief";
 
 export interface EntitySummary {
   slug: string;
@@ -44,6 +46,13 @@ export interface EntityDetail {
 export interface Board {
   slugs: string[];
   edges: { from_slug: string; to_slug: string }[];
+  brief: {
+    title: string;
+    parts: { episode_code: string; date: string | null }[];
+    bibliography: string | null;
+    brief_ru: string;
+    brief_en: string | null;
+  } | null;
 }
 
 export interface TalkSummary {
@@ -82,4 +91,5 @@ export const KIND_LABEL_RU: Record<Kind, string> = {
   definition: "Определение",
   theorem: "Теорема",
   property: "Свойство",
+  brief: "Кратко о статье",
 };

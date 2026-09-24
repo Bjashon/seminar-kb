@@ -51,14 +51,23 @@ class BoardEdgeOut(BaseModel):
     to_slug: str
 
 
-class BoardOut(BaseModel):
-    slugs: list[str]
-    edges: list[BoardEdgeOut]
-
-
 class TalkPartOut(BaseModel):
     episode_code: str
     date: date | None
+
+
+class BoardBriefOut(BaseModel):
+    title: str
+    parts: list[TalkPartOut]
+    bibliography: str | None
+    brief_ru: str
+    brief_en: str | None
+
+
+class BoardOut(BaseModel):
+    slugs: list[str]
+    edges: list[BoardEdgeOut]
+    brief: BoardBriefOut | None
 
 
 class TalkSummaryOut(BaseModel):

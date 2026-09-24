@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models import Entity, EntityKind, EntityLink, Season, Talk
 from app.db.session import get_db
-from app.schemas import BoardEdgeOut, BoardOut, TalkPartOut, TalkSummaryOut
+from app.schemas import BoardBriefOut, BoardEdgeOut, BoardOut, TalkPartOut, TalkSummaryOut
 from app.services.ordering import topo_order
 from app.services.talk_groups import paper_group
 
@@ -72,7 +72,8 @@ def talk_board(talk_id: int, db: Session = Depends(get_db)) -> BoardOut:
     if talk is None:
         raise HTTPException(status_code=404, detail="Talk not found")
 
-    group_ids = [t.id for t in paper_group(talk, db.query(Talk).all())]
+    group = paper_group(talk, db.query(Talk).all())
+    group_ids = [t.id for t in group]
     entities = (
         db.query(Entity)
         .filter(Entity.talk_id.in_(group_ids))
@@ -87,7 +88,19 @@ def talk_board(talk_id: int, db: Session = Depends(get_db)) -> BoardOut:
         .filter(EntityLink.from_entity_id.in_(slug_by_id), EntityLink.to_entity_id.in_(slug_by_id))
         .all()
     )
+    brief = None
+    owner = next((t for t in group if t.brief_ru), None)
+    if owner is not None:
+        brief = BoardBriefOut(
+            title=_display_title(owner.title, strip_part=len(group) > 1),
+            parts=[TalkPartOut(episode_code=t.episode_code, date=t.date) for t in group],
+            bibliography=next((e.source_citation for e in entities if e.source_citation), None),
+            brief_ru=owner.brief_ru,
+            brief_en=owner.brief_en,
+        )
+
     return BoardOut(
         slugs=[e.slug for e in entities],
         edges=[BoardEdgeOut(from_slug=slug_by_id[l.from_entity_id], to_slug=slug_by_id[l.to_entity_id]) for l in links],
+        brief=brief,
     )

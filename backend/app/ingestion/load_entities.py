@@ -83,6 +83,9 @@ def main() -> None:
                 db.add(talk)
                 db.flush()
                 talks_by_code.setdefault(episode_code, []).append(talk)
+            if talk is not None and ("brief_ru" in payload or "brief_en" in payload):
+                talk.brief_ru = payload.get("brief_ru")
+                talk.brief_en = payload.get("brief_en")
 
             for item in payload["entities"]:
                 slug = item["slug"]

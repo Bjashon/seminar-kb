@@ -3,6 +3,8 @@
   "source_language": "en",
   "source_note": "Centrone, Fertunani, Fideles, \"Gradings and graded identities of null-filiform Leibniz algebras\" (Linear Algebra Appl. 2026). This paper is presented across three talks sharing the identical PDF (ep28 2026-08-03, ep29 2026-08-10, ep36 2026-10-05); entities are attached to ep36 only, and the trainer's article picker merges the three by matching PDF filename. Extracted per the usual rule: the definitions needed to even state the results (Leibniz algebra, nilpotency, null-filiform, grading, graded identity/T_G-ideal, Specht property), the paper's headline classification theorem with a condensed proof (the technical machinery of Sections 4-5 -- a long chain of lemmas building minimal identity bases and a Higman-style finite-basis argument for the Specht property -- is internal scaffolding, not independently reusable, so it's condensed into the statement of two property entities rather than given as separate entities), and the infinite-dimensional analog as one more definition. Open problems: none stated in the paper.",
   "bibliography": "Centrone L., Fertunani L., Fideles C. — «Gradings and graded identities of null-filiform Leibniz algebras» (Linear Algebra Appl. 731 (2026), 59–89, doi:10.1016/j.laa.2025.11.003)",
+  "brief_ru": "Нульфилиформная алгебра Лейбница $\\mathcal L_0^n$ — единственная $n$-мерная алгебра Лейбница с максимальным индексом нильпотентности. Статья описывает все её градуировки и находит явные базисы её тождеств — над произвольным полем.\n\n1. Любая абелева градуировка $\\mathcal L_0^n$ эквивалентна одной из трёх: тривиальной, точной $\\mathbb Z$-градуировке или $\\mathbb Z_i$-градуировке по остаткам номеров базисных векторов.\n2. Для каждой градуировки выписан явный минимальный базис градуированных тождеств; над конечным полем к нему добавляются ещё несколько тождеств.\n3. То же сделано для обычных, неградуированных тождеств $\\mathcal L_0^n$.\n4. Все эти идеалы тождеств обладают свойством Шпехта: любой больший идеал тождеств тоже конечно порождён.\n5. Результаты переносятся на бесконечномерный аналог $\\mathcal L_0^\\infty$.",
+  "brief_en": "The null-filiform Leibniz algebra $\\mathcal L_0^n$ is the unique $n$-dimensional Leibniz algebra of maximal nilpotency index. The paper describes all its gradings and finds explicit bases of its identities — over an arbitrary field.\n\n1. Every abelian-group grading of $\\mathcal L_0^n$ is equivalent to one of three: trivial, the fine $\\mathbb Z$-grading, or a $\\mathbb Z_i$-grading by residues of the basis indices.\n2. For each grading an explicit minimal basis of graded identities is written down; over a finite field a few more identities are added.\n3. The same is done for the ordinary, ungraded identities of $\\mathcal L_0^n$.\n4. All these ideals of identities have the Specht property: every larger ideal of identities is finitely generated too.\n5. The results carry over to the infinite-dimensional analog $\\mathcal L_0^\\infty$.",
   "source_document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
   "entities": [
     {
@@ -18,7 +20,7 @@
       "source": {
         "label": "Введение (Loday 1993, Bloh 1965)",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 60
+        "page": 2
       }
     },
     {
@@ -34,7 +36,7 @@
       "source": {
         "label": "§2, Замечание 2.1",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 61
+        "page": 3
       }
     },
     {
@@ -50,7 +52,7 @@
       "source": {
         "label": "Определение 2.2, Лемма 2.3 (Ayupov-Omirov 2001)",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 62
+        "page": 4
       }
     },
     {
@@ -66,7 +68,7 @@
       "source": {
         "label": "§2, определения перед Определением 3.1",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 63
+        "page": 5
       }
     },
     {
@@ -82,7 +84,7 @@
       "source": {
         "label": "§2, определения перед §3",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 64
+        "page": 6
       }
     },
     {
@@ -98,7 +100,7 @@
       "source": {
         "label": "§5, Определение 5.1 (проблема Шпехта: Кемер)",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 81
+        "page": 23
       }
     },
     {
@@ -116,7 +118,7 @@
       "source": {
         "label": "Лемма 3.2 (Calderón et al. 2021), Теорема 3.3",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 65
+        "page": 7
       }
     },
     {
@@ -132,7 +134,7 @@
       "source": {
         "label": "Теорема 4.5, 4.14, 4.18",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 71
+        "page": 13
       }
     },
     {
@@ -148,7 +150,7 @@
       "source": {
         "label": "§5, Теоремы 5.7, 5.12, 5.13 (лемма Хигмана 1952)",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 81
+        "page": 23
       }
     },
     {
@@ -164,7 +166,7 @@
       "source": {
         "label": "§6 (Omirov 2006, «Thin Leibniz algebras»)",
         "document": "2026_-_Gradings_and_graded_identities_of_null-filiform_Leibniz_algebras.pdf",
-        "page": 86
+        "page": 28
       }
     }
   ]

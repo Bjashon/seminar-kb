@@ -38,6 +38,11 @@ class Talk(Base):
     article_pdf_paths: Mapped[list] = mapped_column(JSON, default=list)
     presentation_pdf_paths: Mapped[list] = mapped_column(JSON, default=list)
     source_language: Mapped[str | None] = mapped_column(String(8), nullable=True)
+    # Short summary of the paper's results, shown as the first card of the
+    # paper's board. Authored alongside the extracted entities (see the
+    # "brief_ru"/"brief_en" keys in extracted/*.json).
+    brief_ru: Mapped[str | None] = mapped_column(Text, nullable=True)
+    brief_en: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     season: Mapped["Season"] = relationship(back_populates="talks")
     entities: Mapped[list["Entity"]] = relationship(back_populates="talk")
