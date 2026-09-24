@@ -80,6 +80,9 @@ export interface CanvasNode {
   y: number;
   lang: Lang;
   proofOpen: boolean;
+  /** Per-card size, set by dragging the card's corner: scales the whole
+   *  card, text and formulas included, on top of the canvas zoom. */
+  scale: number;
 }
 
 export interface CanvasEdge {

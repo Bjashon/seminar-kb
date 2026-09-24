@@ -18,6 +18,7 @@ interface Props {
   pendingLayout: string[] | null;
   focus: FocusRequest | null;
   onMove: (slug: string, x: number, y: number) => void;
+  onResize: (slug: string, scale: number) => void;
   onPlaceMany: (positions: Record<string, { x: number; y: number }>) => void;
   onLayoutDone: () => void;
   onClose: (slug: string) => void;
@@ -86,7 +87,7 @@ function edgePointTowards(rect: Rect, tx: number, ty: number): [number, number] 
 
 export function Canvas({
   nodes, edges, details, allEntities, pendingLayout, focus,
-  onMove, onPlaceMany, onLayoutDone, onClose, onSetLang, onToggleProof, onGoto, onOpenSource,
+  onMove, onResize, onPlaceMany, onLayoutDone, onClose, onSetLang, onToggleProof, onGoto, onOpenSource,
 }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -121,6 +122,12 @@ export function Canvas({
 
   const cardEl = (slug: string) =>
     wrapRef.current?.querySelector<HTMLDivElement>(`.node-card[data-slug="${CSS.escape(slug)}"]`) ?? null;
+  // A card's footprint on the canvas: offsetWidth/Height ignore the CSS
+  // transform a resized card is drawn with, so apply its scale here.
+  const cardRect = (el: HTMLDivElement): Rect => {
+    const s = Number(el.dataset.scale) || 1;
+    return { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth * s, h: el.offsetHeight * s };
+  };
 
   const zoomToFit = (box: { r: number; b: number }) => {
     if (box.r <= 0 || box.b <= 0) return 1;
@@ -130,8 +137,9 @@ export function Canvas({
   const contentBox = () => {
     let r = 0, b = 0;
     wrapRef.current?.querySelectorAll<HTMLDivElement>(".node-card").forEach((el) => {
-      r = Math.max(r, el.offsetLeft + el.offsetWidth);
-      b = Math.max(b, el.offsetTop + el.offsetHeight);
+      const c = cardRect(el);
+      r = Math.max(r, c.x + c.w);
+      b = Math.max(b, c.y + c.h);
     });
     return { r, b };
   };
@@ -144,8 +152,7 @@ export function Canvas({
     const recompute = () => {
       const rectFor = (slug: string): Rect | null => {
         const el = cardEl(slug);
-        if (!el) return null;
-        return { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight };
+        return el ? cardRect(el) : null;
       };
       const next = edges
         .map((edge) => {
@@ -191,8 +198,10 @@ export function Canvas({
       const sizes = new Map<string, Size>();
       for (const slug of pendingLayout) {
         const el = cardEl(slug);
-        if (el) sizes.set(slug, { w: el.offsetWidth, h: el.offsetHeight });
-        else if (requireAll) return null;
+        if (el) {
+          const c = cardRect(el);
+          sizes.set(slug, { w: c.w, h: c.h });
+        } else if (requireAll) return null;
       }
       const order = pendingLayout.filter((s) => sizes.has(s));
       const { w, h } = viewRef.current;
@@ -241,7 +250,8 @@ export function Canvas({
       setTopSlug(focus.slug);
       const { w, h } = viewRef.current;
       const z = zoomRef.current;
-      if (el.offsetLeft + el.offsetWidth > w / z || el.offsetTop + el.offsetHeight > h / z) shrinkToShowAll();
+      const c = cardRect(el);
+      if (c.x + c.w > w / z || c.y + c.h > h / z) shrinkToShowAll();
       el.classList.remove("flash");
       void el.offsetWidth;
       el.classList.add("flash");
@@ -292,6 +302,7 @@ export function Canvas({
               onToggleEnlarge={toggleEnlarge}
               onRaise={setTopSlug}
               onMove={onMove}
+              onResize={onResize}
               onClose={onClose}
               onSetLang={onSetLang}
               onToggleProof={onToggleProof}

@@ -86,7 +86,7 @@ export default function App() {
           x = SPAWN_ORIGIN_X + (i % SPAWN_COLS) * SPAWN_STEP_X;
           y = SPAWN_ORIGIN_Y + Math.floor(i / SPAWN_COLS) * SPAWN_STEP_Y;
         }
-        return [...prev, { slug: toSlug, x, y, lang: "ru" as Lang, proofOpen: false }];
+        return [...prev, { slug: toSlug, x, y, lang: "ru" as Lang, proofOpen: false, scale: 1 }];
       });
       if (fromSlug && fromSlug !== toSlug) {
         setEdges((prev) =>
@@ -121,7 +121,7 @@ export default function App() {
           setDetails((prev) => ({ ...prev, [briefSlug]: brief }));
           slugs = [briefSlug, ...slugs];
         }
-        setNodes(slugs.map((slug, i) => ({ slug, x: 40, y: 40 + i * 4, lang: "ru" as Lang, proofOpen: false })));
+        setNodes(slugs.map((slug, i) => ({ slug, x: 40, y: 40 + i * 4, lang: "ru" as Lang, proofOpen: false, scale: 1 })));
         setEdges(board.edges.map((e) => ({ from: e.from_slug, to: e.to_slug })));
         setPendingLayout(slugs);
         setMode("reader");
@@ -135,6 +135,9 @@ export default function App() {
   }, []);
   const setNodeLang = useCallback((slug: string, lang: Lang) => {
     setNodes((prev) => prev.map((n) => (n.slug === slug ? { ...n, lang } : n)));
+  }, []);
+  const setNodeScale = useCallback((slug: string, scale: number) => {
+    setNodes((prev) => prev.map((n) => (n.slug === slug ? { ...n, scale } : n)));
   }, []);
   const toggleProof = useCallback((slug: string) => {
     setNodes((prev) => prev.map((n) => (n.slug === slug ? { ...n, proofOpen: !n.proofOpen } : n)));
@@ -198,6 +201,7 @@ export default function App() {
               focus={focus}
               onPlaceMany={placeMany}
               onLayoutDone={layoutDone}
+              onResize={setNodeScale}
               onMove={moveNode}
               onClose={closeNode}
               onSetLang={setNodeLang}

@@ -57,9 +57,12 @@ button { font-family: inherit; }
 .node-card.flash { animation: card-flash 1.6s ease-out; }
 @keyframes card-flash { 0%, 35% { box-shadow: 0 0 0 4px var(--accent), 0 6px 22px -6px rgba(0,0,0,.22); } 100% { box-shadow: 0 6px 22px -6px rgba(0,0,0,.22); } }
 .node-card { position: absolute; width: fit-content; min-width: 440px; max-width: min(90vw, 640px); background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 6px 22px -6px rgba(0,0,0,.22); overflow: hidden; }
-.node-card.dragging { box-shadow: 0 12px 32px -6px rgba(0,0,0,.3); z-index: 5; }
-.node-drag-handle { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 0; cursor: grab; touch-action: none; user-select: none; }
-.node-drag-handle:active { cursor: grabbing; }
+.node-card.dragging { box-shadow: 0 12px 32px -6px rgba(0,0,0,.3); z-index: 5; cursor: grabbing; user-select: none; }
+.node-card { cursor: grab; touch-action: none; }
+.node-drag-handle { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 0; user-select: none; }
+.node-resize { position: absolute; right: 0; bottom: 0; width: 20px; height: 20px; cursor: nwse-resize; touch-action: none;
+  background: linear-gradient(135deg, transparent 0 55%, var(--border) 55% 62%, transparent 62% 72%, var(--border) 72% 79%, transparent 79%); }
+.node-resize:hover { background: linear-gradient(135deg, transparent 0 55%, var(--ink-soft) 55% 62%, transparent 62% 72%, var(--ink-soft) 72% 79%, transparent 79%); }
 .node-body { padding: 6px 20px 20px; }
 .node-close { background: none; border: none; font-size: 16px; color: var(--link-missing); cursor: pointer; line-height: 1; padding: 2px; }
 .node-close:hover { color: var(--ink-soft); }
