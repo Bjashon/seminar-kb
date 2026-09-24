@@ -51,6 +51,17 @@ class BoardEdgeOut(BaseModel):
     to_slug: str
 
 
+class ProjectSummaryOut(BaseModel):
+    slug: str
+    title: str
+
+
+class ProjectOut(BaseModel):
+    slug: str
+    title: str
+    body_md: str
+
+
 class TalkPartOut(BaseModel):
     episode_code: str
     date: date | None

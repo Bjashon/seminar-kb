@@ -43,6 +43,15 @@ export interface EntityDetail {
   used_by: LinkRef[];
 }
 
+export interface ProjectSummary {
+  slug: string;
+  title: string;
+}
+
+export interface Project extends ProjectSummary {
+  body_md: string;
+}
+
 export interface Board {
   slugs: string[];
   edges: { from_slug: string; to_slug: string }[];

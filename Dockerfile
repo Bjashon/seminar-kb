@@ -14,6 +14,7 @@ COPY backend/ backend/
 RUN pip install --no-cache-dir "./backend[postgres]"
 
 COPY data/ data/
+COPY projects/ projects/
 COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 
 WORKDIR /app/backend

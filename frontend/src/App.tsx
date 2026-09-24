@@ -5,9 +5,10 @@ import { Canvas, type FocusRequest } from "./Canvas";
 import { formatDate } from "./dates";
 import { IndexPage } from "./IndexPage";
 import { Trainer } from "./Trainer";
+import { ProjectsPage } from "./ProjectsPage";
 import { SourcePanel } from "./SourcePanel";
 
-type Mode = "reader" | "index" | "trainer";
+type Mode = "reader" | "index" | "trainer" | "projects";
 
 // New-card spawn positions cycle through a small grid anchored near the
 // canvas origin, instead of drifting indefinitely (fromNode.x + 470 forever,
@@ -182,6 +183,7 @@ export default function App() {
           <button aria-selected={mode === "reader"} onClick={() => setMode("reader")}>Карточки</button>
           <button aria-selected={mode === "index"} onClick={() => setMode("index")}>Указатель</button>
           <button aria-selected={mode === "trainer"} onClick={() => setMode("trainer")}>Тренажёр</button>
+          <button aria-selected={mode === "projects"} onClick={() => setMode("projects")}>Статьи</button>
         </nav>
       </div>
       <div className="layout">
@@ -223,6 +225,9 @@ export default function App() {
                 onOpenBoard={openBoard}
               />
             </div>
+          </div>
+          <div className="main-pane" hidden={mode !== "projects"}>
+            <ProjectsPage allEntities={entities} onOpen={openFromIndex} />
           </div>
         </main>
         {sourceDetail && <SourcePanel detail={sourceDetail} onClose={closeSource} />}
