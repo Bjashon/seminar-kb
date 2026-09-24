@@ -1,0 +1,315 @@
+{
+  "episode_code": "s07_ep40",
+  "source_language": "en",
+  "source_note": "Hao, Chen, \"Local derivations is a Lie algebra\" (preprint 2026), talk 2026-11-02. Short paper (8 pages of text); all vector spaces finite-dimensional over C. Extracted per the usual rule: the definitions needed to state the results (derivation and Lie subalgebra/ideal as foundational bricks; local derivation, Schafer inner derivation, almost inner derivation, Leibniz derivations of order n with their local versions), except the algebraic reflexive hull (Definition 2.1): it is identical in the companion paper and is defined in s07_ep41.json, so this file depends on it by title; Remark 2.2 (LocDer = Ref_a(Der), AID = Der ∩ Ref_a(Inn)) is placed in the local-derivation and almost-inner-derivation entries. the key normalizer lemma (2.6) and the main theorem (2.7) with full proofs, and the corollaries. Condensed: Lemmas 2.3-2.5 (conjugation invariance of the hull and two standard matrix-exponential facts from Hall) are folded into the proof of Lemma 2.6; Lemma 2.16 is folded into Theorem 2.17 with a condensed proof; Theorems 2.8 and 2.11 are merged; Theorem 2.12 is merged with its corollaries 2.13/2.15; the list of other derivation types in Remark 2.9 (generalized, quasi-, pre-, N-, delta-derivations) is only named, not defined. The antiderivation counterexample of Remark 2.9 is kept as a property (checked by exact computation). Added by the extractor, not in the paper: the 2-dimensional example of a non-derivation local derivation, the rank-one-projection remark on why linearity of E matters, and the Dixmier-Lister remark (all verified). The local-automorphism half of the Ayupov-Elduque-Kudaybergenov question stays open (mentioned, not extracted as a problem).",
+  "bibliography": "Hao Z., Chen L. — «Local derivations is a Lie algebra» (preprint, 2026)",
+  "brief_ru": "Локальное дифференцирование в каждой точке совпадает с некоторым дифференцированием, своим для каждой точки. Аюпов, Эльдуке и Кудайбергенов спросили, образуют ли такие отображения алгебру Ли. Ответ — да; главный инструмент — алгебраическая рефлексивная оболочка $\\operatorname{Ref}_a(E)$.\n\n1. Если $E\\subseteq\\operatorname{End}(V)$ — подалгебра Ли, то $\\operatorname{Ref}_a(E)$ — тоже.\n2. Поэтому $\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A))$ — алгебра Ли.\n3. Если $D$ — почти внутреннее дифференцирование, а $D'$ — любое дифференцирование, то $[D',D]$ снова почти внутреннее. Это новое доказательство гипотезы Бурде–Декимпе–Вербеке.\n4. Алгебра имеет обратимое локальное дифференцирование $\\iff$ она имеет обратимое дифференцирование.\n5. То же верно, если заменить обычное дифференцирование на дифференцирование Лейбница порядка n. С теоремой Моэнса: алгебра Ли нильпотентна $\\iff$ у неё есть обратимое локальное дифференцирование Лейбница некоторого порядка.",
+  "brief_en": "A local derivation agrees at each point with some derivation, possibly a different one at each point. Ayupov, Elduque and Kudaybergenov asked whether such maps form a Lie algebra. The answer is yes; the main tool is the algebraic reflexive hull $\\operatorname{Ref}_a(E)$.\n\n1. If $E\\subseteq\\operatorname{End}(V)$ is a Lie subalgebra, so is $\\operatorname{Ref}_a(E)$.\n2. Hence $\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A))$ is a Lie algebra.\n3. The commutator of an almost inner derivation with any derivation is again almost inner. This is a new proof of the Burde–Dekimpe–Verbeke conjecture.\n4. An algebra has an invertible local derivation iff it has an invertible derivation.\n5. The same holds for each Leibniz derivation of order n. With Moens' theorem: a Lie algebra is nilpotent iff it has an invertible local Leibniz derivation of some order.",
+  "source_document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "derivation-of-an-algebra",
+      "title_en": "Derivation of an algebra",
+      "title_ru": "Дифференцирование алгебры",
+      "statement_en": "Let $A$ be an algebra over a field $F$. A linear map $D:A\\to A$ is a **derivation** of $A$ if it satisfies the Leibniz rule\n$$D(xy)=D(x)\\,y+x\\,D(y)\\qquad\\forall x,y\\in A.$$\n\nThe set of all derivations is denoted $\\operatorname{Der}(A)$. It is a linear subspace of $\\operatorname{End}(A)$.\n\nMoreover, $\\operatorname{Der}(A)$ is closed under the commutator $[D_1,D_2]=D_1D_2-D_2D_1$. Expand $D_1D_2(xy)$ and subtract $D_2D_1(xy)$: the mixed terms $D_1(x)D_2(y)+D_2(x)D_1(y)$ cancel, and what remains is\n$$[D_1,D_2](xy)=[D_1,D_2](x)\\,y+x\\,[D_1,D_2](y).$$\nSo $\\operatorname{Der}(A)$ is a Lie subalgebra of $\\operatorname{End}(A)$, the *derivation algebra* of $A$.\n\nIntuition: for a finite-dimensional $A$ over $\\mathbb C$, if $D$ is a derivation then $e^{tD}$ is an automorphism of $A$ for every $t$. Derivations are the \"infinitesimal symmetries\" of the algebra.\n\nFor an algebra with several multilinear operations $\\mu_\\lambda:A^{n_\\lambda}\\to A$ (possibly of different arities), $D$ is a derivation if for every $\\lambda$\n$$D\\bigl(\\mu_\\lambda(x_1,\\dots,x_{n_\\lambda})\\bigr)=\\sum_{i=1}^{n_\\lambda}\\mu_\\lambda(x_1,\\dots,D(x_i),\\dots,x_{n_\\lambda}),$$\nand $\\operatorname{Der}(A)$ is again a Lie subalgebra of $\\operatorname{End}(A)$.",
+      "statement_ru": "Пусть $A$ — алгебра над полем $F$. Линейное отображение $D:A\\to A$ называется **дифференцированием** алгебры $A$, если оно удовлетворяет правилу Лейбница\n$$D(xy)=D(x)\\,y+x\\,D(y)\\qquad\\forall x,y\\in A.$$\n\nМножество всех дифференцирований обозначается $\\operatorname{Der}(A)$. Это линейное подпространство в $\\operatorname{End}(A)$.\n\nБолее того, $\\operatorname{Der}(A)$ замкнуто относительно коммутатора $[D_1,D_2]=D_1D_2-D_2D_1$. Раскроем $D_1D_2(xy)$ и вычтем $D_2D_1(xy)$: смешанные слагаемые $D_1(x)D_2(y)+D_2(x)D_1(y)$ сокращаются, и остаётся\n$$[D_1,D_2](xy)=[D_1,D_2](x)\\,y+x\\,[D_1,D_2](y).$$\nПоэтому $\\operatorname{Der}(A)$ — подалгебра Ли в $\\operatorname{End}(A)$, *алгебра дифференцирований* алгебры $A$.\n\nИнтуиция: для конечномерной $A$ над $\\mathbb C$, если $D$ — дифференцирование, то $e^{tD}$ — автоморфизм $A$ при каждом $t$. Дифференцирования — это «бесконечно малые симметрии» алгебры.\n\nДля алгебры с несколькими полилинейными операциями $\\mu_\\lambda:A^{n_\\lambda}\\to A$ (возможно, разной арности) $D$ называется дифференцированием, если для каждой $\\lambda$\n$$D\\bigl(\\mu_\\lambda(x_1,\\dots,x_{n_\\lambda})\\bigr)=\\sum_{i=1}^{n_\\lambda}\\mu_\\lambda(x_1,\\dots,D(x_i),\\dots,x_{n_\\lambda}),$$\nи $\\operatorname{Der}(A)$ снова является подалгеброй Ли в $\\operatorname{End}(A)$.",
+      "aliases": [
+        "derivation"
+      ],
+      "depends_on": [
+        "Algebra (over a field)",
+        "Commutator (of an associative algebra) • Lie bracket it induces",
+        "Lie subalgebra • Lie ideal"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определение 2.10 (общий случай)",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 5
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "lie-subalgebra-and-lie-ideal",
+      "title_en": "Lie subalgebra • Lie ideal",
+      "title_ru": "Подалгебра Ли • идеал Ли",
+      "statement_en": "Let $(\\mathfrak g,[\\cdot,\\cdot])$ be a Lie algebra. A linear subspace $\\mathfrak h\\subseteq\\mathfrak g$ is a **Lie subalgebra** if it is closed under the bracket:\n$$[\\mathfrak h,\\mathfrak h]\\subseteq\\mathfrak h.$$\n\nA subspace $I\\subseteq\\mathfrak g$ is a **Lie ideal** if the bracket with any element of $\\mathfrak g$ stays inside it:\n$$[\\mathfrak g,I]\\subseteq I.$$\nEvery Lie ideal is a Lie subalgebra, and the quotient $\\mathfrak g/I$ is again a Lie algebra.\n\nThe main example in this topic: for a vector space $V$, the space $\\operatorname{End}(V)$ of all linear operators with the commutator\n$$[f,g]=fg-gf$$\nis a Lie algebra, denoted $\\mathfrak{gl}(V)$.\n\nA \"Lie subalgebra of $\\operatorname{End}(V)$\" is a subspace $E$ with $fg-gf\\in E$ for all $f,g\\in E$. It does *not* have to be closed under the composition $fg$ itself.",
+      "statement_ru": "Пусть $(\\mathfrak g,[\\cdot,\\cdot])$ — алгебра Ли. Линейное подпространство $\\mathfrak h\\subseteq\\mathfrak g$ называется **подалгеброй Ли**, если оно замкнуто относительно скобки:\n$$[\\mathfrak h,\\mathfrak h]\\subseteq\\mathfrak h.$$\n\nПодпространство $I\\subseteq\\mathfrak g$ называется **идеалом Ли**, если скобка с любым элементом $\\mathfrak g$ не выводит из него:\n$$[\\mathfrak g,I]\\subseteq I.$$\nЛюбой идеал Ли — подалгебра Ли, а факторпространство $\\mathfrak g/I$ снова является алгеброй Ли.\n\nГлавный пример в этой теме: для векторного пространства $V$ пространство $\\operatorname{End}(V)$ всех линейных операторов с коммутатором\n$$[f,g]=fg-gf$$\nявляется алгеброй Ли; она обозначается $\\mathfrak{gl}(V)$.\n\n«Подалгебра Ли в $\\operatorname{End}(V)$» — это подпространство $E$, для которого $fg-gf\\in E$ при всех $f,g\\in E$. Замкнутость относительно самой композиции $fg$ при этом *не* требуется.",
+      "aliases": [
+        "Lie subalgebra",
+        "Lie ideal"
+      ],
+      "depends_on": [
+        "Lie algebra",
+        "Commutator (of an associative algebra) • Lie bracket it induces"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Общее понятие (использовано в §2)",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 3
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "local-derivation",
+      "title_en": "Local derivation",
+      "title_ru": "Локальное дифференцирование",
+      "statement_en": "Let $A$ be an algebra. A linear map $\\Delta:A\\to A$ is a **local derivation** if for every $x\\in A$ there exists a derivation $D_x\\in\\operatorname{Der}(A)$, depending on $x$, such that\n$$\\Delta(x)=D_x(x).$$\nThe set of all local derivations is denoted $\\operatorname{LocDer}(A)$.\n\nIn words: at each single point, $\\Delta$ looks like some derivation. But the derivation may change from point to point. Linearity of $\\Delta$ is part of the definition; it does not follow from the pointwise condition.\n\nIn the language of reflexive hulls this says exactly\n$$\\operatorname{LocDer}(A)=\\operatorname{Ref}_a\\bigl(\\operatorname{Der}(A)\\bigr).$$\n\nEvery derivation is local (take $D_x=\\Delta$), so $\\operatorname{Der}(A)\\subseteq\\operatorname{LocDer}(A)$. The converse fails in general.\n\n*Example.* Let $A$ have basis $e_1,e_2$ with $e_1e_1=e_2$ and all other products zero. The Leibniz rule forces every derivation to have the form $D(e_1)=ae_1+be_2$, $D(e_2)=2ae_2$. The map $\\Delta(e_1)=e_1$, $\\Delta(e_2)=0$ is not a derivation:\n$$\\Delta(e_1e_1)=0\\ne 2e_2=\\Delta(e_1)e_1+e_1\\Delta(e_1).$$\nBut it is local. For $x=\\alpha e_1+\\beta e_2$ with $\\alpha\\ne0$ take $a=1$, $b=-2\\beta/\\alpha$; for $\\alpha=0$ take $D_x=0$.\n\nThe same definition works for algebras with several multilinear operations, using the corresponding notion of derivation. Local derivations come from operator algebras (Kadison 1990; Larson–Sourour 1990).",
+      "statement_ru": "Пусть $A$ — алгебра. Линейное отображение $\\Delta:A\\to A$ называется **локальным дифференцированием**, если для каждого $x\\in A$ найдётся дифференцирование $D_x\\in\\operatorname{Der}(A)$, зависящее от $x$, такое что\n$$\\Delta(x)=D_x(x).$$\nМножество всех локальных дифференцирований обозначается $\\operatorname{LocDer}(A)$.\n\nИначе говоря: в каждой отдельной точке $\\Delta$ выглядит как некоторое дифференцирование. Но это дифференцирование может меняться от точки к точке. Линейность $\\Delta$ входит в определение; из поточечного условия она не следует.\n\nНа языке рефлексивных оболочек это ровно\n$$\\operatorname{LocDer}(A)=\\operatorname{Ref}_a\\bigl(\\operatorname{Der}(A)\\bigr).$$\n\nЛюбое дифференцирование локально (возьмём $D_x=\\Delta$), так что $\\operatorname{Der}(A)\\subseteq\\operatorname{LocDer}(A)$. Обратное в общем случае неверно.\n\n*Пример.* Пусть у $A$ базис $e_1,e_2$, $e_1e_1=e_2$, а остальные произведения нулевые. Из правила Лейбница следует, что любое дифференцирование имеет вид $D(e_1)=ae_1+be_2$, $D(e_2)=2ae_2$. Отображение $\\Delta(e_1)=e_1$, $\\Delta(e_2)=0$ не является дифференцированием:\n$$\\Delta(e_1e_1)=0\\ne 2e_2=\\Delta(e_1)e_1+e_1\\Delta(e_1).$$\nНо оно локально. Для $x=\\alpha e_1+\\beta e_2$ при $\\alpha\\ne0$ берём $a=1$, $b=-2\\beta/\\alpha$; при $\\alpha=0$ берём $D_x=0$.\n\nТо же определение работает для алгебр с несколькими полилинейными операциями (с соответствующим понятием дифференцирования). Локальные дифференцирования пришли из теории операторных алгебр (Кэдисон 1990; Ларсон–Сурур 1990).",
+      "depends_on": [
+        "Derivation of an algebra",
+        "Algebraic reflexive hull"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Введение; Определение 2.10",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 1
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "inner-derivation-schafer",
+      "title_en": "Inner derivation (Schafer)",
+      "title_ru": "Внутреннее дифференцирование (по Шаферу)",
+      "statement_en": "For an algebra $A$ and $x\\in A$, let $L_x(y)=xy$ and $R_x(y)=yx$ be the left and right multiplication operators. Let\n$$\\mathfrak L(A)=\\operatorname{Lie}\\langle L_x,R_x\\mid x\\in A\\rangle\\subseteq\\operatorname{End}(A)$$\nbe the Lie subalgebra of $\\operatorname{End}(A)$ generated by all of them (the *Lie transformation algebra* of $A$). The **inner derivations** of $A$ in the sense of Schafer are the derivations lying in it:\n$$\\operatorname{InnDer}(A)=\\operatorname{Der}(A)\\cap\\mathfrak L(A).$$\n\nSchafer (1949) proved that $\\operatorname{InnDer}(A)$ is always a Lie ideal of $\\operatorname{Der}(A)$.\n\nFor a Lie algebra $L$ this is the familiar notion. The operator $L_x=\\operatorname{ad}_x=[x,\\cdot\\,]$ is a derivation by the Jacobi identity, and $R_x=-\\operatorname{ad}_x$. Since $[\\operatorname{ad}_x,\\operatorname{ad}_y]=\\operatorname{ad}_{[x,y]}$, we get\n$$\\operatorname{InnDer}(L)=\\operatorname{Inn}(L)=\\{\\operatorname{ad}_x\\mid x\\in L\\}.$$\nFor every derivation $D$ one has $[D,\\operatorname{ad}_x]=\\operatorname{ad}_{D(x)}$; this is why $\\operatorname{Inn}(L)$ is an ideal of $\\operatorname{Der}(L)$.",
+      "statement_ru": "Для алгебры $A$ и $x\\in A$ пусть $L_x(y)=xy$ и $R_x(y)=yx$ — операторы левого и правого умножения. Пусть\n$$\\mathfrak L(A)=\\operatorname{Lie}\\langle L_x,R_x\\mid x\\in A\\rangle\\subseteq\\operatorname{End}(A)$$\n— подалгебра Ли в $\\operatorname{End}(A)$, порождённая всеми ими (*алгебра Ли преобразований* алгебры $A$). **Внутренними дифференцированиями** алгебры $A$ в смысле Шафера называются дифференцирования, лежащие в ней:\n$$\\operatorname{InnDer}(A)=\\operatorname{Der}(A)\\cap\\mathfrak L(A).$$\n\nШафер (1949) доказал, что $\\operatorname{InnDer}(A)$ всегда является идеалом Ли в $\\operatorname{Der}(A)$.\n\nДля алгебры Ли $L$ это привычное понятие. Оператор $L_x=\\operatorname{ad}_x=[x,\\cdot\\,]$ — дифференцирование по тождеству Якоби, а $R_x=-\\operatorname{ad}_x$. Так как $[\\operatorname{ad}_x,\\operatorname{ad}_y]=\\operatorname{ad}_{[x,y]}$, получаем\n$$\\operatorname{InnDer}(L)=\\operatorname{Inn}(L)=\\{\\operatorname{ad}_x\\mid x\\in L\\}.$$\nДля любого дифференцирования $D$ выполнено $[D,\\operatorname{ad}_x]=\\operatorname{ad}_{D(x)}$ — поэтому $\\operatorname{Inn}(L)$ является идеалом в $\\operatorname{Der}(L)$.",
+      "depends_on": [
+        "Derivation of an algebra",
+        "Lie subalgebra • Lie ideal",
+        "Lie algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определение 2.14 (Schafer 1949)",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 6
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "almost-inner-derivation",
+      "title_en": "Almost inner derivation",
+      "title_ru": "Почти внутреннее дифференцирование",
+      "statement_en": "Let $L$ be a Lie algebra. A derivation $D\\in\\operatorname{Der}(L)$ is **almost inner** if\n$$D(x)\\in[L,x]\\qquad\\text{for every }x\\in L,$$\nwhere $[L,x]=\\{[y,x]\\mid y\\in L\\}$. Equivalently: at each point $x$, $D$ agrees with some inner derivation $\\operatorname{ad}_{y_x}$, but $y_x$ may depend on $x$. The space of almost inner derivations is denoted $\\operatorname{AID}(L)$.\n\nFor an arbitrary algebra $A$ one uses Schafer's inner derivations: $D\\in\\operatorname{Der}(A)$ is almost inner if for every $x$ there is $D_x\\in\\operatorname{InnDer}(A)$ with $D(x)=D_x(x)$.\n\nIn the language of reflexive hulls:\n$$\\operatorname{AID}(A)=\\operatorname{Der}(A)\\cap\\operatorname{Ref}_a\\bigl(\\operatorname{InnDer}(A)\\bigr).$$\n\nNote the asymmetry with local derivations. An almost inner derivation must be a genuine derivation, while a local derivation is only a linear map. Clearly $\\operatorname{Inn}(L)\\subseteq\\operatorname{AID}(L)\\subseteq\\operatorname{Der}(L)$.\n\nThe notion arose in the work of Gordon and Wilson (1984) on isospectral deformations of compact solvmanifolds.",
+      "statement_ru": "Пусть $L$ — алгебра Ли. Дифференцирование $D\\in\\operatorname{Der}(L)$ называется **почти внутренним**, если\n$$D(x)\\in[L,x]\\qquad\\text{для всех }x\\in L,$$\nгде $[L,x]=\\{[y,x]\\mid y\\in L\\}$. Эквивалентно: в каждой точке $x$ дифференцирование $D$ совпадает с некоторым внутренним дифференцированием $\\operatorname{ad}_{y_x}$, но $y_x$ может зависеть от $x$. Пространство почти внутренних дифференцирований обозначается $\\operatorname{AID}(L)$.\n\nДля произвольной алгебры $A$ используются внутренние дифференцирования по Шаферу: $D\\in\\operatorname{Der}(A)$ почти внутреннее, если для каждого $x$ найдётся $D_x\\in\\operatorname{InnDer}(A)$ с $D(x)=D_x(x)$.\n\nНа языке рефлексивных оболочек:\n$$\\operatorname{AID}(A)=\\operatorname{Der}(A)\\cap\\operatorname{Ref}_a\\bigl(\\operatorname{InnDer}(A)\\bigr).$$\n\nОбратите внимание на асимметрию с локальными дифференцированиями. Почти внутреннее дифференцирование обязано быть настоящим дифференцированием, а локальное — лишь линейным отображением. Ясно, что $\\operatorname{Inn}(L)\\subseteq\\operatorname{AID}(L)\\subseteq\\operatorname{Der}(L)$.\n\nПонятие возникло в работе Гордона и Уилсона (1984) об изоспектральных деформациях компактных солвмногообразий.",
+      "depends_on": [
+        "Derivation of an algebra",
+        "Inner derivation (Schafer)",
+        "Algebraic reflexive hull",
+        "Lie algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Введение; Определение 2.14",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 1
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "leibniz-derivation-of-order-n",
+      "title_en": "Leibniz derivation of order n",
+      "title_ru": "Дифференцирование Лейбница порядка n",
+      "statement_en": "Let $A$ be an algebra and $n\\ge2$. Let $\\mathcal F_n$ be the set of all ways to place brackets in a product of $n$ elements. For $f\\in\\mathcal F_n$ write $[x_1,\\dots,x_n]_f$ for the corresponding product (e.g. for $n=3$ these are $(x_1x_2)x_3$ and $x_1(x_2x_3)$).\n\nA linear map $D:A\\to A$ is a **Leibniz derivation** of order $n$ if for *every* arrangement $f\\in\\mathcal F_n$\n$$D\\bigl([x_1,\\dots,x_n]_f\\bigr)=\\sum_{i=1}^n[x_1,\\dots,D(x_i),\\dots,x_n]_f\\qquad\\forall x_1,\\dots,x_n\\in A.$$\nTheir space is $\\operatorname{LDer}_n(A)$. If the identity is required only for one fixed $f$, then $D$ is an *$f$-Leibniz derivation* (space $\\operatorname{LDer}_f(A)$). Thus\n$$\\operatorname{LDer}_n(A)=\\bigcap_{f\\in\\mathcal F_n}\\operatorname{LDer}_f(A).$$\n\nTwo arrangements have names:\n$$[x_1,\\dots,x_n]_{l(n)}=(\\cdots((x_1x_2)x_3)\\cdots)x_n,\\qquad [x_1,\\dots,x_n]_{r(n)}=x_1(x_2(\\cdots(x_{n-1}x_n)\\cdots)).$$\nThey give *left* and *right Leibniz derivations of order $n$* (\"left/right\" refers only to the brackets). Without a prescribed order: $\\operatorname{LDer}(A)=\\bigcup_{n\\ge2}\\operatorname{LDer}_n(A)$, and similarly $\\operatorname{LDer}_l(A)$, $\\operatorname{LDer}_r(A)$.\n\nFor $n=2$ there is only one arrangement, $x_1x_2$, so $\\operatorname{LDer}_2(A)=\\operatorname{Der}(A)$. Every derivation is a Leibniz derivation of every order (apply the Leibniz rule repeatedly), but not conversely. For example, if all products of length $n$ vanish in $A$, then every linear map, even the identity, is a Leibniz derivation of order $n$. This is why invertible Leibniz derivations detect nilpotency.\n\n*Local versions.* $\\Delta$ is a *local $f$-Leibniz derivation* if for every $x$ there is $D_x\\in\\operatorname{LDer}_f(A)$ with $\\Delta(x)=D_x(x)$; similarly for local Leibniz derivations of order $n$. The order $n$ and the arrangement $f$ are fixed; only $D_x$ depends on $x$. Hence\n$$\\operatorname{LocLDer}_f(A)=\\operatorname{Ref}_a\\bigl(\\operatorname{LDer}_f(A)\\bigr),\\qquad \\operatorname{LocLDer}_n(A)=\\operatorname{Ref}_a\\bigl(\\operatorname{LDer}_n(A)\\bigr),$$\nand $\\operatorname{LocLDer}(A)=\\bigcup_{n\\ge2}\\operatorname{LocLDer}_n(A)$.",
+      "statement_ru": "Пусть $A$ — алгебра и $n\\ge2$. Пусть $\\mathcal F_n$ — множество всех расстановок скобок в произведении $n$ элементов. Для $f\\in\\mathcal F_n$ через $[x_1,\\dots,x_n]_f$ обозначим соответствующее произведение (например, при $n=3$ это $(x_1x_2)x_3$ и $x_1(x_2x_3)$).\n\nЛинейное отображение $D:A\\to A$ называется **дифференцированием Лейбница** порядка $n$, если для *каждой* расстановки $f\\in\\mathcal F_n$\n$$D\\bigl([x_1,\\dots,x_n]_f\\bigr)=\\sum_{i=1}^n[x_1,\\dots,D(x_i),\\dots,x_n]_f\\qquad\\forall x_1,\\dots,x_n\\in A.$$\nИх пространство — $\\operatorname{LDer}_n(A)$. Если тождество требуется только для одной фиксированной $f$, то $D$ называется *$f$-дифференцированием Лейбница* (пространство $\\operatorname{LDer}_f(A)$). Таким образом,\n$$\\operatorname{LDer}_n(A)=\\bigcap_{f\\in\\mathcal F_n}\\operatorname{LDer}_f(A).$$\n\nДве расстановки имеют имена:\n$$[x_1,\\dots,x_n]_{l(n)}=(\\cdots((x_1x_2)x_3)\\cdots)x_n,\\qquad [x_1,\\dots,x_n]_{r(n)}=x_1(x_2(\\cdots(x_{n-1}x_n)\\cdots)).$$\nОни дают *левые* и *правые дифференцирования Лейбница порядка $n$* («левые/правые» относится только к скобкам). Без фиксированного порядка: $\\operatorname{LDer}(A)=\\bigcup_{n\\ge2}\\operatorname{LDer}_n(A)$, аналогично $\\operatorname{LDer}_l(A)$, $\\operatorname{LDer}_r(A)$.\n\nПри $n=2$ расстановка одна, $x_1x_2$, так что $\\operatorname{LDer}_2(A)=\\operatorname{Der}(A)$. Любое дифференцирование является дифференцированием Лейбница любого порядка (правило Лейбница применяется многократно), но не наоборот. Например, если в $A$ все произведения длины $n$ равны нулю, то любое линейное отображение, даже тождественное, — дифференцирование Лейбница порядка $n$. Именно поэтому обратимые дифференцирования Лейбница улавливают нильпотентность.\n\n*Локальные версии.* $\\Delta$ называется *локальным $f$-дифференцированием Лейбница*, если для каждого $x$ найдётся $D_x\\in\\operatorname{LDer}_f(A)$ с $\\Delta(x)=D_x(x)$; аналогично для локальных дифференцирований Лейбница порядка $n$. Порядок $n$ и расстановка $f$ фиксированы; от $x$ зависит только $D_x$. Поэтому\n$$\\operatorname{LocLDer}_f(A)=\\operatorname{Ref}_a\\bigl(\\operatorname{LDer}_f(A)\\bigr),\\qquad \\operatorname{LocLDer}_n(A)=\\operatorname{Ref}_a\\bigl(\\operatorname{LDer}_n(A)\\bigr),$$\nа $\\operatorname{LocLDer}(A)=\\bigcup_{n\\ge2}\\operatorname{LocLDer}_n(A)$.",
+      "depends_on": [
+        "Derivation of an algebra",
+        "Local derivation",
+        "Algebraic reflexive hull"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определения 2.19–2.21 (Kaygorodov–Popov 2016)",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 7
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "normalizer-normalizes-reflexive-hull",
+      "title_en": "The normalizer of a subspace normalizes its reflexive hull",
+      "title_ru": "Нормализатор подпространства нормализует его рефлексивную оболочку",
+      "statement_en": "Let $V$ be finite-dimensional over $\\mathbb C$ and $E\\subseteq\\operatorname{End}(V)$ a linear subspace. Its **normalizer** in $\\operatorname{End}(V)$ is\n$$N(E):=\\{g\\in\\operatorname{End}(V)\\mid [g,E]\\subseteq E\\}.$$\nThen\n$$N(E)\\subseteq N\\bigl(\\operatorname{Ref}_a(E)\\bigr),$$\ni.e. if $[f,E]\\subseteq E$, then also $[f,\\operatorname{Ref}_a(E)]\\subseteq\\operatorname{Ref}_a(E)$.\n\nThis is the key lemma of the paper. An operator that \"preserves\" $E$ under the commutator automatically preserves its hull.",
+      "statement_ru": "Пусть $V$ — конечномерное пространство над $\\mathbb C$ и $E\\subseteq\\operatorname{End}(V)$ — линейное подпространство. Его **нормализатор** в $\\operatorname{End}(V)$ — это\n$$N(E):=\\{g\\in\\operatorname{End}(V)\\mid [g,E]\\subseteq E\\}.$$\nТогда\n$$N(E)\\subseteq N\\bigl(\\operatorname{Ref}_a(E)\\bigr),$$\nто есть если $[f,E]\\subseteq E$, то и $[f,\\operatorname{Ref}_a(E)]\\subseteq\\operatorname{Ref}_a(E)$.\n\nЭто ключевая лемма статьи. Оператор, который «сохраняет» $E$ относительно коммутатора, автоматически сохраняет и его оболочку.",
+      "proof_en": "Idea: pass from the Lie algebra to the group via the exponential, then differentiate back.\n\n*Step 1 (conjugation).* If $g\\in\\operatorname{GL}(V)$ and $gEg^{-1}\\subseteq E$, then $g\\operatorname{Ref}_a(E)g^{-1}\\subseteq\\operatorname{Ref}_a(E)$. Indeed, for $h\\in\\operatorname{Ref}_a(E)$ and $v\\in V$ pick $m\\in E$ with $h(g^{-1}v)=m(g^{-1}v)$. Then\n$$ghg^{-1}(v)=(gmg^{-1})(v)\\in E(v).$$\n\n*Step 2 (exponentiate).* $[f,E]\\subseteq E$ means $\\operatorname{ad}_f(E)\\subseteq E$, hence $e^{t\\operatorname{ad}_f}(E)\\subseteq E$ for all $t\\in\\mathbb C$. By the standard identity\n$$e^{tf}\\,X\\,e^{-tf}=e^{t\\operatorname{ad}_f}(X)\\qquad(X\\in\\operatorname{End}(V))$$\nwe get $e^{tf}Ee^{-tf}\\subseteq E$. Step 1 with the invertible $e^{tf}$ gives $e^{tf}\\operatorname{Ref}_a(E)e^{-tf}\\subseteq\\operatorname{Ref}_a(E)$.\n\n*Step 3 (differentiate).* Fix $m\\in\\operatorname{Ref}_a(E)$. The curve $t\\mapsto e^{tf}me^{-tf}$ lies in the finite-dimensional (hence closed) subspace $\\operatorname{Ref}_a(E)$. So its derivative at $t=0$ lies there too:\n$$\\frac{d}{dt}\\Big|_{t=0}e^{tf}me^{-tf}=[f,m]\\in\\operatorname{Ref}_a(E).\\qquad\\square$$",
+      "proof_ru": "Идея: перейти от алгебры Ли к группе через экспоненту, а затем продифференцировать обратно.\n\n*Шаг 1 (сопряжение).* Если $g\\in\\operatorname{GL}(V)$ и $gEg^{-1}\\subseteq E$, то $g\\operatorname{Ref}_a(E)g^{-1}\\subseteq\\operatorname{Ref}_a(E)$. Действительно, для $h\\in\\operatorname{Ref}_a(E)$ и $v\\in V$ выберем $m\\in E$ с $h(g^{-1}v)=m(g^{-1}v)$. Тогда\n$$ghg^{-1}(v)=(gmg^{-1})(v)\\in E(v).$$\n\n*Шаг 2 (экспонента).* Условие $[f,E]\\subseteq E$ означает $\\operatorname{ad}_f(E)\\subseteq E$, откуда $e^{t\\operatorname{ad}_f}(E)\\subseteq E$ при всех $t\\in\\mathbb C$. По стандартному тождеству\n$$e^{tf}\\,X\\,e^{-tf}=e^{t\\operatorname{ad}_f}(X)\\qquad(X\\in\\operatorname{End}(V))$$\nполучаем $e^{tf}Ee^{-tf}\\subseteq E$. Шаг 1 для обратимого $e^{tf}$ даёт $e^{tf}\\operatorname{Ref}_a(E)e^{-tf}\\subseteq\\operatorname{Ref}_a(E)$.\n\n*Шаг 3 (производная).* Зафиксируем $m\\in\\operatorname{Ref}_a(E)$. Кривая $t\\mapsto e^{tf}me^{-tf}$ лежит в конечномерном (а значит, замкнутом) подпространстве $\\operatorname{Ref}_a(E)$. Поэтому там же лежит и её производная в нуле:\n$$\\frac{d}{dt}\\Big|_{t=0}e^{tf}me^{-tf}=[f,m]\\in\\operatorname{Ref}_a(E).\\qquad\\square$$",
+      "depends_on": [
+        "Algebraic reflexive hull",
+        "Commutator (of an associative algebra) • Lie bracket it induces"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Лемма 2.6 (с Леммами 2.3–2.5)",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "reflexive-hull-of-lie-subalgebra-is-lie-subalgebra",
+      "title_en": "The reflexive hull of a Lie subalgebra is a Lie subalgebra",
+      "title_ru": "Рефлексивная оболочка подалгебры Ли — подалгебра Ли",
+      "statement_en": "Let $V$ be a finite-dimensional vector space over $\\mathbb C$. If $E\\subseteq\\operatorname{End}(V)$ is a Lie subalgebra (for $[f,g]=fg-gf$), then its algebraic reflexive hull $\\operatorname{Ref}_a(E)$ is also a Lie subalgebra of $\\operatorname{End}(V)$:\n$$f,g\\in\\operatorname{Ref}_a(E)\\ \\Longrightarrow\\ [f,g]\\in\\operatorname{Ref}_a(E).$$\n\nThis is the main result of the paper. The difficulty: at the point $v$, $f$ and $g$ agree with operators $m,n\\in E$ that depend on $v$. But\n$$[f,g](v)=f(g(v))-g(f(v))$$\nalso involves $f$ and $g$ at the *other* points $g(v)$ and $f(v)$.",
+      "statement_ru": "Пусть $V$ — конечномерное векторное пространство над $\\mathbb C$. Если $E\\subseteq\\operatorname{End}(V)$ — подалгебра Ли (относительно $[f,g]=fg-gf$), то её алгебраическая рефлексивная оболочка $\\operatorname{Ref}_a(E)$ — тоже подалгебра Ли в $\\operatorname{End}(V)$:\n$$f,g\\in\\operatorname{Ref}_a(E)\\ \\Longrightarrow\\ [f,g]\\in\\operatorname{Ref}_a(E).$$\n\nЭто главный результат статьи. Трудность в следующем: в точке $v$ операторы $f$ и $g$ совпадают с операторами $m,n\\in E$, зависящими от $v$. Но\n$$[f,g](v)=f(g(v))-g(f(v))$$\nзадействует $f$ и $g$ ещё и в *других* точках $g(v)$ и $f(v)$.",
+      "proof_en": "Fix $v\\in V$ and choose $m,n\\in E$ with $f(v)=m(v)$, $g(v)=n(v)$.\n\nSince $E$ is a Lie subalgebra, $E\\subseteq N(E)$. By the normalizer lemma, $E\\subseteq N(\\operatorname{Ref}_a(E))$, so $[n,f]$ and $[m,g]$ lie in $\\operatorname{Ref}_a(E)$. Evaluate them at $v$:\n$$[n,f](v)=n(m(v))-f(g(v))\\in E(v),\\qquad [m,g](v)=m(n(v))-g(f(v))\\in E(v).$$\nAlso $[m,n]\\in E$, so $m(n(v))-n(m(v))\\in E(v)$.\n\nNow split the commutator:\n$$[f,g](v)=\\bigl(f(g(v))-n(m(v))\\bigr)-\\bigl(g(f(v))-m(n(v))\\bigr)+\\bigl(n(m(v))-m(n(v))\\bigr).$$\nAll three brackets lie in the subspace $E(v)$, hence so does $[f,g](v)$. Since $v$ was arbitrary, $[f,g]\\in\\operatorname{Ref}_a(E)$. $\\square$",
+      "proof_ru": "Зафиксируем $v\\in V$ и выберем $m,n\\in E$ с $f(v)=m(v)$, $g(v)=n(v)$.\n\nТак как $E$ — подалгебра Ли, $E\\subseteq N(E)$. По лемме о нормализаторе $E\\subseteq N(\\operatorname{Ref}_a(E))$, поэтому $[n,f]$ и $[m,g]$ лежат в $\\operatorname{Ref}_a(E)$. Вычислим их в точке $v$:\n$$[n,f](v)=n(m(v))-f(g(v))\\in E(v),\\qquad [m,g](v)=m(n(v))-g(f(v))\\in E(v).$$\nКроме того, $[m,n]\\in E$, так что $m(n(v))-n(m(v))\\in E(v)$.\n\nТеперь разложим коммутатор:\n$$[f,g](v)=\\bigl(f(g(v))-n(m(v))\\bigr)-\\bigl(g(f(v))-m(n(v))\\bigr)+\\bigl(n(m(v))-m(n(v))\\bigr).$$\nВсе три скобки лежат в подпространстве $E(v)$, значит, и $[f,g](v)$ тоже. Поскольку $v$ произвольно, $[f,g]\\in\\operatorname{Ref}_a(E)$. $\\square$",
+      "depends_on": [
+        "Algebraic reflexive hull",
+        "Lie subalgebra • Lie ideal",
+        "The normalizer of a subspace normalizes its reflexive hull"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Теорема 2.7",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "local-derivations-form-a-lie-algebra",
+      "title_en": "Local derivations form a Lie algebra",
+      "title_ru": "Локальные дифференцирования образуют алгебру Ли",
+      "statement_en": "Let $A$ be a finite-dimensional algebra over $\\mathbb C$, or more generally a vector space with any family of multilinear operations (possibly of different arities). Then $\\operatorname{LocDer}(A)$ is a Lie algebra under the commutator:\n$$\\Delta_1,\\Delta_2\\in\\operatorname{LocDer}(A)\\ \\Longrightarrow\\ [\\Delta_1,\\Delta_2]=\\Delta_1\\Delta_2-\\Delta_2\\Delta_1\\in\\operatorname{LocDer}(A).$$\n\nThis answers the local-derivation half of a question of Ayupov, Elduque and Kudaybergenov (2023). The other half (whether $\\operatorname{LocAut}(A)$ is a Lie group whose Lie algebra is $\\operatorname{LocDer}(A)$) is not addressed in the paper.\n\nThe same argument works for the \"local version\" $\\operatorname{Ref}_a(E)$ of any class $E$ of derivation-like maps, as long as $E$ is a Lie subalgebra of $\\operatorname{End}(A)$. Examples: generalized derivations and quasiderivations (Leger–Luks), prederivations (Burde), $N$-derivations, $f$-Leibniz derivations, and the spaces\n$$\\operatorname{Der}(A)+\\operatorname{Der}_{-1}(A),\\qquad \\sum_{\\delta}\\operatorname{Der}_\\delta(A)$$\nbuilt from $\\delta$-derivations, i.e. maps with $D(xy)=\\delta\\bigl(D(x)y+xD(y)\\bigr)$.",
+      "statement_ru": "Пусть $A$ — конечномерная алгебра над $\\mathbb C$ или, более общо, векторное пространство с произвольным семейством полилинейных операций (возможно, разной арности). Тогда $\\operatorname{LocDer}(A)$ — алгебра Ли относительно коммутатора:\n$$\\Delta_1,\\Delta_2\\in\\operatorname{LocDer}(A)\\ \\Longrightarrow\\ [\\Delta_1,\\Delta_2]=\\Delta_1\\Delta_2-\\Delta_2\\Delta_1\\in\\operatorname{LocDer}(A).$$\n\nЭто отвечает на ту часть вопроса Аюпова, Эльдуке и Кудайбергенова (2023), которая касается локальных дифференцирований. Вторая часть (является ли $\\operatorname{LocAut}(A)$ группой Ли с алгеброй Ли $\\operatorname{LocDer}(A)$) в статье не рассматривается.\n\nТот же аргумент работает для «локальной версии» $\\operatorname{Ref}_a(E)$ любого класса $E$ отображений типа дифференцирований, если только $E$ — подалгебра Ли в $\\operatorname{End}(A)$. Примеры: обобщённые дифференцирования и квазидифференцирования (Леджер–Лакс), предифференцирования (Бурде), $N$-дифференцирования, $f$-дифференцирования Лейбница, а также пространства\n$$\\operatorname{Der}(A)+\\operatorname{Der}_{-1}(A),\\qquad \\sum_{\\delta}\\operatorname{Der}_\\delta(A),$$\nпостроенные из $\\delta$-дифференцирований, т.е. отображений с $D(xy)=\\delta\\bigl(D(x)y+xD(y)\\bigr)$.",
+      "proof_en": "By definition $\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A))$, and $\\operatorname{Der}(A)$ is a Lie subalgebra of $\\operatorname{End}(A)$. Apply the theorem that the reflexive hull of a Lie subalgebra is a Lie subalgebra. $\\square$",
+      "proof_ru": "По определению $\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A))$, а $\\operatorname{Der}(A)$ — подалгебра Ли в $\\operatorname{End}(A)$. Остаётся применить теорему о том, что рефлексивная оболочка подалгебры Ли — подалгебра Ли. $\\square$",
+      "depends_on": [
+        "Local derivation",
+        "Derivation of an algebra",
+        "The reflexive hull of a Lie subalgebra is a Lie subalgebra",
+        "Local automorphism"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Теоремы 2.8, 2.11; Замечание 2.9",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "local-antiderivations-not-lie-triple-system",
+      "title_en": "Local antiderivations need not form a Lie triple system",
+      "title_ru": "Локальные антидифференцирования не обязаны образовывать тройную систему Ли",
+      "statement_en": "An **antiderivation** of an algebra $A$ is a linear map $D$ with\n$$D(xy)=-D(x)\\,y-x\\,D(y).$$\nTheir space $\\operatorname{Der}_{-1}(A)$ is in general not closed under the commutator. But it is a *Lie triple system* in $\\operatorname{End}(A)$: it is closed under $[[D_1,D_2],D_3]$. (The commutator of two antiderivations is a derivation, and the commutator of a derivation with an antiderivation is an antiderivation.)\n\nThe analogue of the main theorem fails for triple systems. The local antiderivations $\\operatorname{LocDer}_{-1}(A)=\\operatorname{Ref}_a(\\operatorname{Der}_{-1}(A))$ need not be closed under $[[\\cdot,\\cdot],\\cdot]$.\n\n*Counterexample.* Let $L$ be the 4-dimensional Lie algebra with nonzero brackets\n$$[e_4,e_1]=e_1,\\qquad [e_4,e_2]=-e_2,\\qquad [e_4,e_3]=e_3.$$\nIn the basis $e_1,\\dots,e_4$ (column $j$ = image of $e_j$), with all parameters in $\\mathbb C$:\n$$\\operatorname{Der}_{-1}(L)=\\left\\{\\begin{pmatrix}t&a&0&p\\\\ b&t&c&q\\\\ 0&d&t&r\\\\ 0&0&0&-2t\\end{pmatrix}\\right\\},\\qquad \\operatorname{LocDer}_{-1}(L)=\\left\\{\\begin{pmatrix}s&a&0&p\\\\ b&u&c&q\\\\ 0&d&s&r\\\\ 0&0&0&v\\end{pmatrix}\\right\\}.$$\nWith matrix units $E_{ij}$ ($E_{ij}e_j=e_i$), the maps $E_{12},E_{22},E_{21}$ are local antiderivations, but\n$$[[E_{12},E_{22}],E_{21}]=[E_{12},E_{21}]=E_{11}-E_{22}\\notin\\operatorname{LocDer}_{-1}(L),$$\nbecause its entries at positions $(1,1)$ and $(3,3)$ differ.\n\nSo the hypothesis \"Lie subalgebra\" in the main theorem cannot be weakened to \"Lie triple system\".",
+      "statement_ru": "**Антидифференцированием** алгебры $A$ называется линейное отображение $D$ с\n$$D(xy)=-D(x)\\,y-x\\,D(y).$$\nИх пространство $\\operatorname{Der}_{-1}(A)$ в общем случае не замкнуто относительно коммутатора. Но оно является *тройной системой Ли* в $\\operatorname{End}(A)$: оно замкнуто относительно $[[D_1,D_2],D_3]$. (Коммутатор двух антидифференцирований — дифференцирование, а коммутатор дифференцирования с антидифференцированием — антидифференцирование.)\n\nАналог главной теоремы для тройных систем неверен. Локальные антидифференцирования $\\operatorname{LocDer}_{-1}(A)=\\operatorname{Ref}_a(\\operatorname{Der}_{-1}(A))$ не обязаны быть замкнуты относительно $[[\\cdot,\\cdot],\\cdot]$.\n\n*Контрпример.* Пусть $L$ — 4-мерная алгебра Ли с ненулевыми скобками\n$$[e_4,e_1]=e_1,\\qquad [e_4,e_2]=-e_2,\\qquad [e_4,e_3]=e_3.$$\nВ базисе $e_1,\\dots,e_4$ (столбец $j$ — образ $e_j$), все параметры из $\\mathbb C$:\n$$\\operatorname{Der}_{-1}(L)=\\left\\{\\begin{pmatrix}t&a&0&p\\\\ b&t&c&q\\\\ 0&d&t&r\\\\ 0&0&0&-2t\\end{pmatrix}\\right\\},\\qquad \\operatorname{LocDer}_{-1}(L)=\\left\\{\\begin{pmatrix}s&a&0&p\\\\ b&u&c&q\\\\ 0&d&s&r\\\\ 0&0&0&v\\end{pmatrix}\\right\\}.$$\nДля матричных единиц $E_{ij}$ ($E_{ij}e_j=e_i$) отображения $E_{12},E_{22},E_{21}$ — локальные антидифференцирования, но\n$$[[E_{12},E_{22}],E_{21}]=[E_{12},E_{21}]=E_{11}-E_{22}\\notin\\operatorname{LocDer}_{-1}(L),$$\nтак как у этой матрицы разные элементы на местах $(1,1)$ и $(3,3)$.\n\nЗначит, условие «подалгебра Ли» в главной теореме нельзя ослабить до «тройная система Ли».",
+      "depends_on": [
+        "Local derivation",
+        "Algebraic reflexive hull",
+        "The reflexive hull of a Lie subalgebra is a Lie subalgebra",
+        "Lie algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Замечание 2.9 (пример)",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "almost-inner-derivations-form-lie-ideal",
+      "title_en": "Almost inner derivations form a Lie ideal of the derivation algebra",
+      "title_ru": "Почти внутренние дифференцирования образуют идеал Ли в алгебре дифференцирований",
+      "statement_en": "*General principle.* Let $E,F\\subseteq\\operatorname{End}(V)$ be linear subspaces, $F$ a Lie subalgebra, and suppose $[F,E]\\subseteq E$. Then\n$$F\\cap\\operatorname{Ref}_a(E)\\ \\text{ is a Lie ideal of } F.$$\n\n*Application.* For every finite-dimensional algebra $A$ over $\\mathbb C$,\n$$\\operatorname{AID}(A)\\ \\text{ is a Lie ideal of }\\operatorname{Der}(A).$$\nTake $F=\\operatorname{Der}(A)$ and $E=\\operatorname{InnDer}(A)$. Then $F\\cap\\operatorname{Ref}_a(E)=\\operatorname{AID}(A)$, and the condition $[F,E]\\subseteq E$ is Schafer's theorem that inner derivations form an ideal of $\\operatorname{Der}(A)$.\n\nFor Lie algebras this is the conjecture of Burde, Dekimpe and Verbeke (2018). It was known for nilpotent Lie algebras over $\\mathbb C$ (Kunyavskii–Ostapenko) and first proved in general by Serganova and Vaintrob (2026). The reflexive-hull argument gives a short new proof and extends the result to arbitrary algebras.",
+      "statement_ru": "*Общий принцип.* Пусть $E,F\\subseteq\\operatorname{End}(V)$ — линейные подпространства, $F$ — подалгебра Ли и $[F,E]\\subseteq E$. Тогда\n$$F\\cap\\operatorname{Ref}_a(E)\\ \\text{ — идеал Ли в } F.$$\n\n*Применение.* Для любой конечномерной алгебры $A$ над $\\mathbb C$\n$$\\operatorname{AID}(A)\\ \\text{ — идеал Ли в }\\operatorname{Der}(A).$$\nНужно взять $F=\\operatorname{Der}(A)$ и $E=\\operatorname{InnDer}(A)$. Тогда $F\\cap\\operatorname{Ref}_a(E)=\\operatorname{AID}(A)$, а условие $[F,E]\\subseteq E$ — это теорема Шафера о том, что внутренние дифференцирования образуют идеал в $\\operatorname{Der}(A)$.\n\nДля алгебр Ли это гипотеза Бурде, Декимпе и Вербеке (2018). Она была известна для нильпотентных алгебр Ли над $\\mathbb C$ (Кунявский–Остапенко) и впервые доказана в общем случае Сергановой и Вайнтробом (2026). Аргумент с рефлексивными оболочками даёт короткое новое доказательство и переносит результат на произвольные алгебры.",
+      "proof_en": "By hypothesis $F\\subseteq N(E)$. The normalizer lemma gives $F\\subseteq N(\\operatorname{Ref}_a(E))$, i.e.\n$$[F,\\operatorname{Ref}_a(E)]\\subseteq\\operatorname{Ref}_a(E).$$\nHence $[F,F\\cap\\operatorname{Ref}_a(E)]\\subseteq\\operatorname{Ref}_a(E)$. This set also lies in $F$, because $F$ is a Lie subalgebra. Altogether\n$$[F,F\\cap\\operatorname{Ref}_a(E)]\\subseteq F\\cap\\operatorname{Ref}_a(E).\\qquad\\square$$",
+      "proof_ru": "По условию $F\\subseteq N(E)$. Лемма о нормализаторе даёт $F\\subseteq N(\\operatorname{Ref}_a(E))$, то есть\n$$[F,\\operatorname{Ref}_a(E)]\\subseteq\\operatorname{Ref}_a(E).$$\nЗначит, $[F,F\\cap\\operatorname{Ref}_a(E)]\\subseteq\\operatorname{Ref}_a(E)$. С другой стороны, это множество лежит и в $F$, так как $F$ — подалгебра Ли. Итого\n$$[F,F\\cap\\operatorname{Ref}_a(E)]\\subseteq F\\cap\\operatorname{Ref}_a(E).\\qquad\\square$$",
+      "depends_on": [
+        "Almost inner derivation",
+        "Inner derivation (Schafer)",
+        "Lie subalgebra • Lie ideal",
+        "The normalizer of a subspace normalizes its reflexive hull"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Теоремы 2.12, 2.13, 2.15",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 5
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "reflexive-hull-invertible-operator",
+      "title_en": "A reflexive hull contains an invertible operator iff the subspace does",
+      "title_ru": "Рефлексивная оболочка содержит обратимый оператор тогда и только тогда, когда его содержит само подпространство",
+      "statement_en": "Let $V$ be finite-dimensional over $\\mathbb C$ and $E\\subseteq\\operatorname{End}(V)$ a linear subspace. Then\n$$\\operatorname{Ref}_a(E)\\cap\\operatorname{GL}(V)\\ne\\varnothing\\iff E\\cap\\operatorname{GL}(V)\\ne\\varnothing.$$\n\nThe direction $\\Leftarrow$ is trivial, since $E\\subseteq\\operatorname{Ref}_a(E)$. The content is in $\\Rightarrow$.\n\nKey special case (Lemma 2.16): if $\\operatorname{id}_V\\in\\operatorname{Ref}_a(E)$, i.e. every vector $v$ is fixed by some $A_v\\in E$, then $E$ contains an invertible operator.\n\nLinearity of $E$ matters here. The set of all rank-one projections in $\\operatorname{End}(\\mathbb C^2)$ has $\\operatorname{id}$ in its hull (each $v$ is fixed by the projection onto the line $\\mathbb Cv$), yet contains no invertible operator.",
+      "statement_ru": "Пусть $V$ конечномерно над $\\mathbb C$ и $E\\subseteq\\operatorname{End}(V)$ — линейное подпространство. Тогда\n$$\\operatorname{Ref}_a(E)\\cap\\operatorname{GL}(V)\\ne\\varnothing\\iff E\\cap\\operatorname{GL}(V)\\ne\\varnothing.$$\n\nНаправление $\\Leftarrow$ тривиально, так как $E\\subseteq\\operatorname{Ref}_a(E)$. Содержательно направление $\\Rightarrow$.\n\nКлючевой частный случай (Лемма 2.16): если $\\operatorname{id}_V\\in\\operatorname{Ref}_a(E)$, то есть каждый вектор $v$ неподвижен для некоторого $A_v\\in E$, то в $E$ есть обратимый оператор.\n\nЛинейность $E$ здесь существенна. Множество всех проекторов ранга $1$ в $\\operatorname{End}(\\mathbb C^2)$ содержит $\\operatorname{id}$ в своей оболочке (каждый $v$ неподвижен для проектора на прямую $\\mathbb Cv$), но не содержит ни одного обратимого оператора.",
+      "proof_en": "*Reduction to the identity.* Let $T\\in\\operatorname{Ref}_a(E)$ be invertible and put $E'=T^{-1}E$. For each $v$ there is $A_v\\in E$ with $Tv=A_vv$, i.e. $v=T^{-1}A_vv$. So $\\operatorname{id}_V\\in\\operatorname{Ref}_a(E')$.\n\n*Lemma: $\\operatorname{id}_V\\in\\operatorname{Ref}_a(E')$ forces an invertible element in $E'$.* Induction on $n=\\dim V$. Suppose every element of $E'$ is singular. Pick $S\\in E'$ of maximal rank $r$ (then $0<r<n$), and among those one with minimal algebraic multiplicity $a$ of the eigenvalue $0$.\n\nA perturbation $S+tB$, where $Bx=x$ for some $0\\ne x\\in\\ker S\\cap\\operatorname{Im}S$, shows that $a=\\dim\\ker S$. Hence\n$$V=\\operatorname{Im}S\\oplus\\ker S.$$\n\nCompress $E'$ to $K=\\ker S$: let $E'_K=\\{\\pi C|_K\\mid C\\in E'\\}$, where $\\pi$ is the projection onto $K$ along $\\operatorname{Im}S$. Then $\\operatorname{id}_K\\in\\operatorname{Ref}_a(E'_K)$.\n\nIf some $\\pi B|_K$ were invertible, the polynomial $\\det(S+tB)$ would have the nonzero coefficient\n$$\\det(S|_{\\operatorname{Im}S})\\cdot\\det(\\pi B|_K)$$\nat $t^{\\dim K}$. Then $S+tB\\in E'$ would be invertible for some $t$, a contradiction. So $E'_K$ has no invertible element, which contradicts the induction hypothesis, since $\\dim K<n$.\n\n*Conclusion.* Some $T^{-1}A$ with $A\\in E$ is invertible, hence so is $A$. $\\square$",
+      "proof_ru": "*Сведение к тождественному оператору.* Пусть $T\\in\\operatorname{Ref}_a(E)$ обратим; положим $E'=T^{-1}E$. Для каждого $v$ есть $A_v\\in E$ с $Tv=A_vv$, т.е. $v=T^{-1}A_vv$. Значит, $\\operatorname{id}_V\\in\\operatorname{Ref}_a(E')$.\n\n*Лемма: из $\\operatorname{id}_V\\in\\operatorname{Ref}_a(E')$ следует, что в $E'$ есть обратимый элемент.* Индукция по $n=\\dim V$. Пусть все элементы $E'$ вырождены. Возьмём $S\\in E'$ максимального ранга $r$ (тогда $0<r<n$), а среди таких — с минимальной алгебраической кратностью $a$ собственного значения $0$.\n\nВозмущение $S+tB$, где $Bx=x$ для некоторого $0\\ne x\\in\\ker S\\cap\\operatorname{Im}S$, показывает, что $a=\\dim\\ker S$. Поэтому\n$$V=\\operatorname{Im}S\\oplus\\ker S.$$\n\nСожмём $E'$ на $K=\\ker S$: пусть $E'_K=\\{\\pi C|_K\\mid C\\in E'\\}$, где $\\pi$ — проекция на $K$ вдоль $\\operatorname{Im}S$. Тогда $\\operatorname{id}_K\\in\\operatorname{Ref}_a(E'_K)$.\n\nЕсли бы некоторый $\\pi B|_K$ был обратим, то многочлен $\\det(S+tB)$ имел бы ненулевой коэффициент\n$$\\det(S|_{\\operatorname{Im}S})\\cdot\\det(\\pi B|_K)$$\nпри $t^{\\dim K}$. Тогда $S+tB\\in E'$ был бы обратим при некотором $t$ — противоречие. Итак, в $E'_K$ нет обратимых элементов, что противоречит предположению индукции, поскольку $\\dim K<n$.\n\n*Итог.* Некоторый $T^{-1}A$ с $A\\in E$ обратим, а значит, обратим и $A$. $\\square$",
+      "depends_on": [
+        "Algebraic reflexive hull"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Лемма 2.16, Теорема 2.17",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 6
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "invertible-local-derivation-iff-invertible-derivation",
+      "title_en": "An algebra has an invertible local derivation iff it has an invertible derivation",
+      "title_ru": "Алгебра обладает обратимым локальным дифференцированием тогда и только тогда, когда обладает обратимым дифференцированием",
+      "statement_en": "Let $A$ be a finite-dimensional algebra over $\\mathbb C$. Then\n$$\\operatorname{LocDer}(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing\\iff\\operatorname{Der}(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing.$$\n\nThis is the theorem on invertible operators in reflexive hulls with $E=\\operatorname{Der}(A)$, since $\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A))$.\n\n*Consequence.* By Jacobson (1955), a Lie algebra with an invertible derivation is nilpotent. Hence a Lie algebra with an invertible local derivation is nilpotent.\n\nThe converse fails already for ordinary derivations. Dixmier and Lister (1957) found a nilpotent Lie algebra all of whose derivations are nilpotent. It has no invertible derivation, and so, by the theorem, no invertible local derivation either. Leibniz derivations of higher order close this gap.",
+      "statement_ru": "Пусть $A$ — конечномерная алгебра над $\\mathbb C$. Тогда\n$$\\operatorname{LocDer}(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing\\iff\\operatorname{Der}(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing.$$\n\nЭто теорема об обратимых операторах в рефлексивной оболочке при $E=\\operatorname{Der}(A)$, поскольку $\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A))$.\n\n*Следствие.* По теореме Джекобсона (1955) алгебра Ли с обратимым дифференцированием нильпотентна. Поэтому алгебра Ли с обратимым локальным дифференцированием нильпотентна.\n\nОбратное неверно уже для обычных дифференцирований. Диксмье и Листер (1957) построили нильпотентную алгебру Ли, у которой все дифференцирования нильпотентны. У неё нет обратимых дифференцирований, а значит, по теореме, и обратимых локальных. Этот пробел закрывают дифференцирования Лейбница высших порядков.",
+      "depends_on": [
+        "Local derivation",
+        "A reflexive hull contains an invertible operator iff the subspace does",
+        "Nilpotent algebra (lower central series)",
+        "Lie algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Теорема 2.18",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 7
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "invertible-local-leibniz-derivations-characterize-nilpotency",
+      "title_en": "Invertible local Leibniz derivations characterize nilpotency",
+      "title_ru": "Обратимые локальные дифференцирования Лейбница характеризуют нильпотентность",
+      "statement_en": "Let $A$ be a finite-dimensional algebra over $\\mathbb C$, $n\\ge2$ and $f\\in\\mathcal F_n$. Then\n$$\\operatorname{LocLDer}_f(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing\\iff\\operatorname{LDer}_f(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing.$$\nThe same holds, with the same order, for left, right and (all-arrangement) Leibniz derivations of order $n$. It also holds for each of these three notions without a prescribed order. For $n=2$ this is exactly the theorem on invertible local derivations.\n\nCombined with known \"global\" criteria this gives:\n1. (Moens) A Lie algebra is nilpotent iff it admits an invertible local Leibniz derivation of some order.\n2. (Kaygorodov–Popov) A Malcev, Jordan or $(-1,1)$-algebra is nilpotent iff it admits an invertible local left Leibniz derivation of some order.",
+      "statement_ru": "Пусть $A$ — конечномерная алгебра над $\\mathbb C$, $n\\ge2$ и $f\\in\\mathcal F_n$. Тогда\n$$\\operatorname{LocLDer}_f(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing\\iff\\operatorname{LDer}_f(A)\\cap\\operatorname{GL}(A)\\ne\\varnothing.$$\nТо же верно (с тем же порядком) для левых, правых и (по всем расстановкам) дифференцирований Лейбница порядка $n$. Это верно и для каждого из этих трёх понятий без фиксированного порядка. При $n=2$ это в точности теорема об обратимых локальных дифференцированиях.\n\nВ сочетании с известными «глобальными» критериями получаем:\n1. (Моэнс) Алгебра Ли нильпотентна тогда и только тогда, когда у неё есть обратимое локальное дифференцирование Лейбница некоторого порядка.\n2. (Кайгородов–Попов) Алгебра Мальцева, йорданова алгебра или $(-1,1)$-алгебра нильпотентна тогда и только тогда, когда у неё есть обратимое локальное левое дифференцирование Лейбница некоторого порядка.",
+      "proof_en": "Each $\\operatorname{LDer}_f(A)$ is a linear subspace (the defining identity is linear in $D$), and so is $\\operatorname{LDer}_n(A)=\\bigcap_f\\operatorname{LDer}_f(A)$. Their local versions are exactly $\\operatorname{Ref}_a(\\operatorname{LDer}_f(A))$ and $\\operatorname{Ref}_a(\\operatorname{LDer}_n(A))$. So the theorem on invertible operators in reflexive hulls applies directly.\n\nFor the unions over $n$: an invertible element of $\\operatorname{LocLDer}(A)$ lies in some $\\operatorname{LocLDer}_n(A)$, and the fixed-$n$ case applies. Here it matters that the order $n$ does not depend on $x$.\n\nItems 1 and 2 then follow from the theorems of Moens and of Kaygorodov–Popov for ordinary (global) Leibniz derivations. $\\square$",
+      "proof_ru": "Каждое $\\operatorname{LDer}_f(A)$ — линейное подпространство (определяющее тождество линейно по $D$); таково же и $\\operatorname{LDer}_n(A)=\\bigcap_f\\operatorname{LDer}_f(A)$. Их локальные версии — это в точности $\\operatorname{Ref}_a(\\operatorname{LDer}_f(A))$ и $\\operatorname{Ref}_a(\\operatorname{LDer}_n(A))$. Поэтому теорема об обратимых операторах в рефлексивной оболочке применяется напрямую.\n\nДля объединений по $n$: обратимый элемент $\\operatorname{LocLDer}(A)$ лежит в некотором $\\operatorname{LocLDer}_n(A)$, и работает случай фиксированного $n$. Здесь важно, что порядок $n$ не зависит от $x$.\n\nПункты 1 и 2 следуют из теорем Моэнса и Кайгородова–Попова для обычных (глобальных) дифференцирований Лейбница. $\\square$",
+      "depends_on": [
+        "Leibniz derivation of order n",
+        "A reflexive hull contains an invertible operator iff the subspace does",
+        "An algebra has an invertible local derivation iff it has an invertible derivation",
+        "Nilpotent algebra (lower central series)",
+        "Malcev algebra",
+        "Lie algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Теорема 2.22, Замечание 2.23",
+        "document": "2026_-_LOCAL_DERIVATIONS_IS_A_LIE_ALGEBRA.pdf",
+        "page": 8
+      }
+    }
+  ]
+}

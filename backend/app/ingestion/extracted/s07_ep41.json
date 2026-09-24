@@ -1,0 +1,356 @@
+{
+  "episode_code": "s07_ep41",
+  "source_language": "en",
+  "source_note": "Hao, Wu, Ruan, Chen, \"Local automorphisms is a Lie group\" (preprint, 2026) -- talk of 2026-11-09. Extracted per the usual rule. Definitions: automorphism, local automorphism (paper's exact definition), and the textbook bricks the proofs rely on -- Lie group, Lie algebra of a Lie group, algebraic reflexive hull, constructible sets, complex algebraic groups, semialgebraic sets, Nash groups. The cited textbook facts (Chevalley = Lemma 2.11, Borel = Lemma 2.15, Tarski-Seidenberg = Lemma 2.20, Sun = Prop. 2.26) are folded into those definitions as 'key fact' paragraphs rather than separate entities; the formal Nash-structure Definition 2.21 is condensed to one sentence. Theorems 2.16 (C) and 2.25 (R) have literally the same proof, so they are merged into one theorem; Corollaries 2.17 and 2.28 are merged into the headline theorem (Conjecture 1). Prop. 2.3 is only cited in the paper (Bracic); the short proof given here is the standard one. Definition 3.1 (local flow) and Lemma 3.2 (tangent space of an orbit) are scaffolding, folded into the proof of Theorem 3.3. Example 2.5 is kept as a property because it explains why the naive Lie-group argument fails. The transpose example in 'Local automorphism' is standard, not from the paper. 'Derivation of an algebra' and 'Local derivation' are defined in the companion talk s07_ep40. Open problems: none -- both conjectures of Ayupov-Elduque-Kudaybergenov are resolved.",
+  "bibliography": "Hao Z., Wu L., Ruan J., Chen L. — «Local automorphisms is a Lie group» (preprint, 2026)",
+  "brief_ru": "Аюпов, Эльдуке и Кудайбергенов (2023) предположили, что локальные автоморфизмы конечномерной алгебры над $\\mathbb R$ или $\\mathbb C$ образуют группу Ли, чья алгебра Ли — пространство локальных дифференцирований. Статья доказывает обе гипотезы.\n\n1. Локальный автоморфизм — это «поточечный» автоморфизм: $\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A))$, и аналогично $\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A))$. В конечномерном случае оболочка группы — группа.\n2. Одной структуры группы Ли мало: оболочка замкнутой подгруппы Ли может быть незамкнутой.\n3. Алгебраическая рефлексивная оболочка сохраняет алгебраичность: над $\\mathbb C$ оболочка замкнутой по Зарисскому подгруппы $\\operatorname{GL}(V)$ замкнута по Зарисскому, над $\\mathbb R$ оболочка полуалгебраической подгруппы полуалгебраична.\n4. Следовательно, $\\operatorname{LocAut}(A)$ — замкнутая вложенная подгруппа Ли в $\\operatorname{GL}(A)$, в частности группа Ли (Гипотеза 1).\n5. Оболочка перестановочна с переходом к алгебре Ли, поэтому $\\operatorname{Lie}(\\operatorname{LocAut}(A))=\\operatorname{LocDer}(A)$ (Гипотеза 2).",
+  "brief_en": "Ayupov, Elduque and Kudaybergenov (2023) conjectured that the local automorphisms of a finite-dimensional real or complex algebra form a Lie group whose Lie algebra is the space of local derivations. The paper proves both conjectures.\n\n1. Local automorphism is a pointwise automorphism: $\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A))$, and likewise for derivations. In finite dimension the hull of a group is a group.\n2. A Lie group structure alone is not enough: the hull of a closed Lie subgroup can be non-closed.\n3. Algebraic reflexive hull preserves algebraicity: Zariski closed subgroups of $\\operatorname{GL}(V)$ over $\\mathbb C$, semialgebraic ones over $\\mathbb R$.\n4. Hence $\\operatorname{LocAut}(A)$ is a closed embedded Lie subgroup of $\\operatorname{GL}(A)$, in particular a Lie group (Conjecture 1).\n5. Hulls commute with taking Lie algebras: $\\operatorname{Lie}(\\operatorname{LocAut}(A))=\\operatorname{LocDer}(A)$ (Conjecture 2).",
+  "source_document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "automorphism-of-an-algebra",
+      "title_en": "Automorphism of an algebra",
+      "title_ru": "Автоморфизм алгебры",
+      "statement_en": "Let $A$ be an algebra over a field $F$. An **automorphism** of $A$ is a bijective linear map $\\varphi:A\\to A$ that respects the multiplication:\n$$\\varphi(xy)=\\varphi(x)\\varphi(y)\\qquad\\forall x,y\\in A.$$\n\nIn other words, it is an isomorphism of $A$ onto itself.\n\nAll automorphisms form a group under composition, the *automorphism group*\n$$\\operatorname{Aut}(A)=\\{g\\in\\operatorname{GL}(A)\\mid g(xy)=g(x)g(y)\\ \\ \\forall x,y\\in A\\}.$$\nIt is a subgroup of $\\operatorname{GL}(A)$, the group of all invertible linear maps $A\\to A$.\n\nIf $\\dim A=n$ and $e_1,\\dots,e_n$ is a basis, the conditions $g(e_ie_j)=g(e_i)g(e_j)$ are polynomial (quadratic) equations in the matrix entries of $g$. That is why $\\operatorname{Aut}(A)$ is an algebraic group, and over $\\mathbb R$ or $\\mathbb C$ a Lie group.",
+      "statement_ru": "Пусть $A$ — алгебра над полем $F$. **Автоморфизмом** алгебры $A$ называется биективное линейное отображение $\\varphi:A\\to A$, сохраняющее умножение:\n$$\\varphi(xy)=\\varphi(x)\\varphi(y)\\qquad\\forall x,y\\in A.$$\n\nИначе говоря, это изоморфизм алгебры $A$ на себя.\n\nВсе автоморфизмы образуют группу относительно композиции — *группу автоморфизмов*\n$$\\operatorname{Aut}(A)=\\{g\\in\\operatorname{GL}(A)\\mid g(xy)=g(x)g(y)\\ \\ \\forall x,y\\in A\\}.$$\nЭто подгруппа в $\\operatorname{GL}(A)$ — группе всех обратимых линейных отображений $A\\to A$.\n\nЕсли $\\dim A=n$ и $e_1,\\dots,e_n$ — базис, то условия $g(e_ie_j)=g(e_i)g(e_j)$ — полиномиальные (квадратичные) уравнения на матричные элементы $g$. Поэтому $\\operatorname{Aut}(A)$ — алгебраическая группа, а над $\\mathbb R$ и $\\mathbb C$ — группа Ли.",
+      "depends_on": [
+        "Algebra (over a field)",
+        "Homomorphism • isomorphism of algebras",
+        "Group"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Стандартное понятие (Замечание 2.14)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 4
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "local-automorphism",
+      "title_en": "Local automorphism",
+      "title_ru": "Локальный автоморфизм",
+      "statement_en": "Let $A$ be an algebra. A linear map $\\Phi:A\\to A$ is a **local automorphism** if for every $x\\in A$ there is an automorphism $\\varphi_x$ of $A$, depending on $x$, such that\n$$\\Phi(x)=\\varphi_x(x).$$\n\nSo at each single point $\\Phi$ acts like an automorphism, but the automorphism may change from point to point.\n\nThe set of all local automorphisms is denoted $\\operatorname{LocAut}(A)$. Every automorphism is a local one (take $\\varphi_x=\\Phi$).\n\nThe converse fails. Example: on $M_n(\\mathbb C)$, $n\\ge2$, transposition $X\\mapsto X^{T}$ is a local automorphism. Indeed, every matrix is similar to its transpose, $X^{T}=S_XXS_X^{-1}$, and conjugation by $S_X$ is an automorphism. But transposition is not an automorphism, since\n$$(XY)^{T}=Y^{T}X^{T}.$$\n\nIf $A$ is finite-dimensional, every local automorphism is invertible: for $x\\ne0$ we get $\\Phi(x)=\\varphi_x(x)\\ne0$, so $\\Phi$ is injective. Hence\n$$\\operatorname{Aut}(A)\\subseteq\\operatorname{LocAut}(A)\\subseteq\\operatorname{GL}(A).$$\n\nIntroduced by Larson and Sourour (1990) in operator algebras, as the multiplicative analogue of local derivations.",
+      "statement_ru": "Пусть $A$ — алгебра. Линейное отображение $\\Phi:A\\to A$ называется **локальным автоморфизмом**, если для каждого $x\\in A$ найдётся автоморфизм $\\varphi_x$ алгебры $A$ (зависящий от $x$), такой что\n$$\\Phi(x)=\\varphi_x(x).$$\n\nТо есть в каждой отдельной точке $\\Phi$ действует как автоморфизм, но этот автоморфизм может меняться от точки к точке.\n\nМножество всех локальных автоморфизмов обозначается $\\operatorname{LocAut}(A)$. Любой автоморфизм является локальным (берём $\\varphi_x=\\Phi$).\n\nОбратное неверно. Пример: на $M_n(\\mathbb C)$, $n\\ge2$, транспонирование $X\\mapsto X^{T}$ — локальный автоморфизм. Действительно, каждая матрица подобна своей транспонированной, $X^{T}=S_XXS_X^{-1}$, а сопряжение с помощью $S_X$ — автоморфизм. Но само транспонирование автоморфизмом не является, ведь\n$$(XY)^{T}=Y^{T}X^{T}.$$\n\nЕсли $A$ конечномерна, любой локальный автоморфизм обратим: при $x\\ne0$ имеем $\\Phi(x)=\\varphi_x(x)\\ne0$, так что $\\Phi$ инъективно. Итак,\n$$\\operatorname{Aut}(A)\\subseteq\\operatorname{LocAut}(A)\\subseteq\\operatorname{GL}(A).$$\n\nПонятие ввели Ларсон и Сурур (1990) в теории операторных алгебр — как мультипликативный аналог локальных дифференцирований.",
+      "depends_on": [
+        "Automorphism of an algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Введение (определение)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 1
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "lie-group",
+      "title_en": "Lie group",
+      "title_ru": "Группа Ли",
+      "statement_en": "A **Lie group** is a group $G$ that is also a smooth manifold, such that multiplication and inversion\n$$G\\times G\\to G,\\ (g,h)\\mapsto gh,\\qquad G\\to G,\\ g\\mapsto g^{-1}$$\nare smooth maps. For a *complex* Lie group, take a complex manifold and holomorphic maps.\n\nMain example: $\\operatorname{GL}(V)$ for a finite-dimensional real or complex vector space $V$. It is the open subset $\\{\\det\\ne0\\}$ of $\\operatorname{End}(V)$.\n\nA subgroup $H\\le G$ is an *embedded Lie subgroup* if it is also an embedded submanifold; then $H$ is a Lie group itself. By Cartan's closed subgroup theorem, every *closed* subgroup of a real Lie group is an embedded Lie subgroup.\n\nWarning: a subgroup can be a Lie group in its own topology without being closed, e.g. an irrational winding of a torus. Such subgroups are only immersed, not embedded.",
+      "statement_ru": "**Группой Ли** называется группа $G$, которая одновременно является гладким многообразием, причём умножение и взятие обратного\n$$G\\times G\\to G,\\ (g,h)\\mapsto gh,\\qquad G\\to G,\\ g\\mapsto g^{-1}$$\n— гладкие отображения. Для *комплексной* группы Ли берут комплексное многообразие и голоморфные отображения.\n\nГлавный пример: $\\operatorname{GL}(V)$ для конечномерного вещественного или комплексного пространства $V$. Это открытое подмножество $\\{\\det\\ne0\\}$ в $\\operatorname{End}(V)$.\n\nПодгруппа $H\\le G$ называется *вложенной подгруппой Ли*, если она ещё и вложенное подмногообразие; тогда $H$ сама — группа Ли. По теореме Картана о замкнутой подгруппе любая *замкнутая* подгруппа вещественной группы Ли — вложенная подгруппа Ли.\n\nОсторожно: подгруппа может быть группой Ли в собственной топологии, но не быть замкнутой — например, иррациональная обмотка тора. Такие подгруппы лишь погружены, а не вложены.",
+      "depends_on": [
+        "Group"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Стандартное понятие (Гипотеза 1)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 1
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "lie-algebra-of-a-lie-group",
+      "title_en": "Lie algebra of a Lie group",
+      "title_ru": "Алгебра Ли группы Ли",
+      "statement_en": "Let $V$ be a finite-dimensional real or complex vector space and $H\\le\\operatorname{GL}(V)$ an embedded Lie subgroup. Its **Lie algebra** is the tangent space at the identity:\n$$\\operatorname{Lie}(H)=T_IH=\\{\\,T'(0)\\mid T(t)\\ \\text{a smooth curve in}\\ H,\\ T(0)=I\\,\\}\\subseteq\\operatorname{End}(V).$$\n\nEquivalently, via the matrix exponential,\n$$\\operatorname{Lie}(H)=\\{X\\in\\operatorname{End}(V)\\mid e^{tX}\\in H\\ \\ \\forall t\\in\\mathbb R\\}.$$\n\nIt is a vector space closed under the commutator $[X,Y]=XY-YX$, i.e. a Lie algebra. The standard notation is $\\mathfrak h=\\operatorname{Lie}(H)$.\n\nExamples:\n$$\\operatorname{Lie}(\\operatorname{GL}(V))=\\operatorname{End}(V),\\qquad \\operatorname{Lie}(\\operatorname{SL}_n)=\\{X\\mid\\operatorname{tr}X=0\\},$$\nand for an algebra $A$\n$$\\operatorname{Lie}(\\operatorname{Aut}(A))=\\operatorname{Der}(A).$$",
+      "statement_ru": "Пусть $V$ — конечномерное вещественное или комплексное пространство, $H\\le\\operatorname{GL}(V)$ — вложенная подгруппа Ли. Её **алгебра Ли** — это касательное пространство в единице:\n$$\\operatorname{Lie}(H)=T_IH=\\{\\,T'(0)\\mid T(t)\\ \\text{— гладкая кривая в}\\ H,\\ T(0)=I\\,\\}\\subseteq\\operatorname{End}(V).$$\n\nЭквивалентно, через матричную экспоненту,\n$$\\operatorname{Lie}(H)=\\{X\\in\\operatorname{End}(V)\\mid e^{tX}\\in H\\ \\ \\forall t\\in\\mathbb R\\}.$$\n\nЭто векторное пространство, замкнутое относительно коммутатора $[X,Y]=XY-YX$, то есть алгебра Ли. Стандартное обозначение: $\\mathfrak h=\\operatorname{Lie}(H)$.\n\nПримеры:\n$$\\operatorname{Lie}(\\operatorname{GL}(V))=\\operatorname{End}(V),\\qquad \\operatorname{Lie}(\\operatorname{SL}_n)=\\{X\\mid\\operatorname{tr}X=0\\},$$\nа для алгебры $A$\n$$\\operatorname{Lie}(\\operatorname{Aut}(A))=\\operatorname{Der}(A).$$",
+      "depends_on": [
+        "Lie group",
+        "Lie algebra",
+        "Automorphism of an algebra",
+        "Derivation of an algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Стандартное понятие (§3)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 8
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "algebraic-reflexive-hull",
+      "title_en": "Algebraic reflexive hull",
+      "title_ru": "Алгебраическая рефлексивная оболочка",
+      "statement_en": "Let $V$ be a vector space and $E\\subseteq\\operatorname{End}(V)$ any set of linear operators. For $v\\in V$ put\n$$E(v)=\\{g(v)\\mid g\\in E\\}$$\n— all the places where $E$ can send $v$.\n\nThe **algebraic reflexive hull** (or algebraic reflexive cover) of $E$ is\n$$\\operatorname{Ref}_a(E)=\\{f\\in\\operatorname{End}(V)\\mid f(v)\\in E(v)\\ \\ \\forall v\\in V\\}.$$\n\nSo $f\\in\\operatorname{Ref}_a(E)$ iff at every single vector $v$ the operator $f$ agrees with *some* element of $E$ — which one may depend on $v$.\n\nAlways $E\\subseteq\\operatorname{Ref}_a(E)$. If equality holds, $E$ is called *algebraically reflexive*.\n\nIf $E$ is a linear subspace, then each $E(v)$ is a subspace, so $\\operatorname{Ref}_a(E)$ is a subspace too.\n\nIntroduced by Hadwin (1983) and developed by Larson (1988).",
+      "statement_ru": "Пусть $V$ — векторное пространство, $E\\subseteq\\operatorname{End}(V)$ — произвольное множество линейных операторов. Для $v\\in V$ положим\n$$E(v)=\\{g(v)\\mid g\\in E\\}$$\n— все точки, куда $E$ может перевести $v$.\n\n**Алгебраической рефлексивной оболочкой** множества $E$ называется\n$$\\operatorname{Ref}_a(E)=\\{f\\in\\operatorname{End}(V)\\mid f(v)\\in E(v)\\ \\ \\forall v\\in V\\}.$$\n\nТо есть $f\\in\\operatorname{Ref}_a(E)$, если на каждом отдельном векторе $v$ оператор $f$ совпадает с *каким-то* элементом $E$ — своим для каждого $v$.\n\nВсегда $E\\subseteq\\operatorname{Ref}_a(E)$. Если имеет место равенство, $E$ называют *алгебраически рефлексивным*.\n\nЕсли $E$ — линейное подпространство, то все $E(v)$ — подпространства, и $\\operatorname{Ref}_a(E)$ — тоже подпространство.\n\nПонятие ввёл Хадвин (1983), развил Ларсон (1988).",
+      "aliases": [
+        "reflexive hull",
+        "algebraic reflexive cover"
+      ],
+      "depends_on": [
+        "Vector space"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определение 2.1",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "local-derivations-and-automorphisms-as-reflexive-hulls",
+      "title_en": "Local derivations and local automorphisms as reflexive hulls",
+      "title_ru": "Локальные дифференцирования и автоморфизмы как рефлексивные оболочки",
+      "statement_en": "For a finite-dimensional algebra $A$, the local maps are exactly the reflexive hulls of the global ones:\n$$\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A)),$$\n$$\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A)).$$\n\nThis is just the definitions rewritten. For example, \"$\\Delta(x)=D_x(x)$ for some derivation $D_x$\" means exactly $\\Delta(x)\\in\\operatorname{Der}(A)(x)$.\n\nThe value is the point of view. If $E$ carries some structure, $\\operatorname{Ref}_a(E)$ tends to inherit it:\n\n- $\\operatorname{Der}(A)$ is a Lie algebra, so one expects $\\operatorname{LocDer}(A)$ to be one (proved by Hao and Chen, 2026);\n- $\\operatorname{Aut}(A)$ is a Lie group, so one expects $\\operatorname{LocAut}(A)$ to be one — the main theorem of this paper.",
+      "statement_ru": "Для конечномерной алгебры $A$ локальные отображения — это в точности рефлексивные оболочки глобальных:\n$$\\operatorname{LocDer}(A)=\\operatorname{Ref}_a(\\operatorname{Der}(A)),$$\n$$\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A)).$$\n\nЭто просто переписанные определения. Например, «$\\Delta(x)=D_x(x)$ для некоторого дифференцирования $D_x$» означает ровно $\\Delta(x)\\in\\operatorname{Der}(A)(x)$.\n\nЦенность — в точке зрения. Если $E$ несёт какую-то структуру, $\\operatorname{Ref}_a(E)$ обычно её наследует:\n\n- $\\operatorname{Der}(A)$ — алгебра Ли, поэтому ожидаем, что $\\operatorname{LocDer}(A)$ — тоже (доказали Хао и Чэнь, 2026);\n- $\\operatorname{Aut}(A)$ — группа Ли, поэтому ожидаем, что $\\operatorname{LocAut}(A)$ — тоже; это главная теорема статьи.",
+      "depends_on": [
+        "Algebraic reflexive hull",
+        "Local automorphism",
+        "Local derivation",
+        "Automorphism of an algebra",
+        "Derivation of an algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Замечание 2.2",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "reflexive-hull-of-a-group-is-a-group",
+      "title_en": "Reflexive hull of a group of operators is a group",
+      "title_ru": "Рефлексивная оболочка группы операторов — группа",
+      "statement_en": "Let $V$ be a vector space.\n\n1. If $S\\subseteq\\operatorname{End}(V)$ is a semigroup (closed under composition), then $\\operatorname{Ref}_a(S)$ is a semigroup.\n2. If $V$ is finite-dimensional and $G\\le\\operatorname{GL}(V)$, then $\\operatorname{Ref}_a(G)$ is a subgroup of $\\operatorname{GL}(V)$.\n\n**Corollary.** For a finite-dimensional algebra $A$ over *any* field,\n$$\\operatorname{LocAut}(A)\\le\\operatorname{GL}(A)$$\nis a group under composition.\n\nFinite dimension matters in (2). For infinite-dimensional $V$, $\\operatorname{Ref}_a(\\operatorname{GL}(V))$ is the set of all injective operators, and it contains non-invertible ones, such as a shift.",
+      "statement_ru": "Пусть $V$ — векторное пространство.\n\n1. Если $S\\subseteq\\operatorname{End}(V)$ — полугруппа (замкнута относительно композиции), то $\\operatorname{Ref}_a(S)$ — полугруппа.\n2. Если $V$ конечномерно и $G\\le\\operatorname{GL}(V)$, то $\\operatorname{Ref}_a(G)$ — подгруппа в $\\operatorname{GL}(V)$.\n\n**Следствие.** Для конечномерной алгебры $A$ над *любым* полем\n$$\\operatorname{LocAut}(A)\\le\\operatorname{GL}(A)$$\n— группа относительно композиции.\n\nКонечномерность в (2) существенна. Для бесконечномерного $V$ оболочка $\\operatorname{Ref}_a(\\operatorname{GL}(V))$ — это все инъективные операторы, среди которых есть необратимые, например сдвиг.",
+      "proof_en": "(1) Take $f_1,f_2\\in\\operatorname{Ref}_a(S)$ and $v\\in V$. Then $f_2(v)=s(v)$ for some $s\\in S$, and $f_1(s(v))=s'(s(v))$ for some $s'\\in S$. So\n$$f_1f_2(v)=(s's)(v),\\qquad s's\\in S.$$\n\n(2) The identity lies in $G\\subseteq\\operatorname{Ref}_a(G)$, and products stay inside by (1).\n\nLet $f\\in\\operatorname{Ref}_a(G)$. For $v\\ne0$ we have $f(v)=g_v(v)\\ne0$, so $f$ is injective, hence invertible because $\\dim V<\\infty$.\n\nInverse: given $w$, put $v=f^{-1}(w)$. Then $w=f(v)=g_v(v)$ for some $g_v\\in G$, so\n$$f^{-1}(w)=g_v^{-1}(w),\\qquad g_v^{-1}\\in G.$$\nThus $f^{-1}\\in\\operatorname{Ref}_a(G)$.\n\nThe corollary: take $G=\\operatorname{Aut}(A)$ and use $\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A))$.\n\n(The paper cites Bračič for this; the argument above is the standard one.)",
+      "proof_ru": "(1) Возьмём $f_1,f_2\\in\\operatorname{Ref}_a(S)$ и $v\\in V$. Тогда $f_2(v)=s(v)$ для некоторого $s\\in S$, а $f_1(s(v))=s'(s(v))$ для некоторого $s'\\in S$. Значит,\n$$f_1f_2(v)=(s's)(v),\\qquad s's\\in S.$$\n\n(2) Единица лежит в $G\\subseteq\\operatorname{Ref}_a(G)$, а произведения не выходят из оболочки по (1).\n\nПусть $f\\in\\operatorname{Ref}_a(G)$. При $v\\ne0$ имеем $f(v)=g_v(v)\\ne0$, так что $f$ инъективно, а значит, обратимо, поскольку $\\dim V<\\infty$.\n\nОбратный: для данного $w$ положим $v=f^{-1}(w)$. Тогда $w=f(v)=g_v(v)$ для некоторого $g_v\\in G$, откуда\n$$f^{-1}(w)=g_v^{-1}(w),\\qquad g_v^{-1}\\in G.$$\nИтак, $f^{-1}\\in\\operatorname{Ref}_a(G)$.\n\nСледствие: берём $G=\\operatorname{Aut}(A)$ и пользуемся равенством $\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A))$.\n\n(В статье это цитируется по Брачичу; выше — стандартное рассуждение.)",
+      "depends_on": [
+        "Algebraic reflexive hull",
+        "Group",
+        "Local derivations and local automorphisms as reflexive hulls"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Предложение 2.3 (Брачич), Следствие 2.4",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "reflexive-hull-of-closed-lie-subgroup-need-not-be-closed",
+      "title_en": "Reflexive hull of a closed Lie subgroup need not be closed",
+      "title_ru": "Рефлексивная оболочка замкнутой подгруппы Ли может быть незамкнутой",
+      "statement_en": "Being a closed Lie subgroup is *not* inherited by reflexive hulls in general.\n\nTake $\\alpha\\in\\mathbb R\\setminus\\mathbb Q$, $V=\\mathbb C^2\\oplus\\mathbb C^2$, and for $z\\in\\mathbb C$ put\n$$d_z=\\operatorname{diag}(e^{z},e^{\\alpha z}).$$\nLet\n$$E=\\{\\operatorname{diag}(A,d_z)\\mid A\\in\\operatorname{GL}_2(\\mathbb C),\\ z\\in\\mathbb C,\\ \\det A=e^{iz}\\}.$$\n\nThen $E$ is a closed embedded complex Lie subgroup of $\\operatorname{GL}_4(\\mathbb C)$, but\n$$\\operatorname{Ref}_a(E)=\\{\\operatorname{diag}(P,d_z)\\mid P\\in\\operatorname{GL}_2(\\mathbb C),\\ z\\in\\mathbb C\\}$$\nis not closed, hence not an embedded Lie subgroup.\n\nWhy. In $E$ the condition $\\det A=e^{iz}$ ties $z$ to $A$, and this keeps $E$ closed. The hull tests one vector at a time. For a vector $u\\ne0$ one can choose $A$ with any prescribed $Au$ and any determinant, so the tie is lost.\n\nWhat remains, $\\{d_z\\}$, is an irrational winding. Its closure is\n$$\\{\\operatorname{diag}(a,b)\\mid |b|=|a|^{\\alpha}\\},$$\nwhich is strictly bigger.\n\nMoral: a Lie group structure on $\\operatorname{Aut}(A)$ is not enough; the proof must use that $\\operatorname{Aut}(A)$ is *algebraic*. (Here $E$ is not algebraic, because of $e^{iz}$.)",
+      "statement_ru": "Свойство «быть замкнутой подгруппой Ли» в общем случае *не* наследуется рефлексивной оболочкой.\n\nВозьмём $\\alpha\\in\\mathbb R\\setminus\\mathbb Q$, $V=\\mathbb C^2\\oplus\\mathbb C^2$ и для $z\\in\\mathbb C$ положим\n$$d_z=\\operatorname{diag}(e^{z},e^{\\alpha z}).$$\nПусть\n$$E=\\{\\operatorname{diag}(A,d_z)\\mid A\\in\\operatorname{GL}_2(\\mathbb C),\\ z\\in\\mathbb C,\\ \\det A=e^{iz}\\}.$$\n\nТогда $E$ — замкнутая вложенная комплексная подгруппа Ли в $\\operatorname{GL}_4(\\mathbb C)$, но\n$$\\operatorname{Ref}_a(E)=\\{\\operatorname{diag}(P,d_z)\\mid P\\in\\operatorname{GL}_2(\\mathbb C),\\ z\\in\\mathbb C\\}$$\nне замкнута, а потому не является вложенной подгруппой Ли.\n\nПочему. В $E$ условие $\\det A=e^{iz}$ привязывает $z$ к $A$, и это делает $E$ замкнутой. Оболочка проверяет по одному вектору за раз. Для вектора $u\\ne0$ можно подобрать $A$ с любым заданным $Au$ и любым определителем, так что привязка теряется.\n\nОстаётся $\\{d_z\\}$ — иррациональная обмотка. Её замыкание —\n$$\\{\\operatorname{diag}(a,b)\\mid |b|=|a|^{\\alpha}\\},$$\nа это строго больше.\n\nМораль: структуры группы Ли на $\\operatorname{Aut}(A)$ недостаточно; доказательство должно использовать *алгебраичность* $\\operatorname{Aut}(A)$. (Здесь $E$ не алгебраична из-за $e^{iz}$.)",
+      "depends_on": [
+        "Algebraic reflexive hull",
+        "Lie group"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Пример 2.5",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "constructible-set",
+      "title_en": "Constructible set (Zariski topology)",
+      "title_ru": "Конструктивное множество (топология Зарисского)",
+      "statement_en": "Let $k$ be an algebraically closed field (here $k=\\mathbb C$). In the *Zariski topology* on $k^n$ the closed sets are common zero sets of polynomials:\n$$V(S)=\\{a\\in k^n\\mid f(a)=0\\ \\ \\forall f\\in S\\},\\qquad S\\subseteq k[x_1,\\dots,x_n].$$\nA Zariski closed $X\\subseteq k^n$ is an *affine algebraic variety*.\n\nA subset of $X$ is *locally closed* if it is $U\\cap Z$ with $U$ Zariski open and $Z$ Zariski closed. A subset is **constructible** if it is a finite union of locally closed subsets.\n\nConstructible sets form a Boolean algebra: they are closed under finite unions, finite intersections and complements.\n\nKey fact, *Chevalley's theorem*: the image of a constructible set under a polynomial map (a *morphism* $X\\to Y$) is constructible. In particular, projections $X\\times Y\\to X$ preserve constructibility.\n\nExample: the image of $\\mathbb C^2\\to\\mathbb C^2$, $(x,y)\\mapsto(x,xy)$, is\n$$\\{(a,b)\\mid a\\ne0\\}\\cup\\{(0,0)\\}.$$\nIt is constructible, but neither open nor closed. So images of closed sets need not be closed; constructible sets are the natural class that survives projections.",
+      "statement_ru": "Пусть $k$ — алгебраически замкнутое поле (у нас $k=\\mathbb C$). В *топологии Зарисского* на $k^n$ замкнутые множества — общие нули многочленов:\n$$V(S)=\\{a\\in k^n\\mid f(a)=0\\ \\ \\forall f\\in S\\},\\qquad S\\subseteq k[x_1,\\dots,x_n].$$\nЗамкнутое по Зарисскому $X\\subseteq k^n$ называется *аффинным алгебраическим многообразием*.\n\nПодмножество $X$ *локально замкнуто*, если оно имеет вид $U\\cap Z$, где $U$ открыто, а $Z$ замкнуто по Зарисскому. Подмножество называется **конструктивным**, если оно — конечное объединение локально замкнутых.\n\nКонструктивные множества образуют булеву алгебру: они замкнуты относительно конечных объединений, конечных пересечений и дополнений.\n\nКлючевой факт, *теорема Шевалле*: образ конструктивного множества при полиномиальном отображении (*морфизме* $X\\to Y$) конструктивен. В частности, проекции $X\\times Y\\to X$ сохраняют конструктивность.\n\nПример: образ отображения $\\mathbb C^2\\to\\mathbb C^2$, $(x,y)\\mapsto(x,xy)$, — это\n$$\\{(a,b)\\mid a\\ne0\\}\\cup\\{(0,0)\\}.$$\nОно конструктивно, но ни открыто, ни замкнуто. Образ замкнутого множества не обязан быть замкнутым; конструктивные множества — естественный класс, устойчивый относительно проекций.",
+      "depends_on": [
+        "Field"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определения 2.6–2.8, 2.10, Лемма 2.11 (Шевалле)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "complex-algebraic-group",
+      "title_en": "Complex algebraic group",
+      "title_ru": "Комплексная алгебраическая группа",
+      "statement_en": "A **complex algebraic group** is a complex affine algebraic variety $G$ with a group structure such that multiplication $(g,h)\\mapsto gh$ and inversion $g\\mapsto g^{-1}$ are polynomial maps (morphisms of varieties).\n\nA subgroup $H\\le G$ is a *Zariski closed* (closed algebraic) subgroup if it is Zariski closed in $G$.\n\nExamples:\n\n- $\\operatorname{GL}_n(\\mathbb C)$; it is affine via $\\{(T,s)\\mid s\\cdot\\det T=1\\}\\subseteq\\mathbb C^{n^2+1}$;\n- for a finite-dimensional complex algebra $A$, the group $\\operatorname{Aut}(A)$ is a Zariski closed subgroup of $\\operatorname{GL}(A)$, cut out by the polynomial equations $g(xy)=g(x)g(y)$.\n\nKey fact (Borel): a subgroup $H\\le G$ that is merely *constructible* is automatically Zariski closed.\n\nEvery complex algebraic group is a complex Lie group. A Zariski closed subgroup of $\\operatorname{GL}(V)$ is a closed embedded complex Lie subgroup.",
+      "statement_ru": "**Комплексной алгебраической группой** называется комплексное аффинное алгебраическое многообразие $G$ со структурой группы, такой что умножение $(g,h)\\mapsto gh$ и взятие обратного $g\\mapsto g^{-1}$ — полиномиальные отображения (морфизмы многообразий).\n\nПодгруппа $H\\le G$ называется *замкнутой по Зарисскому* (замкнутой алгебраической) подгруппой, если она замкнута в $G$ в топологии Зарисского.\n\nПримеры:\n\n- $\\operatorname{GL}_n(\\mathbb C)$; она аффинна благодаря вложению $\\{(T,s)\\mid s\\cdot\\det T=1\\}\\subseteq\\mathbb C^{n^2+1}$;\n- для конечномерной комплексной алгебры $A$ группа $\\operatorname{Aut}(A)$ — замкнутая по Зарисскому подгруппа в $\\operatorname{GL}(A)$, заданная полиномиальными уравнениями $g(xy)=g(x)g(y)$.\n\nКлючевой факт (Борель): подгруппа $H\\le G$, которая всего лишь *конструктивна*, автоматически замкнута по Зарисскому.\n\nЛюбая комплексная алгебраическая группа — комплексная группа Ли. Замкнутая по Зарисскому подгруппа в $\\operatorname{GL}(V)$ — замкнутая вложенная комплексная подгруппа Ли.",
+      "depends_on": [
+        "Group",
+        "Constructible set (Zariski topology)",
+        "Lie group",
+        "Automorphism of an algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определения 2.12–2.13, Замечание 2.14, Лемма 2.15 (Борель)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "semialgebraic-set",
+      "title_en": "Semialgebraic set",
+      "title_ru": "Полуалгебраическое множество",
+      "statement_en": "A subset $X\\subseteq\\mathbb R^n$ is **semialgebraic** if it is a finite union of sets of the form\n$$\\{x\\in\\mathbb R^n\\mid f_1(x)=\\dots=f_r(x)=0,\\ g_1(x)>0,\\dots,g_s(x)>0\\},$$\nwhere $f_i,g_j\\in\\mathbb R[x_1,\\dots,x_n]$. A map between semialgebraic sets is *semialgebraic* if its graph is semialgebraic.\n\nSemialgebraic sets form a Boolean algebra: closed under finite unions, finite intersections and complements.\n\nKey fact, the *Tarski–Seidenberg theorem*: the image of a semialgebraic set under a semialgebraic map is semialgebraic. In particular, projections preserve semialgebraicity.\n\nWhy inequalities are needed over $\\mathbb R$: the circle $x^2+y^2=1$ projects onto the segment $[-1,1]$. This segment is not the zero set of any polynomials in $x$, but it is semialgebraic:\n$$[-1,1]=\\{1-x^2>0\\}\\cup\\{1-x^2=0\\}.$$",
+      "statement_ru": "Подмножество $X\\subseteq\\mathbb R^n$ называется **полуалгебраическим**, если оно — конечное объединение множеств вида\n$$\\{x\\in\\mathbb R^n\\mid f_1(x)=\\dots=f_r(x)=0,\\ g_1(x)>0,\\dots,g_s(x)>0\\},$$\nгде $f_i,g_j\\in\\mathbb R[x_1,\\dots,x_n]$. Отображение полуалгебраических множеств называется *полуалгебраическим*, если его график полуалгебраичен.\n\nПолуалгебраические множества образуют булеву алгебру: они замкнуты относительно конечных объединений, конечных пересечений и дополнений.\n\nКлючевой факт, *теорема Тарского–Зайденберга*: образ полуалгебраического множества при полуалгебраическом отображении полуалгебраичен. В частности, проекции сохраняют полуалгебраичность.\n\nЗачем над $\\mathbb R$ нужны неравенства: окружность $x^2+y^2=1$ проектируется на отрезок $[-1,1]$. Этот отрезок не является множеством нулей никаких многочленов от $x$, но он полуалгебраичен:\n$$[-1,1]=\\{1-x^2>0\\}\\cup\\{1-x^2=0\\}.$$",
+      "depends_on": [],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определение 2.18, Замечание 2.19, Лемма 2.20 (Тарский–Зайденберг)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 5
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "nash-group",
+      "title_en": "Nash group",
+      "title_ru": "Группа Нэша",
+      "statement_en": "A *Nash manifold* is a smooth manifold with a finite atlas whose charts come from open semialgebraic subsets of $\\mathbb R^n$ and whose transition maps are smooth *and* semialgebraic. A *Nash map* is a map that is smooth and semialgebraic in these charts.\n\nA **Nash group** is a group $G$ with a Nash manifold structure such that multiplication and inversion are Nash maps. So it is a real Lie group with an algebraic flavour.\n\nA subgroup $H\\le G$ is *semialgebraic* if it is a semialgebraic subset of $G$.\n\nExamples: $\\operatorname{GL}(V)$ for a finite-dimensional real $V$ (the open set $\\det\\ne0$). For a finite-dimensional real algebra $A$, $\\operatorname{Aut}(A)$ is a semialgebraic subgroup of $\\operatorname{GL}(A)$.\n\nKey fact (Sun, 2015): every semialgebraic subgroup of a Nash group is a closed Nash subgroup. In particular, it is a closed embedded real Lie subgroup.",
+      "statement_ru": "*Многообразие Нэша* — это гладкое многообразие с конечным атласом, карты которого идут из открытых полуалгебраических подмножеств $\\mathbb R^n$, а функции перехода гладкие *и* полуалгебраические. *Отображение Нэша* — отображение, гладкое и полуалгебраическое в этих картах.\n\n**Группой Нэша** называется группа $G$ со структурой многообразия Нэша, в которой умножение и взятие обратного — отображения Нэша. Это вещественная группа Ли «с алгебраическим оттенком».\n\nПодгруппа $H\\le G$ называется *полуалгебраической*, если она — полуалгебраическое подмножество $G$.\n\nПримеры: $\\operatorname{GL}(V)$ для конечномерного вещественного $V$ (открытое множество $\\det\\ne0$). Для конечномерной вещественной алгебры $A$ группа $\\operatorname{Aut}(A)$ — полуалгебраическая подгруппа в $\\operatorname{GL}(A)$.\n\nКлючевой факт (Сунь, 2015): любая полуалгебраическая подгруппа группы Нэша — замкнутая подгруппа Нэша. В частности, это замкнутая вложенная вещественная подгруппа Ли.",
+      "depends_on": [
+        "Semialgebraic set",
+        "Group",
+        "Lie group",
+        "Automorphism of an algebra"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Определения 2.21–2.23, Замечание 2.24, Предложение 2.26 (Сунь)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 7
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "reflexive-hull-preserves-algebraic-subgroups",
+      "title_en": "Reflexive hull preserves algebraic (semialgebraic) subgroups of GL(V)",
+      "title_ru": "Рефлексивная оболочка сохраняет алгебраические (полуалгебраические) подгруппы GL(V)",
+      "statement_en": "Let $V$ be a finite-dimensional vector space.\n\n1. (over $\\mathbb C$) If $G\\le\\operatorname{GL}(V)$ is a Zariski closed subgroup, then $\\operatorname{Ref}_a(G)$ is a Zariski closed subgroup of $\\operatorname{GL}(V)$.\n2. (over $\\mathbb R$) If $G\\le\\operatorname{GL}(V)$ is a semialgebraic subgroup, then $\\operatorname{Ref}_a(G)$ is a semialgebraic subgroup of $\\operatorname{GL}(V)$, hence a closed Nash subgroup.\n\nFor Lie subgroups that are not algebraic the analogous statement is false (see the counterexample with $\\det A=e^{iz}$).",
+      "statement_ru": "Пусть $V$ — конечномерное векторное пространство.\n\n1. (над $\\mathbb C$) Если $G\\le\\operatorname{GL}(V)$ — замкнутая по Зарисскому подгруппа, то $\\operatorname{Ref}_a(G)$ — замкнутая по Зарисскому подгруппа в $\\operatorname{GL}(V)$.\n2. (над $\\mathbb R$) Если $G\\le\\operatorname{GL}(V)$ — полуалгебраическая подгруппа, то $\\operatorname{Ref}_a(G)$ — полуалгебраическая подгруппа в $\\operatorname{GL}(V)$, а значит, замкнутая подгруппа Нэша.\n\nДля неалгебраических подгрупп Ли аналогичное утверждение неверно (см. контрпример с $\\det A=e^{iz}$).",
+      "proof_en": "Both cases have the same proof. Say \"nice\" for constructible (over $\\mathbb C$) or semialgebraic (over $\\mathbb R$).\n\n$H:=\\operatorname{Ref}_a(G)$ is a subgroup of $\\operatorname{GL}(V)$, since it is the reflexive hull of a group. It remains to show that $H$ is nice.\n\nIdea: membership in $H$ is a logical formula,\n$$T\\in H\\iff\\forall x\\in V\\ \\ \\exists g\\in G:\\ Tx=gx.$$\n\"$\\exists$\" is a projection, \"not\" is a complement, and $\\forall=\\neg\\exists\\neg$. Chevalley (over $\\mathbb C$) and Tarski–Seidenberg (over $\\mathbb R$) say that both operations keep sets nice.\n\nStep 1. The set\n$$\\widetilde R=\\{(T,x,g)\\in\\operatorname{GL}(V)\\times V\\times G\\mid Tx=gx\\}$$\nis given by polynomial equations, so it is nice.\n\nStep 2. Its projection $R=\\{(T,x)\\mid\\exists g\\in G:\\ Tx=gx\\}$ is nice.\n\nStep 3. $T\\notin H$ iff $(T,x)\\notin R$ for some $x$. So\n$$\\operatorname{GL}(V)\\setminus H=\\operatorname{pr}_1\\bigl((\\operatorname{GL}(V)\\times V)\\setminus R\\bigr)$$\nis nice, and so is its complement $H$.\n\nStep 4. Over $\\mathbb C$: a constructible subgroup is Zariski closed (Borel). Over $\\mathbb R$: a semialgebraic subgroup of a Nash group is a closed Nash subgroup (Sun).",
+      "proof_ru": "Оба случая доказываются одинаково. Назовём множество «хорошим», если оно конструктивно (над $\\mathbb C$) или полуалгебраично (над $\\mathbb R$).\n\n$H:=\\operatorname{Ref}_a(G)$ — подгруппа в $\\operatorname{GL}(V)$, так как это оболочка группы. Осталось показать, что $H$ хорошее.\n\nИдея: принадлежность $H$ записывается логической формулой\n$$T\\in H\\iff\\forall x\\in V\\ \\ \\exists g\\in G:\\ Tx=gx.$$\n«$\\exists$» — это проекция, «не» — дополнение, а $\\forall=\\neg\\exists\\neg$. Теоремы Шевалле (над $\\mathbb C$) и Тарского–Зайденберга (над $\\mathbb R$) говорят, что обе операции сохраняют хорошие множества.\n\nШаг 1. Множество\n$$\\widetilde R=\\{(T,x,g)\\in\\operatorname{GL}(V)\\times V\\times G\\mid Tx=gx\\}$$\nзадаётся полиномиальными уравнениями, поэтому оно хорошее.\n\nШаг 2. Его проекция $R=\\{(T,x)\\mid\\exists g\\in G:\\ Tx=gx\\}$ — хорошая.\n\nШаг 3. $T\\notin H$ тогда и только тогда, когда $(T,x)\\notin R$ для некоторого $x$. Поэтому\n$$\\operatorname{GL}(V)\\setminus H=\\operatorname{pr}_1\\bigl((\\operatorname{GL}(V)\\times V)\\setminus R\\bigr)$$\n— хорошее множество, а значит, и его дополнение $H$.\n\nШаг 4. Над $\\mathbb C$: конструктивная подгруппа замкнута по Зарисскому (Борель). Над $\\mathbb R$: полуалгебраическая подгруппа группы Нэша — замкнутая подгруппа Нэша (Сунь).",
+      "depends_on": [
+        "Algebraic reflexive hull",
+        "Reflexive hull of a group of operators is a group",
+        "Constructible set (Zariski topology)",
+        "Complex algebraic group",
+        "Semialgebraic set",
+        "Nash group"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Теоремы 2.16 и 2.25, Следствие 2.27",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 5
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "local-automorphisms-form-a-lie-group",
+      "title_en": "Local automorphisms of a finite-dimensional algebra form a Lie group",
+      "title_ru": "Локальные автоморфизмы конечномерной алгебры образуют группу Ли",
+      "statement_en": "Let $A$ be a finite-dimensional algebra (any bilinear multiplication) over $\\mathbb F=\\mathbb R$ or $\\mathbb C$. Then $\\operatorname{LocAut}(A)$ is a closed embedded Lie subgroup of $\\operatorname{GL}(A)$.\n\nMore precisely:\n\n- over $\\mathbb C$, $\\operatorname{LocAut}(A)$ is a Zariski closed algebraic subgroup of $\\operatorname{GL}(A)$, hence a closed embedded complex Lie subgroup;\n- over $\\mathbb R$, $\\operatorname{LocAut}(A)$ is a semialgebraic subgroup of $\\operatorname{GL}(A)$, hence a closed Nash subgroup and a closed embedded real Lie subgroup.\n\nThis proves Conjecture 1 of Ayupov, Elduque and Kudaybergenov (2023).",
+      "statement_ru": "Пусть $A$ — конечномерная алгебра (с произвольным билинейным умножением) над $\\mathbb F=\\mathbb R$ или $\\mathbb C$. Тогда $\\operatorname{LocAut}(A)$ — замкнутая вложенная подгруппа Ли в $\\operatorname{GL}(A)$.\n\nТочнее:\n\n- над $\\mathbb C$ группа $\\operatorname{LocAut}(A)$ — замкнутая по Зарисскому алгебраическая подгруппа в $\\operatorname{GL}(A)$, а значит, замкнутая вложенная комплексная подгруппа Ли;\n- над $\\mathbb R$ группа $\\operatorname{LocAut}(A)$ — полуалгебраическая подгруппа в $\\operatorname{GL}(A)$, а значит, замкнутая подгруппа Нэша и замкнутая вложенная вещественная подгруппа Ли.\n\nЭто доказывает Гипотезу 1 Аюпова, Эльдуке и Кудайбергенова (2023).",
+      "proof_en": "Write\n$$\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A)).$$\n\nOver $\\mathbb C$: $\\operatorname{Aut}(A)$ is a Zariski closed subgroup of $\\operatorname{GL}(A)$. By the theorem on reflexive hulls, so is $\\operatorname{LocAut}(A)$. Zariski closed subgroups of $\\operatorname{GL}(A)$ are closed embedded complex Lie subgroups.\n\nOver $\\mathbb R$: $\\operatorname{Aut}(A)$ is a semialgebraic subgroup of $\\operatorname{GL}(A)$. Hence so is $\\operatorname{LocAut}(A)$, which is then a closed Nash subgroup, hence a closed embedded Lie subgroup.\n\nNote: the naive route \"$\\operatorname{Aut}(A)$ is a Lie group, so its hull is one too\" fails — the hull of a closed Lie subgroup can be non-closed. It is the algebraic nature of $\\operatorname{Aut}(A)$ that makes the proof work.",
+      "proof_ru": "Запишем\n$$\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(\\operatorname{Aut}(A)).$$\n\nНад $\\mathbb C$: $\\operatorname{Aut}(A)$ — замкнутая по Зарисскому подгруппа в $\\operatorname{GL}(A)$. По теореме о рефлексивных оболочках $\\operatorname{LocAut}(A)$ — тоже. Замкнутые по Зарисскому подгруппы $\\operatorname{GL}(A)$ — замкнутые вложенные комплексные подгруппы Ли.\n\nНад $\\mathbb R$: $\\operatorname{Aut}(A)$ — полуалгебраическая подгруппа в $\\operatorname{GL}(A)$. Значит, $\\operatorname{LocAut}(A)$ — тоже, и потому это замкнутая подгруппа Нэша, а значит, замкнутая вложенная подгруппа Ли.\n\nЗамечание: наивный путь «$\\operatorname{Aut}(A)$ — группа Ли, значит, и её оболочка» не работает — оболочка замкнутой подгруппы Ли может быть незамкнутой. Доказательство держится именно на алгебраичности $\\operatorname{Aut}(A)$.",
+      "aliases": [
+        "LocAut(A) is a Lie group"
+      ],
+      "depends_on": [
+        "Local automorphism",
+        "Lie group",
+        "Automorphism of an algebra",
+        "Local derivations and local automorphisms as reflexive hulls",
+        "Reflexive hull preserves algebraic (semialgebraic) subgroups of GL(V)",
+        "Complex algebraic group",
+        "Nash group"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Следствия 2.17 и 2.28 (Гипотеза 1)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 5
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "lie-algebra-of-reflexive-hull",
+      "title_en": "Lie algebra of a reflexive hull is the reflexive hull of the Lie algebra",
+      "title_ru": "Алгебра Ли рефлексивной оболочки — рефлексивная оболочка алгебры Ли",
+      "statement_en": "Let $\\mathbb F\\in\\{\\mathbb R,\\mathbb C\\}$, let $V$ be a finite-dimensional $\\mathbb F$-vector space, and let $G\\le\\operatorname{GL}(V)$ be a Lie subgroup with Lie algebra $\\mathfrak g$. Assume that $\\operatorname{Ref}_a(G)$ is an embedded Lie subgroup of $\\operatorname{GL}(V)$. Then\n$$\\operatorname{Lie}(\\operatorname{Ref}_a(G))=\\operatorname{Ref}_a(\\mathfrak g)$$\nas subspaces of $\\operatorname{End}(V)$.\n\nIn words: taking the reflexive hull commutes with passing to the Lie algebra.",
+      "statement_ru": "Пусть $\\mathbb F\\in\\{\\mathbb R,\\mathbb C\\}$, $V$ — конечномерное $\\mathbb F$-пространство, $G\\le\\operatorname{GL}(V)$ — подгруппа Ли с алгеброй Ли $\\mathfrak g$. Предположим, что $\\operatorname{Ref}_a(G)$ — вложенная подгруппа Ли в $\\operatorname{GL}(V)$. Тогда\n$$\\operatorname{Lie}(\\operatorname{Ref}_a(G))=\\operatorname{Ref}_a(\\mathfrak g)$$\nкак подпространства $\\operatorname{End}(V)$.\n\nСловами: взятие рефлексивной оболочки перестановочно с переходом к алгебре Ли.",
+      "proof_en": "Orbit lemma. For $v\\in V$ the orbit $Gv$ is an immersed submanifold of $V$ with tangent space\n$$T_v(Gv)=\\mathfrak g v=\\{Yv\\mid Y\\in\\mathfrak g\\}$$\n(differentiate $t\\mapsto e^{tY}v$ at $t=0$). Also, the flow of a vector field tangent to an orbit stays in that orbit for small $t$, by uniqueness of integral curves.\n\nPut $H=\\operatorname{Ref}_a(G)$.\n\n($\\subseteq$) Let $X\\in\\operatorname{Lie}(H)$, so $X=T'(0)$ for a smooth curve $T(t)\\in H$ with $T(0)=I$. For each $v$, the curve $T(t)v$ lies in the orbit $Gv$, by the definition of the hull. So its velocity $Xv$ lies in $T_v(Gv)=\\mathfrak gv$. Hence $X\\in\\operatorname{Ref}_a(\\mathfrak g)$.\n\n($\\supseteq$) Let $X\\in\\operatorname{Ref}_a(\\mathfrak g)$. Then the linear vector field $w\\mapsto Xw$ is tangent to every orbit of $G_0$, the identity component of $G$. Fix $v$ and let\n$$I_v=\\{t\\in\\mathbb R\\mid e^{tX}v\\in G_0v\\}.$$\nIt contains $0$ and is open; its complement is open too, since the flow stays in whatever orbit it is in for small time. As $\\mathbb R$ is connected, $I_v=\\mathbb R$.\n\nSo $e^{tX}v\\in Gv$ for all $v$ and $t$, i.e. $e^{tX}\\in H$. Since $H$ is embedded, $t\\mapsto e^{tX}$ is a smooth curve in $H$ with velocity $X$ at $0$. Thus $X\\in\\operatorname{Lie}(H)$.\n\nOver $\\mathbb C$ apply the argument to the underlying real groups; both sides are complex subspaces.",
+      "proof_ru": "Лемма об орбитах. Для $v\\in V$ орбита $Gv$ — погружённое подмногообразие в $V$ с касательным пространством\n$$T_v(Gv)=\\mathfrak g v=\\{Yv\\mid Y\\in\\mathfrak g\\}$$\n(продифференцируем $t\\mapsto e^{tY}v$ при $t=0$). Кроме того, поток векторного поля, касающегося орбиты, при малых $t$ не выходит из этой орбиты — по единственности интегральных кривых.\n\nПоложим $H=\\operatorname{Ref}_a(G)$.\n\n($\\subseteq$) Пусть $X\\in\\operatorname{Lie}(H)$, то есть $X=T'(0)$ для гладкой кривой $T(t)\\in H$ с $T(0)=I$. Для каждого $v$ кривая $T(t)v$ лежит в орбите $Gv$ — по определению оболочки. Значит, её скорость $Xv$ лежит в $T_v(Gv)=\\mathfrak gv$. Итак, $X\\in\\operatorname{Ref}_a(\\mathfrak g)$.\n\n($\\supseteq$) Пусть $X\\in\\operatorname{Ref}_a(\\mathfrak g)$. Тогда линейное векторное поле $w\\mapsto Xw$ касается каждой орбиты $G_0$ — компоненты единицы группы $G$. Зафиксируем $v$ и положим\n$$I_v=\\{t\\in\\mathbb R\\mid e^{tX}v\\in G_0v\\}.$$\nОно содержит $0$ и открыто; его дополнение тоже открыто, так как поток при малых временах остаётся в той орбите, где находится. Поскольку $\\mathbb R$ связно, $I_v=\\mathbb R$.\n\nЗначит, $e^{tX}v\\in Gv$ для всех $v$ и $t$, то есть $e^{tX}\\in H$. Так как $H$ вложена, $t\\mapsto e^{tX}$ — гладкая кривая в $H$ со скоростью $X$ в нуле. Итак, $X\\in\\operatorname{Lie}(H)$.\n\nНад $\\mathbb C$ рассуждение применяется к соответствующим вещественным группам; обе части — комплексные подпространства.",
+      "depends_on": [
+        "Algebraic reflexive hull",
+        "Lie algebra of a Lie group",
+        "Lie group"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Лемма 3.2, Теорема 3.3",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 9
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "lie-algebra-of-locaut-is-locder",
+      "title_en": "The Lie algebra of LocAut(A) is LocDer(A)",
+      "title_ru": "Алгебра Ли группы LocAut(A) — это LocDer(A)",
+      "statement_en": "Let $A$ be a finite-dimensional algebra over $\\mathbb F=\\mathbb R$ or $\\mathbb C$. Then\n$$\\operatorname{Lie}(\\operatorname{LocAut}(A))=\\operatorname{LocDer}(A)$$\nas Lie subalgebras of $\\operatorname{End}(A)$.\n\nThis proves Conjecture 2 of Ayupov, Elduque and Kudaybergenov: local derivations are exactly the infinitesimal local automorphisms.\n\nBy-product: $\\operatorname{LocDer}(A)$ is closed under the commutator\n$$[\\Delta_1,\\Delta_2]=\\Delta_1\\Delta_2-\\Delta_2\\Delta_1,$$\nso it is a Lie algebra. Over $\\mathbb R$ and $\\mathbb C$ this recovers the result of Hao and Chen.",
+      "statement_ru": "Пусть $A$ — конечномерная алгебра над $\\mathbb F=\\mathbb R$ или $\\mathbb C$. Тогда\n$$\\operatorname{Lie}(\\operatorname{LocAut}(A))=\\operatorname{LocDer}(A)$$\nкак подалгебры Ли в $\\operatorname{End}(A)$.\n\nЭто доказывает Гипотезу 2 Аюпова, Эльдуке и Кудайбергенова: локальные дифференцирования — это в точности инфинитезимальные локальные автоморфизмы.\n\nПобочный результат: $\\operatorname{LocDer}(A)$ замкнуто относительно коммутатора\n$$[\\Delta_1,\\Delta_2]=\\Delta_1\\Delta_2-\\Delta_2\\Delta_1,$$\nто есть является алгеброй Ли. Над $\\mathbb R$ и $\\mathbb C$ это заново даёт результат Хао и Чэня.",
+      "proof_en": "Let $G=\\operatorname{Aut}(A)$. By the previous theorem, $\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(G)$ is an embedded Lie subgroup of $\\operatorname{GL}(A)$. So the theorem on Lie algebras of reflexive hulls applies:\n$$\\operatorname{Lie}(\\operatorname{LocAut}(A))=\\operatorname{Ref}_a(\\operatorname{Lie}(G))=\\operatorname{Ref}_a(\\operatorname{Der}(A))=\\operatorname{LocDer}(A).$$\n\nThe step $\\operatorname{Lie}(\\operatorname{Aut}(A))=\\operatorname{Der}(A)$ is classical. If $e^{tD}\\in\\operatorname{Aut}(A)$ for all $t$, differentiate $e^{tD}(xy)=e^{tD}(x)\\,e^{tD}(y)$ at $t=0$:\n$$D(xy)=D(x)y+xD(y).$$\nConversely, for a derivation $D$ the Leibniz rule\n$$D^n(xy)=\\sum_{k=0}^n\\binom nk D^k(x)\\,D^{n-k}(y)$$\ngives $e^{tD}(xy)=e^{tD}(x)\\,e^{tD}(y)$.",
+      "proof_ru": "Пусть $G=\\operatorname{Aut}(A)$. По предыдущей теореме $\\operatorname{LocAut}(A)=\\operatorname{Ref}_a(G)$ — вложенная подгруппа Ли в $\\operatorname{GL}(A)$. Значит, применима теорема об алгебре Ли рефлексивной оболочки:\n$$\\operatorname{Lie}(\\operatorname{LocAut}(A))=\\operatorname{Ref}_a(\\operatorname{Lie}(G))=\\operatorname{Ref}_a(\\operatorname{Der}(A))=\\operatorname{LocDer}(A).$$\n\nРавенство $\\operatorname{Lie}(\\operatorname{Aut}(A))=\\operatorname{Der}(A)$ классическое. Если $e^{tD}\\in\\operatorname{Aut}(A)$ при всех $t$, продифференцируем $e^{tD}(xy)=e^{tD}(x)\\,e^{tD}(y)$ при $t=0$:\n$$D(xy)=D(x)y+xD(y).$$\nОбратно, для дифференцирования $D$ правило Лейбница\n$$D^n(xy)=\\sum_{k=0}^n\\binom nk D^k(x)\\,D^{n-k}(y)$$\nдаёт $e^{tD}(xy)=e^{tD}(x)\\,e^{tD}(y)$.",
+      "aliases": [
+        "Lie(LocAut(A)) = LocDer(A)"
+      ],
+      "depends_on": [
+        "Lie algebra of a reflexive hull is the reflexive hull of the Lie algebra",
+        "Local automorphisms of a finite-dimensional algebra form a Lie group",
+        "Local derivations and local automorphisms as reflexive hulls",
+        "Local derivation",
+        "Derivation of an algebra",
+        "Lie algebra of a Lie group"
+      ],
+      "topic": "Локальные дифференцирования и автоморфизмы",
+      "topic_order": 14,
+      "source": {
+        "label": "Следствие 3.4 (Гипотеза 2)",
+        "document": "2026_-_LOCAL_AUTOMORPHISMS_IS_A_LIE_GROUP.pdf",
+        "page": 10
+      }
+    }
+  ]
+}
