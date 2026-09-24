@@ -10,21 +10,8 @@ episode_code it doesn't find, which is all prod ever had. This loads a
 small, git-committed JSON dump of just the metadata (not the PDFs
 themselves) so deploys get real titles/dates too.
 
-Regenerate the snapshot after running parse_export.py locally, from
-backend/:
-  python -c "
-  import json
-  from app.db.session import SessionLocal
-  from app.db.models import Talk, Season
-  db = SessionLocal()
-  seasons = {s.id: s.number for s in db.query(Season).all()}
-  talks = db.query(Talk).filter(Talk.episode_code.isnot(None)).order_by(Talk.episode_code).all()
-  rows = [{'episode_code': t.episode_code, 'title': t.title,
-           'date': t.date.isoformat() if t.date else None,
-           'season_number': seasons.get(t.season_id),
-           'article_pdf_paths': t.article_pdf_paths or []} for t in talks]
-  json.dump(rows, open('app/ingestion/talks_metadata.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
-  "
+Regenerate the snapshot with dump_talks_metadata.py against a throwaway DB
+filled by parse_export.py -- see docs/adding-talks.md ("Новые доклады").
 
 Run from backend/: python -m app.ingestion.load_talks_metadata
 """
