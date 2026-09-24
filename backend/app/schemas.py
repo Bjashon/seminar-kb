@@ -46,17 +46,31 @@ class EntityDetailOut(BaseModel):
     used_by: list[LinkOut]
 
 
+class BoardEdgeOut(BaseModel):
+    from_slug: str  # "from uses to"
+    to_slug: str
+
+
+class BoardOut(BaseModel):
+    slugs: list[str]
+    edges: list[BoardEdgeOut]
+
+
+class TalkPartOut(BaseModel):
+    episode_code: str
+    date: date | None
+
+
 class TalkSummaryOut(BaseModel):
+    id: int
     episode_code: str
     title: str
-    # All episode codes covering this same paper, self included, e.g. a talk
-    # split into "Part I/II/III" across several dated seminar sessions --
-    # entities are attached to just one of them (see load_entities.py), so
-    # the picker needs these to show it's really one training on N talks.
-    episode_codes: list[str]
+    # Every talk presenting this same paper, self included, e.g. one split
+    # into "Part I/II/III" across several seminar dates -- entities are
+    # attached to just one of them (see load_entities.py), so the picker
+    # needs these to show it's really one training for N talks.
+    parts: list[TalkPartOut]
     season_number: int | None
-    date: date | None
-    dates: list[date]
     entity_count: int
 
 

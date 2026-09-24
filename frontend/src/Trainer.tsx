@@ -11,6 +11,7 @@ interface Props {
   details: Record<string, EntityDetail>;
   ensureDetail: (slug: string) => void;
   onOpenCard: (slug: string) => void;
+  onOpenBoard: (talkId: number) => void;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -24,17 +25,17 @@ function shuffle<T>(arr: T[]): T[] {
 
 type TrainerMode = "history" | "foundational" | "article";
 
-export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Props) {
+export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
   const [queue, setQueue] = useState<ReviewCardOut[] | null>(null);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [clozeResult, setClozeResult] = useState<{ correct: boolean; term: string } | null>(null);
   const [talks, setTalks] = useState<TalkSummary[] | null>(null);
-  const [selectedEpisode, setSelectedEpisode] = useState<string | null>(null);
+  const [selectedTalk, setSelectedTalk] = useState<number | null>(null);
 
-  function load(m: TrainerMode, episodeCode?: string) {
-    api.dueCards(m, episodeCode).then((cards) => {
+  function load(m: TrainerMode, talkId?: number) {
+    api.dueCards(m, talkId).then((cards) => {
       // Only "history" is a grab-bag of whatever's due -- shuffling it is
       // fine. "foundational" and "article" are a designed learning sequence
       // (the backend topologically orders them by "uses" dependency), so
@@ -50,7 +51,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
       // Picking an article is a separate step (see the picker below) --
       // nothing to drill yet until one is chosen.
       setQueue(null);
-      setSelectedEpisode(null);
+      setSelectedTalk(null);
       if (!talks) api.listTalks().then(setTalks);
       return;
     }
@@ -58,9 +59,9 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
-  function pickArticle(episodeCode: string) {
-    setSelectedEpisode(episodeCode);
-    load("article", episodeCode);
+  function pickArticle(talkId: number) {
+    setSelectedTalk(talkId);
+    load("article", talkId);
   }
 
   const current = queue?.[index];
@@ -108,7 +109,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
     </div>
   );
 
-  if (mode === "article" && selectedEpisode === null) {
+  if (mode === "article" && selectedTalk === null) {
     return (
       <div className="trainer">
         {modeSwitch}
@@ -116,15 +117,19 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
           {talks === null && <p>Загрузка списка статей…</p>}
           {talks !== null && talks.length === 0 && <p>Пока нет статей с определениями или свойствами.</p>}
           {talks?.map((t) => (
-            <button key={t.episode_code} className="article-row" onClick={() => pickArticle(t.episode_code)}>
-              <span className="article-title">
-                {t.episode_codes.join(", ")} — {t.title}
-                {t.dates.length > 0 && (
-                  <span className="article-date">{t.dates.map(formatDate).join(", ")}</span>
-                )}
-              </span>
-              <span className="article-count">{t.entity_count}</span>
-            </button>
+            <div key={t.id} className="article-row">
+              <div className="article-main">
+                <div className="article-codes">
+                  {t.parts.map((p) => (p.date ? `${p.episode_code} · ${formatDate(p.date)}` : p.episode_code)).join(", ")}
+                </div>
+                <div className="article-title">{t.title}</div>
+              </div>
+              <span className="article-count" title="определений и свойств">{t.entity_count}</span>
+              <div className="article-actions">
+                <button onClick={() => pickArticle(t.id)}>Тренажёр</button>
+                <button onClick={() => onOpenBoard(t.id)}>Доска</button>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -137,7 +142,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
       <div className="trainer">
         {modeSwitch}
         {mode === "article" && (
-          <button className="article-back" onClick={() => setSelectedEpisode(null)}>&larr; К списку статей</button>
+          <button className="article-back" onClick={() => setSelectedTalk(null)}>&larr; К списку статей</button>
         )}
         <div className="done">
           <p>
@@ -156,11 +161,11 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
       <div className="trainer">
         {modeSwitch}
         {mode === "article" && (
-          <button className="article-back" onClick={() => setSelectedEpisode(null)}>&larr; К списку статей</button>
+          <button className="article-back" onClick={() => setSelectedTalk(null)}>&larr; К списку статей</button>
         )}
         <div className="done">
           <p>Колода пройдена — {queue.length} карточек.</p>
-          <button onClick={() => load(mode, selectedEpisode ?? undefined)}>Начать заново</button>
+          <button onClick={() => load(mode, selectedTalk ?? undefined)}>Начать заново</button>
         </div>
       </div>
     );
@@ -171,7 +176,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard }: Prop
     <div className="trainer">
       {modeSwitch}
       {mode === "article" && (
-        <button className="article-back" onClick={() => setSelectedEpisode(null)}>&larr; К списку статей</button>
+        <button className="article-back" onClick={() => setSelectedTalk(null)}>&larr; К списку статей</button>
       )}
       <div className="progress">{index + 1} / {queue.length}</div>
 

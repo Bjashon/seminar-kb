@@ -8,6 +8,7 @@ from app.db.session import get_db
 from app.schemas import GradeIn, ReviewCardOut, SnoozeIn
 from app.services.ordering import topo_order
 from app.services.srs import apply_grade, cloze_term
+from app.services.talk_groups import paper_group
 
 router = APIRouter(prefix="/review", tags=["review"])
 
@@ -39,7 +40,7 @@ def _bypass_due_cards(db: Session, entities: list[Entity], now: datetime) -> lis
 @router.get("/due", response_model=list[ReviewCardOut])
 def due_cards(
     mode: str = Query("history", pattern="^(history|foundational|article)$"),
-    episode_code: str | None = Query(None),
+    talk_id: int | None = Query(None),
     db: Session = Depends(get_db),
 ) -> list[ReviewCardOut]:
     now = datetime.utcnow()
@@ -54,12 +55,15 @@ def due_cards(
         return _bypass_due_cards(db, topo_order(db, entities), now)
 
     if mode == "article":
-        if not episode_code:
-            raise HTTPException(status_code=400, detail="episode_code is required for mode=article")
+        # By talk id, not episode code: Notion titles two different papers
+        # "s07_ep35 ... Part I/II", so a code alone would mix them together.
+        talk = db.get(Talk, talk_id) if talk_id is not None else None
+        if talk is None:
+            raise HTTPException(status_code=400, detail="a valid talk_id is required for mode=article")
+        group_ids = [t.id for t in paper_group(talk, db.query(Talk).all())]
         entities = (
             db.query(Entity)
-            .join(Talk, Talk.id == Entity.talk_id)
-            .filter(Talk.episode_code == episode_code)
+            .filter(Entity.talk_id.in_(group_ids))
             .filter(Entity.kind.in_([EntityKind.definition, EntityKind.property]))
             .order_by(Entity.source_page, Entity.id)
             .all()

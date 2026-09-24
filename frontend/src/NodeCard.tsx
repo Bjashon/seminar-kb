@@ -8,6 +8,15 @@ interface Props {
   node: CanvasNode;
   detail: EntityDetail;
   allEntities: EntitySummary[];
+  zoom: number;
+  /** Visible canvas area, in canvas coordinates -- drags stay inside it,
+   *  since there's no scrolling to go fetch a card dragged out of view. */
+  boundsW: number;
+  boundsH: number;
+  isTop: boolean;
+  enlarged: boolean;
+  onToggleEnlarge: (slug: string) => void;
+  onRaise: (slug: string) => void;
   onMove: (slug: string, x: number, y: number) => void;
   onClose: (slug: string) => void;
   onSetLang: (slug: string, lang: Lang) => void;
@@ -16,7 +25,10 @@ interface Props {
   onOpenSource: (detail: EntityDetail) => void;
 }
 
-export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMove, onClose, onSetLang, onToggleProof, onGoto, onOpenSource }: Props) {
+export const NodeCard = memo(function NodeCard({
+  node, detail, allEntities, zoom, boundsW, boundsH, isTop, enlarged, onToggleEnlarge, onRaise, onMove, onClose, onSetLang,
+  onToggleProof, onGoto, onOpenSource,
+}: Props) {
   const [dragging, setDragging] = useState(false);
   const dragState = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -59,6 +71,7 @@ export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMo
 
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
     if ((e.target as HTMLElement).closest("button")) return;
+    onRaise(node.slug);
     setDragging(true);
     dragState.current = { startX: e.clientX, startY: e.clientY, origX: node.x, origY: node.y };
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
@@ -66,13 +79,35 @@ export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMo
   function handlePointerMove(e: ReactPointerEvent<HTMLDivElement>) {
     if (!dragging || !dragState.current) return;
     const { startX, startY, origX, origY } = dragState.current;
-    const x = Math.max(0, Math.min(3100, origX + (e.clientX - startX)));
-    const y = Math.max(0, Math.min(2100, origY + (e.clientY - startY)));
+    const cardW = cardRef.current?.offsetWidth ?? 440;
+    const x = Math.max(0, Math.min(boundsW - cardW, origX + (e.clientX - startX) / zoom));
+    const y = Math.max(0, Math.min(boundsH - 48, origY + (e.clientY - startY) / zoom));
     onMove(node.slug, x, y);
   }
   function endDrag() {
     setDragging(false);
     dragState.current = null;
+  }
+
+  // Shown at 100% regardless of canvas zoom: undo the canvas scale on this
+  // card, and nudge it so it stays fully on screen (there's no panning).
+  let enlargeStyle: React.CSSProperties = {};
+  if (enlarged) {
+    const viewW = boundsW * zoom;
+    const viewH = boundsH * zoom;
+    const ZOOM_BAR_CLEARANCE = 72; // keep clear of the zoom controls pinned bottom-right
+    const w = cardRef.current?.offsetWidth ?? 520;
+    const maxH = viewH - 12 - ZOOM_BAR_CLEARANCE;
+    const h = Math.min(cardRef.current?.offsetHeight ?? 400, maxH);
+    const left = Math.max(12, Math.min(node.x * zoom, viewW - w - 12));
+    const top = Math.max(12, Math.min(node.y * zoom, viewH - h - ZOOM_BAR_CLEARANCE));
+    enlargeStyle = {
+      transform: `translate(${(left - node.x * zoom) / zoom}px, ${(top - node.y * zoom) / zoom}px) scale(${1 / zoom})`,
+      transformOrigin: "0 0",
+      zIndex: 20,
+      maxHeight: maxH,
+      overflowY: "auto",
+    };
   }
 
   function onBodyClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -84,7 +119,12 @@ export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMo
   }
 
   return (
-    <div ref={cardRef} className={"node-card" + (dragging ? " dragging" : "")} data-slug={node.slug} style={{ left: node.x, top: node.y }}>
+    <div
+      ref={cardRef}
+      className={"node-card" + (dragging ? " dragging" : "")}
+      data-slug={node.slug}
+      style={{ left: node.x, top: node.y, zIndex: isTop ? 3 : undefined, ...enlargeStyle }}
+    >
       <div
         className="node-drag-handle"
         onPointerDown={handlePointerDown}
@@ -97,6 +137,16 @@ export const NodeCard = memo(function NodeCard({ node, detail, allEntities, onMo
           {KIND_LABEL_RU[detail.kind]}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {(zoom < 0.95 || enlarged) && (
+            <button
+              className="node-enlarge"
+              aria-label={enlarged ? "Уменьшить карточку" : "Увеличить карточку"}
+              title={enlarged ? "Уменьшить карточку" : "Увеличить карточку"}
+              onClick={() => onToggleEnlarge(node.slug)}
+            >
+              {enlarged ? "⤡" : "⤢"}
+            </button>
+          )}
           <div className="lang-switch">
             <button aria-selected={node.lang === "ru"} onClick={() => onSetLang(node.slug, "ru")}>RU</button>
             <button aria-selected={node.lang === "en"} onClick={() => onSetLang(node.slug, "en")}>EN</button>

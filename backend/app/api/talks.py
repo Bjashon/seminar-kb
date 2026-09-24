@@ -1,25 +1,30 @@
 import re
-from pathlib import PureWindowsPath
+from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.db.models import Entity, EntityKind, Season, Talk
+from app.db.models import Entity, EntityKind, EntityLink, Season, Talk
 from app.db.session import get_db
-from app.schemas import TalkSummaryOut
+from app.schemas import BoardEdgeOut, BoardOut, TalkPartOut, TalkSummaryOut
+from app.services.ordering import topo_order
+from app.services.talk_groups import paper_group
 
 router = APIRouter(prefix="/talks", tags=["talks"])
 
 # Notion titles look like "s07_ep30 Lie antialgebras: Prémices Part I" --
-# strip the leading code and a trailing "Part <roman-or-arabic>" so the
-# picker can show one clean paper title next to the joined episode codes.
+# strip the leading code (shown separately) and, for a paper merged across
+# several talks, the trailing "Part <roman-or-arabic>" too, since one entry
+# then stands for all the parts at once.
 _CODE_PREFIX_RE = re.compile(r"^s\d{2}_(?:ep|sp)\d+:?\s*", re.IGNORECASE)
 _PART_SUFFIX_RE = re.compile(r"\s*Part\s+[IVXLCDM]+\.?\s*$|\s*Part\s+\d+\.?\s*$", re.IGNORECASE)
 
 
-def _display_title(raw: str) -> str:
-    t = _PART_SUFFIX_RE.sub("", _CODE_PREFIX_RE.sub("", raw))
+def _display_title(raw: str, strip_part: bool) -> str:
+    t = _CODE_PREFIX_RE.sub("", raw)
+    if strip_part:
+        t = _PART_SUFFIX_RE.sub("", t)
     return t.strip() or raw
 
 
@@ -34,36 +39,55 @@ def list_talks(db: Session = Depends(get_db)) -> list[TalkSummaryOut]:
         .filter(Talk.episode_code.isnot(None))
         .filter(Entity.kind.in_([EntityKind.definition, EntityKind.property]))
         .group_by(Talk.id, Season.number)
-        .order_by(Talk.episode_code)
+        .order_by(Talk.episode_code, Talk.date)
         .all()
     )
     all_talks = db.query(Talk).all()
 
-    def basenames(talk: Talk) -> set[str]:
-        # article_pdf_paths were resolved on Windows (see parse_export.py)
-        # and stored as backslash paths regardless of which OS later reads
-        # them (this API can run in a Linux container), and each talk gets
-        # its own folder even when re-uploading the identical PDF -- so only
-        # the filename, not the full path, can identify "same paper".
-        return {PureWindowsPath(p).name for p in (talk.article_pdf_paths or []) if not p.startswith("http")}
-
     out: list[TalkSummaryOut] = []
     for talk, season_number, count in rows:
-        own_names = basenames(talk)
-        siblings = [
-            t for t in all_talks
-            if t.id != talk.id and t.episode_code and own_names & basenames(t)
-        ]
-        group = sorted([talk, *siblings], key=lambda t: t.episode_code or "")
+        group = paper_group(talk, all_talks)
         out.append(
             TalkSummaryOut(
+                id=talk.id,
                 episode_code=talk.episode_code,
-                title=_display_title(talk.title),
-                episode_codes=[t.episode_code for t in group],
+                title=_display_title(talk.title, strip_part=len(group) > 1),
+                parts=[TalkPartOut(episode_code=t.episode_code, date=t.date) for t in group],
                 season_number=season_number,
-                date=talk.date,
-                dates=[t.date for t in group if t.date],
                 entity_count=count,
             )
         )
+    # By each paper's first presentation, not by whichever talk happens to
+    # own its entities (ep28/29/36 is owned by ep36 but started 03/08).
+    out.sort(key=lambda t: (t.parts[0].date is None, t.parts[0].date or date.min, t.parts[0].episode_code))
     return out
+
+
+@router.get("/{talk_id}/board", response_model=BoardOut)
+def talk_board(talk_id: int, db: Session = Depends(get_db)) -> BoardOut:
+    """Every entity of one paper (all kinds, not just what the trainer
+    drills) plus the "uses" links among them, for laying the whole paper out
+    on the canvas at once. Slugs come back in dependency order."""
+    talk = db.get(Talk, talk_id)
+    if talk is None:
+        raise HTTPException(status_code=404, detail="Talk not found")
+
+    group_ids = [t.id for t in paper_group(talk, db.query(Talk).all())]
+    entities = (
+        db.query(Entity)
+        .filter(Entity.talk_id.in_(group_ids))
+        .order_by(Entity.source_page, Entity.id)
+        .all()
+    )
+    entities = topo_order(db, entities)
+
+    slug_by_id = {e.id: e.slug for e in entities}
+    links = (
+        db.query(EntityLink)
+        .filter(EntityLink.from_entity_id.in_(slug_by_id), EntityLink.to_entity_id.in_(slug_by_id))
+        .all()
+    )
+    return BoardOut(
+        slugs=[e.slug for e in entities],
+        edges=[BoardEdgeOut(from_slug=slug_by_id[l.from_entity_id], to_slug=slug_by_id[l.to_entity_id]) for l in links],
+    )

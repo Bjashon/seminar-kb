@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import type { CanvasEdge, CanvasNode, EntityDetail, EntitySummary, Lang } from "./types";
+import type { Board, CanvasEdge, CanvasNode, EntityDetail, EntitySummary, Lang } from "./types";
 import { api } from "./api";
-import { Canvas } from "./Canvas";
+import { Canvas, type FocusRequest } from "./Canvas";
 import { IndexPage } from "./IndexPage";
 import { Trainer } from "./Trainer";
 import { SourcePanel } from "./SourcePanel";
@@ -26,6 +26,8 @@ export default function App() {
   const [nodes, setNodes] = useState<CanvasNode[]>([]);
   const [edges, setEdges] = useState<CanvasEdge[]>([]);
   const [sourceSlug, setSourceSlug] = useState<string | null>(null);
+  const [pendingLayout, setPendingLayout] = useState<string[] | null>(null);
+  const [focus, setFocus] = useState<FocusRequest | null>(null);
 
   useEffect(() => {
     api.listEntities().then(setEntities);
@@ -45,6 +47,7 @@ export default function App() {
   const gotoFromCard = useCallback(
     (fromSlug: string | null, toSlug: string) => {
       ensureDetail(toSlug);
+      setFocus({ slug: toSlug, n: Date.now() });
       setNodes((prev) => {
         if (prev.some((n) => n.slug === toSlug)) return prev;
         const fromNode = fromSlug ? prev.find((n) => n.slug === fromSlug) : null;
@@ -75,6 +78,26 @@ export default function App() {
   const moveNode = useCallback((slug: string, x: number, y: number) => {
     setNodes((prev) => prev.map((n) => (n.slug === slug ? { ...n, x, y } : n)));
   }, []);
+  const placeMany = useCallback((positions: Record<string, { x: number; y: number }>) => {
+    setNodes((prev) => prev.map((n) => (positions[n.slug] ? { ...n, ...positions[n.slug] } : n)));
+  }, []);
+  const layoutDone = useCallback(() => setPendingLayout(null), []);
+
+  // A paper's board replaces whatever was on the canvas: every entity of the
+  // paper at once, linked, in dependency order (the backend sorts it; Canvas
+  // packs it into rows once the cards have rendered and can be measured).
+  const openBoard = useCallback(
+    (talkId: number) => {
+      api.getBoard(talkId).then((board: Board) => {
+        board.slugs.forEach(ensureDetail);
+        setNodes(board.slugs.map((slug, i) => ({ slug, x: 40, y: 40 + i * 4, lang: "ru" as Lang, proofOpen: false })));
+        setEdges(board.edges.map((e) => ({ from: e.from_slug, to: e.to_slug })));
+        setPendingLayout(board.slugs);
+        setMode("reader");
+      });
+    },
+    [ensureDetail]
+  );
   const closeNode = useCallback((slug: string) => {
     setNodes((prev) => prev.filter((n) => n.slug !== slug));
     setEdges((prev) => prev.filter((e) => e.from !== slug && e.to !== slug));
@@ -134,12 +157,16 @@ export default function App() {
               drags one view's scroll position onto another -- each pane
               keeps its own native scroll offset and is exactly as you left
               it when you come back. */}
-          <div className="main-pane" hidden={mode !== "reader"}>
+          <div className="main-pane no-scroll" hidden={mode !== "reader"}>
             <Canvas
               nodes={nodes}
               edges={edges}
               details={details}
               allEntities={entities}
+              pendingLayout={pendingLayout}
+              focus={focus}
+              onPlaceMany={placeMany}
+              onLayoutDone={layoutDone}
               onMove={moveNode}
               onClose={closeNode}
               onSetLang={setNodeLang}
@@ -153,7 +180,13 @@ export default function App() {
           </div>
           <div className="main-pane" hidden={mode !== "trainer"}>
             <div className="main-inner">
-              <Trainer allEntities={entities} details={details} ensureDetail={ensureDetail} onOpenCard={openFromTrainer} />
+              <Trainer
+                allEntities={entities}
+                details={details}
+                ensureDetail={ensureDetail}
+                onOpenCard={openFromTrainer}
+                onOpenBoard={openBoard}
+              />
             </div>
           </div>
         </main>

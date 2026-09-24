@@ -41,13 +41,17 @@ export interface EntityDetail {
   used_by: LinkRef[];
 }
 
+export interface Board {
+  slugs: string[];
+  edges: { from_slug: string; to_slug: string }[];
+}
+
 export interface TalkSummary {
+  id: number;
   episode_code: string;
   title: string;
-  episode_codes: string[];
+  parts: { episode_code: string; date: string | null }[];
   season_number: number | null;
-  date: string | null;
-  dates: string[];
   entity_count: number;
 }
 
