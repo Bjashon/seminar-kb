@@ -49,7 +49,7 @@ def due_cards(
         entities = (
             db.query(Entity)
             .filter(Entity.is_foundational.is_(True))
-            .order_by(Entity.topic_order, Entity.source_page, Entity.id)
+            .order_by(Entity.topic_order, Entity.source_page.asc().nulls_first(), Entity.id)
             .all()
         )
         return _bypass_due_cards(db, topo_order(db, entities), now)
@@ -65,7 +65,7 @@ def due_cards(
             db.query(Entity)
             .filter(Entity.talk_id.in_(group_ids))
             .filter(Entity.kind.in_([EntityKind.definition, EntityKind.property]))
-            .order_by(Entity.source_page, Entity.id)
+            .order_by(Entity.source_page.asc().nulls_first(), Entity.id)
             .all()
         )
         return _bypass_due_cards(db, topo_order(db, entities), now)

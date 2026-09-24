@@ -4,10 +4,16 @@
   --ink: #1a1a1a;
   --ink-soft: #6e6e6e;
   --border: #e2e2e2;
-  --definition: #3b4fa0;
-  --theorem: #1f7a6c;
-  --property: #9c6a1f;
-  --brief: #7a3f8f;
+  --definition: #7e9b18;
+  --theorem: #1f3a7a;
+  --property: #1f3a7a;
+  --brief: #7445c9;
+  --brief-border: #cdbdf0;
+  --brief-halo: rgba(116, 69, 201, .09);
+  /* Trainer answer feedback -- its own colors, not the kind colors above
+     (theorem and property now share one, so "right" and "wrong" would too). */
+  --ok: #1f7a6c;
+  --no: #9c6a1f;
   --accent: #2a4fb0;
   --link-missing: #b7b7b7;
 }
@@ -57,6 +63,7 @@ button { font-family: inherit; }
 .node-card.flash { animation: card-flash 1.6s ease-out; }
 @keyframes card-flash { 0%, 35% { box-shadow: 0 0 0 4px var(--accent), 0 6px 22px -6px rgba(0,0,0,.22); } 100% { box-shadow: 0 6px 22px -6px rgba(0,0,0,.22); } }
 .node-card { position: absolute; width: fit-content; min-width: 440px; max-width: min(90vw, 640px); background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 6px 22px -6px rgba(0,0,0,.22); overflow: hidden; }
+.node-card.kind-brief { border: 1.5px solid var(--brief-border); box-shadow: 0 0 0 4px var(--brief-halo), 0 6px 22px -6px rgba(0,0,0,.22); }
 .node-card.dragging { box-shadow: 0 12px 32px -6px rgba(0,0,0,.3); z-index: 5; cursor: grabbing; user-select: none; }
 .node-card { cursor: grab; touch-action: none; }
 .node-drag-handle { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 0; user-select: none; }
@@ -113,6 +120,9 @@ h3.title { font-size: 19px; }
 .body-text h3 { font-size: 17.5px; margin: 1.1em 0 .4em; }
 .body-text h4 { font-size: 15px; margin: 1em 0 .3em; }
 .body-text h2:first-child, .body-text h3:first-child, .body-text h4:first-child { margin-top: 0; }
+/* The brief's sections ("Главные результаты", "Понятия статьи", ...) read
+   as signposts, not headings of an essay. */
+.kind-brief .body-text h3 { font-family: "Source Sans 3", sans-serif; font-size: 12.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--brief); margin: 1.4em 0 .5em; }
 
 .projects { max-width: 760px; }
 .project-switch { margin-bottom: 24px; }
@@ -153,8 +163,8 @@ h3.title { font-size: 19px; }
 .cloze-input { font-family: "Source Sans 3", sans-serif; font-size: 15px; border: none; border-bottom: 2px solid var(--accent); background: transparent; color: var(--ink); padding: 1px 4px; width: 14em; max-width: 100%; }
 .cloze-input:focus { outline: none; border-bottom-color: var(--ink); }
 .cloze-feedback { margin-top: 16px; text-align: left; font-size: 14px; }
-.cloze-feedback.ok { color: var(--theorem); }
-.cloze-feedback.no { color: var(--property); }
+.cloze-feedback.ok { color: var(--ok); }
+.cloze-feedback.no { color: var(--no); }
 .check-btn, .reveal-btn { margin-top: 20px; padding: 9px 20px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent); font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: "Source Sans 3", sans-serif; }
 .snooze-btn { margin-top: 20px; margin-left: 10px; padding: 9px 16px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--ink-soft); font-size: 13px; cursor: pointer; font-family: "Source Sans 3", sans-serif; }
 .snooze-btn:hover { color: var(--ink); text-decoration: underline; text-decoration-style: dotted; }

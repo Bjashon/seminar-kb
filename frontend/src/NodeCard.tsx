@@ -162,7 +162,7 @@ export const NodeCard = memo(function NodeCard({
   return (
     <div
       ref={cardRef}
-      className={"node-card" + (dragging ? " dragging" : "")}
+      className={`node-card kind-${detail.kind}` + (dragging ? " dragging" : "")}
       data-slug={node.slug}
       data-scale={scale}
       style={{ left: node.x, top: node.y, zIndex: isTop ? 3 : undefined, ...enlargeStyle }}

@@ -77,7 +77,10 @@ def talk_board(talk_id: int, db: Session = Depends(get_db)) -> BoardOut:
     entities = (
         db.query(Entity)
         .filter(Entity.talk_id.in_(group_ids))
-        .order_by(Entity.source_page, Entity.id)
+        # Page-less entities are textbook background -- they go first. Said
+        # explicitly: SQLite sorts NULL first by default, Postgres last, so
+        # the local board and the deployed one used to come out different.
+        .order_by(Entity.source_page.asc().nulls_first(), Entity.id)
         .all()
     )
     entities = topo_order(db, entities)

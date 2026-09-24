@@ -24,6 +24,20 @@ SOURCES = REPO / "data" / "sources"
 KINDS = {"definition", "theorem", "property"}
 # Not in the app's MathJax setup -- they render as red error text.
 BAD_MACROS = re.compile(r"\\(llbracket|rrbracket|coloneqq|eqqcolon|mathclap|shortparallel)\b")
+# "\tfrac", "\bar", "\frac", "\rho" written in a Python/JSON string with a
+# single backslash turn into TAB, backspace, form feed, CR -- and MathJax
+# then shows an error or silently different text.
+CONTROL = re.compile(r"[\x00-\x09\x0b-\x1f]")  # everything but \n
+MATH = re.compile(r"\$\$[\s\S]+?\$\$|\$[^$\n]+?\$")
+# "[any word form](slug)" -- anything link-shaped, so a malformed slug is
+# caught too (the app would show it as raw brackets).
+# Must match the slug part of EXPLICIT_LINK_RE in frontend/src/markdown.ts.
+SLUG = re.compile(r"[A-Za-z0-9-]+")
+EXPLICIT_LINK = re.compile(r"\[([^\]\n]+)\]\(([^)\n]*)\)")
+
+
+def link_targets(text: str) -> list[str]:
+    return [m.group(2) for m in EXPLICIT_LINK.finditer(MATH.sub("", text or ""))]
 
 
 def main() -> int:
@@ -47,6 +61,8 @@ def main() -> int:
                 if t:
                     names.add(t.strip().lower())
     for s, n in slugs.items():
+        if not SLUG.fullmatch(s):
+            errors.append(f"slug {s!r}: only letters, digits and '-' (a [..](slug) link to it would not render)")
         if n > 1:
             errors.append(f"slug {s!r} defined in {n} places (the loader would silently overwrite one with the other)")
 
@@ -66,6 +82,20 @@ def main() -> int:
         for key in ("bibliography", "brief_ru", "brief_en", "source_document"):
             if not d.get(key):
                 errors.append(f"{name}: missing top-level {key!r}")
+        own = [e["slug"] for e in d["entities"]]
+        for key in ("brief_ru", "brief_en"):
+            txt = d.get(key) or ""
+            if txt.replace("$$", "").count("$") % 2:
+                errors.append(f"{name}: unbalanced $ in {key}")
+            if CONTROL.search(txt):
+                errors.append(f"{name}: control character in {key} -- a LaTeX command lost its backslash (\\tfrac written as TAB+frac?)")
+            targets = link_targets(txt)
+            for t in targets:
+                if t not in slugs:
+                    errors.append(f"{name}: {key} links to [..]({t}), no such slug (it would show as plain text)")
+            missing = [s for s in own if s not in targets]
+            if txt and missing:
+                warnings.append(f"{name}: {key} has no [..](slug) link to {len(missing)} of the paper's cards: {', '.join(missing)}")
         for e in d["entities"]:
             tag = f"{name}:{e.get('slug')}"
             if e.get("kind") not in KINDS:
@@ -86,6 +116,11 @@ def main() -> int:
                     errors.append(f"{tag}: {m.group(0)} in {key} is not supported by the app's MathJax")
                 if txt.replace("$$", "").count("$") % 2:
                     errors.append(f"{tag}: unbalanced $ in {key}")
+                if CONTROL.search(txt):
+                    errors.append(f"{tag}: control character in {key} -- a LaTeX command lost its backslash (\\tfrac written as TAB+frac?)")
+                for t in link_targets(txt):
+                    if t not in slugs:
+                        errors.append(f"{tag}: {key} links to [..]({t}), no such slug (it would show as plain text)")
             if e.get("kind") == "definition" and "**" not in (e.get("statement_ru") or ""):
                 warnings.append(f"{tag}: definition with no **bold** term in statement_ru (no fill-in-the-term trainer level)")
             for dep in e.get("depends_on", []):
