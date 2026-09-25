@@ -180,7 +180,7 @@ export default function App() {
           <span className="hint-small" style={{ visibility: mode === "reader" ? "visible" : "hidden" }}>
             тащи карточки за верхнюю плашку
           </span>
-          <button aria-selected={mode === "reader"} onClick={() => setMode("reader")}>Карточки</button>
+          <button aria-selected={mode === "reader"} onClick={() => setMode("reader")}>Дашборд</button>
           <button aria-selected={mode === "index"} onClick={() => setMode("index")}>Указатель</button>
           <button aria-selected={mode === "trainer"} onClick={() => setMode("trainer")}>Тренажёр</button>
           <button aria-selected={mode === "projects"} onClick={() => setMode("projects")}>Статьи</button>

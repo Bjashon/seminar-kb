@@ -4,7 +4,7 @@ import { KIND_LABEL_RU } from "./types";
 import { api } from "./api";
 import { clozeStatement, clozeTerm, mdBody } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
-import { formatDate } from "./dates";
+import { formatDate, todayIso } from "./dates";
 
 interface Props {
   allEntities: EntitySummary[];
@@ -110,17 +110,35 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   );
 
   if (mode === "article" && selectedTalk === null) {
+    // The next talk on the calendar, today's included: whichever part of
+    // any paper has the earliest date not yet in the past.
+    const today = todayIso();
+    const upcoming = (talks ?? [])
+      .flatMap((t) => t.parts.map((p) => p.date))
+      .filter((d): d is string => !!d && d >= today)
+      .sort()[0];
     return (
       <div className="trainer">
         {modeSwitch}
         <div className="article-picker">
           {talks === null && <p>Загрузка списка статей…</p>}
           {talks !== null && talks.length === 0 && <p>Пока нет статей с определениями или свойствами.</p>}
-          {talks?.map((t) => (
-            <div key={t.id} className="article-row">
+          {talks?.map((t) => {
+            const isNext = !!upcoming && t.parts.some((p) => p.date === upcoming);
+            return (
+            <div key={t.id} className={"article-row" + (isNext ? " upcoming" : "")}>
               <div className="article-main">
                 <div className="article-codes">
-                  {t.parts.map((p) => (p.date ? `${p.episode_code} · ${formatDate(p.date)}` : p.episode_code)).join(", ")}
+                  {t.parts.map((p, i) => {
+                    const label = p.date ? `${p.episode_code} · ${formatDate(p.date)}` : p.episode_code;
+                    return (
+                      <span key={p.episode_code + i}>
+                        {i > 0 && ", "}
+                        {p.date === upcoming ? <mark className="marker">{label}</mark> : label}
+                      </span>
+                    );
+                  })}
+                  {isNext && <span className="upcoming-tag">ближайший доклад</span>}
                 </div>
                 <div className="article-title">{t.title}</div>
               </div>
@@ -130,7 +148,8 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                 <button onClick={() => onOpenBoard(t.id)}>Доска</button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     );
@@ -147,7 +166,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
         <div className="done">
           <p>
             {mode === "history"
-              ? "Пока нечего повторять — открой несколько карточек во вкладке «Карточки», и они появятся здесь."
+              ? "Пока нечего повторять — открой несколько карточек во вкладке «Дашборд», и они появятся здесь."
               : mode === "foundational"
               ? "Базовые понятия ещё не размечены."
               : "В этой статье нет определений или свойств."}

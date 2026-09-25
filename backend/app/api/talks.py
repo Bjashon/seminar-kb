@@ -57,9 +57,10 @@ def list_talks(db: Session = Depends(get_db)) -> list[TalkSummaryOut]:
                 entity_count=count,
             )
         )
-    # By each paper's first presentation, not by whichever talk happens to
-    # own its entities (ep28/29/36 is owned by ep36 but started 03/08).
-    out.sort(key=lambda t: (t.parts[0].date is None, t.parts[0].date or date.min, t.parts[0].episode_code))
+    # Newest first. A paper merged across several talks counts from its
+    # latest part (ep28/29/36 is as fresh as 05/10), not from whichever talk
+    # happens to own its entities. Undated ones go last.
+    out.sort(key=lambda t: max((p.date for p in t.parts if p.date), default=date.min), reverse=True)
     return out
 
 
