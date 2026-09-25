@@ -10,3 +10,6 @@ build/
 *.db
 *.egg-info/
 *.log
+
+# third-party papers and extracted texts used for the Gerstenhaber project (public repo -- keep local)
+projects/gerstenhaber/papers/
