@@ -50,6 +50,8 @@ export interface ProjectSummary {
 
 export interface Project extends ProjectSummary {
   body_md: string;
+  files: { path: string; size: number }[];
+  talk_id: number | null;
 }
 
 export interface Board {

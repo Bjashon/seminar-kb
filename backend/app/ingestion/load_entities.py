@@ -83,6 +83,11 @@ def main() -> None:
                 db.add(talk)
                 db.flush()
                 talks_by_code.setdefault(episode_code, []).append(talk)
+            # A source that isn't a seminar talk at all (a research project's
+            # own cards, code proj_<slug>) has no Notion row to take a title
+            # from, so the JSON carries it -- and keeps it current on reload.
+            if talk is not None and payload.get("talk_title"):
+                talk.title = payload["talk_title"]
             if talk is not None and ("brief_ru" in payload or "brief_en" in payload):
                 talk.brief_ru = payload.get("brief_ru")
                 talk.brief_en = payload.get("brief_en")
@@ -112,8 +117,10 @@ def main() -> None:
                 entity.source_page = source.get("page")
                 # Only entities actually drawn from this talk's paper get its
                 # citation -- hand-authored glossary bricks (source.document
-                # is null) share the same JSON file but aren't from it.
-                entity.source_citation = payload.get("bibliography") if source.get("document") else None
+                # is null) share the same JSON file but aren't from it. A
+                # card taken from some other paper in the same folder (a
+                # project citing its references) names that paper itself.
+                entity.source_citation = source.get("citation") or (payload.get("bibliography") if source.get("document") else None)
                 # Preserve whatever's already in the DB when the JSON doesn't
                 # mention it, so a routine reload can't silently wipe out a
                 # foundational flag set by a separate curation pass.

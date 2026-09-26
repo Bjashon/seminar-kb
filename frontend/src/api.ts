@@ -36,4 +36,6 @@ export const api = {
       body: JSON.stringify({ days }),
     }).then((r) => json<ReviewCardOut>(r)),
   sourceUrl: (episodeCode: string, document: string) => `${API_BASE}/sources/${episodeCode}/${document}`,
+  projectFileUrl: (slug: string, path: string) =>
+    `${API_BASE}/projects/${encodeURIComponent(slug)}/files/${path.split("/").map(encodeURIComponent).join("/")}`,
 };

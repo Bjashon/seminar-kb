@@ -1,0 +1,802 @@
+{
+  "episode_code": "proj_gerstenhaber",
+  "talk_title": "Герстенхабер: базис свободных обобщённых алгебр Герстенхабера",
+  "source_language": "en",
+  "source_note": "Cards of the research project «Герстенхабер» (projects/gerstenhaber/): the paper Kaygorodov–Viatkina «A basis of free generalized Gerstenhaber algebras» (2026, Gerstenhaber.pdf in the project folder; page numbers refer to that PDF) plus the background needed to read it, taken from Kaygorodov 2017 (Kantor double, Jordan brackets, generalized Poisson superalgebras), Cantarini–Kac 2010 (odd generalized Poisson superalgebras, PO(n,n+1)) and Xu 1999 (Gerstenhaber and BV algebras, Schouten bracket). Ordered as a learning path via depends_on: superspaces → odd Lie superalgebras → Poisson-type algebras → Gerstenhaber → generalized Gerstenhaber → free algebra → good words, M, U → model algebra → main theorems → dimension. When the paper changes, update data/sources/proj_gerstenhaber/Gerstenhaber.pdf and the page numbers here.",
+  "bibliography": "Kaygorodov I., Viatkina K. — «A basis of free generalized Gerstenhaber algebras» (препринт, 2026; projects/gerstenhaber/Gerstenhaber.pdf)",
+  "brief_ru": "Тема проекта — [обобщённые алгебры Герстенхабера](generalized-gerstenhaber-algebra): суперкоммутативные супералгебры с *нечётной* скобкой, которые Cantarini и Kac назвали нечётными обобщёнными супералгебрами Пуассона. Статья Кайгородова и Вяткиной строит базис свободной такой алгебры [методом Ширшова](shirshov-method) — так же, как это было сделано для [обобщённых супералгебр Пуассона](generalized-poisson-superalgebra), — и находит размерность её мультилинейной части. Доска построена как учебный маршрут: от суперпространств к определению, затем к свободной алгебре и её базису.\n\n## Главные результаты\n\n1. [Теорема 12](basis-of-free-generalized-gerstenhaber-algebra): [множество $U$](set-u-supercommutative-monomials) суперкоммутативных одночленов по [хорошим словам и квадратам](set-m-good-words-and-squares) — базис [свободной унитальной обобщённой алгебры Герстенхабера](free-generalized-gerstenhaber-algebra), а сама она изоморфна [модельной алгебре](model-bracket-closed-formula) на свободной суперкоммутативной супералгебре.\n2. [Теорема 14](dimension-of-multilinear-part): [мультилинейная часть](multilinear-part-gen-ger-n) на образующих $1,x_1,\\dots,x_n$ имеет размерность $n\\cdot n!$.\n3. [Следствие 13](bracket-of-units-is-nonzero): в свободной алгебре $\\{1,1\\}\\ne0$, поэтому отображение $\\mathfrak D(a)=\\{1,a\\}$ — не дифференцирование; это главное [отличие от пуассонова случая](comparison-with-generalized-poisson-case).\n4. [Лемма 9](jacobiator-formula): общая формула для якобиатора в алгебрах с кососимметричностью и правилом Лейбница — тождество Якоби достаточно проверять на образующих умножения.\n\n## Понятия статьи\n\n- [суперпространство, чётность, обращение чётности](superspace-and-parity-reversal) — язык, на котором всё написано; $\\|a\\|=|a|+1$;\n- [нечётная супералгебра Ли](odd-lie-superalgebra) — то, чем является скобка; она [превращается в обычную](parity-reversal-odd-lie-superalgebras) обращением чётности;\n- [супералгебра Пуассона](poisson-superalgebra) и [обобщённая супералгебра Пуассона](generalized-poisson-superalgebra) — чётные прообразы наших объектов; [двойник Кантора](kantor-double) и [йордановы скобки](jordan-brackets-vs-generalized-poisson) объясняют, откуда они берутся;\n- [алгебра Герстенхабера](gerstenhaber-algebra) — нечётная супералгебра Пуассона; примеры: [скобка Схоутена](schouten-bracket-gerstenhaber), [когомологии Хохшильда](hochschild-cohomology-gerstenhaber); [BV-алгебра](bv-algebra) — точная алгебра Герстенхабера;\n- [обобщённая алгебра Герстенхабера](generalized-gerstenhaber-algebra) — главный объект; [свойства отображения $\\mathfrak D$](properties-of-the-map-d); [примеры $PO(n,n)$, $PO(n,n+1)$](po-n-n-plus-1-example);\n- [свободная унитальная обобщённая алгебра Герстенхабера](free-generalized-gerstenhaber-algebra), [хорошие слова](good-words-hall-basic-commutators), [множество $M$](set-m-good-words-and-squares), [множество $U$](set-u-supercommutative-monomials), [мультилинейная часть](multilinear-part-gen-ger-n);\n- [свободная суперкоммутативная супералгебра](free-supercommutative-superalgebra) и [модельная скобка](model-bracket-closed-formula) — конструкция, доказывающая линейную независимость.\n\n## Вспомогательные утверждения\n\n- [Лемма 4](m-is-a-basis-of-free-odd-lie-superalgebra): $M$ — базис свободной нечётной супералгебры Ли (теорема Холла–Штерна плюс обращение чётности).\n- [Лемма 5](u-spans-free-generalized-gerstenhaber-algebra): $U$ порождает свободную алгебру.\n- [Лемма 6](model-bracket-well-defined): модельная скобка корректно определена; [леммы 7, 8](model-bracket-skew-and-leibniz): кососимметричность и правило Лейбница; [предложение 10 и теорема 11](model-algebra-is-generalized-gerstenhaber): тождество Якоби и порождённость.\n- [Подсчёт хороших слов и разбиений](multilinear-hall-words-count): $(k-1)!$ и $\\sum_\\pi\\prod(|B|-1)!=N!$.\n- [Замечание 15](free-gerstenhaber-algebra-basis): при $\\mathfrak D=0$ получается известный базис свободной алгебры Герстенхабера.\n- [Сравнение с пуассоновым случаем](comparison-with-generalized-poisson-case): что именно меняется.\n\n## Что нужно знать заранее\n\n[Векторное пространство](vector-space), [базис и размерность](basis-and-dimension-of-a-vector-space), [ассоциативная алгебра](associative-algebra), [алгебра Ли](lie-algebra), [супералгебра Ли](lie-superalgebra), [Z₂-градуированная коммутативная алгебра](z2-graded-commutative-algebra), [дифференцирование градуированной алгебры](derivation-of-a-graded-algebra), [пуассонова алгебра](poisson-algebra), [обобщённая пуассонова скобка](generalized-poisson-algebra), [алгебра йордановых скобок](algebra-of-jordan-brackets), [свободная неассоциативная алгебра](free-nonassociative-algebra), [свободная алгебра многообразия](free-algebra-of-a-variety).\n\n## Связь с другими докладами\n\n[Обобщённые пуассоновы алгебры](generalized-poisson-algebra) и [йордановы скобки](algebra-of-jordan-brackets) появлялись в докладе о транспонированных пуассоновых алгебрах; [супералгебры Ли](lie-superalgebra) — в докладе о Ли-антиалгебрах.",
+  "brief_en": "The project is about [generalized Gerstenhaber algebras](generalized-gerstenhaber-algebra): supercommutative superalgebras with an *odd* bracket, called odd generalized Poisson superalgebras by Cantarini and Kac. The paper by Kaygorodov and Viatkina constructs a basis of the free such algebra by [Shirshov's method](shirshov-method) -- as was done for [generalized Poisson superalgebras](generalized-poisson-superalgebra) -- and computes the dimension of its multilinear part. The board is laid out as a learning path: from superspaces to the definition, then to the free algebra and its basis.\n\n## Main results\n\n1. [Theorem 12](basis-of-free-generalized-gerstenhaber-algebra): the [set $U$](set-u-supercommutative-monomials) of supercommutative monomials in [good words and squares](set-m-good-words-and-squares) is a basis of the [free unital generalized Gerstenhaber algebra](free-generalized-gerstenhaber-algebra), which is isomorphic to the [model algebra](model-bracket-closed-formula) on the free supercommutative superalgebra.\n2. [Theorem 14](dimension-of-multilinear-part): the [multilinear part](multilinear-part-gen-ger-n) on the generators $1,x_1,\\dots,x_n$ has dimension $n\\cdot n!$.\n3. [Corollary 13](bracket-of-units-is-nonzero): in the free algebra $\\{1,1\\}\\ne0$, so the map $\\mathfrak D(a)=\\{1,a\\}$ is not a derivation; this is the main [difference from the Poisson case](comparison-with-generalized-poisson-case).\n4. [Lemma 9](jacobiator-formula): a general formula for the Jacobiator in algebras with skew-symmetry and the Leibniz rule -- the Jacobi identity only needs checking on generators of the product.\n\n## Concepts of the paper\n\n- [superspace, parity, parity reversal](superspace-and-parity-reversal) -- the language everything is written in; $\\|a\\|=|a|+1$;\n- [odd Lie superalgebra](odd-lie-superalgebra) -- what the bracket is; it [becomes an ordinary one](parity-reversal-odd-lie-superalgebras) under parity reversal;\n- [Poisson superalgebra](poisson-superalgebra) and [generalized Poisson superalgebra](generalized-poisson-superalgebra) -- the even counterparts of our objects; the [Kantor double](kantor-double) and [Jordan brackets](jordan-brackets-vs-generalized-poisson) explain where they come from;\n- [Gerstenhaber algebra](gerstenhaber-algebra) -- an odd Poisson superalgebra; examples: the [Schouten bracket](schouten-bracket-gerstenhaber), [Hochschild cohomology](hochschild-cohomology-gerstenhaber); a [BV-algebra](bv-algebra) is an exact Gerstenhaber algebra;\n- [generalized Gerstenhaber algebra](generalized-gerstenhaber-algebra) -- the main object; [properties of the map $\\mathfrak D$](properties-of-the-map-d); [the examples $PO(n,n)$, $PO(n,n+1)$](po-n-n-plus-1-example);\n- [free unital generalized Gerstenhaber algebra](free-generalized-gerstenhaber-algebra), [good words](good-words-hall-basic-commutators), [the set $M$](set-m-good-words-and-squares), [the set $U$](set-u-supercommutative-monomials), [multilinear part](multilinear-part-gen-ger-n);\n- [free supercommutative superalgebra](free-supercommutative-superalgebra) and the [model bracket](model-bracket-closed-formula) -- the construction proving linear independence.\n\n## Supporting results\n\n- [Lemma 4](m-is-a-basis-of-free-odd-lie-superalgebra): $M$ is a basis of the free odd Lie superalgebra (Hall--Shtern theorem plus parity reversal).\n- [Lemma 5](u-spans-free-generalized-gerstenhaber-algebra): $U$ spans the free algebra.\n- [Lemma 6](model-bracket-well-defined): the model bracket is well defined; [Lemmas 7, 8](model-bracket-skew-and-leibniz): skew-symmetry and the Leibniz rule; [Proposition 10 and Theorem 11](model-algebra-is-generalized-gerstenhaber): the Jacobi identity and generation.\n- [Counting good words and partitions](multilinear-hall-words-count): $(k-1)!$ and $\\sum_\\pi\\prod(|B|-1)!=N!$.\n- [Remark 15](free-gerstenhaber-algebra-basis): for $\\mathfrak D=0$ one recovers the known basis of the free Gerstenhaber algebra.\n- [Comparison with the Poisson case](comparison-with-generalized-poisson-case): what exactly changes.\n\n## Background\n\n[Vector space](vector-space), [basis and dimension](basis-and-dimension-of-a-vector-space), [associative algebra](associative-algebra), [Lie algebra](lie-algebra), [Lie superalgebra](lie-superalgebra), [Z₂-graded commutative algebra](z2-graded-commutative-algebra), [derivation of a graded algebra](derivation-of-a-graded-algebra), [Poisson algebra](poisson-algebra), [generalized Poisson bracket](generalized-poisson-algebra), [algebra of Jordan brackets](algebra-of-jordan-brackets), [free non-associative algebra](free-nonassociative-algebra), [free algebra of a variety](free-algebra-of-a-variety).\n\n## Related talks\n\n[Generalized Poisson algebras](generalized-poisson-algebra) and [Jordan brackets](algebra-of-jordan-brackets) appeared in the talk on transposed Poisson algebras; [Lie superalgebras](lie-superalgebra) in the talk on Lie antialgebras.",
+  "source_document": "Gerstenhaber.pdf",
+  "entities": [
+    {
+      "kind": "definition",
+      "slug": "superspace-and-parity-reversal",
+      "title_en": "Superspace • parity • parity reversal",
+      "title_ru": "Суперпространство • чётность • обращение чётности",
+      "aliases": [
+        "Z2-graded vector space",
+        "superspace",
+        "parity reversal"
+      ],
+      "statement_en": "A **superspace** (a $\\mathbb Z_2$-graded vector space) is a vector space $V=V_0\\oplus V_1$ with a fixed direct sum decomposition. Elements of $V_0$ are called *even*, elements of $V_1$ *odd*; both are *homogeneous*. For a homogeneous $a$ its **parity** $|a|\\in\\mathbb Z_2$ is $0$ or $1$ respectively.\n\nFor a superspace $V$, $\\Pi V$ denotes the same space with the **reversed parity**: $(\\Pi V)_0=V_1$, $(\\Pi V)_1=V_0$. The parity of $a$ in $\\Pi V$ is\n$$\\|a\\|=|a|+1\\in\\mathbb Z_2.$$\n\nA *superalgebra* is an algebra on a superspace whose product respects the grading: $|ab|=|a|+|b|$ (an even product) or $|ab|=|a|+|b|+1$ (an odd product). All formulas with signs $(-1)^{|a||b|}$ are written for homogeneous elements and extended by linearity.",
+      "statement_ru": "**Суперпространством** (или $\\mathbb Z_2$-градуированным векторным пространством) называется векторное пространство $V=V_0\\oplus V_1$ с фиксированным разложением в прямую сумму. Элементы $V_0$ называют *чётными*, элементы $V_1$ — *нечётными*; и те и другие — *однородные*. Для однородного $a$ его **чётность** $|a|\\in\\mathbb Z_2$ равна $0$ или $1$ соответственно.\n\nДля суперпространства $V$ через $\\Pi V$ обозначают то же пространство с **обращённой чётностью**: $(\\Pi V)_0=V_1$, $(\\Pi V)_1=V_0$. Чётность элемента $a$ в $\\Pi V$ равна\n$$\\|a\\|=|a|+1\\in\\mathbb Z_2.$$\n\n*Супералгебра* — алгебра на суперпространстве, умножение которой согласовано с градуировкой: $|ab|=|a|+|b|$ (чётное умножение) или $|ab|=|a|+|b|+1$ (нечётное умножение). Все формулы со знаками $(-1)^{|a||b|}$ пишутся для однородных элементов и продолжаются по линейности.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Vector space"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 2",
+        "document": "Gerstenhaber.pdf",
+        "page": 2
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "odd-lie-superalgebra",
+      "title_en": "Odd Lie superalgebra",
+      "title_ru": "Нечётная супералгебра Ли",
+      "aliases": [],
+      "statement_en": "A superspace $L=L_0\\oplus L_1$ with a bilinear operation $\\{\\,,\\}$ is called an **odd Lie superalgebra** if for homogeneous $a,b,c$:\n\n1. the operation is odd: $|\\{a,b\\}|=|a|+|b|+1$;\n2. odd skew-symmetry:\n$$\\{a,b\\}=-(-1)^{\\|a\\|\\|b\\|}\\{b,a\\};$$\n3. the odd Jacobi identity:\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\},$$\n\nwhere $\\|a\\|=|a|+1$ is the parity with respect to the reversed grading. In other words, it is a Lie superalgebra bracket on $\\Pi L$ (see the property on parity reversal).\n\nNote that $\\|a\\|=1$ for even $a$, so the square $\\{a,a\\}$ of an *even* element may be nonzero, while the square of an odd element vanishes -- the opposite of an ordinary Lie superalgebra.",
+      "statement_ru": "Суперпространство $L=L_0\\oplus L_1$ с билинейной операцией $\\{\\,,\\}$ называется **нечётной супералгеброй Ли**, если для однородных $a,b,c$:\n\n1. операция нечётна: $|\\{a,b\\}|=|a|+|b|+1$;\n2. нечётная кососимметричность:\n$$\\{a,b\\}=-(-1)^{\\|a\\|\\|b\\|}\\{b,a\\};$$\n3. нечётное тождество Якоби:\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\},$$\n\nгде $\\|a\\|=|a|+1$ — чётность относительно обращённой градуировки. Иначе говоря, это скобка супералгебры Ли на $\\Pi L$ (см. свойство об обращении чётности).\n\nОтметим: для чётного $a$ имеем $\\|a\\|=1$, поэтому квадрат $\\{a,a\\}$ *чётного* элемента может быть ненулевым, а квадрат нечётного элемента равен нулю — ровно наоборот по сравнению с обычной супералгеброй Ли.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Lie superalgebra",
+        "Superspace • parity • parity reversal"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Замечание 2",
+        "document": "Gerstenhaber.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "parity-reversal-odd-lie-superalgebras",
+      "title_en": "Parity reversal identifies odd Lie superalgebras with Lie superalgebras",
+      "title_ru": "Обращение чётности: нечётные супералгебры Ли — это супералгебры Ли",
+      "aliases": [],
+      "statement_en": "Let $(L,\\{\\,,\\})$ be a superspace with an odd bilinear operation. Then $(L,\\{\\,,\\})$ is an odd Lie superalgebra if and only if $(\\Pi L,\\{\\,,\\})$ is a Lie superalgebra (the same operation on the space with reversed parity).\n\nIndeed, the parity of $a$ in $\\Pi L$ is $\\|a\\|$, and the odd skew-symmetry and Jacobi identity become the usual graded ones:\n$$[a,b]=-(-1)^{p(a)p(b)}[b,a],\\qquad [a,[b,c]]=[[a,b],c]+(-1)^{p(a)p(b)}[b,[a,c]]$$\nwith $p=\\|\\cdot\\|$. An operation which is odd on $L$ is even on $\\Pi L$: $\\|\\{a,b\\}\\|=\\|a\\|+\\|b\\|$.\n\nConsequence: the free odd Lie superalgebra on a set of generators $X$ is the free Lie superalgebra on the same set with the parities of the generators reversed. This transfers every result on bases of free Lie superalgebras to the odd case (Cantarini and Kac call this passing to \"odd type superalgebras\").",
+      "statement_ru": "Пусть $(L,\\{\\,,\\})$ — суперпространство с нечётной билинейной операцией. Тогда $(L,\\{\\,,\\})$ — нечётная супералгебра Ли в точности тогда, когда $(\\Pi L,\\{\\,,\\})$ — супералгебра Ли (та же операция на пространстве с обращённой чётностью).\n\nДействительно, чётность $a$ в $\\Pi L$ равна $\\|a\\|$, и нечётные кососимметричность и тождество Якоби превращаются в обычные градуированные:\n$$[a,b]=-(-1)^{p(a)p(b)}[b,a],\\qquad [a,[b,c]]=[[a,b],c]+(-1)^{p(a)p(b)}[b,[a,c]]$$\nпри $p=\\|\\cdot\\|$. Операция, нечётная на $L$, на $\\Pi L$ становится чётной: $\\|\\{a,b\\}\\|=\\|a\\|+\\|b\\|$.\n\nСледствие: свободная нечётная супералгебра Ли на множестве образующих $X$ — это свободная супералгебра Ли на том же множестве с обращёнными чётностями образующих. Так все результаты о базисах свободных супералгебр Ли переносятся на нечётный случай (Cantarini и Kac называют это переходом к «супералгебрам нечётного типа»).",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Odd Lie superalgebra",
+        "Lie superalgebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Замечание 2",
+        "document": "Gerstenhaber.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "poisson-superalgebra",
+      "title_en": "Poisson superalgebra",
+      "title_ru": "Супералгебра Пуассона",
+      "aliases": [],
+      "statement_en": "A **Poisson superalgebra** is a superspace $P=P_0\\oplus P_1$ with two even bilinear operations: an associative supercommutative product $ab$ (that is, $ab=(-1)^{|a||b|}ba$) and a bracket $\\{\\,,\\}$ making $P$ a Lie superalgebra, such that the Leibniz rule holds:\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{|a||b|}b\\{a,c\\}.$$\nEquivalently, for every $a$ the operator $\\{a,\\cdot\\}$ is a superderivation of parity $|a|$ of the product. For $P_1=0$ this is an ordinary Poisson algebra.\n\nExample: the free supercommutative superalgebra $\\mathcal S(\\mathfrak g)$ of a Lie superalgebra $\\mathfrak g$ with the unique bracket extending that of $\\mathfrak g$ by the Leibniz rule (the Lie--Poisson bracket); when $\\mathfrak g$ is the free Lie superalgebra on $X$, this is the free Poisson superalgebra on $X$ (Shestakov).",
+      "statement_ru": "**Супералгеброй Пуассона** называется суперпространство $P=P_0\\oplus P_1$ с двумя чётными билинейными операциями: ассоциативным суперкоммутативным умножением $ab$ (то есть $ab=(-1)^{|a||b|}ba$) и скобкой $\\{\\,,\\}$, относительно которой $P$ — супералгебра Ли, причём выполнено правило Лейбница\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{|a||b|}b\\{a,c\\}.$$\nИначе говоря, для каждого $a$ оператор $\\{a,\\cdot\\}$ — супердифференцирование чётности $|a|$ умножения. При $P_1=0$ получается обычная пуассонова алгебра.\n\nПример: свободная суперкоммутативная супералгебра $\\mathcal S(\\mathfrak g)$ супералгебры Ли $\\mathfrak g$ с единственной скобкой, продолжающей скобку $\\mathfrak g$ по правилу Лейбница (скобка Ли–Пуассона); это же и свободная супералгебра Пуассона на $X$, если $\\mathfrak g$ — свободная супералгебра Ли на $X$ (Шестаков).",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Poisson algebra",
+        "Z2-graded commutative algebra",
+        "Lie superalgebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "§2",
+        "document": "Kaygorodov_2017_Jordan_brackets_generalized_Poisson.pdf",
+        "page": 4,
+        "citation": "Kaygorodov I. — «Algebras of Jordan brackets and generalized Poisson algebras» (Linear and Multilinear Algebra 65 (2017), 6, 1142–1157, doi:10.1080/03081087.2016.1229257)"
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "kantor-double",
+      "title_en": "Kantor double",
+      "title_ru": "Двойник Кантора",
+      "aliases": [],
+      "statement_en": "Let $A=A_0\\oplus A_1$ be an associative supercommutative superalgebra with a super-anticommutative bracket $\\{\\,,\\}$ (that is, $\\{a,b\\}=-(-1)^{|a||b|}\\{b,a\\}$). The **Kantor double** is the superalgebra $K(A)=A\\oplus Ax$, where $Ax$ is an isomorphic copy of the space $A$, with the product\n$$a\\ast b=ab,\\qquad a\\ast bx=(ab)x,\\qquad ax\\ast b=(-1)^{|b|}(ab)x,\\qquad ax\\ast bx=(-1)^{|b|}\\{a,b\\}$$\nfor homogeneous $a,b\\in A$, graded by $K(A)_0=A_0\\oplus A_1x$, $K(A)_1=A_1\\oplus A_0x$.\n\nThe bracket is called a *Jordan bracket* if $K(A)$ is a Jordan superalgebra. The Kantor double of a Poisson superalgebra is always Jordan (Kantor, 1990); King and McCrimmon described all Jordan brackets by identities -- see the property relating Jordan brackets to generalized Poisson brackets.",
+      "statement_ru": "Пусть $A=A_0\\oplus A_1$ — ассоциативная суперкоммутативная супералгебра с суперантикоммутативной скобкой $\\{\\,,\\}$ (то есть $\\{a,b\\}=-(-1)^{|a||b|}\\{b,a\\}$). **Двойником Кантора** называется супералгебра $K(A)=A\\oplus Ax$, где $Ax$ — изоморфная копия пространства $A$, с умножением\n$$a\\ast b=ab,\\qquad a\\ast bx=(ab)x,\\qquad ax\\ast b=(-1)^{|b|}(ab)x,\\qquad ax\\ast bx=(-1)^{|b|}\\{a,b\\}$$\nдля однородных $a,b\\in A$ и градуировкой $K(A)_0=A_0\\oplus A_1x$, $K(A)_1=A_1\\oplus A_0x$.\n\nСкобка называется *йордановой*, если $K(A)$ — йорданова супералгебра. Двойник Кантора супералгебры Пуассона всегда йорданов (Кантор, 1990); Кинг и МакКриммон описали все йордановы скобки тождествами — см. свойство о связи йордановых скобок с обобщёнными пуассоновыми.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Z2-graded commutative algebra",
+        "Jordan bracket • algebra of Jordan brackets"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "§2 (Definitions and notation)",
+        "document": "Kaygorodov_2017_Jordan_brackets_generalized_Poisson.pdf",
+        "page": 3,
+        "citation": "Kaygorodov I. — «Algebras of Jordan brackets and generalized Poisson algebras» (Linear and Multilinear Algebra 65 (2017), 6, 1142–1157, doi:10.1080/03081087.2016.1229257)"
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "generalized-poisson-superalgebra",
+      "title_en": "Generalized Poisson superalgebra",
+      "title_ru": "Обобщённая супералгебра Пуассона",
+      "aliases": [],
+      "statement_en": "A **generalized Poisson superalgebra** is a unital associative supercommutative superalgebra $A$ with an even super-anticommutative bracket $\\{\\,,\\}$ such that for homogeneous $a,b,c$\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{|a||b|}b\\{a,c\\}-D(a)bc,$$\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{|a||b|}\\{b,\\{a,c\\}\\},$$\nwhere $D(a)=\\{a,1\\}$. This is the super version of a generalized Poisson algebra. Here $D$ is an even superderivation of the product, and for $D=0$ one gets a Poisson superalgebra.\n\nNote that $\\{1,1\\}=0$ automatically, since the bracket is even and anticommutative. Exactly this fails in the odd (Gerstenhaber) case.",
+      "statement_ru": "**Обобщённой супералгеброй Пуассона** называется унитальная ассоциативная суперкоммутативная супералгебра $A$ с чётной суперантикоммутативной скобкой $\\{\\,,\\}$, такая что для однородных $a,b,c$\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{|a||b|}b\\{a,c\\}-D(a)bc,$$\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{|a||b|}\\{b,\\{a,c\\}\\},$$\nгде $D(a)=\\{a,1\\}$. Это суперверсия обобщённой пуассоновой алгебры. Отображение $D$ здесь — чётное супердифференцирование умножения, а при $D=0$ получается супералгебра Пуассона.\n\nЗаметим: $\\{1,1\\}=0$ автоматически, поскольку скобка чётная и антикоммутативная. Именно это перестаёт быть верным в нечётном (герстенхаберовом) случае.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Generalized Poisson bracket • algebra",
+        "Poisson superalgebra",
+        "Derivation (of a Z2-graded algebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "§2, тождества (3), (4)",
+        "document": "Kaygorodov_2017_Jordan_brackets_generalized_Poisson.pdf",
+        "page": 4,
+        "citation": "Kaygorodov I. — «Algebras of Jordan brackets and generalized Poisson algebras» (Linear and Multilinear Algebra 65 (2017), 6, 1142–1157, doi:10.1080/03081087.2016.1229257)"
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "jordan-brackets-vs-generalized-poisson",
+      "title_en": "Jordan brackets and generalized Poisson brackets differ by a change of bracket",
+      "title_ru": "Йордановы скобки и обобщённые пуассоновы: замена скобки",
+      "aliases": [],
+      "statement_en": "Let $A$ be a unital associative supercommutative superalgebra with a super-anticommutative bracket $\\{\\,,\\}$ and $D(a)=\\{a,1\\}$. The bracket is a Jordan bracket (the Kantor double is Jordan) if and only if (King--McCrimmon)\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{|a||b|}b\\{a,c\\}-D(a)bc,$$\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{|a||b|}\\{b,\\{a,c\\}\\}+D(a)\\{b,c\\}+(-1)^{|a||bc|}D(b)\\{c,a\\}+(-1)^{|c||ab|}D(c)\\{a,b\\}.$$\nPut\n$$\\{a,b\\}_D=\\{a,b\\}+\\tfrac12\\bigl(aD(b)-D(a)b\\bigr).$$\nThen $(A,\\cdot,\\{\\,,\\}_D)$ is a generalized Poisson superalgebra with $D_D=\\tfrac12D$ (Cantarini--Kac), and conversely. Thus Jordan brackets and generalized Poisson brackets on the same superalgebra determine each other; in particular, a basis of the free superalgebra of Jordan brackets is obtained from a basis of the free generalized Poisson superalgebra.",
+      "statement_ru": "Пусть $A$ — унитальная ассоциативная суперкоммутативная супералгебра с суперантикоммутативной скобкой $\\{\\,,\\}$ и $D(a)=\\{a,1\\}$. Скобка йорданова (двойник Кантора йорданов) в точности тогда, когда (Кинг–МакКриммон)\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{|a||b|}b\\{a,c\\}-D(a)bc,$$\n$$\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{|a||b|}\\{b,\\{a,c\\}\\}+D(a)\\{b,c\\}+(-1)^{|a||bc|}D(b)\\{c,a\\}+(-1)^{|c||ab|}D(c)\\{a,b\\}.$$\nПоложим\n$$\\{a,b\\}_D=\\{a,b\\}+\\tfrac12\\bigl(aD(b)-D(a)b\\bigr).$$\nТогда $(A,\\cdot,\\{\\,,\\}_D)$ — обобщённая супералгебра Пуассона с $D_D=\\tfrac12D$ (Cantarini–Kac), и обратно. Таким образом, йордановы скобки и обобщённые пуассоновы скобки на одной супералгебре взаимно определяют друг друга; в частности, базис свободной супералгебры йордановых скобок получается из базиса свободной обобщённой супералгебры Пуассона.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Kantor double",
+        "Jordan bracket • algebra of Jordan brackets",
+        "Generalized Poisson superalgebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "§2",
+        "document": "Kaygorodov_2017_Jordan_brackets_generalized_Poisson.pdf",
+        "page": 4,
+        "citation": "Kaygorodov I. — «Algebras of Jordan brackets and generalized Poisson algebras» (Linear and Multilinear Algebra 65 (2017), 6, 1142–1157, doi:10.1080/03081087.2016.1229257)"
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "gerstenhaber-algebra",
+      "title_en": "Gerstenhaber algebra (odd Poisson superalgebra)",
+      "title_ru": "Алгебра Герстенхабера (нечётная супералгебра Пуассона)",
+      "aliases": [
+        "Gerstenhaber algebra",
+        "odd Poisson superalgebra",
+        "anti-Poisson algebra"
+      ],
+      "statement_en": "Classically (Gerstenhaber 1963, Xu 1999): a **Gerstenhaber algebra** is a triple $(A=\\bigoplus_{i\\in\\mathbb Z}A_i,\\wedge,[\\,,])$ such that $(A,\\wedge)$ is a graded commutative associative algebra, $(A,[\\,,])$ is a graded Lie algebra with respect to the shifted grading $A^{(i)}=A_{i+1}$ (the bracket has degree $-1$), and each operator $[a,\\cdot]$, $a\\in A^{(i)}$, is a derivation of $\\wedge$ of degree $i$.\n\nIn $\\mathbb Z_2$-graded form: a Gerstenhaber algebra is a unital associative supercommutative superalgebra with an *odd* bracket $\\{\\,,\\}$ which is an odd Lie superalgebra bracket and satisfies the Leibniz rule\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{\\|a\\||b|}b\\{a,c\\},\\qquad \\|a\\|=|a|+1.$$\n\nOther names: odd Poisson superalgebra, anti-Poisson algebra, Batalin--Vilkovisky bracket. Such brackets appear in Batalin--Vilkovisky quantization, in Poisson geometry and in Hochschild cohomology.",
+      "statement_ru": "Классически (Герстенхабер 1963, Сюй 1999): **алгеброй Герстенхабера** называется тройка $(A=\\bigoplus_{i\\in\\mathbb Z}A_i,\\wedge,[\\,,])$, где $(A,\\wedge)$ — градуированно-коммутативная ассоциативная алгебра, $(A,[\\,,])$ — градуированная алгебра Ли относительно сдвинутой градуировки $A^{(i)}=A_{i+1}$ (скобка имеет степень $-1$), и каждый оператор $[a,\\cdot]$, $a\\in A^{(i)}$, — дифференцирование умножения $\\wedge$ степени $i$.\n\nВ $\\mathbb Z_2$-градуированной форме: алгебра Герстенхабера — это унитальная ассоциативная суперкоммутативная супералгебра с *нечётной* скобкой $\\{\\,,\\}$, которая является скобкой нечётной супералгебры Ли и удовлетворяет правилу Лейбница\n$$\\{a,bc\\}=\\{a,b\\}c+(-1)^{\\|a\\||b|}b\\{a,c\\},\\qquad \\|a\\|=|a|+1.$$\n\nДругие названия: нечётная супералгебра Пуассона, антипуассонова алгебра, скобка Баталина–Вилковыского. Такие скобки возникают в квантовании Баталина–Вилковыского, в геометрии Пуассона и в когомологиях Хохшильда.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Z2-graded commutative algebra",
+        "Odd Lie superalgebra",
+        "Derivation (of a Z2-graded algebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Введение (Xu 1999)",
+        "document": "Xu_1999_Gerstenhaber_BV_Poisson_geometry.pdf",
+        "page": 1,
+        "citation": "Xu P. — «Gerstenhaber algebras and BV-algebras in Poisson geometry» (Comm. Math. Phys. 200 (1999), 3, 545–560)"
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "schouten-bracket-gerstenhaber",
+      "title_en": "Multivector fields with the Schouten bracket form a Gerstenhaber algebra",
+      "title_ru": "Поливекторные поля со скобкой Схоутена — алгебра Герстенхабера",
+      "aliases": [],
+      "statement_en": "Let $P$ be a smooth manifold. The space of multivector fields $A=\\bigoplus_{k\\ge0}\\Gamma(\\wedge^kTP)$ with the wedge product and the **Schouten bracket** $[\\,,]$ (the unique biderivation extending the Lie bracket of vector fields and their action on functions) is a Gerstenhaber algebra.\n\nIf $\\pi\\in\\Gamma(\\wedge^2TP)$ is a Poisson bivector ($[\\pi,\\pi]=0$), then $d=[\\pi,\\cdot]$ is a differential of degree $+1$ defining the Poisson cohomology (Lichnerowicz), and $A$ becomes a differential Gerstenhaber algebra. In general, Gerstenhaber algebra structures on $\\Gamma(\\wedge^\\bullet A)$ correspond to Lie algebroid structures on the vector bundle $A$ (Xu).",
+      "statement_ru": "Пусть $P$ — гладкое многообразие. Пространство поливекторных полей $A=\\bigoplus_{k\\ge0}\\Gamma(\\wedge^kTP)$ с внешним умножением $\\wedge$ и **скобкой Схоутена** $[\\,,]$ (единственным продолжением скобки Ли векторных полей и действия полей на функции, являющимся бидифференцированием) — алгебра Герстенхабера.\n\nЕсли $\\pi\\in\\Gamma(\\wedge^2TP)$ — пуассонов бивектор ($[\\pi,\\pi]=0$), то $d=[\\pi,\\cdot]$ — дифференциал степени $+1$, задающий когомологии Пуассона (Лихнерович), и $A$ становится дифференциальной алгеброй Герстенхабера. В общей ситуации структуры алгебры Герстенхабера на $\\Gamma(\\wedge^\\bullet A)$ соответствуют структурам алгеброида Ли на векторном расслоении $A$ (Сюй).",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Gerstenhaber algebra (odd Poisson superalgebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "§2",
+        "document": "Xu_1999_Gerstenhaber_BV_Poisson_geometry.pdf",
+        "page": 5,
+        "citation": "Xu P. — «Gerstenhaber algebras and BV-algebras in Poisson geometry» (Comm. Math. Phys. 200 (1999), 3, 545–560)"
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "hochschild-cohomology-gerstenhaber",
+      "title_en": "Hochschild cohomology is a Gerstenhaber algebra",
+      "title_ru": "Когомологии Хохшильда — алгебра Герстенхабера",
+      "aliases": [],
+      "statement_en": "For an associative algebra $R$, its Hochschild cohomology $HH^\\bullet(R)=\\bigoplus_n HH^n(R)$ with the cup product and the Gerstenhaber bracket $[\\,,]$ (of degree $-1$, defined on cochains through the compositions $f\\circ_i g$) is a Gerstenhaber algebra. This is the original example for which the notion was introduced (Gerstenhaber, 1963).\n\nComputing the Gerstenhaber bracket on Hochschild cohomology via an arbitrary resolution, BV structures on the cohomology of Frobenius algebras and the structure on Tate--Hochschild cohomology are active topics (Volkov, Wang, Lopes--Solotar).",
+      "statement_ru": "Для ассоциативной алгебры $R$ её когомологии Хохшильда $HH^\\bullet(R)=\\bigoplus_n HH^n(R)$ с $\\smile$-произведением и скобкой Герстенхабера $[\\,,]$ (степени $-1$, заданной на коцепях через композиции $f\\circ_i g$) образуют алгебру Герстенхабера. Это исходный пример, ради которого понятие и было введено (Герстенхабер, 1963).\n\nВычисление скобки Герстенхабера на когомологиях Хохшильда через произвольную резольвенту, BV-структуры на когомологиях фробениусовых алгебр и структура на когомологиях Тэйта–Хохшильда — активная тема последних лет (Волков, Ван, Лопес–Солотар).",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Gerstenhaber algebra (odd Poisson superalgebra)",
+        "Associative algebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Введение",
+        "document": "Gerstenhaber.pdf",
+        "page": 1
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "bv-algebra",
+      "title_en": "Batalin–Vilkovisky algebra (exact Gerstenhaber algebra)",
+      "title_ru": "Алгебра Баталина–Вилковыского (точная алгебра Герстенхабера)",
+      "aliases": [
+        "BV-algebra",
+        "BV algebra"
+      ],
+      "statement_en": "Let $(A,\\wedge,[\\,,])$ be a Gerstenhaber algebra. An operator $\\Delta$ of degree $-1$ *generates* the bracket if for homogeneous $a,b$\n$$[a,b]=(-1)^{|a|}\\bigl(\\Delta(a\\wedge b)-\\Delta a\\wedge b-(-1)^{|a|}a\\wedge\\Delta b\\bigr).$$\nA Gerstenhaber algebra is called a **Batalin--Vilkovisky algebra** (BV-algebra), or *exact*, if there is a generating operator with $\\Delta^2=0$.\n\nExample: multivector fields on an orientable manifold with the Koszul--Brylinski operator $\\Delta=\\ast d\\ast$ form a BV-algebra; in general, exact Gerstenhaber structures on $\\Gamma(\\wedge^\\bullet A)$ correspond to flat $A$-connections on the line bundle $\\wedge^{\\mathrm{top}}A$ (Xu).",
+      "statement_ru": "Пусть $(A,\\wedge,[\\,,])$ — алгебра Герстенхабера. Оператор $\\Delta$ степени $-1$ *порождает* скобку, если для однородных $a,b$\n$$[a,b]=(-1)^{|a|}\\bigl(\\Delta(a\\wedge b)-\\Delta a\\wedge b-(-1)^{|a|}a\\wedge\\Delta b\\bigr).$$\nАлгебра Герстенхабера называется **алгеброй Баталина–Вилковыского** (BV-алгеброй), или *точной*, если существует порождающий оператор с $\\Delta^2=0$.\n\nПример: поливекторные поля на ориентируемом многообразии с оператором Кошуля–Брылинского $\\Delta=\\ast d\\ast$ образуют BV-алгебру; в общем случае точные структуры Герстенхабера на $\\Gamma(\\wedge^\\bullet A)$ соответствуют плоским $A$-связностям на линейном расслоении $\\wedge^{\\mathrm{top}}A$ (Сюй).",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Gerstenhaber algebra (odd Poisson superalgebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Введение (Xu 1999), формула (1)",
+        "document": "Xu_1999_Gerstenhaber_BV_Poisson_geometry.pdf",
+        "page": 1,
+        "citation": "Xu P. — «Gerstenhaber algebras and BV-algebras in Poisson geometry» (Comm. Math. Phys. 200 (1999), 3, 545–560)"
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "generalized-gerstenhaber-algebra",
+      "title_en": "Generalized Gerstenhaber algebra (odd generalized Poisson superalgebra)",
+      "title_ru": "Обобщённая алгебра Герстенхабера (нечётная обобщённая супералгебра Пуассона)",
+      "aliases": [
+        "odd generalized Poisson superalgebra",
+        "generalized Gerstenhaber algebra"
+      ],
+      "statement_en": "A **generalized Gerstenhaber algebra** is a $\\mathbb Z_2$-graded space $V=V_0\\oplus V_1$ with a unit $1\\in V_0$ and two bilinear operations -- a product $ab$ and a bracket $\\{a,b\\}$ -- such that for homogeneous $a,b,c$:\n\n1. $|ab|=|a|+|b|$, $|\\{a,b\\}|=|a|+|b|+1$ (the product is even, the bracket is odd);\n2. $(ab)c=a(bc)$, $ab=(-1)^{|a||b|}ba$, $1a=a$;\n3. $\\{a,b\\}=-(-1)^{\\|a\\|\\|b\\|}\\{b,a\\}$;\n4. $\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\}$;\n5. $\\{a,bc\\}=\\{a,b\\}c+(-1)^{\\|a\\||b|}b\\{a,c\\}+(-1)^{\\|a\\|}\\mathfrak D(a)bc$, where $\\mathfrak D(a)=\\{1,a\\}$;\n\nhere $\\|a\\|=|a|+1$. Identities 3--4 say that $(V,\\{\\,,\\})$ is an odd Lie superalgebra; identity 5 is a generalized odd Leibniz rule. For $\\mathfrak D=0$ one gets a Gerstenhaber algebra.\n\nThis is exactly an *odd generalized Poisson superalgebra* of Cantarini and Kac (2010), since $\\|a\\|\\|b\\|=(|a|-1)(|b|-1)$ in $\\mathbb Z_2$. The simple linearly compact ones were classified by them.",
+      "statement_ru": "**Обобщённой алгеброй Герстенхабера** называется $\\mathbb Z_2$-градуированное пространство $V=V_0\\oplus V_1$ с единицей $1\\in V_0$ и двумя билинейными операциями — умножением $ab$ и скобкой $\\{a,b\\}$, — такими что для однородных $a,b,c$:\n\n1. $|ab|=|a|+|b|$, $|\\{a,b\\}|=|a|+|b|+1$ (умножение чётное, скобка нечётная);\n2. $(ab)c=a(bc)$, $ab=(-1)^{|a||b|}ba$, $1a=a$;\n3. $\\{a,b\\}=-(-1)^{\\|a\\|\\|b\\|}\\{b,a\\}$;\n4. $\\{a,\\{b,c\\}\\}=\\{\\{a,b\\},c\\}+(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\}$;\n5. $\\{a,bc\\}=\\{a,b\\}c+(-1)^{\\|a\\||b|}b\\{a,c\\}+(-1)^{\\|a\\|}\\mathfrak D(a)bc$, где $\\mathfrak D(a)=\\{1,a\\}$;\n\nздесь $\\|a\\|=|a|+1$. Тождества 3–4 означают, что $(V,\\{\\,,\\})$ — нечётная супералгебра Ли; тождество 5 — обобщённое нечётное правило Лейбница. При $\\mathfrak D=0$ получается алгебра Герстенхабера.\n\nЭто в точности *odd generalized Poisson superalgebra* Кантарини и Каца (2010), поскольку $\\|a\\|\\|b\\|=(|a|-1)(|b|-1)$ в $\\mathbb Z_2$. Простые линейно компактные такие супералгебры классифицированы ими же.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Gerstenhaber algebra (odd Poisson superalgebra)",
+        "Generalized Poisson superalgebra",
+        "Odd Lie superalgebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Определение 1",
+        "document": "Gerstenhaber.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "properties-of-the-map-d",
+      "title_en": "Basic properties of the map D",
+      "title_ru": "Свойства отображения D в обобщённой алгебре Герстенхабера",
+      "aliases": [],
+      "statement_en": "Let $V$ be a generalized Gerstenhaber algebra and $\\mathfrak D(a)=\\{1,a\\}$. Then:\n\n1. Substituting $a=1$ into the Leibniz rule gives\n$$\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\,\\mathfrak D(c)-\\mathfrak D(1)bc.$$\nHence $\\mathfrak D$ is an odd superderivation of the product if and only if $\\mathfrak D(1)=\\{1,1\\}=0$; in general $\\mathfrak D-\\mathfrak D(1)\\,\\mathrm{id}$ is an odd superderivation.\n2. Skew-symmetry imposes no condition on $\\{1,1\\}$, since $\\|1\\|=1$; in the free generalized Gerstenhaber algebra $\\{1,1\\}\\ne0$. For generalized Poisson superalgebras (even bracket) $\\{1,1\\}=0$ automatically -- this is the main difference of the odd case.\n3. The Leibniz rule is equivalent to the following: for every $a$ the map\n$$d_a\\colon b\\mapsto\\{a,b\\}+(-1)^{\\|a\\|}\\mathfrak D(a)b$$\nis a superderivation of parity $\\|a\\|$ of the product. In particular $d_a(1)=0$, i.e. $\\{a,1\\}=-(-1)^{\\|a\\|}\\mathfrak D(a)$, in accordance with skew-symmetry.",
+      "statement_ru": "Пусть $V$ — обобщённая алгебра Герстенхабера, $\\mathfrak D(a)=\\{1,a\\}$. Тогда:\n\n1. Подстановка $a=1$ в правило Лейбница даёт\n$$\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\,\\mathfrak D(c)-\\mathfrak D(1)bc.$$\nЗначит, $\\mathfrak D$ — нечётное супердифференцирование умножения тогда и только тогда, когда $\\mathfrak D(1)=\\{1,1\\}=0$; в общем случае нечётным супердифференцированием является $\\mathfrak D-\\mathfrak D(1)\\,\\mathrm{id}$.\n2. Тождество кососимметричности не накладывает на $\\{1,1\\}$ никаких условий, так как $\\|1\\|=1$; в свободной обобщённой алгебре Герстенхабера $\\{1,1\\}\\ne0$. Для обобщённых супералгебр Пуассона (чётная скобка) $\\{1,1\\}=0$ автоматически — в этом главное отличие нечётного случая.\n3. Правило Лейбница равносильно тому, что для каждого $a$ отображение\n$$d_a\\colon b\\mapsto\\{a,b\\}+(-1)^{\\|a\\|}\\mathfrak D(a)b$$\n— супердифференцирование чётности $\\|a\\|$ умножения. В частности $d_a(1)=0$, то есть $\\{a,1\\}=-(-1)^{\\|a\\|}\\mathfrak D(a)$, что согласуется с кососимметричностью.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Generalized Gerstenhaber algebra (odd generalized Poisson superalgebra)",
+        "Derivation (of a Z2-graded algebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Замечание 3",
+        "document": "Gerstenhaber.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "po-n-n-plus-1-example",
+      "title_en": "Examples PO(n,n) and PO(n,n+1)",
+      "title_ru": "Примеры: PO(n,n) и PO(n,n+1)",
+      "aliases": [],
+      "statement_en": "Let $A$ be the superalgebra of formal power series in even variables $x_1,\\dots,x_n$ and odd variables $\\xi_1,\\dots,\\xi_n$ (the case $PO(n,n)$) or $\\xi_1,\\dots,\\xi_n,\\tau$ (the case $PO(n,n+1)$). The bracket\n$$\\{a,b\\}=\\sum_{i=1}^n\\Bigl(\\frac{\\partial a}{\\partial x_i}\\frac{\\partial b}{\\partial\\xi_i}+(-1)^{|a|}\\frac{\\partial a}{\\partial\\xi_i}\\frac{\\partial b}{\\partial x_i}\\Bigr)+(E-2)(a)\\frac{\\partial b}{\\partial\\tau}+(-1)^{|a|}\\frac{\\partial a}{\\partial\\tau}(E-2)(b),$$\nwhere $E=\\sum_i\\bigl(x_i\\partial_{x_i}+\\xi_i\\partial_{\\xi_i}\\bigr)$ (in the case $PO(n,n)$ the last two terms are absent), makes $A$ a generalized Gerstenhaber algebra.\n\n$PO(n,n)$ is a Gerstenhaber algebra ($\\mathfrak D=0$): the odd analogue of the Poisson bracket (the Buttin bracket). In $PO(n,n+1)$ one has $\\mathfrak D(b)=\\{1,b\\}=-2\\,\\partial b/\\partial\\tau\\ne0$ but $\\mathfrak D(1)=0$. These are the basic examples of Cantarini--Kac; the free algebra is an example with $\\mathfrak D(1)\\ne0$.",
+      "statement_ru": "Пусть $A$ — супералгебра формальных степенных рядов от чётных переменных $x_1,\\dots,x_n$ и нечётных $\\xi_1,\\dots,\\xi_n$ (случай $PO(n,n)$) или $\\xi_1,\\dots,\\xi_n,\\tau$ (случай $PO(n,n+1)$). Скобка\n$$\\{a,b\\}=\\sum_{i=1}^n\\Bigl(\\frac{\\partial a}{\\partial x_i}\\frac{\\partial b}{\\partial\\xi_i}+(-1)^{|a|}\\frac{\\partial a}{\\partial\\xi_i}\\frac{\\partial b}{\\partial x_i}\\Bigr)+(E-2)(a)\\frac{\\partial b}{\\partial\\tau}+(-1)^{|a|}\\frac{\\partial a}{\\partial\\tau}(E-2)(b),$$\nгде $E=\\sum_i\\bigl(x_i\\partial_{x_i}+\\xi_i\\partial_{\\xi_i}\\bigr)$ (в случае $PO(n,n)$ последних двух слагаемых нет), превращает $A$ в обобщённую алгебру Герстенхабера.\n\n$PO(n,n)$ — алгебра Герстенхабера ($\\mathfrak D=0$): нечётный аналог скобки Пуассона (скобка Бюттен). В $PO(n,n+1)$ имеем $\\mathfrak D(b)=\\{1,b\\}=-2\\,\\partial b/\\partial\\tau\\ne0$, но $\\mathfrak D(1)=0$. Это основные примеры Кантарини–Каца; свободная алгебра — пример с $\\mathfrak D(1)\\ne0$.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Generalized Gerstenhaber algebra (odd generalized Poisson superalgebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Введение, формула (0.15)",
+        "document": "Cantarini_Kac_2010_rigid_superalgebras.pdf",
+        "page": 5,
+        "citation": "Cantarini N., Kac V. — «Classification of linearly compact simple rigid superalgebras» (Int. Math. Res. Not. IMRN 2010, 17, 3341–3393; arXiv:0909.3100)"
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "free-generalized-gerstenhaber-algebra",
+      "title_en": "Free unital generalized Gerstenhaber algebra",
+      "title_ru": "Свободная унитальная обобщённая алгебра Герстенхабера",
+      "aliases": [],
+      "statement_en": "Let $X=\\{1,x_1,x_2,\\dots\\}$ be a linearly ordered set, $1<x_1<x_2<\\cdots$, where $1$ is even and each $x_i$ has a prescribed parity $|x_i|\\in\\mathbb Z_2$. Let $D_X$ be the free algebra with two bilinear operations $\\cdot$ and $\\{\\,,\\}$ generated by $X$; its basis consists of the nonassociative words in the alphabet $X$ built with these two operations. Parity of a word: $|1|=0$, $|uv|=|u|+|v|$, $|\\{u,v\\}|=|u|+|v|+1$; the *degree* of a word is the number of letters in it.\n\nThe **free unital generalized Gerstenhaber algebra** on $X$ is the quotient $\\mathfrak G=D_X/I$ by the ideal $I$ generated by the elements\n$$ab-(-1)^{|a||b|}ba,\\qquad (ab)c-a(bc),\\qquad 1a-a,\\qquad \\{a,b\\}+(-1)^{\\|a\\|\\|b\\|}\\{b,a\\},$$\n$$\\{a,\\{b,c\\}\\}-\\{\\{a,b\\},c\\}-(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\},\\qquad \\{a,bc\\}-\\{a,b\\}c-(-1)^{\\|a\\||b|}b\\{a,c\\}-(-1)^{\\|a\\|}\\{1,a\\}bc$$\nfor all homogeneous $a,b,c\\in D_X$. Universal property: every parity preserving map $\\{x_1,x_2,\\dots\\}\\to V$ into a generalized Gerstenhaber algebra $V$ extends uniquely to a homomorphism $\\mathfrak G\\to V$ sending $1$ to $1$.\n\nNote that $1$ is a generator taking part in brackets: $\\{1,a\\}=\\mathfrak D(a)$ and $\\{1,1\\}$ are genuine elements of $\\mathfrak G$.",
+      "statement_ru": "Пусть $X=\\{1,x_1,x_2,\\dots\\}$ — линейно упорядоченное множество, $1<x_1<x_2<\\cdots$, где $1$ чётно, а каждому $x_i$ приписана чётность $|x_i|\\in\\mathbb Z_2$. Пусть $D_X$ — свободная алгебра с двумя билинейными операциями $\\cdot$ и $\\{\\,,\\}$, порождённая $X$; её базис — неассоциативные слова в алфавите $X$ с этими двумя операциями. Чётность слова: $|1|=0$, $|uv|=|u|+|v|$, $|\\{u,v\\}|=|u|+|v|+1$; *степень* слова — число букв в нём.\n\n**Свободной унитальной обобщённой алгеброй Герстенхабера** на $X$ называется фактор $\\mathfrak G=D_X/I$ по идеалу $I$, порождённому элементами\n$$ab-(-1)^{|a||b|}ba,\\qquad (ab)c-a(bc),\\qquad 1a-a,\\qquad \\{a,b\\}+(-1)^{\\|a\\|\\|b\\|}\\{b,a\\},$$\n$$\\{a,\\{b,c\\}\\}-\\{\\{a,b\\},c\\}-(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\},\\qquad \\{a,bc\\}-\\{a,b\\}c-(-1)^{\\|a\\||b|}b\\{a,c\\}-(-1)^{\\|a\\|}\\{1,a\\}bc$$\nдля всех однородных $a,b,c\\in D_X$. Универсальное свойство: любое сохраняющее чётность отображение $\\{x_1,x_2,\\dots\\}\\to V$ в обобщённую алгебру Герстенхабера $V$ единственным образом продолжается до гомоморфизма $\\mathfrak G\\to V$, переводящего $1$ в $1$.\n\nЗаметим, что $1$ здесь — образующая, участвующая в скобках: $\\{1,a\\}=\\mathfrak D(a)$ и $\\{1,1\\}$ — полноценные элементы $\\mathfrak G$.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Generalized Gerstenhaber algebra (odd generalized Poisson superalgebra)",
+        "Free non-associative algebra",
+        "Free algebra of a variety",
+        "Two-sided ideal"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 3",
+        "document": "Gerstenhaber.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "good-words-hall-basic-commutators",
+      "title_en": "Good words (Hall basic commutators)",
+      "title_ru": "Хорошие слова (базисные коммутаторы Холла)",
+      "aliases": [
+        "basic commutators",
+        "Hall words",
+        "Hall set"
+      ],
+      "statement_en": "Consider the nonassociative words in the alphabet $X=\\{1<x_1<x_2<\\cdots\\}$ with respect to the single operation $\\{\\,,\\}$. **Good words** and a linear order on them are defined by induction on the degree.\n\nThe good words of degree $1$ are the letters, in the given order. Suppose the good words of degree less than $n$ are defined and ordered. A word $w$ of degree $n$ is good if\n\n1. $w=\\{u,v\\}$, where $u$ and $v$ are good and $u>v$;\n2. if $u=\\{u_1,u_2\\}$, then $u_2\\le v$.\n\nOrder: a word of larger degree is greater; words of the same degree $w=\\{u_1,u_2\\}$ and $w'=\\{u_1',u_2'\\}$ are compared lexicographically by their pairs of components. In particular, $w>u>v$ for every good $w=\\{u,v\\}$.\n\nThese are M. Hall's basic commutators (1950): they form a basis of the free Lie algebra (a Hall set). Examples: $\\{x_1,1\\}$, $\\{\\{x_1,1\\},1\\}$, $\\{\\{x_1,1\\},x_1\\}$, $\\{\\{x_2,1\\},x_1\\}$ are good; $\\{1,x_1\\}$ is not (since $1<x_1$); $\\{\\{x_2,x_1\\},1\\}$ is not (since $u_2=x_1>1$).",
+      "statement_ru": "Рассмотрим неассоциативные слова в алфавите $X=\\{1<x_1<x_2<\\cdots\\}$ относительно одной операции $\\{\\,,\\}$. **Хорошие слова** и линейный порядок на них определяются индукцией по степени.\n\nХорошие слова степени $1$ — буквы алфавита в заданном порядке. Пусть хорошие слова степени меньше $n$ определены и упорядочены. Слово $w$ степени $n$ хорошее, если\n\n1. $w=\\{u,v\\}$, где $u$ и $v$ хорошие и $u>v$;\n2. если $u=\\{u_1,u_2\\}$, то $u_2\\le v$.\n\nПорядок: слово большей степени больше; слова одной степени $w=\\{u_1,u_2\\}$ и $w'=\\{u_1',u_2'\\}$ сравниваются лексикографически по парам компонент. В частности, для хорошего $w=\\{u,v\\}$ всегда $w>u>v$.\n\nЭто базисные коммутаторы М. Холла (1950): они образуют базис свободной алгебры Ли (множество Холла). Примеры: $\\{x_1,1\\}$, $\\{\\{x_1,1\\},1\\}$, $\\{\\{x_1,1\\},x_1\\}$, $\\{\\{x_2,1\\},x_1\\}$ — хорошие; $\\{1,x_1\\}$ — нет (так как $1<x_1$); $\\{\\{x_2,x_1\\},1\\}$ — нет (так как $u_2=x_1>1$).",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Free non-associative algebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 3, «Good words»",
+        "document": "Gerstenhaber.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "set-m-good-words-and-squares",
+      "title_en": "The set M: good words and squares",
+      "title_ru": "Множество M: хорошие слова и квадраты",
+      "aliases": [],
+      "statement_en": "The **set $M$** is\n$$M=\\{\\,u,\\ \\{v,v\\}\\ \\mid\\ u,v\\text{ are good words},\\ |v|=0\\,\\},$$\ni.e. all good words together with the squares $\\{v,v\\}$ of the *even* good words $v$. The order is extended to $M$ by the same rule (by degree, then lexicographically by components; a square $\\{v,v\\}$ is compared as the pair $(v,v)$). A square is never a good word, since the components of a good word are distinct. The least element of $M$ is the letter $1$; the elements of $M$ are enumerated $e_1=1<e_2<e_3<\\cdots$.\n\nWhy squares of even words: with respect to the reversed parity an even element becomes odd, and in a free Lie superalgebra the square $[v,v]$ of an odd basis element $v$ is a basis element in its own right. In the generalized Poisson case (Kaygorodov 2017), where the bracket is even, squares of odd words are taken.\n\nFor instance, $\\{1,1\\}\\in M$ (an odd element), while $\\{\\{1,1\\},1\\}\\notin M$: it is not a good word, and in the free odd Lie superalgebra $\\{\\{1,1\\},1\\}=0$ -- the analogue of $[[x,x],x]=0$ for odd $x$.",
+      "statement_ru": "**Множеством $M$** называется множество\n$$M=\\{\\,u,\\ \\{v,v\\}\\ \\mid\\ u,v\\text{ — хорошие слова},\\ |v|=0\\,\\},$$\nто есть все хорошие слова вместе с квадратами $\\{v,v\\}$ *чётных* хороших слов $v$. Порядок продолжается на $M$ тем же правилом (по степени, затем лексикографически по компонентам; квадрат $\\{v,v\\}$ сравнивается как пара $(v,v)$). Квадрат никогда не является хорошим словом, поскольку компоненты хорошего слова различны. Наименьший элемент $M$ — буква $1$; элементы $M$ нумеруют: $e_1=1<e_2<e_3<\\cdots$.\n\nПочему квадраты именно чётных слов: относительно обращённой чётности чётный элемент становится нечётным, а в свободной супералгебре Ли квадрат $[v,v]$ нечётного базисного элемента $v$ — самостоятельный базисный элемент. В обобщённом пуассоновом случае (Кайгородов 2017), где скобка чётная, берутся квадраты нечётных слов.\n\nНапример, $\\{1,1\\}\\in M$ (и это нечётный элемент), а $\\{\\{1,1\\},1\\}\\notin M$: это не хорошее слово, и в свободной нечётной супералгебре Ли $\\{\\{1,1\\},1\\}=0$ — аналог тождества $[[x,x],x]=0$ для нечётного $x$.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Good words (Hall basic commutators)",
+        "Odd Lie superalgebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 3, «The set M»",
+        "document": "Gerstenhaber.pdf",
+        "page": 3
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "m-is-a-basis-of-free-odd-lie-superalgebra",
+      "title_en": "M is a basis of the free odd Lie superalgebra (Lemma 4)",
+      "title_ru": "M — базис свободной нечётной супералгебры Ли (лемма 4)",
+      "aliases": [],
+      "statement_en": "Let $\\mathfrak L$ be the free odd Lie superalgebra generated by $X$ (the quotient of the free algebra with one operation $\\{\\,,\\}$ by the ideal generated by odd skew-symmetry and the odd Jacobi identity). Then the set $M$ is a basis of $\\mathfrak L$ as a vector space.",
+      "statement_ru": "Пусть $\\mathfrak L$ — свободная нечётная супералгебра Ли, порождённая $X$ (фактор свободной алгебры с одной операцией $\\{\\,,\\}$ по идеалу, порождённому нечётной кососимметричностью и нечётным тождеством Якоби). Тогда множество $M$ — базис $\\mathfrak L$ как векторного пространства.",
+      "proof_en": "By the property on parity reversal, $\\mathfrak L$ is the free Lie superalgebra on the set $X$ in which the letter $x$ has parity $\\|x\\|$. For a free Lie superalgebra over a field of characteristic $0$ it is known (Shtern 1986; Bahturin--Mikhalev--Petrogradsky--Zaicev 1992; Bokut--Kang--Lee--Malcolmson 1999) that a basis is formed by the elements of any Hall set -- in particular by the basic commutators, i.e. the good words -- together with the squares $[v,v]$ of its odd elements $v$. An element $v$ is odd with respect to the reversed parity exactly when $|v|=0$; hence this basis is exactly $M$.\n\nNumerical check (the project's `checks/` folder): for $n\\le3$ generators and all parity assignments, the dimensions of the components of $\\mathfrak L$ computed directly as ranks of the identities coincide with the number of elements of $M$; the variant with \"squares of squares\" overcounts.",
+      "proof_ru": "По свойству об обращении чётности $\\mathfrak L$ — свободная супералгебра Ли на множестве $X$, в котором буква $x$ имеет чётность $\\|x\\|$. Для свободной супералгебры Ли над полем характеристики $0$ известно (Штерн 1986; Бахтурин–Михалёв–Петроградский–Зайцев 1992; Бокуть–Канг–Ли–Малкольмсон 1999), что базис образуют элементы любого множества Холла — в частности базисные коммутаторы, то есть хорошие слова, — вместе с квадратами $[v,v]$ его нечётных элементов $v$. Элемент $v$ нечётен относительно обращённой чётности в точности тогда, когда $|v|=0$; значит, этот базис — в точности $M$.\n\nЧисленная проверка (папка `checks/` проекта): для $n\\le3$ образующих при всех расстановках чётностей размерности компонент $\\mathfrak L$, вычисленные напрямую как ранг тождеств, совпадают с числом элементов $M$; вариант с «квадратами квадратов» даёт лишние элементы.",
+      "depends_on": [
+        "The set M: good words and squares",
+        "Parity reversal identifies odd Lie superalgebras with Lie superalgebras",
+        "Basis • dimension of a vector space",
+        "Free algebra of a variety"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Лемма 4",
+        "document": "Gerstenhaber.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "set-u-supercommutative-monomials",
+      "title_en": "The set U of supercommutative monomials • e-degree",
+      "title_ru": "Множество U суперкоммутативных одночленов • e-степень",
+      "aliases": [],
+      "statement_en": "The **set $U$** is the set of supercommutative monomials in the elements of $M\\setminus\\{1\\}$:\n$$U=\\bigl\\{\\,e_{i_1}^{k_1}e_{i_2}^{k_2}\\cdots e_{i_r}^{k_r}\\ \\bigm|\\ r\\ge0,\\ 1<i_1<\\dots<i_r,\\ k_j\\ge1,\\ k_j=1\\text{ if }|e_{i_j}|=1\\,\\bigr\\}$$\n(for $r=0$ the empty product is $1$). Odd elements occur at most to the first power, because $ee=0$ for odd $e$ in a supercommutative algebra; the letter $1$ is not used as a factor -- it is the unit of the product.\n\nThe **$e$-degree** of a monomial $u=e_{i_1}^{k_1}\\cdots e_{i_r}^{k_r}$ is $\\deg_e(u)=\\sum_j k_j$; the elements of $M$ are the elements of $U$ of $e$-degree $1$ together with $1$. The elements of $M$ and $U$ are regarded as elements of the free algebra $\\mathfrak G$ (the words are evaluated in $\\mathfrak G$). The product of two elements of $U$ is, up to sign, again an element of $U$ or zero.\n\nThe main theorem of the paper: $U$ is a basis of $\\mathfrak G$.",
+      "statement_ru": "**Множеством $U$** называется множество суперкоммутативных одночленов по элементам $M\\setminus\\{1\\}$:\n$$U=\\bigl\\{\\,e_{i_1}^{k_1}e_{i_2}^{k_2}\\cdots e_{i_r}^{k_r}\\ \\bigm|\\ r\\ge0,\\ 1<i_1<\\dots<i_r,\\ k_j\\ge1,\\ k_j=1\\text{ при }|e_{i_j}|=1\\,\\bigr\\}$$\n(при $r=0$ пустое произведение равно $1$). Нечётные элементы входят не выше первой степени, потому что $ee=0$ для нечётного $e$ в суперкоммутативной алгебре; буква $1$ как множитель не используется — это единица умножения.\n\n**$e$-степень** одночлена $u=e_{i_1}^{k_1}\\cdots e_{i_r}^{k_r}$ — это $\\deg_e(u)=\\sum_j k_j$; элементы $M$ — это элементы $U$ $e$-степени $1$ вместе с $1$. Элементы $M$ и $U$ рассматриваются как элементы свободной алгебры $\\mathfrak G$ (слова вычисляются в $\\mathfrak G$). Произведение двух элементов $U$ с точностью до знака снова лежит в $U$ или равно нулю.\n\nГлавная теорема статьи: $U$ — базис $\\mathfrak G$.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "The set M: good words and squares",
+        "Free unital generalized Gerstenhaber algebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 3, «The set U»",
+        "document": "Gerstenhaber.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "u-spans-free-generalized-gerstenhaber-algebra",
+      "title_en": "U spans the free generalized Gerstenhaber algebra (Lemma 5)",
+      "title_ru": "U порождает свободную обобщённую алгебру Герстенхабера (лемма 5)",
+      "aliases": [],
+      "statement_en": "The linear span of the set $U$ is the whole free unital generalized Gerstenhaber algebra $\\mathfrak G$.",
+      "statement_ru": "Линейная оболочка множества $U$ совпадает со свободной унитальной обобщённой алгеброй Герстенхабера $\\mathfrak G$.",
+      "proof_en": "Since $(\\mathfrak G,\\{\\,,\\})$ satisfies odd skew-symmetry and the odd Jacobi identity, the identity map on $X$ extends to a homomorphism of odd Lie superalgebras $\\psi\\colon\\mathfrak L\\to\\mathfrak G$; it sends each element of $M$ to the same element of $\\mathfrak G$. By Lemma 4, the image $\\psi(\\mathfrak L)$ is spanned by $M\\subset U$.\n\nInduction on the degree of a word $w$. A word of degree $1$ is a letter, which lies in $M$. Let $w=w_1w_2$ or $w=\\{w_1,w_2\\}$ with $w_1,w_2$ already in the span of $U$. In the first case the claim follows from the closedness of $U$ under the product (up to sign). In the second case it suffices to treat a bracket $\\{u,v\\}$ of two elements of $U$.\n\n1. If $v=v_1v_2$ is a product of two elements of $U\\setminus\\{1\\}$, then by the Leibniz rule\n$$\\{u,v_1v_2\\}=\\{u,v_1\\}v_2+(-1)^{\\|u\\||v_1|}v_1\\{u,v_2\\}+(-1)^{\\|u\\|}\\{1,u\\}v_1v_2,$$\nand all brackets on the right have smaller degree, hence lie in the span of $U$ by induction.\n2. If $u$ is a product, first apply skew-symmetry, then step 1.\n3. It remains to consider $u,v\\in M$: then $\\{u,v\\}=\\psi(\\{u,v\\})\\in\\psi(\\mathfrak L)$, which is spanned by $M$.\n\nStep 3 replaces the \"rearrangement formula\" argument of the generalized Poisson case: instead of rearranging brackets explicitly one uses the known basis $M$ of the free odd Lie superalgebra.",
+      "proof_ru": "Так как $(\\mathfrak G,\\{\\,,\\})$ удовлетворяет нечётным кососимметричности и тождеству Якоби, тождественное отображение на $X$ продолжается до гомоморфизма нечётных супералгебр Ли $\\psi\\colon\\mathfrak L\\to\\mathfrak G$; он переводит каждый элемент $M$ в тот же элемент $\\mathfrak G$. По лемме 4 образ $\\psi(\\mathfrak L)$ натянут на $M\\subset U$.\n\nИндукция по степени слова $w$. Слово степени $1$ — буква, она лежит в $M$. Пусть $w=w_1w_2$ или $w=\\{w_1,w_2\\}$, где $w_1,w_2$ уже лежат в оболочке $U$. В первом случае всё следует из замкнутости $U$ относительно умножения (с точностью до знака). Во втором достаточно разобрать скобку $\\{u,v\\}$ двух элементов $U$.\n\n1. Если $v=v_1v_2$ — произведение двух элементов $U\\setminus\\{1\\}$, то по правилу Лейбница\n$$\\{u,v_1v_2\\}=\\{u,v_1\\}v_2+(-1)^{\\|u\\||v_1|}v_1\\{u,v_2\\}+(-1)^{\\|u\\|}\\{1,u\\}v_1v_2,$$\nи все скобки справа имеют меньшую степень, то есть лежат в оболочке $U$ по предположению индукции.\n2. Если $u$ — произведение, сначала применяем кососимметричность, затем шаг 1.\n3. Остаётся случай $u,v\\in M$: тогда $\\{u,v\\}=\\psi(\\{u,v\\})\\in\\psi(\\mathfrak L)$, а это пространство натянуто на $M$.\n\nШаг 3 заменяет рассуждение с «перестановочной формулой» из обобщённого пуассонова случая: вместо явной перестановки скобок используется уже известный базис $M$ свободной нечётной супералгебры Ли.",
+      "depends_on": [
+        "The set U of supercommutative monomials • e-degree",
+        "Free unital generalized Gerstenhaber algebra",
+        "M is a basis of the free odd Lie superalgebra (Lemma 4)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Лемма 5",
+        "document": "Gerstenhaber.pdf",
+        "page": 4
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "shirshov-method",
+      "title_en": "Shirshov's method for a basis of a free algebra",
+      "title_ru": "Метод Ширшова построения базиса свободной алгебры",
+      "aliases": [],
+      "statement_en": "Let $F$ be the free algebra of some variety on a set $X$, and let $U\\subset F$ be a candidate basis. **Shirshov's method** consists of two steps:\n\n1. show that $U$ spans $F$ as a vector space (usually by induction on the degree of words, using the defining identities);\n2. construct, on the vector space with basis $U$ (formal elements, not their images in $F$), operations making it an algebra of the same variety generated by $X$.\n\nThen by the universal property there is a surjective homomorphism $F\\to\\mathrm{span}(U)$ mapping $U$ onto a basis; hence $U$ is linearly independent in $F$ and the homomorphism is an isomorphism. This is how bases of free Lie algebras (Shirshov, Hall), free Lie superalgebras (Shtern), free Poisson superalgebras (Shestakov), free generalized Poisson superalgebras and free superalgebras of Jordan brackets (Kaygorodov 2017) were constructed. The second step is the laborious one: all identities of the variety must be verified for the constructed operations.",
+      "statement_ru": "Пусть $F$ — свободная алгебра некоторого многообразия на множестве $X$, и пусть $U\\subset F$ — множество-кандидат в базисы. **Метод Ширшова** состоит из двух шагов:\n\n1. показать, что $U$ порождает $F$ как векторное пространство (обычно индукцией по степени слов с помощью определяющих тождеств);\n2. построить на векторном пространстве с базисом $U$ (формальные элементы, а не их образы в $F$) операции, при которых оно становится алгеброй того же многообразия, порождённой $X$.\n\nТогда по универсальному свойству есть сюръективный гомоморфизм $F\\to\\mathrm{span}(U)$, переводящий $U$ в базис; следовательно, $U$ линейно независимо в $F$, а гомоморфизм — изоморфизм. Так строились базисы свободных алгебр Ли (Ширшов, Холл), свободных супералгебр Ли (Штерн), свободных супералгебр Пуассона (Шестаков), свободных обобщённых супералгебр Пуассона и супералгебр йордановых скобок (Кайгородов 2017). Второй шаг — самый трудоёмкий: нужно проверить все тождества многообразия для построенных операций.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Free algebra of a variety",
+        "Basis • dimension of a vector space"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Введение",
+        "document": "Gerstenhaber.pdf",
+        "page": 2
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "free-supercommutative-superalgebra",
+      "title_en": "Free supercommutative superalgebra S(V)",
+      "title_ru": "Свободная суперкоммутативная супералгебра S(V)",
+      "aliases": [
+        "supersymmetric algebra"
+      ],
+      "statement_en": "Let $V=V_0\\oplus V_1$ be a superspace. The **free supercommutative superalgebra** generated by $V$ is\n$$\\mathcal S(V)=S(V_0)\\otimes\\Lambda(V_1)$$\n-- the tensor product of the symmetric algebra of the even part and the exterior algebra of the odd part, with the product $(a\\otimes\\xi)(b\\otimes\\eta)=ab\\otimes\\xi\\wedge\\eta$ and the grading inherited from $V$. It is a unital associative supercommutative superalgebra with the universal property: every even linear map $V\\to A$ into a supercommutative superalgebra $A$ extends uniquely to a homomorphism $\\mathcal S(V)\\to A$.\n\nIf $\\{e_i\\}$ is a basis of $V$ consisting of homogeneous elements, then a basis of $\\mathcal S(V)$ is formed by the monomials $e_{i_1}^{k_1}\\cdots e_{i_r}^{k_r}$ with $i_1<\\dots<i_r$, $k_j\\ge1$ and $k_j=1$ for odd $e_{i_j}$. Every homogeneous linear map $V\\to\\mathcal S(V)$ extends uniquely to a superderivation of the same parity.",
+      "statement_ru": "Пусть $V=V_0\\oplus V_1$ — суперпространство. **Свободной суперкоммутативной супералгеброй**, порождённой $V$, называется\n$$\\mathcal S(V)=S(V_0)\\otimes\\Lambda(V_1)$$\n— тензорное произведение симметрической алгебры чётной части и внешней алгебры нечётной части, с умножением $(a\\otimes\\xi)(b\\otimes\\eta)=ab\\otimes\\xi\\wedge\\eta$ и градуировкой, наследованной из $V$. Это унитальная ассоциативная суперкоммутативная супералгебра с универсальным свойством: любое чётное линейное отображение $V\\to A$ в суперкоммутативную супералгебру $A$ единственным образом продолжается до гомоморфизма $\\mathcal S(V)\\to A$.\n\nЕсли $\\{e_i\\}$ — базис $V$ из однородных элементов, то базис $\\mathcal S(V)$ образуют одночлены $e_{i_1}^{k_1}\\cdots e_{i_r}^{k_r}$ с $i_1<\\dots<i_r$, $k_j\\ge1$ и $k_j=1$ для нечётных $e_{i_j}$. Любое однородное линейное отображение $V\\to\\mathcal S(V)$ единственным образом продолжается до супердифференцирования той же чётности.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Z2-graded commutative algebra",
+        "Free algebra of a variety",
+        "Tensor product of vector spaces",
+        "Superspace • parity • parity reversal"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 4",
+        "document": "Gerstenhaber.pdf",
+        "page": 4
+      },
+      "is_foundational": true
+    },
+    {
+      "kind": "definition",
+      "slug": "model-bracket-closed-formula",
+      "title_en": "The model algebra: closed formula for the bracket",
+      "title_ru": "Модельная алгебра: замкнутая формула для скобки",
+      "aliases": [],
+      "statement_en": "Let $\\mathfrak L'=\\mathrm{span}(M\\setminus\\{1\\})\\subset\\mathfrak L$ and let $\\mathcal S=\\mathcal S(\\mathfrak L')$ be the free supercommutative superalgebra generated by $\\mathfrak L'$; its basis is the set $U$. Put $\\widehat{\\mathfrak L}=\\mathbb F1\\oplus\\mathfrak L'\\subset\\mathcal S$ and transfer the bracket of $\\mathfrak L$ to $\\widehat{\\mathfrak L}$ (the basis element $1\\in M$ is identified with the unit of $\\mathcal S$); then $\\widehat{\\mathfrak L}$ is an odd Lie superalgebra with basis $M$.\n\nFor a product $a=a_1\\cdots a_m$ of homogeneous elements of $\\widehat{\\mathfrak L}$ write $a_{<i}=a_1\\cdots a_{i-1}$, $a_{>i}=a_{i+1}\\cdots a_m$, $a_{\\hat\\imath}=a_{<i}a_{>i}$. The **model bracket** on $\\mathcal S$ is given by\n$$\\mathfrak D(a)=\\sum_{i=1}^m(-1)^{|a_{<i}|}a_{<i}\\{1,a_i\\}a_{>i}-(m-1)\\{1,1\\}\\,a,$$\n$$\\{a,b\\}^*=\\sum_{i=1}^m\\sum_{j=1}^n(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}a_{\\hat\\imath}\\{a_i,b_j\\}b_{\\hat\\jmath}-(m-1)\\,a\\mathfrak D(b)+(n-1)(-1)^{\\|a\\|}\\mathfrak D(a)b-(m-1)(n-1)\\,a\\mathfrak D(1)b,$$\nwhere $b=b_1\\cdots b_n$ and $\\{a_i,b_j\\}$ is the bracket of $\\widehat{\\mathfrak L}$.\n\nHow to read the double sum: the factor $a_i$ is moved to the right end of $a$, the factor $b_j$ to the left end of $b$ (with the usual Koszul signs), and the two adjacent factors are bracketed. The terms with $\\mathfrak D$ are the corrections distinguishing the generalized case from the Poisson one; the term with $\\mathfrak D(1)$ is absent in the even (Poisson) case, where $\\{1,1\\}=0$.",
+      "statement_ru": "Пусть $\\mathfrak L'=\\mathrm{span}(M\\setminus\\{1\\})\\subset\\mathfrak L$ и $\\mathcal S=\\mathcal S(\\mathfrak L')$ — свободная суперкоммутативная супералгебра, порождённая $\\mathfrak L'$; её базис — множество $U$. Положим $\\widehat{\\mathfrak L}=\\mathbb F1\\oplus\\mathfrak L'\\subset\\mathcal S$ и перенесём на $\\widehat{\\mathfrak L}$ скобку $\\mathfrak L$ (базисный элемент $1\\in M$ отождествляется с единицей $\\mathcal S$); тогда $\\widehat{\\mathfrak L}$ — нечётная супералгебра Ли с базисом $M$.\n\nДля произведения $a=a_1\\cdots a_m$ однородных элементов $\\widehat{\\mathfrak L}$ обозначим $a_{<i}=a_1\\cdots a_{i-1}$, $a_{>i}=a_{i+1}\\cdots a_m$, $a_{\\hat\\imath}=a_{<i}a_{>i}$. **Модельная скобка** на $\\mathcal S$ задаётся формулами\n$$\\mathfrak D(a)=\\sum_{i=1}^m(-1)^{|a_{<i}|}a_{<i}\\{1,a_i\\}a_{>i}-(m-1)\\{1,1\\}\\,a,$$\n$$\\{a,b\\}^*=\\sum_{i=1}^m\\sum_{j=1}^n(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}a_{\\hat\\imath}\\{a_i,b_j\\}b_{\\hat\\jmath}-(m-1)\\,a\\mathfrak D(b)+(n-1)(-1)^{\\|a\\|}\\mathfrak D(a)b-(m-1)(n-1)\\,a\\mathfrak D(1)b,$$\nгде $b=b_1\\cdots b_n$, а $\\{a_i,b_j\\}$ — скобка $\\widehat{\\mathfrak L}$.\n\nКак читать двойную сумму: множитель $a_i$ сдвигается в правый конец $a$, множитель $b_j$ — в левый конец $b$ (с обычными знаками Косуля), и два соседних множителя берутся в скобку. Слагаемые с $\\mathfrak D$ — поправки, отличающие обобщённый случай от пуассонова; слагаемое с $\\mathfrak D(1)$ в чётном (пуассоновом) случае отсутствует, так как там $\\{1,1\\}=0$.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Free supercommutative superalgebra S(V)",
+        "The set M: good words and squares",
+        "M is a basis of the free odd Lie superalgebra (Lemma 4)",
+        "Odd Lie superalgebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 4, формулы (7), (8)",
+        "document": "Gerstenhaber.pdf",
+        "page": 5
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "model-bracket-well-defined",
+      "title_en": "The model bracket is well defined (Lemma 6)",
+      "title_ru": "Модельная скобка корректно определена (лемма 6)",
+      "aliases": [],
+      "statement_en": "The right-hand sides of the formulas for $\\mathfrak D(a)$ and $\\{a,b\\}^*$ do not depend on the choice of the factorizations $a=a_1\\cdots a_m$, $b=b_1\\cdots b_n$ into factors from $\\widehat{\\mathfrak L}$. Hence they define a linear map $\\mathfrak D\\colon\\mathcal S\\to\\mathcal S$ and a bilinear operation $\\{\\,,\\}^*$ on $\\mathcal S$. Moreover:\n\n1. $\\{u,v\\}^*=\\{u,v\\}$ and $\\mathfrak D(u)=\\{1,u\\}$ for $u,v\\in\\widehat{\\mathfrak L}$ (the model bracket extends the bracket of $\\mathfrak L$);\n2. $\\{1,a\\}^*=\\mathfrak D(a)$ for all $a\\in\\mathcal S$;\n3. $\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\mathfrak D(c)-\\mathfrak D(1)bc$;\n4. $|\\{a,b\\}^*|=|a|+|b|+1$, $|\\mathfrak D(a)|=\\|a\\|$.\n\nIdea of the proof: for fixed $m,n$ the right-hand sides are multilinear functions of the factors which are *supersymmetric* (interchanging neighbouring factors multiplies the value by the Koszul sign) and *compatible with removing units*. So it suffices to define them on the basis $U$ (factors from $M\\setminus\\{1\\}$ in nondecreasing order) and extend by linearity: any other factorization is reduced to such one by rearranging factors and removing units, both sides changing in the same way, and with a repeated odd factor both sides vanish.",
+      "statement_ru": "Правые части формул для $\\mathfrak D(a)$ и $\\{a,b\\}^*$ не зависят от выбора разложений $a=a_1\\cdots a_m$, $b=b_1\\cdots b_n$ на множители из $\\widehat{\\mathfrak L}$. Поэтому они задают линейное отображение $\\mathfrak D\\colon\\mathcal S\\to\\mathcal S$ и билинейную операцию $\\{\\,,\\}^*$ на $\\mathcal S$. Кроме того:\n\n1. $\\{u,v\\}^*=\\{u,v\\}$ и $\\mathfrak D(u)=\\{1,u\\}$ для $u,v\\in\\widehat{\\mathfrak L}$ (модельная скобка продолжает скобку $\\mathfrak L$);\n2. $\\{1,a\\}^*=\\mathfrak D(a)$ для всех $a\\in\\mathcal S$;\n3. $\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\mathfrak D(c)-\\mathfrak D(1)bc$;\n4. $|\\{a,b\\}^*|=|a|+|b|+1$, $|\\mathfrak D(a)|=\\|a\\|$.\n\nИдея доказательства: при фиксированных $m,n$ правые части — полилинейные функции множителей, *суперсимметричные* (перестановка соседних множителей умножает значение на знак Косуля) и *совместимые с вычёркиванием единиц*. Поэтому достаточно задать их на базисе $U$ (множители из $M\\setminus\\{1\\}$ в неубывающем порядке) и продолжить по линейности: любое другое разложение приводится к такому перестановками и удалением единиц, причём обе части меняются одинаково, а при повторном нечётном множителе обе части равны нулю.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "The model algebra: closed formula for the bracket"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Лемма 6",
+        "document": "Gerstenhaber.pdf",
+        "page": 5
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "model-bracket-skew-and-leibniz",
+      "title_en": "Odd skew-symmetry and Leibniz rule for the model bracket (Lemmas 7, 8)",
+      "title_ru": "Нечётная кососимметричность и правило Лейбница для модельной скобки (леммы 7, 8)",
+      "aliases": [],
+      "statement_en": "For all $a,b,c\\in\\mathcal S$:\n$$\\{a,b\\}^*=-(-1)^{\\|a\\|\\|b\\|}\\{b,a\\}^*,$$\n$$\\{a,bc\\}^*=\\{a,b\\}^*c+(-1)^{\\|a\\||b|}b\\{a,c\\}^*+(-1)^{\\|a\\|}\\mathfrak D(a)bc.$$\n\nSkew-symmetry: the term of the double sum with the pair $(j,i)$ in $\\{b,a\\}^*$, after skew-symmetry in $\\widehat{\\mathfrak L}$ and rearranging the factors, equals $-(-1)^{\\|a\\|\\|b\\|}$ times the term with the pair $(i,j)$ in $\\{a,b\\}^*$ -- a direct comparison of exponents using $\\|a\\|=|a_{\\hat\\imath}|+\\|a_i\\|$; the terms with $\\mathfrak D$ are exchanged by the rules $b\\mathfrak D(a)=(-1)^{|b|\\|a\\|}\\mathfrak D(a)b$ and $b\\mathfrak D(1)a=-(-1)^{\\|a\\|\\|b\\|}a\\mathfrak D(1)b$.\n\nLeibniz rule: for the factorization $bc=b_1\\cdots b_nc_1\\cdots c_p$ the double sum splits into the terms over the factors of $b$ (giving $\\{a,b\\}_0c$) and over the factors of $c$ (giving $(-1)^{\\|a\\||b|}b\\{a,c\\}_0$), while the terms with $\\mathfrak D$ match thanks to $\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\mathfrak D(c)-\\mathfrak D(1)bc$: the coefficients of $a\\mathfrak D(1)bc$ are $-(m-1)(n+p-1)$ on both sides.\n\nThis is where the closed formula beats a recursive definition by expanding one argument: skew-symmetry is visible from the symmetry of the formula and needs no separate consistency check.",
+      "statement_ru": "Для всех $a,b,c\\in\\mathcal S$:\n$$\\{a,b\\}^*=-(-1)^{\\|a\\|\\|b\\|}\\{b,a\\}^*,$$\n$$\\{a,bc\\}^*=\\{a,b\\}^*c+(-1)^{\\|a\\||b|}b\\{a,c\\}^*+(-1)^{\\|a\\|}\\mathfrak D(a)bc.$$\n\nКососимметричность: слагаемое двойной суммы с парой $(j,i)$ в $\\{b,a\\}^*$ после применения кососимметричности в $\\widehat{\\mathfrak L}$ и перестановки множителей равно $-(-1)^{\\|a\\|\\|b\\|}$ умножить на слагаемое с парой $(i,j)$ в $\\{a,b\\}^*$ — прямое сравнение показателей с помощью $\\|a\\|=|a_{\\hat\\imath}|+\\|a_i\\|$; слагаемые с $\\mathfrak D$ переходят друг в друга по правилам $b\\mathfrak D(a)=(-1)^{|b|\\|a\\|}\\mathfrak D(a)b$ и $b\\mathfrak D(1)a=-(-1)^{\\|a\\|\\|b\\|}a\\mathfrak D(1)b$.\n\nПравило Лейбница: для разложения $bc=b_1\\cdots b_nc_1\\cdots c_p$ двойная сумма расщепляется на слагаемые по множителям $b$ (они дают $\\{a,b\\}_0c$) и по множителям $c$ (они дают $(-1)^{\\|a\\||b|}b\\{a,c\\}_0$), а слагаемые с $\\mathfrak D$ сходятся благодаря формуле $\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\mathfrak D(c)-\\mathfrak D(1)bc$: коэффициенты при $a\\mathfrak D(1)bc$ равны $-(m-1)(n+p-1)$ с обеих сторон.\n\nИменно здесь замкнутая формула выигрывает у рекурсивного определения через раскрытие одного аргумента: кососимметричность видна из симметрии формулы и не требует отдельной проверки согласованности.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "The model bracket is well defined (Lemma 6)",
+        "The model algebra: closed formula for the bracket"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Леммы 7, 8",
+        "document": "Gerstenhaber.pdf",
+        "page": 6
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "jacobiator-formula",
+      "title_en": "Jacobiator formula (Lemma 9)",
+      "title_ru": "Формула для якобиатора (лемма 9)",
+      "aliases": [],
+      "statement_en": "Let $(V,\\cdot,\\{\\,,\\})$ be a superalgebra with unit whose product is even, associative and supercommutative, whose bracket is odd, and in which odd skew-symmetry and the generalized Leibniz rule hold, but the Jacobi identity is **not** assumed. Put\n$$J(a,b,c)=\\{a,\\{b,c\\}\\}-\\{\\{a,b\\},c\\}-(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\}.$$\nThen:\n\n1. $J(a,b,c)=-(-1)^{\\|a\\|\\|b\\|}J(b,a,c)=-(-1)^{\\|b\\|\\|c\\|}J(a,c,b)$ (the Jacobiator is alternating);\n2. $J(a,b,xy)=J(a,b,x)\\,y+(-1)^{(|a|+|b|)|x|}\\,x\\,J(a,b,y)-J(a,b,1)\\,xy$ for all $a,b,x,y\\in V$.\n\nIn other words, $x\\mapsto J(a,b,x)+J(a,b,1)x$ is a superderivation of parity $|a|+|b|$ of the product. Hence the Jacobi identity only needs to be checked on generators of the product.",
+      "statement_ru": "Пусть $(V,\\cdot,\\{\\,,\\})$ — супералгебра с единицей, в которой умножение чётное, ассоциативное и суперкоммутативное, скобка нечётная, и выполнены нечётная кососимметричность и обобщённое правило Лейбница, но тождество Якоби **не** предполагается. Положим\n$$J(a,b,c)=\\{a,\\{b,c\\}\\}-\\{\\{a,b\\},c\\}-(-1)^{\\|a\\|\\|b\\|}\\{b,\\{a,c\\}\\}.$$\nТогда:\n\n1. $J(a,b,c)=-(-1)^{\\|a\\|\\|b\\|}J(b,a,c)=-(-1)^{\\|b\\|\\|c\\|}J(a,c,b)$ (якобиатор знакопеременен);\n2. $J(a,b,xy)=J(a,b,x)\\,y+(-1)^{(|a|+|b|)|x|}\\,x\\,J(a,b,y)-J(a,b,1)\\,xy$ для всех $a,b,x,y\\in V$.\n\nИначе говоря, $x\\mapsto J(a,b,x)+J(a,b,1)x$ — супердифференцирование чётности $|a|+|b|$ умножения. Поэтому тождество Якоби достаточно проверять на образующих умножения.",
+      "proof_en": "1. Follows from skew-symmetry: e.g. $\\{\\{b,a\\},c\\}=-(-1)^{\\|a\\|\\|b\\|}\\{\\{a,b\\},c\\}$, whence $-(-1)^{\\|a\\|\\|b\\|}J(b,a,c)=J(a,b,c)$; for the transposition of $b,c$ likewise, using $\\|\\{a,c\\}\\|=\\|a\\|+\\|c\\|$.\n\n2. Expand the three terms of $J(a,b,xy)$ by the Leibniz rule (twice in $\\{a,\\{b,xy\\}\\}$). The terms $\\{a,\\{b,x\\}\\}y$, $\\{\\{a,b\\},x\\}y$, $\\{b,\\{a,x\\}\\}y$ add up to $J(a,b,x)y$; the terms with $x\\{\\cdot,\\{\\cdot,y\\}\\}$ add up to $(-1)^{(|a|+|b|)|x|}xJ(a,b,y)$; the terms $\\{a,\\mathfrak D(b)\\}xy$, $\\mathfrak D(\\{a,b\\})xy$, $\\{b,\\mathfrak D(a)\\}xy$ add up to $-J(a,b,1)xy$, since by skew-symmetry $\\{b,1\\}=-(-1)^{\\|b\\|}\\mathfrak D(b)$ etc. The remaining sixteen terms (products of two brackets and terms with $\\mathfrak D(a)$, $\\mathfrak D(b)$) cancel in pairs -- all eight coefficients are of the form $(-1)^{s}-(-1)^{s}$.\n\nNumerically the formula was verified for all 16 parity assignments of four generators in the algebra where only skew-symmetry and the Leibniz rule are imposed (`checks/jacobiator_check.py` in the project folder).",
+      "proof_ru": "1. Следует из кососимметричности: например, $\\{\\{b,a\\},c\\}=-(-1)^{\\|a\\|\\|b\\|}\\{\\{a,b\\},c\\}$, откуда $-(-1)^{\\|a\\|\\|b\\|}J(b,a,c)=J(a,b,c)$; для перестановки $b,c$ аналогично, с учётом $\\|\\{a,c\\}\\|=\\|a\\|+\\|c\\|$.\n\n2. Раскрываем три члена $J(a,b,xy)$ по правилу Лейбница (в $\\{a,\\{b,xy\\}\\}$ — дважды). Члены вида $\\{a,\\{b,x\\}\\}y$, $\\{\\{a,b\\},x\\}y$, $\\{b,\\{a,x\\}\\}y$ собираются в $J(a,b,x)y$; члены с $x\\{\\cdot,\\{\\cdot,y\\}\\}$ — в $(-1)^{(|a|+|b|)|x|}xJ(a,b,y)$; члены $\\{a,\\mathfrak D(b)\\}xy$, $\\mathfrak D(\\{a,b\\})xy$, $\\{b,\\mathfrak D(a)\\}xy$ — в $-J(a,b,1)xy$, поскольку по кососимметричности $\\{b,1\\}=-(-1)^{\\|b\\|}\\mathfrak D(b)$ и т. п. Оставшиеся шестнадцать членов (произведения двух скобок и члены с $\\mathfrak D(a)$, $\\mathfrak D(b)$) сокращаются попарно — все восемь коэффициентов имеют вид $(-1)^{s}-(-1)^{s}$.\n\nЧисленно формула проверена для всех 16 расстановок чётностей четырёх образующих в алгебре, где наложены только кососимметричность и правило Лейбница (`checks/jacobiator_check.py` в папке проекта).",
+      "depends_on": [
+        "Generalized Gerstenhaber algebra (odd generalized Poisson superalgebra)",
+        "Derivation (of a Z2-graded algebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Лемма 9",
+        "document": "Gerstenhaber.pdf",
+        "page": 7
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "model-algebra-is-generalized-gerstenhaber",
+      "title_en": "The model algebra is a generalized Gerstenhaber algebra generated by X (Proposition 10, Theorem 11)",
+      "title_ru": "Модельная алгебра — обобщённая алгебра Герстенхабера, порождённая X (предложение 10, теорема 11)",
+      "aliases": [],
+      "statement_en": "$(\\mathcal S,\\cdot,\\{\\,,\\}^*)$ is a unital generalized Gerstenhaber algebra; its bracket restricted to $\\widehat{\\mathfrak L}$ is the bracket of the free odd Lie superalgebra $\\mathfrak L$, and its map $\\mathfrak D$ is given by the formula in the definition of the model bracket. It is generated by the set $X$ as a unital generalized Gerstenhaber algebra.",
+      "statement_ru": "$(\\mathcal S,\\cdot,\\{\\,,\\}^*)$ — унитальная обобщённая алгебра Герстенхабера; её скобка на $\\widehat{\\mathfrak L}$ совпадает со скобкой свободной нечётной супералгебры Ли $\\mathfrak L$, а отображение $\\mathfrak D$ задаётся формулой из определения модельной скобки. Она порождена множеством $X$ как унитальная обобщённая алгебра Герстенхабера.",
+      "proof_en": "All identities except Jacobi are Lemmas 6--8. Jacobi identity: let $J$ be the Jacobiator of the model bracket. By the Jacobiator formula and induction on the number of factors, for fixed $a,b$ the vanishing $J(a,b,u)=0$ for all $u\\in\\widehat{\\mathfrak L}$ implies $J(a,b,c)=0$ for all $c\\in\\mathcal S$ (the formula for $J(a,b,c_1\\cdots c_m)$ involves $J(a,b,c_1\\cdots c_{m-1})$, $J(a,b,c_m)$ and $J(a,b,1)$, with $1,c_m\\in\\widehat{\\mathfrak L}$).\n\nFor $u,v,w\\in\\widehat{\\mathfrak L}$ we have $J(u,v,w)=0$ -- the Jacobi identity in $\\mathfrak L$. Hence $J(u,v,c)=0$ for all $c\\in\\mathcal S$. By the alternating property $J(u,c,v)=\\pm J(u,v,c)=0$, and by induction again $J(u,b,c)=0$ for all $b,c\\in\\mathcal S$. Finally $J(a,b,u)=\\pm J(u,a,b)=0$ for $u\\in\\widehat{\\mathfrak L}$, and the last induction gives $J(a,b,c)=0$ for all $a,b,c\\in\\mathcal S$.\n\nGeneration: the subalgebra generated by $X$ contains $\\widehat{\\mathfrak L}$ (since $\\mathfrak L$ is generated by $X$ as an odd Lie superalgebra and $\\{\\,,\\}^*$ coincides with the bracket of $\\mathfrak L$ on $\\widehat{\\mathfrak L}$), and $\\widehat{\\mathfrak L}$ generates $\\mathcal S$ under the product.",
+      "proof_ru": "Все тождества, кроме тождества Якоби, — это леммы 6–8. Тождество Якоби: пусть $J$ — якобиатор модельной скобки. По формуле для якобиатора и индукции по числу множителей, при фиксированных $a,b$ из $J(a,b,u)=0$ для всех $u\\in\\widehat{\\mathfrak L}$ следует $J(a,b,c)=0$ для всех $c\\in\\mathcal S$ (в формуле для $J(a,b,c_1\\cdots c_m)$ участвуют $J(a,b,c_1\\cdots c_{m-1})$, $J(a,b,c_m)$ и $J(a,b,1)$, а $1,c_m\\in\\widehat{\\mathfrak L}$).\n\nДля $u,v,w\\in\\widehat{\\mathfrak L}$ имеем $J(u,v,w)=0$ — это тождество Якоби в $\\mathfrak L$. Значит, $J(u,v,c)=0$ для всех $c\\in\\mathcal S$. По знакопеременности $J(u,c,v)=\\pm J(u,v,c)=0$, и снова по индукции $J(u,b,c)=0$ для всех $b,c\\in\\mathcal S$. Наконец, $J(a,b,u)=\\pm J(u,a,b)=0$ для $u\\in\\widehat{\\mathfrak L}$, и последняя индукция даёт $J(a,b,c)=0$ для всех $a,b,c\\in\\mathcal S$.\n\nПорождённость: подалгебра, порождённая $X$, содержит $\\widehat{\\mathfrak L}$ (так как $\\mathfrak L$ порождена $X$ как нечётная супералгебра Ли, а $\\{\\,,\\}^*$ совпадает на $\\widehat{\\mathfrak L}$ со скобкой $\\mathfrak L$), а $\\widehat{\\mathfrak L}$ порождает $\\mathcal S$ относительно умножения.",
+      "depends_on": [
+        "Jacobiator formula (Lemma 9)",
+        "Odd skew-symmetry and Leibniz rule for the model bracket (Lemmas 7, 8)",
+        "The model algebra: closed formula for the bracket"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Предложение 10, теорема 11",
+        "document": "Gerstenhaber.pdf",
+        "page": 8
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "basis-of-free-generalized-gerstenhaber-algebra",
+      "title_en": "U is a basis of the free generalized Gerstenhaber algebra (Theorem 12)",
+      "title_ru": "U — базис свободной обобщённой алгебры Герстенхабера (теорема 12)",
+      "aliases": [],
+      "statement_en": "The set $U$ is a basis of the free unital generalized Gerstenhaber algebra $\\mathfrak G$ generated by a linearly ordered set $X$ of even and odd generators. Moreover, the homomorphism $\\varphi\\colon\\mathfrak G\\to\\mathcal S$ which is the identity on $X$ is an isomorphism of generalized Gerstenhaber algebras:\n$$\\mathfrak G\\cong\\mathcal S(\\mathfrak L')\\ \\text{with the model bracket}.$$",
+      "statement_ru": "Множество $U$ — базис свободной унитальной обобщённой алгебры Герстенхабера $\\mathfrak G$, порождённой линейно упорядоченным множеством $X$ чётных и нечётных образующих. Более того, гомоморфизм $\\varphi\\colon\\mathfrak G\\to\\mathcal S$, тождественный на $X$, — изоморфизм обобщённых алгебр Герстенхабера:\n$$\\mathfrak G\\cong\\mathcal S(\\mathfrak L')\\ \\text{с модельной скобкой}.$$",
+      "proof_en": "By Theorem 11 and the universal property of $\\mathfrak G$, the identity map on $X$ extends to a homomorphism $\\varphi\\colon\\mathfrak G\\to\\mathcal S$, which is surjective because $\\mathcal S$ is generated by $X$. Every element $e\\in M$ is a word in the generators with respect to the bracket, and $\\varphi$ is compatible with the brackets, so $\\varphi(e)=e$ and hence $\\varphi(u)=u$ for all $u\\in U$. Since $U$ is a basis of $\\mathcal S$, the set $U\\subset\\mathfrak G$ is linearly independent; by Lemma 5 it spans $\\mathfrak G$. Thus $U$ is a basis, and $\\varphi$, a surjection mapping a basis bijectively onto a basis, is an isomorphism. This is Shirshov's method.",
+      "proof_ru": "По теореме 11 и универсальному свойству $\\mathfrak G$ тождественное отображение на $X$ продолжается до гомоморфизма $\\varphi\\colon\\mathfrak G\\to\\mathcal S$; он сюръективен, поскольку $\\mathcal S$ порождена $X$. Каждый элемент $e\\in M$ — слово от образующих относительно скобки, а $\\varphi$ согласован со скобками, поэтому $\\varphi(e)=e$ и, значит, $\\varphi(u)=u$ для всех $u\\in U$. Так как $U$ — базис $\\mathcal S$, множество $U\\subset\\mathfrak G$ линейно независимо; по лемме 5 оно порождает $\\mathfrak G$. Итак, $U$ — базис, а $\\varphi$ — сюръекция, биективно переводящая базис в базис, то есть изоморфизм. Это и есть метод Ширшова.",
+      "depends_on": [
+        "U spans the free generalized Gerstenhaber algebra (Lemma 5)",
+        "The model algebra is a generalized Gerstenhaber algebra generated by X (Proposition 10, Theorem 11)",
+        "Shirshov's method for a basis of a free algebra"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Теорема 12",
+        "document": "Gerstenhaber.pdf",
+        "page": 9
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "bracket-of-units-is-nonzero",
+      "title_en": "{1,1} ≠ 0 in the free algebra: D is not a derivation (Corollary 13)",
+      "title_ru": "{1,1} ≠ 0 в свободной алгебре: D — не дифференцирование (следствие 13)",
+      "aliases": [],
+      "statement_en": "In the free unital generalized Gerstenhaber algebra $\\mathfrak G$ the element $\\mathfrak D(1)=\\{1,1\\}$ is nonzero, and $\\mathfrak D$ is not a superderivation of the product. More precisely, the elements $\\{1,1\\}$, $\\{1,1\\}x_i$ and $\\{1,x_i\\}$ ($i\\ge1$) are linearly independent in $\\mathfrak G$.\n\nProof: $\\{1,1\\}$ is the square of the even good word $1$, $\\{x_i,1\\}$ is a good word, and $\\{1,1\\}x_i$ is a monomial from $U$; all of them lie in the basis $U$, and $\\{1,x_i\\}=-(-1)^{\\|x_i\\|}\\{x_i,1\\}$. The statement about $\\mathfrak D$ follows from $\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\mathfrak D(c)-\\mathfrak D(1)bc$.\n\nThis is the main difference from generalized Poisson superalgebras, where $\\{1,1\\}=0$ and $D$ is an even derivation. In the known examples ($PO(n,n+1)$) also $\\mathfrak D(1)=0$, so it is the free algebra that shows the axioms do not imply this.",
+      "statement_ru": "В свободной унитальной обобщённой алгебре Герстенхабера $\\mathfrak G$ элемент $\\mathfrak D(1)=\\{1,1\\}$ отличен от нуля, и $\\mathfrak D$ не является супердифференцированием умножения. Точнее, элементы $\\{1,1\\}$, $\\{1,1\\}x_i$ и $\\{1,x_i\\}$ ($i\\ge1$) линейно независимы в $\\mathfrak G$.\n\nДоказательство: $\\{1,1\\}$ — квадрат чётного хорошего слова $1$, $\\{x_i,1\\}$ — хорошее слово, а $\\{1,1\\}x_i$ — одночлен из $U$; все они лежат в базисе $U$, причём $\\{1,x_i\\}=-(-1)^{\\|x_i\\|}\\{x_i,1\\}$. Утверждение о $\\mathfrak D$ следует из формулы $\\mathfrak D(bc)=\\mathfrak D(b)c+(-1)^{|b|}b\\mathfrak D(c)-\\mathfrak D(1)bc$.\n\nЭто главное отличие от обобщённых супералгебр Пуассона, где $\\{1,1\\}=0$ и $D$ — чётное дифференцирование. В известных примерах ($PO(n,n+1)$) тоже $\\mathfrak D(1)=0$, так что именно свободная алгебра показывает, что аксиомы такого равенства не влекут.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "U is a basis of the free generalized Gerstenhaber algebra (Theorem 12)",
+        "Basic properties of the map D"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Следствие 13",
+        "document": "Gerstenhaber.pdf",
+        "page": 9
+      }
+    },
+    {
+      "kind": "definition",
+      "slug": "multilinear-part-gen-ger-n",
+      "title_en": "Multilinear part GenGer(n)",
+      "title_ru": "Мультилинейная часть GenGer(n)",
+      "aliases": [],
+      "statement_en": "Let $\\mathfrak G$ be the free unital generalized Gerstenhaber algebra on $X=\\{1,x_1,\\dots,x_n\\}$ (with arbitrary parities of the $x_i$). The **multilinear part** $\\mathrm{GenGer}(n)$ is the linear span of those elements of the basis $U$ which are multilinear in $1,x_1,\\dots,x_n$, that is, in which each of the letters $1,x_1,\\dots,x_n$ occurs exactly once.\n\nRemark: \"the number of occurrences of the letter $1$\" is not a grading of $\\mathfrak G$ (the Leibniz rule is not homogeneous in the letter $1$: it contains $\\{1,a\\}$), so $\\mathrm{GenGer}(n)$ is defined through the chosen basis, exactly as in Kaygorodov 2017 for generalized Poisson superalgebras. Multilinearity in $x_1,\\dots,x_n$ and the number of brackets are genuine gradings of $\\mathfrak G$.",
+      "statement_ru": "Пусть $\\mathfrak G$ — свободная унитальная обобщённая алгебра Герстенхабера на $X=\\{1,x_1,\\dots,x_n\\}$ (чётности $x_i$ произвольны). **Мультилинейной частью** $\\mathrm{GenGer}(n)$ называется линейная оболочка тех элементов базиса $U$, которые мультилинейны по $1,x_1,\\dots,x_n$, то есть в записи которых каждая из букв $1,x_1,\\dots,x_n$ встречается ровно один раз.\n\nЗамечание: «число вхождений буквы $1$» — не градуировка на $\\mathfrak G$ (правило Лейбница неоднородно по букве $1$: в нём появляется $\\{1,a\\}$), поэтому $\\mathrm{GenGer}(n)$ определяется через выбранный базис, как и в работе Кайгородова 2017 для обобщённых супералгебр Пуассона. Мультилинейность по $x_1,\\dots,x_n$ и число скобок — настоящие градуировки $\\mathfrak G$.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "U is a basis of the free generalized Gerstenhaber algebra (Theorem 12)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Раздел 5",
+        "document": "Gerstenhaber.pdf",
+        "page": 9
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "multilinear-hall-words-count",
+      "title_en": "Counting multilinear good words and set partitions",
+      "title_ru": "Подсчёт мультилинейных хороших слов и разбиений",
+      "aliases": [],
+      "statement_en": "1. The multilinear good words with a given set of $k$ letters form a basis of the multilinear component of the free (odd) Lie superalgebra on these letters; their number does not depend on the parities of the letters (good words are defined purely combinatorially) and equals $(k-1)!$ -- the dimension of the multilinear component of the free Lie algebra of rank $k$.\n2. For every finite set $Y$\n$$\\sum_{\\pi}\\prod_{B\\in\\pi}(|B|-1)!=|Y|!,$$\nthe sum being over all partitions $\\pi$ of $Y$ into blocks: a partition with a cyclic order on each block is the same as a permutation of $Y$ (the blocks being its cycles), and there are exactly $(k-1)!$ cyclic orders on a block of $k$ elements.\n\nFor example, for $Y=\\{1,x_1,x_2\\}$: the one-block partition gives $2!=2$ (the words $\\{\\{x_2,1\\},x_1\\}$ and $\\{\\{x_1,1\\},x_2\\}$), the three partitions into a pair and a singleton give $1$ each, the partition into singletons gives $1$; in total $6=3!$.",
+      "statement_ru": "1. Мультилинейные хорошие слова с заданным множеством из $k$ букв образуют базис мультилинейной компоненты свободной (нечётной) супералгебры Ли на этих буквах; их число не зависит от чётностей букв (хорошие слова определяются чисто комбинаторно) и равно $(k-1)!$ — размерности мультилинейной компоненты свободной алгебры Ли ранга $k$.\n2. Для любого конечного множества $Y$\n$$\\sum_{\\pi}\\prod_{B\\in\\pi}(|B|-1)!=|Y|!,$$\nгде сумма берётся по всем разбиениям $\\pi$ множества $Y$ на блоки: разбиение с циклическим порядком на каждом блоке — то же самое, что перестановка $Y$ (блоки — её циклы), а циклических порядков на блоке из $k$ элементов ровно $(k-1)!$.\n\nНапример, для $Y=\\{1,x_1,x_2\\}$: одно разбиение в один блок даёт $2!=2$ (слова $\\{\\{x_2,1\\},x_1\\}$ и $\\{\\{x_1,1\\},x_2\\}$), три разбиения на блок из двух и одиночку дают по $1$, разбиение на одиночки — $1$; итого $6=3!$.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Good words (Hall basic commutators)",
+        "M is a basis of the free odd Lie superalgebra (Lemma 4)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Доказательство теоремы 14",
+        "document": "Gerstenhaber.pdf",
+        "page": 10
+      }
+    },
+    {
+      "kind": "theorem",
+      "slug": "dimension-of-multilinear-part",
+      "title_en": "dim GenGer(n) = n·n! (Theorem 14)",
+      "title_ru": "dim GenGer(n) = n·n! (теорема 14)",
+      "aliases": [],
+      "statement_en": "$$\\dim\\mathrm{GenGer}(n)=n\\cdot n!.$$\nFor example, $\\dim\\mathrm{GenGer}(1)=1$ (basis $\\{x_1,1\\}$), $\\dim\\mathrm{GenGer}(2)=4$ (basis $\\{\\{x_2,1\\},x_1\\}$, $\\{\\{x_1,1\\},x_2\\}$, $\\{x_1,1\\}x_2$, $\\{x_2,1\\}x_1$), $\\dim\\mathrm{GenGer}(3)=18$. The same formula holds for free generalized Poisson superalgebras (Kaygorodov 2017, Theorem 3).",
+      "statement_ru": "$$\\dim\\mathrm{GenGer}(n)=n\\cdot n!.$$\nНапример, $\\dim\\mathrm{GenGer}(1)=1$ (базис — $\\{x_1,1\\}$), $\\dim\\mathrm{GenGer}(2)=4$ (базис — $\\{\\{x_2,1\\},x_1\\}$, $\\{\\{x_1,1\\},x_2\\}$, $\\{x_1,1\\}x_2$, $\\{x_2,1\\}x_1$), $\\dim\\mathrm{GenGer}(3)=18$. Та же формула верна для свободных обобщённых супералгебр Пуассона (Кайгородов 2017, теорема 3).",
+      "proof_en": "An element of $U$ is a product of elements of $M\\setminus\\{1\\}$; it is multilinear in $1,x_1,\\dots,x_n$ exactly when its factors are good words (a square $\\{v,v\\}$ contains every letter of $v$ twice) with pairwise disjoint multilinear sets of letters whose union is all of $X$. Hence the multilinear elements of $U$ are in bijection with the pairs: a partition $\\pi$ of $X$ into blocks none of which equals $\\{1\\}$ (the factor $1$ is excluded in $U$), and a family of multilinear good words $w_B$ with letter set $B$ for each block $B\\in\\pi$. By the count of good words and partitions\n$$\\dim\\mathrm{GenGer}(n)=\\sum_{\\pi\\not\\ni\\{1\\}}\\prod_{B\\in\\pi}(|B|-1)!=\\sum_{\\pi\\in\\Pi(X)}\\prod_{B\\in\\pi}(|B|-1)!-\\sum_{\\pi'\\in\\Pi(\\{x_1,\\dots,x_n\\})}\\prod_{B\\in\\pi'}(|B|-1)!=(n+1)!-n!=n\\cdot n!,$$\nsince the partitions of $X$ containing the block $\\{1\\}$ correspond to the partitions of $\\{x_1,\\dots,x_n\\}$.",
+      "proof_ru": "Элемент $U$ — произведение элементов $M\\setminus\\{1\\}$; он мультилинеен по $1,x_1,\\dots,x_n$ в точности тогда, когда его множители — хорошие слова (квадрат $\\{v,v\\}$ содержит каждую букву $v$ дважды) с попарно непересекающимися мультилинейными множествами букв, объединение которых — всё $X$. Значит, мультилинейные элементы $U$ взаимно однозначно соответствуют парам: разбиение $\\pi$ множества $X$ на блоки, ни один из которых не равен $\\{1\\}$ (множитель $1$ в $U$ исключён), и набор мультилинейных хороших слов $w_B$ с множеством букв $B$ для каждого блока $B\\in\\pi$. По подсчёту хороших слов и разбиений\n$$\\dim\\mathrm{GenGer}(n)=\\sum_{\\pi\\not\\ni\\{1\\}}\\prod_{B\\in\\pi}(|B|-1)!=\\sum_{\\pi\\in\\Pi(X)}\\prod_{B\\in\\pi}(|B|-1)!-\\sum_{\\pi'\\in\\Pi(\\{x_1,\\dots,x_n\\})}\\prod_{B\\in\\pi'}(|B|-1)!=(n+1)!-n!=n\\cdot n!,$$\nпоскольку разбиения $X$ с блоком $\\{1\\}$ соответствуют разбиениям $\\{x_1,\\dots,x_n\\}$.",
+      "depends_on": [
+        "Multilinear part GenGer(n)",
+        "Counting multilinear good words and set partitions"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Теорема 14",
+        "document": "Gerstenhaber.pdf",
+        "page": 9
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "free-gerstenhaber-algebra-basis",
+      "title_en": "Basis of the free Gerstenhaber algebra (Remark 15)",
+      "title_ru": "Базис свободной алгебры Герстенхабера (замечание 15)",
+      "aliases": [],
+      "statement_en": "Let $\\mathfrak L_0$ be the free odd Lie superalgebra generated by $\\{x_1,x_2,\\dots\\}$ (without the letter $1$) and extend its bracket to $\\mathbb F1\\oplus\\mathfrak L_0$ by zero: $\\{1,\\cdot\\}=\\{\\cdot,1\\}=0$. Then $\\mathfrak D=0$, and the model bracket becomes the unique extension of the bracket of $\\mathfrak L_0$ to a biderivation of the free supercommutative superalgebra $\\mathcal S(\\mathfrak L_0)$. Lemmas 6--9 and Proposition 10 hold verbatim, and the proof of Lemma 5 goes through with $\\{1,u\\}=0$.\n\nConclusion: the free unital Gerstenhaber algebra on $x_1,x_2,\\dots$ is $\\mathcal S(\\mathfrak L_0)$ with the biderivation bracket, and its basis consists of the elements of $U$ in which the letter $1$ does not occur (monomials in good words in the $x_i$ and squares of even good words). This is the well-known description -- the odd analogue of Shestakov's theorem on free Poisson superalgebras.",
+      "statement_ru": "Пусть $\\mathfrak L_0$ — свободная нечётная супералгебра Ли, порождённая $\\{x_1,x_2,\\dots\\}$ (без буквы $1$), и продолжим её скобку на $\\mathbb F1\\oplus\\mathfrak L_0$ нулём: $\\{1,\\cdot\\}=\\{\\cdot,1\\}=0$. Тогда $\\mathfrak D=0$, а модельная скобка превращается в единственное продолжение скобки $\\mathfrak L_0$ до бидифференцирования свободной суперкоммутативной супералгебры $\\mathcal S(\\mathfrak L_0)$. Леммы 6–9 и предложение 10 верны дословно, а доказательство леммы 5 проходит с $\\{1,u\\}=0$.\n\nВывод: свободная унитальная алгебра Герстенхабера на $x_1,x_2,\\dots$ есть $\\mathcal S(\\mathfrak L_0)$ с бидифференцированной скобкой, и её базис — элементы $U$, в записи которых не встречается буква $1$ (одночлены по хорошим словам от $x_i$ и квадратам чётных хороших слов). Это хорошо известное описание — нечётный аналог теоремы Шестакова о свободных супералгебрах Пуассона.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "U is a basis of the free generalized Gerstenhaber algebra (Theorem 12)",
+        "Gerstenhaber algebra (odd Poisson superalgebra)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Замечание 15",
+        "document": "Gerstenhaber.pdf",
+        "page": 10
+      }
+    },
+    {
+      "kind": "property",
+      "slug": "comparison-with-generalized-poisson-case",
+      "title_en": "What changes compared with the generalized Poisson case",
+      "title_ru": "Что меняется по сравнению с обобщённым пуассоновым случаем",
+      "aliases": [],
+      "statement_en": "Comparison of the construction of a basis for free generalized Gerstenhaber algebras (odd bracket) and for free generalized Poisson superalgebras (Kaygorodov 2017, even bracket):\n\n1. Good words and the set $U$ are defined in the same way; in $M$ the squares $\\{v,v\\}$ are taken for *even* good words $v$ instead of odd ones -- because under parity reversal even becomes odd.\n2. In the Poisson case $\\{1,1\\}=0$ and $D=\\{\\cdot,1\\}$ is an even derivation; in the Gerstenhaber case $\\{1,1\\}$ is a basis element, $\\mathfrak D$ is not a derivation, and the formula for the bracket acquires the extra term $-(m-1)(n-1)\\,a\\mathfrak D(1)b$.\n3. The proof of the identities for the model algebra is organized differently: one closed formula instead of a recursive definition by expanding the second argument; skew-symmetry and the Leibniz rule by direct computation, the Jacobi identity via the general Jacobiator formula.\n4. The dimension of the multilinear part is the same: $n\\cdot n!=(n+1)!-n!$, since the count of multilinear elements of $U$ is purely combinatorial and independent of parities.",
+      "statement_ru": "Сравнение конструкции базиса для свободных обобщённых алгебр Герстенхабера (нечётная скобка) и для свободных обобщённых супералгебр Пуассона (Кайгородов 2017, чётная скобка):\n\n1. Хорошие слова и множество $U$ определяются одинаково; в $M$ квадраты $\\{v,v\\}$ берутся для *чётных* хороших слов $v$ вместо нечётных — потому что при обращении чётности чётное становится нечётным.\n2. В пуассоновом случае $\\{1,1\\}=0$ и $D=\\{\\cdot,1\\}$ — чётное дифференцирование; в герстенхаберовом $\\{1,1\\}$ — базисный элемент, $\\mathfrak D$ — не дифференцирование, и в формуле для скобки появляется дополнительный член $-(m-1)(n-1)\\,a\\mathfrak D(1)b$.\n3. Доказательство тождеств для модельной алгебры организовано иначе: одна замкнутая формула вместо рекурсивного определения через раскрытие второго аргумента; кососимметричность и правило Лейбница — прямой выкладкой, тождество Якоби — через общую формулу для якобиатора.\n4. Размерность мультилинейной части одна и та же: $n\\cdot n!=(n+1)!-n!$, поскольку подсчёт мультилинейных элементов $U$ чисто комбинаторный и не зависит от чётностей.",
+      "proof_en": null,
+      "proof_ru": null,
+      "depends_on": [
+        "Generalized Poisson superalgebra",
+        "Generalized Gerstenhaber algebra (odd generalized Poisson superalgebra)",
+        "{1,1} ≠ 0 in the free algebra: D is not a derivation (Corollary 13)"
+      ],
+      "topic": "Алгебры Герстенхабера и свободные алгебры",
+      "topic_order": 15,
+      "source": {
+        "label": "Теорема 3 (Kaygorodov 2017)",
+        "document": "Kaygorodov_2017_Jordan_brackets_generalized_Poisson.pdf",
+        "page": 9,
+        "citation": "Kaygorodov I. — «Algebras of Jordan brackets and generalized Poisson algebras» (Linear and Multilinear Algebra 65 (2017), 6, 1142–1157, doi:10.1080/03081087.2016.1229257)"
+      }
+    }
+  ]
+}

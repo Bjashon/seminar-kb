@@ -194,3 +194,13 @@ h3.title { font-size: 19px; }
 @media (max-width: 900px) {
   .source-panel { width: 100%; position: fixed; inset: 53px 0 0 0; z-index: 20; }
 }
+
+/* Project page: its own trainer/board buttons and the downloadable files. */
+.project-actions { margin-top: 10px; }
+.project-files { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
+.project-files h3 { margin: 0 0 8px; font-size: 15px; }
+.project-files ul { list-style: none; margin: 0; padding: 0; }
+.project-files li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 14px; }
+.project-files a { color: var(--accent); text-decoration: none; }
+.project-files a:hover { text-decoration: underline; }
+.project-file-size { color: var(--ink-soft); font-size: 12.5px; font-variant-numeric: tabular-nums; }

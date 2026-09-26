@@ -33,7 +33,7 @@ interface Rect { x: number; y: number; w: number; h: number }
 // No scrolling/panning (deliberately -- a huge canvas was hard to find your
 // way around): the canvas is always exactly the viewport, and zoom is the
 // only way to fit more on it.
-const MIN_ZOOM = 0.25;
+const MIN_ZOOM = 0.15;
 const MAX_ZOOM = 2;
 const ZOOM_STEP = 1.2;
 const FIT_MARGIN = 40;
@@ -41,7 +41,7 @@ const FIT_MARGIN = 40;
 const LAYOUT_ORIGIN = 40;
 const LAYOUT_GAP_X = 40;
 const LAYOUT_GAP_Y = 40;
-const MAX_COLUMNS = 8;
+const MAX_COLUMNS = 12;
 
 interface Size { w: number; h: number }
 

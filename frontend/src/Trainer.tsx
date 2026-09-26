@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { EntityDetail, EntitySummary, ReviewCardOut, TalkSummary } from "./types";
 import { KIND_LABEL_RU } from "./types";
 import { api } from "./api";
 import { clozeStatement, clozeTerm, mdBody } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
-import { formatDate, todayIso } from "./dates";
+import { partLabel, todayIso } from "./dates";
 
 interface Props {
   allEntities: EntitySummary[];
@@ -12,6 +12,10 @@ interface Props {
   ensureDetail: (slug: string) => void;
   onOpenCard: (slug: string) => void;
   onOpenBoard: (talkId: number) => void;
+  /** Start the per-article drill for this talk right away (a project page's
+   *  "Тренажёр по теме" button). `seq` changes on every request so the same
+   *  talk can be asked for twice in a row. */
+  request: { talkId: number; seq: number } | null;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -25,8 +29,12 @@ function shuffle<T>(arr: T[]): T[] {
 
 type TrainerMode = "history" | "foundational" | "article";
 
-export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard }: Props) {
+export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, request }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
+  // A talk asked for from outside while the mode is still switching to
+  // "article" -- the mode effect below would otherwise clear the selection
+  // right after it was made.
+  const pendingTalk = useRef<number | null>(null);
   const [queue, setQueue] = useState<ReviewCardOut[] | null>(null);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -48,16 +56,33 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   }
   useEffect(() => {
     if (mode === "article") {
+      if (!talks) api.listTalks().then(setTalks);
+      if (pendingTalk.current !== null) {
+        const talkId = pendingTalk.current;
+        pendingTalk.current = null;
+        pickArticle(talkId);
+        return;
+      }
       // Picking an article is a separate step (see the picker below) --
       // nothing to drill yet until one is chosen.
       setQueue(null);
       setSelectedTalk(null);
-      if (!talks) api.listTalks().then(setTalks);
       return;
     }
     load(mode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
+
+  useEffect(() => {
+    if (!request) return;
+    if (mode === "article") {
+      pickArticle(request.talkId);
+    } else {
+      pendingTalk.current = request.talkId;
+      setMode("article");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [request]);
 
   function pickArticle(talkId: number) {
     setSelectedTalk(talkId);
@@ -130,7 +155,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
               <div className="article-main">
                 <div className="article-codes">
                   {t.parts.map((p, i) => {
-                    const label = p.date ? `${p.episode_code} · ${formatDate(p.date)}` : p.episode_code;
+                    const label = partLabel(p.episode_code, p.date);
                     return (
                       <span key={p.episode_code + i}>
                         {i > 0 && ", "}

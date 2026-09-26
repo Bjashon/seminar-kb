@@ -56,10 +56,19 @@ class ProjectSummaryOut(BaseModel):
     title: str
 
 
+class ProjectFileOut(BaseModel):
+    path: str  # relative to the project folder, e.g. "Gerstenhaber.pdf" or "checks/README.md"
+    size: int
+
+
 class ProjectOut(BaseModel):
     slug: str
     title: str
     body_md: str
+    files: list[ProjectFileOut]
+    # The pseudo-talk holding the project's own cards, if it has any
+    # (episode code proj_<slug>) -- gives the page its trainer and board.
+    talk_id: int | None
 
 
 class TalkPartOut(BaseModel):

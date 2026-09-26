@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Board, CanvasEdge, CanvasNode, EntityDetail, EntitySummary, Lang } from "./types";
 import { api } from "./api";
 import { Canvas, type FocusRequest } from "./Canvas";
-import { formatDate } from "./dates";
+import { partLabel } from "./dates";
 import { IndexPage } from "./IndexPage";
 import { Trainer } from "./Trainer";
 import { ProjectsPage } from "./ProjectsPage";
@@ -25,7 +25,7 @@ const SPAWN_ROWS = 3;
  *  no /entities/ row) -- just shaped like one so NodeCard can render it,
  *  which also makes every entity title mentioned in it a clickable link. */
 function briefDetail(slug: string, brief: NonNullable<Board["brief"]>): EntityDetail {
-  const parts = brief.parts.map((p) => (p.date ? `${p.episode_code} · ${formatDate(p.date)}` : p.episode_code)).join(", ");
+  const parts = brief.parts.map((p) => partLabel(p.episode_code, p.date)).join(", ");
   const withCitation = (text: string) => (brief.bibliography ? `${text}\n\n*${brief.bibliography}*` : text);
   return {
     slug,
@@ -53,6 +53,13 @@ export default function App() {
   const [sourceSlug, setSourceSlug] = useState<string | null>(null);
   const [pendingLayout, setPendingLayout] = useState<string[] | null>(null);
   const [focus, setFocus] = useState<FocusRequest | null>(null);
+  // A project page asking the trainer to drill its cards: switches to the
+  // trainer tab with that talk already picked (see Trainer's `request`).
+  const [trainerRequest, setTrainerRequest] = useState<{ talkId: number; seq: number } | null>(null);
+  const openTrainer = useCallback((talkId: number) => {
+    setTrainerRequest((prev) => ({ talkId, seq: (prev?.seq ?? 0) + 1 }));
+    setMode("trainer");
+  }, []);
 
   useEffect(() => {
     api.listEntities().then(setEntities);
@@ -223,11 +230,12 @@ export default function App() {
                 ensureDetail={ensureDetail}
                 onOpenCard={openFromTrainer}
                 onOpenBoard={openBoard}
+                request={trainerRequest}
               />
             </div>
           </div>
           <div className="main-pane" hidden={mode !== "projects"}>
-            <ProjectsPage allEntities={entities} onOpen={openFromIndex} />
+            <ProjectsPage allEntities={entities} onOpen={openFromIndex} onOpenBoard={openBoard} onOpenTrainer={openTrainer} />
           </div>
         </main>
         {sourceDetail && <SourcePanel detail={sourceDetail} onClose={closeSource} />}
