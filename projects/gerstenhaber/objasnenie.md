@@ -109,7 +109,8 @@ tectonic Gerstenhaber.tex
 
 ## 9. Файлы
 
-- `Gerstenhaber.tex`, `Gerstenhaber.pdf` — статья.
+- `Gerstenhaber.tex`, `Gerstenhaber.pdf` — статья (в TeX один комментарий-заметка Aristotle для авторов, см. п. 8.5).
+- `Gerstenhaber_clean.tex`, `Gerstenhaber_clean.pdf` — то же без заметок: версия для отправки. Правки вносить в основной файл и пересобирать чистый (`grep -v '^% NOTE'`).
 - `drafts/Gerstenhaber_original.tex` — исходный черновик (нетронутый).
 - `checks/` — скрипты проверок, логи, `README.md`.
 - `papers/` — использованные статьи (K17, CK10, Xu 1999) и извлечённый из них текст; папка **не** в git (репозиторий публичный).
