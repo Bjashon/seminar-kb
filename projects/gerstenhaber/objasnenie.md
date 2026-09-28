@@ -110,6 +110,7 @@ tectonic Gerstenhaber.tex
 ## 9. Файлы
 
 - `Gerstenhaber.tex`, `Gerstenhaber.pdf` — статья (в TeX один комментарий-заметка Aristotle для авторов, см. п. 8.5).
+- `Gerstenhaber_ru.tex`, `Gerstenhaber_ru.pdf` — перевод на русский (та же нумерация; собирается XeLaTeX/tectonic, шрифт CMU Serif из TeX Live). При правках английской версии перевод надо обновлять вручную.
 - `Gerstenhaber_clean.tex`, `Gerstenhaber_clean.pdf` — то же без заметок: версия для отправки. Правки вносить в основной файл и пересобирать чистый (`grep -v '^% NOTE'`).
 - `drafts/Gerstenhaber_original.tex` — исходный черновик (нетронутый).
 - `checks/` — скрипты проверок, логи, `README.md`.
