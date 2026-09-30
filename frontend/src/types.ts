@@ -52,6 +52,10 @@ export interface Project extends ProjectSummary {
   body_md: string;
   files: { path: string; size: number }[];
   talk_id: number | null;
+  /** projects/<slug>/lecture.html exists: the page offers the course. */
+  has_lecture: boolean;
+  /** The same course on claude.ai, with the Claude chat modes the site lacks. */
+  lecture_claude_url: string | null;
 }
 
 export interface Board {

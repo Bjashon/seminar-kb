@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -6,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models import Talk
 from app.db.session import get_db
-from app.schemas import ProjectFileOut, ProjectOut, ProjectSummaryOut
+from app.schemas import LectureOut, ProjectFileOut, ProjectOut, ProjectSummaryOut
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -76,7 +77,29 @@ def get_project(slug: str, db: Session = Depends(get_db)) -> ProjectOut:
     # out like a paper's) hang off a pseudo-talk with the code proj_<slug>,
     # see docs/adding-talks.md ("Проекты").
     talk = db.query(Talk).filter(Talk.episode_code == f"proj_{slug}").first()
-    return ProjectOut(slug=slug, title=title, body_md=body, files=_downloadable(d), talk_id=talk.id if talk else None)
+    has_lecture = (d / "lecture.html").is_file()
+    claude_url = _lecture_data(d).get("claude_url") if has_lecture else None
+    return ProjectOut(
+        slug=slug, title=title, body_md=body, files=_downloadable(d), talk_id=talk.id if talk else None,
+        has_lecture=has_lecture,
+        lecture_claude_url=claude_url if isinstance(claude_url, str) and claude_url.startswith("https://") else None,
+    )
+
+
+def _lecture_data(d: Path) -> dict:
+    data_path = d / "lecture.json"
+    return json.loads(data_path.read_text(encoding="utf-8")) if data_path.is_file() else {}
+
+
+@router.get("/{slug}/lecture", response_model=LectureOut)
+def get_lecture(slug: str) -> LectureOut:
+    """The project's course: lecture.html (text) and lecture.json (quizzes,
+    flashcards, glossary, calculator presets), both kept next to project.md."""
+    d = _project_dir(slug)
+    html_path = d / "lecture.html"
+    if not html_path.is_file():
+        raise HTTPException(status_code=404, detail="Lecture not found")
+    return LectureOut(html=html_path.read_text(encoding="utf-8"), data=_lecture_data(d))
 
 
 @router.get("/{slug}/files/{path:path}")

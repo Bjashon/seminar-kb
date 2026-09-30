@@ -69,6 +69,18 @@ class ProjectOut(BaseModel):
     # The pseudo-talk holding the project's own cards, if it has any
     # (episode code proj_<slug>) -- gives the page its trainer and board.
     talk_id: int | None
+    # projects/<slug>/lecture.html exists: the page offers the course.
+    has_lecture: bool = False
+    # The same course on claude.ai, with the Claude chat modes the site
+    # does not have ("claude_url" in lecture.json).
+    lecture_claude_url: str | None = None
+
+
+class LectureOut(BaseModel):
+    # The course text (HTML fragment with formulas) and its interactive data
+    # (quizzes, flashcards, glossary, calculator presets) from lecture.json.
+    html: str
+    data: dict
 
 
 class TalkPartOut(BaseModel):

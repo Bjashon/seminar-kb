@@ -23,6 +23,8 @@ export const api = {
   getBoard: (talkId: number) => fetch(`${API_BASE}/talks/${talkId}/board`).then((r) => json<Board>(r)),
   listProjects: () => fetch(`${API_BASE}/projects`).then((r) => json<ProjectSummary[]>(r)),
   getProject: (slug: string) => fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}`).then((r) => json<Project>(r)),
+  getLecture: (slug: string) =>
+    fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/lecture`).then((r) => json<{ html: string; data: unknown }>(r)),
   grade: (slug: string, grade: "again" | "good" | "easy") =>
     fetch(`${API_BASE}/review/${slug}/grade`, {
       method: "POST",
