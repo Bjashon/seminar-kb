@@ -1,0 +1,5 @@
+   0 samples, 1 distinct multisets, separators 0
+   20000 samples, 18086 distinct multisets, separators 0
+   60000 samples, 49832 distinct multisets, separators 0
+   80000 samples, 64685 distinct multisets, separators 0
+   100000 samples, 79144 distinct multisets, separators 0

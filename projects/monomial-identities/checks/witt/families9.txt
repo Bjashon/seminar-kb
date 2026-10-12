@@ -1,0 +1,26 @@
+n=4: 2 shapes
+   witt        : separates all with 1 algebras; detects 1 of 1 true non-implications
+   torus       : separates all with 1 algebras; detects 1 of 1 true non-implications
+   hamiltonian : separates all with 1 algebras; detects 1 of 1 true non-implications
+n=5: 3 shapes
+   witt        : separates all with 1 algebras; detects 3 of 3 true non-implications
+   torus       : separates all with 1 algebras; detects 3 of 3 true non-implications
+   hamiltonian : separates all with 1 algebras; detects 3 of 3 true non-implications
+n=6: 6 shapes
+   witt        : separates all with 3 algebras; detects 20 of 21 true non-implications; missed: [[x,x],[[x,x],[x,x]]] not in [[x,[x,x]],[x,[x,x]]]
+   torus       : separates all with 1 algebras; detects 21 of 21 true non-implications
+   hamiltonian : separates all with 2 algebras; detects 21 of 21 true non-implications
+n=7: 11 shapes
+   witt        : separates all with 3 algebras; detects 73 of 82 true non-implications
+   torus       : separates all with 3 algebras; detects 75 of 82 true non-implications
+   hamiltonian : separates all with 4 algebras; detects 80 of 82 true non-implications; missed: [[x,[x,x]],[[x,x],[x,x]]] not in [x,[[x,x],[x,[x,[x,x]]]]]; [[x,x],[x,[[x,x],[x,x]]]] not in [x,[[x,x],[x,[x,[x,x]]]]]
+n=8: 23 shapes
+   witt        : separates all with 3 algebras; detects 360 of 416 true non-implications
+   torus       : separates all with 4 algebras; detects 368 of 416 true non-implications
+   hamiltonian : separates all with 7 algebras; detects 397 of 416 true non-implications
+n=9: 46 shapes
+   witt        : does NOT separate with 3 algebras
+      not separated: [x,[[x,[x,x]],[x,[x,[x,[x,x]]]]]]   [x,[x,[[x,[x,x]],[x,[x,[x,x]]]]]]
+   torus       : does NOT separate with 6 algebras
+      not separated: [[x,x],[x,[[x,x],[x,[x,[x,x]]]]]]   [[x,x],[x,[x,[[x,x],[x,[x,x]]]]]]
+   hamiltonian : separates all with 8 algebras

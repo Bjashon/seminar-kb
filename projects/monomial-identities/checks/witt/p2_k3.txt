@@ -1,0 +1,3 @@
+[x,[[x,x],[[x,x],[[x,x],[x,[x,[x,x]]]]]]]: 11606 multisets;  [x,[[x,x],[[x,x],[x,[[x,x],[x,[x,x]]]]]]]: 11606 multisets
+in Inv([x,[[x,x],[[x,x],[[x,x],[x,[x,[x,x]]]]]]]) only: 0
+in Inv([x,[[x,x],[[x,x],[x,[[x,x],[x,[x,x]]]]]]]) only: 0

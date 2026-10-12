@@ -2,16 +2,19 @@
 proof of problem 2.6 for a given number of letters (characteristic 0), without
 linear algebra.
 
-Thin algebras. Colours 0..r-1.
-  torus type:        basis e_u (u in Z^r), [e_u, e_v] = w(u, v) e_(u+v),
-                     w an antisymmetric integer matrix (bilinear form);
-  hamiltonian type:  every colour a has a vector p_a in Z^2, u in Z^r goes to
-                     P(u) = sum u_a p_a, and [e_u, e_v] = det(P(u)+h, P(v)+h) e_(u+v)
-                     (monomials x^i y^j under the Poisson bracket; h = (1, 1)).
-Both satisfy the Jacobi identity. Colour the leaves of a shape; every subtree
-gets a colour-count vector; a node with children of counts s, t is degenerate
-when the structure constant c(s, t) is zero. The value of the monomial on the
-basis elements is (product of c over the nodes) * e_(content).
+Thin algebras. Colours 0..r-1, a basis e_u indexed by u in Z^r (the colour
+content), and [e_u, e_v] = c(u, v) e_(u+v) with
+  witt:         c(u, v) = lam(v) - lam(u), lam: Z^r -> Z linear
+                (the Witt algebra Der K[t, 1/t]: e_i = t^(i+1) d/dt, [e_i, e_j] = (j - i) e_(i+j);
+                 colour a is the element e_(lam_a));
+  torus:        c(u, v) = w(u, v), w an antisymmetric integer bilinear form
+                (Poisson bracket of trigonometric polynomials on a torus);
+  hamiltonian:  colour a is the Laurent monomial x^(p_a[0]+1) y^(p_a[1]+1), P(u) = sum u_a p_a,
+                c(u, v) = det(P(u) + (1,1), P(v) + (1,1))  (Poisson bracket of Laurent monomials).
+All three satisfy the Jacobi identity. Colour the leaves of a shape; every
+subtree gets a colour-count vector; a node with children of counts s, t is
+degenerate when c(s, t) = 0. The value of the monomial on the coloured basis
+elements is (product of c over the nodes) * e_(content).
 
 INV_c(shape) = the set of contents m such that some colouring with content m
 has no degenerate node. If M_s is inside M_t, then INV_c(s) is inside INV_c(t):
@@ -23,8 +26,10 @@ different INV_c for some c have different modules M -- different identities.
 distinguish all shapes with n leaves; the list is a certificate that anyone
 can re-check (`verify`). Certificates are stored in thin_certificates.json.
 
-Usage: python thin_search.py find N [SAMPLES] [SEED]    search and store a certificate
-       python thin_search.py verify                     re-check all stored certificates
+Usage: python thin_search.py find N [SAMPLES] [SEED]      search and store a certificate
+       python thin_search.py verify                       re-check all stored certificates
+       python thin_search.py families NMAX [SAMPLES]      which single family suffices, and
+                                                          how many true non-implications each detects
 """
 import json
 import random
@@ -37,6 +42,7 @@ from thin_invariants import shapes, show
 
 HERE = Path(__file__).resolve().parent
 CERT = HERE / "thin_certificates.json"
+FAMILIES = ("witt", "torus", "hamiltonian")
 
 
 def structure(spec):
@@ -47,6 +53,13 @@ def structure(spec):
 
         def c(s, t):
             return sum(w[a][b] * s[a] * t[b] for a in range(r) for b in range(r) if w[a][b])
+        return r, c
+    if spec["type"] == "witt":
+        lam = spec["lam"]
+        r = len(lam)
+
+        def c(s, t):
+            return sum(lam[a] * (t[a] - s[a]) for a in range(r))
         return r, c
     p = spec["p"]
     r = len(p)
@@ -80,15 +93,18 @@ def invariants(n, spec):
     return {s: ach(s) for s in shapes(n)}
 
 
-def random_spec(rng):
+def random_spec(rng, family="all"):
+    kind = rng.choice(FAMILIES) if family == "all" else family
     r = rng.choice([2, 3, 3, 4, 4, 5])
-    if rng.random() < 0.75:
+    if kind == "torus":
         w = [[0] * r for _ in range(r)]
         for a in range(r):
             for b in range(a + 1, r):
                 w[a][b] = rng.choice([-2, -1, -1, 0, 0, 1, 1, 2])
                 w[b][a] = -w[a][b]
         return {"type": "torus", "w": w}
+    if kind == "witt":
+        return {"type": "witt", "lam": [rng.randint(-3, 3) for _ in range(r)]}
     return {"type": "hamiltonian", "p": [[rng.randint(-2, 2), rng.randint(-2, 2)] for _ in range(r)]}
 
 
@@ -106,7 +122,7 @@ def classes_of(n, specs):
     return list(groups.values())
 
 
-def separate(n, samples=20000, seed=1, initial=()):
+def separate(n, samples=20000, seed=1, initial=(), family="all", quiet=False):
     """Thin algebras whose invariants together separate all shapes with n leaves.
     `initial` (the previous level's certificate) is tried first, then random ones."""
     rng = random.Random(seed)
@@ -132,18 +148,18 @@ def separate(n, samples=20000, seed=1, initial=()):
         return True
 
     for spec in initial:
-        if nclasses < len(ss) and refine(spec):
+        if nclasses < len(ss) and refine(spec) and not quiet:
             print(f"   n={n}: {nclasses} classes of {len(ss)} from the previous certificate ({time.time() - t0:.0f}s)", flush=True)
     for it in range(samples):
         if nclasses == len(ss):
             break
-        if refine(random_spec(rng)):
+        if refine(random_spec(rng, family)) and not quiet:
             print(f"   n={n}: {nclasses} classes of {len(ss)} after {it + 1} tries ({time.time() - t0:.0f}s)", flush=True)
     return used, nclasses == len(ss)
 
 
-def detected_noninclusions(n, specs):
-    """With atlas.json: how many true non-inclusions do the invariants detect? Also re-checks monotonicity."""
+def true_order(n):
+    """(shapes, set of (i, j) with M_i inside M_j) from atlas.json, or None."""
     atlas_path = HERE / "atlas.json"
     if not atlas_path.is_file():
         return None
@@ -153,7 +169,15 @@ def detected_noninclusions(n, specs):
     ss = list(shapes(n))
     level = atlas[str(n)]["shapes"]
     assert [show(s) for s in ss] == [e["s"] for e in level]
-    true_in = {(i, j) for i, e in enumerate(level) for j in e["in"]}
+    return ss, {(i, j) for i, e in enumerate(level) for j in e["in"]}
+
+
+def detected_noninclusions(n, specs):
+    """With atlas.json: which true non-inclusions do the invariants detect? Also re-checks monotonicity."""
+    order = true_order(n)
+    if order is None:
+        return None
+    ss, true_in = order
     seen = set()
     for spec in specs:
         inv = invariants(n, spec)
@@ -164,7 +188,8 @@ def detected_noninclusions(n, specs):
             for j in range(len(ss)):
                 if i != j and (i, j) not in true_in and not sets[i] <= sets[j]:
                     seen.add((i, j))
-    return len(seen), len(ss) * (len(ss) - 1) - len(true_in)
+    total = len(ss) * (len(ss) - 1) - len(true_in)
+    return seen, total, ss, true_in
 
 
 def verify():
@@ -177,7 +202,7 @@ def verify():
         extra = detected_noninclusions(n, certs[n_str])
         print(f"n={n}: {len(shapes(n))} shapes, {len(certs[n_str])} thin algebras -> {len(groups)} classes: "
               + ("ALL SHAPES HAVE DIFFERENT IDENTITIES" if ok else "NOT SEPARATED")
-              + (f"; detects {extra[0]} of {extra[1]} true non-implications, no violation of monotonicity" if extra else "")
+              + (f"; detects {len(extra[0])} of {extra[1]} true non-implications, no violation of monotonicity" if extra else "")
               + f"  ({time.time() - t0:.0f}s)", flush=True)
         assert ok
 
@@ -195,8 +220,36 @@ def find(n, samples, seed):
                 print("   not separated:", "   ".join(show(s) for s in g))
 
 
+def families(nmax, samples=3000):
+    for n in range(4, nmax + 1):
+        print(f"n={n}: {len(shapes(n))} shapes")
+        for fam in FAMILIES:
+            used, ok = separate(n, samples, 1, family=fam, quiet=True)
+            line = f"   {fam:12s}: {'separates all' if ok else 'does NOT separate'} with {len(used)} algebras"
+            order = true_order(n)
+            if order is not None:
+                rng = random.Random(2)
+                seen = set()
+                for _ in range(samples):
+                    d = detected_noninclusions(n, [random_spec(rng, fam)])
+                    seen |= d[0]
+                ss, true_in = order
+                total = d[1]
+                missed = sorted({(i, j) for i in range(len(ss)) for j in range(len(ss)) if i != j and (i, j) not in true_in} - seen)
+                line += f"; detects {len(seen)} of {total} true non-implications"
+                if missed and len(missed) <= 6:
+                    line += "; missed: " + "; ".join(f"{show(ss[i])} not in {show(ss[j])}" for i, j in missed)
+            print(line, flush=True)
+            if not ok:
+                for g in classes_of(n, used):
+                    if len(g) > 1:
+                        print("      not separated:", "   ".join(show(s) for s in g))
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "verify":
         verify()
+    elif sys.argv[1] == "families":
+        families(int(sys.argv[2]), int(sys.argv[3]) if len(sys.argv) > 3 else 3000)
     else:
         find(int(sys.argv[2]), int(sys.argv[3]) if len(sys.argv) > 3 else 20000, int(sys.argv[4]) if len(sys.argv) > 4 else 1)

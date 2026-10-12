@@ -13,3 +13,9 @@ build/
 
 # third-party papers and extracted texts used for the Gerstenhaber project (public repo -- keep local)
 projects/gerstenhaber/papers/
+
+# the same for the monomial-identities project (problem 2.6): papers and books stay local,
+# and so do raw agent reports and half-finished route scripts
+projects/monomial-identities/papers/
+projects/monomial-identities/scratch/
+data/sources/2.3 Problem/

@@ -1,0 +1,11 @@
+Witt with weights [-4, -3, -2, -1, 0, 1, 2, 3, 4]
+n=4: 2 shapes -> 2 classes  ALL SEPARATED; detects 1 of 1 true non-implications  (0s)
+n=5: 3 shapes -> 3 classes  ALL SEPARATED; detects 3 of 3 true non-implications  (0s)
+n=6: 6 shapes -> 6 classes  ALL SEPARATED; detects 20 of 21 true non-implications
+   missed: [[x,x],[[x,x],[x,x]]] !< [[x,[x,x]],[x,[x,x]]]  (0s)
+n=7: 11 shapes -> 11 classes  ALL SEPARATED; detects 74 of 82 true non-implications
+   missed: [[x,[x,x]],[[x,x],[x,x]]] !< [x,[[x,[x,x]],[x,[x,x]]]]; [[x,[x,x]],[[x,x],[x,x]]] !< [x,[[x,x],[x,[x,[x,x]]]]]; [[x,x],[[x,x],[x,[x,x]]]] !< [[x,[x,x]],[x,[x,[x,x]]]]; [[x,x],[x,[[x,x],[x,x]]]] !< [[x,[x,x]],[x,[x,[x,x]]]]; [[x,x],[x,[[x,x],[x,x]]]] !< [x,[[x,[x,x]],[x,[x,x]]]]; [[x,x],[x,[[x,x],[x,x]]]] !< [x,[[x,x],[x,[x,[x,x]]]]]; [x,[[x,x],[[x,x],[x,x]]]] !< [[x,[x,x]],[x,[x,[x,x]]]]; [x,[[x,x],[[x,x],[x,x]]]] !< [x,[[x,[x,x]],[x,[x,x]]]]  (1s)
+n=8: 23 shapes -> 23 classes  ALL SEPARATED; detects 364 of 416 true non-implications  (10s)
+n=9: 46 shapes -> 46 classes  ALL SEPARATED  (50s)
+n=10: 98 shapes -> 97 classes  (287s)
+   not separated: [x,[x,[[x,[x,x]],[x,[x,[x,[x,x]]]]]]]   [x,[x,[x,[[x,[x,x]],[x,[x,[x,x]]]]]]]

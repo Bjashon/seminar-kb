@@ -1,0 +1,12 @@
+pattern huge5: 924 multisets tested, separators so far 0
+pattern huge3+00: 924 multisets tested, separators so far 0
+pattern huge2+000: 924 multisets tested, separators so far 0
+pattern huge4+0: 924 multisets tested, separators so far 0
+pattern huge2+111: 924 multisets tested, separators so far 0
+pattern huge1+0000: 924 multisets tested, separators so far 0
+pattern huge+-: 924 multisets tested, separators so far 0
+pattern 00011: 924 multisets tested, separators so far 0
+pattern 0001-1: 924 multisets tested, separators so far 0
+pattern 11111: 924 multisets tested, separators so far 0
+pattern huge2+1-10: 924 multisets tested, separators so far 0
+pattern huge3+1-1: 924 multisets tested, separators so far 0
