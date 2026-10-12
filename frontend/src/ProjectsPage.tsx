@@ -71,14 +71,9 @@ export function ProjectsPage({ allEntities, onOpen, onOpenBoard, onOpenTrainer }
   if (projects === null) return null;
   if (projects.length === 0) return <div className="main-inner"><p className="index-empty">Проектов пока нет.</p></div>;
 
-  // The paper itself first (tex + pdf at the top level), then everything
-  // else grouped by folder, so the two files people actually want don't
-  // drown among check scripts and logs.
-  const files = current ? current.files.slice().sort((a, b) => {
-    const da = a.path.includes("/") ? 1 : 0;
-    const db = b.path.includes("/") ? 1 : 0;
-    return da - db || a.path.localeCompare(b.path);
-  }) : [];
+  // The files come in blocks, each with a title and a word on what every
+  // file is for (the project's files.json, see _file_groups on the server).
+  const fileGroups = current ? current.file_groups : [];
 
   return (
     <div ref={wrapRef}>
@@ -103,9 +98,9 @@ export function ProjectsPage({ allEntities, onOpen, onOpenBoard, onOpenTrainer }
                     href={current.lecture_claude_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Та же лекция на claude.ai, и в ней ещё вопросы лектору и репетиция доклада с Claude. Открывается у тех, с кем ею поделились на claude.ai."
+                    title="То же на claude.ai, и там ещё можно задавать вопросы лектору — отвечает Claude. Открывается у тех, с кем этим поделились на claude.ai."
                   >
-                    Лекция на claude.ai ↗
+                    {current.lecture_label ? "Курс" : "Лекция"} на claude.ai ↗
                   </a>
                 )}
                 {current.talk_id !== null && <button onClick={() => onOpenTrainer(current.talk_id!)}>Тренажёр по теме</button>}
@@ -113,17 +108,24 @@ export function ProjectsPage({ allEntities, onOpen, onOpenBoard, onOpenTrainer }
               </div>
             )}
             <div className="project-body body-text" ref={body.ref} onClick={onBodyClick} style={{ opacity: body.ready ? 1 : 0 }} />
-            {files.length > 0 && (
+            {fileGroups.length > 0 && (
               <section className="project-files">
                 <h3>Файлы</h3>
-                <ul>
-                  {files.map((f) => (
-                    <li key={f.path}>
-                      <a href={api.projectFileUrl(current.slug, f.path)} download>{f.path}</a>
-                      <span className="project-file-size">{formatSize(f.size)}</span>
-                    </li>
-                  ))}
-                </ul>
+                {fileGroups.map((g) => (
+                  <div className="project-file-group" key={g.title}>
+                    <h4>{g.title}</h4>
+                    {g.note && <p className="project-file-group-note">{g.note}</p>}
+                    <ul>
+                      {g.files.map((f) => (
+                        <li key={f.path}>
+                          <a href={api.projectFileUrl(current.slug, f.path)} download title={f.path}>{f.path.split("/").pop()}</a>
+                          <span className="project-file-note">{f.note}</span>
+                          <span className="project-file-size">{formatSize(f.size)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </section>
             )}
           </article>

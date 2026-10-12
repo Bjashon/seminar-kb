@@ -220,8 +220,17 @@ h3.title { font-size: 19px; }
 .project-actions { margin-top: 10px; }
 .project-files { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
 .project-files h3 { margin: 0 0 8px; font-size: 15px; }
-.project-files ul { list-style: none; margin: 0; padding: 0; }
-.project-files li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 14px; }
+.project-file-group { margin-top: 20px; }
+.project-file-group h4 { margin: 0 0 3px; font-size: 13.5px; font-weight: 600; }
+.project-file-group-note { margin: 0 0 6px; font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
+.project-files ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+.project-files li { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr) auto; gap: 2px 16px; align-items: baseline; padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+.project-files li a { overflow-wrap: anywhere; }
+.project-file-note { color: var(--ink-soft); font-size: 13.5px; line-height: 1.4; }
+@media (max-width: 640px) {
+  .project-files li { grid-template-columns: minmax(0, 1fr) auto; }
+  .project-file-note { grid-column: 1 / -1; grid-row: 2; }
+}
 .project-files a { color: var(--accent); text-decoration: none; }
 .project-files a:hover { text-decoration: underline; }
 .project-file-size { color: var(--ink-soft); font-size: 12.5px; font-variant-numeric: tabular-nums; }

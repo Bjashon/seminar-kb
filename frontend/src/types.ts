@@ -59,9 +59,19 @@ export interface ProjectSummary {
   title: string;
 }
 
+export interface ProjectFile {
+  /** Relative to the project folder. */
+  path: string;
+  size: number;
+  /** What the file is for. */
+  note: string | null;
+}
+
 export interface Project extends ProjectSummary {
   body_md: string;
-  files: { path: string; size: number }[];
+  files: ProjectFile[];
+  /** The same files in blocks, as the page shows them (the project's files.json). */
+  file_groups: { title: string; note: string | null; files: ProjectFile[] }[];
   talk_id: number | null;
   /** projects/<slug>/lecture.html exists: the page offers the course. */
   has_lecture: boolean;

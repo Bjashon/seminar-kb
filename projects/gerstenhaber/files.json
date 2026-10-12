@@ -1,0 +1,40 @@
+{
+  "groups": [
+    {
+      "title": "Статья",
+      "files": [
+        {"path": "Gerstenhaber_clean.pdf", "note": "Версия для отправки, без заметок"},
+        {"path": "Gerstenhaber_clean.tex", "note": "Её исходник (LaTeX)"},
+        {"path": "Gerstenhaber.pdf", "note": "Рабочая версия: та же статья с одной заметкой для авторов"},
+        {"path": "Gerstenhaber.tex", "note": "Её исходник"},
+        {"path": "Gerstenhaber_ru.pdf", "note": "Перевод на русский, нумерация та же"},
+        {"path": "Gerstenhaber_ru.tex", "note": "Исходник перевода"}
+      ]
+    },
+    {
+      "title": "Объяснение",
+      "files": [
+        {"path": "objasnenie.md", "note": "Подробно по-русски: что доказано, что изменено в черновике, что проверено"}
+      ]
+    },
+    {
+      "title": "Численные проверки",
+      "note": "Скрипты, которыми утверждения статьи проверялись до того, как были доказаны на бумаге.",
+      "files": [
+        {"path": "checks/README.md", "note": "Что проверяет каждый скрипт и как его запускать"},
+        {"path": "checks/gerst_check.py", "note": "Базис свободной алгебры: счёт размерностей напрямую"},
+        {"path": "checks/basis_counts.txt", "note": "Результат этого счёта"},
+        {"path": "checks/jacobiator_check.py", "note": "Лемма о якобиаторе"},
+        {"path": "checks/jacobiator_all_parities.txt", "note": "Результат: все расстановки чётностей"},
+        {"path": "checks/formal_identities_check.py", "note": "Леммы 6, 7, 8 как формальные тождества"}
+      ]
+    },
+    {
+      "title": "Черновики",
+      "files": [
+        {"path": "drafts/Gerstenhaber_original.tex", "note": "Исходный черновик, нетронутый"},
+        {"path": "drafts/Gerstenhaber_v1_2026-09-25.tex", "note": "Первая переработанная версия, 25/09/2026"}
+      ]
+    }
+  ]
+}

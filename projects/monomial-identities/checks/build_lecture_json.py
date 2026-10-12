@@ -149,6 +149,8 @@ GLOSS = [
 
 atlas = json.loads((proj / "checks" / "atlas.json").read_text(encoding="utf-8"))
 data = {
+    # The copy of the course on claude.ai (built by build_artifact.py), where one can ask the lecturer.
+    "claude_url": "https://claude.ai/artifact/BjoQF7a56mjjhBBrorSLyC",
     "label": "План-курс по задаче",
     "bar_label": "План-курс",
     "labs": "brackets",

@@ -79,7 +79,7 @@ export function LecturePage({ slug, projectTitle, allEntities, onOpenCard, onBac
               href={lecture.data.claude_url}
               target="_blank"
               rel="noopener noreferrer"
-              title="Та же лекция на claude.ai, и в ней ещё вопросы лектору и репетиция доклада с Claude"
+              title="То же на claude.ai, и там ещё можно задавать вопросы лектору — отвечает Claude"
             >
               С вопросами к Claude — на claude.ai ↗
             </a>

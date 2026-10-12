@@ -68,6 +68,15 @@ class ProjectSummaryOut(BaseModel):
 class ProjectFileOut(BaseModel):
     path: str  # relative to the project folder, e.g. "Gerstenhaber.pdf" or "checks/README.md"
     size: int
+    # What the file is for ("note" in the project's files.json).
+    note: str | None = None
+
+
+class ProjectFileGroupOut(BaseModel):
+    # A block of the project page's file list (see _file_groups in api/projects.py).
+    title: str
+    note: str | None = None
+    files: list[ProjectFileOut]
 
 
 class ProjectOut(BaseModel):
@@ -75,6 +84,8 @@ class ProjectOut(BaseModel):
     title: str
     body_md: str
     files: list[ProjectFileOut]
+    # The same files in blocks, as the page shows them.
+    file_groups: list[ProjectFileGroupOut] = []
     # The pseudo-talk holding the project's own cards, if it has any
     # (episode code proj_<slug>) -- gives the page its trainer and board.
     talk_id: int | None

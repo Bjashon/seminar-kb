@@ -1,4 +1,5 @@
 import json
+from fnmatch import fnmatchcase
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -7,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models import Talk
 from app.db.session import get_db
-from app.schemas import LectureOut, ProjectFileOut, ProjectOut, ProjectSummaryOut
+from app.schemas import LectureOut, ProjectFileGroupOut, ProjectFileOut, ProjectOut, ProjectSummaryOut
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -17,10 +18,13 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 PROJECTS_DIR = Path(__file__).resolve().parents[3] / "projects"
 
 # What the project page offers for download: the paper's sources and
-# outputs, notes, scripts. Anything else in the folder (logs, third-party
-# PDFs kept locally in papers/) stays private.
-DOWNLOADABLE_SUFFIXES = {".tex", ".pdf", ".md", ".txt", ".py", ".bib"}
-PRIVATE_DIRS = {"papers"}
+# outputs, notes, scripts and their data. Anything else in the folder (logs,
+# third-party PDFs kept locally in papers/, half-finished work in scratch/)
+# stays private.
+DOWNLOADABLE_SUFFIXES = {".tex", ".pdf", ".md", ".txt", ".py", ".bib", ".json"}
+PRIVATE_DIRS = {"papers", "scratch"}
+# The page itself, the course's data and the description of the file blocks.
+NOT_FOR_DOWNLOAD = {"project.md", "lecture.json", "files.json"}
 
 
 def _read(slug_dir: Path) -> tuple[str, str]:
@@ -51,9 +55,55 @@ def _downloadable(d: Path) -> list[ProjectFileOut]:
             continue
         if rel.parts[0] in PRIVATE_DIRS or any(part.startswith(".") for part in rel.parts):
             continue
-        if rel.as_posix() == "project.md":  # the page itself
+        if rel.as_posix() in NOT_FOR_DOWNLOAD:
             continue
         out.append(ProjectFileOut(path=rel.as_posix(), size=p.stat().st_size))
+    return out
+
+
+def _by_folder(files: list[ProjectFileOut]) -> list[ProjectFileGroupOut]:
+    """Without a files.json: the project's own files first, then one block per folder."""
+    groups: dict[str, list[ProjectFileOut]] = {}
+    for f in files:
+        folder = f.path.rsplit("/", 1)[0] if "/" in f.path else ""
+        groups.setdefault(folder, []).append(f)
+    return [
+        ProjectFileGroupOut(title=f"{folder}/" if folder else "Основные файлы", files=groups[folder])
+        for folder in sorted(groups)
+    ]
+
+
+def _file_groups(d: Path, files: list[ProjectFileOut]) -> list[ProjectFileGroupOut]:
+    """The downloadable files in blocks, each with a title and a word on what
+    every file is for. The blocks are described in projects/<slug>/files.json:
+
+        {"groups": [{"title": "...", "note": "...",
+                     "files": [{"path": "paper.pdf", "note": "..."}, {"path": "checks/*.txt"}]}]}
+
+    "path" is a file or a pattern with "*" (which also matches "/"); a file
+    goes into the first entry that matches it. A file the description does not mention is not lost: it
+    is shown in a last block "Остальное", which is also how a mistyped path
+    in files.json shows up."""
+    manifest = d / "files.json"
+    if not manifest.is_file():
+        return _by_folder(files)
+    try:
+        described = json.loads(manifest.read_text(encoding="utf-8"))["groups"]
+        entries = [(g["title"], g.get("note"), [(e["path"], e.get("note")) for e in g["files"]]) for g in described]
+    except (ValueError, KeyError, TypeError):
+        return _by_folder(files)
+
+    left = {f.path: f for f in files}
+    out = []
+    for title, note, patterns in entries:
+        chosen = []
+        for pattern, file_note in patterns:
+            for path in sorted(p for p in left if fnmatchcase(p, pattern)):
+                chosen.append(ProjectFileOut(path=path, size=left.pop(path).size, note=file_note))
+        if chosen:
+            out.append(ProjectFileGroupOut(title=title, note=note, files=chosen))
+    if left:
+        out.append(ProjectFileGroupOut(title="Остальное", files=[left[p] for p in sorted(left)]))
     return out
 
 
@@ -80,8 +130,10 @@ def get_project(slug: str, db: Session = Depends(get_db)) -> ProjectOut:
     has_lecture = (d / "lecture.html").is_file()
     lecture = _lecture_data(d) if has_lecture else {}
     claude_url, label = lecture.get("claude_url"), lecture.get("label")
+    files = _downloadable(d)
     return ProjectOut(
-        slug=slug, title=title, body_md=body, files=_downloadable(d), talk_id=talk.id if talk else None,
+        slug=slug, title=title, body_md=body, files=files, file_groups=_file_groups(d, files),
+        talk_id=talk.id if talk else None,
         has_lecture=has_lecture,
         lecture_claude_url=claude_url if isinstance(claude_url, str) and claude_url.startswith("https://") else None,
         lecture_label=label if isinstance(label, str) and label.strip() else None,
