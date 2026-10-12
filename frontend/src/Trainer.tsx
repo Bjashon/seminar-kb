@@ -5,6 +5,7 @@ import { api } from "./api";
 import { clozeStatement, clozeTerm, mdBody } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
 import { partLabel, todayIso } from "./dates";
+import { BookmarkButton, BookmarkIcon } from "./BookmarkButton";
 
 interface Props {
   allEntities: EntitySummary[];
@@ -12,6 +13,7 @@ interface Props {
   ensureDetail: (slug: string) => void;
   onOpenCard: (slug: string) => void;
   onOpenBoard: (talkId: number) => void;
+  onSetBookmark: (slug: string, on: boolean) => void;
   /** Start the per-article drill for this talk right away (a project page's
    *  "Тренажёр по теме" button). `seq` changes on every request so the same
    *  talk can be asked for twice in a row. */
@@ -27,9 +29,9 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-type TrainerMode = "history" | "foundational" | "article";
+type TrainerMode = "history" | "foundational" | "article" | "bookmarked";
 
-export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, request }: Props) {
+export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
   // A talk asked for from outside while the mode is still switching to
   // "article" -- the mode effect below would otherwise clear the selection
@@ -45,9 +47,9 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   function load(m: TrainerMode, talkId?: number) {
     api.dueCards(m, talkId).then((cards) => {
       // Only "history" is a grab-bag of whatever's due -- shuffling it is
-      // fine. "foundational" and "article" are a designed learning sequence
-      // (the backend topologically orders them by "uses" dependency), so
-      // scrambling them would defeat the point.
+      // fine. "foundational", "article" and "bookmarked" are a designed
+      // learning sequence (the backend topologically orders them by "uses"
+      // dependency), so scrambling them would defeat the point.
       setQueue(m === "history" ? shuffle(cards) : cards);
       setIndex(0);
       setRevealed(false);
@@ -131,7 +133,14 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
       <button aria-selected={mode === "history"} onClick={() => setMode("history")}>По истории</button>
       <button aria-selected={mode === "foundational"} onClick={() => setMode("foundational")}>Базовые понятия</button>
       <button aria-selected={mode === "article"} onClick={() => setMode("article")}>По статьям</button>
+      <button className="with-bookmark" aria-selected={mode === "bookmarked"} onClick={() => setMode("bookmarked")}>
+        <BookmarkIcon />
+        Мой набор
+      </button>
     </div>
+  );
+  const bookmark = current && detail && (
+    <BookmarkButton on={!!detail.bookmarked} onToggle={() => onSetBookmark(current.slug, !detail.bookmarked)} />
   );
 
   if (mode === "article" && selectedTalk === null) {
@@ -194,6 +203,8 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
               ? "Пока нечего повторять — открой несколько карточек во вкладке «Дашборд», и они появятся здесь."
               : mode === "foundational"
               ? "Базовые понятия ещё не размечены."
+              : mode === "bookmarked"
+              ? "В твоём наборе пока пусто — отметь карточку фиолетовой закладкой на дашборде или здесь, в тренажёре."
               : "В этой статье нет определений или свойств."}
           </p>
         </div>
@@ -226,6 +237,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
 
       {!isLevel2 && (
         <div className="flashcard">
+          {bookmark}
           <div className="kind-line" style={{ color: `var(--${current.kind})` }}>
             <span className="dot" style={{ background: `var(--${current.kind})` }} />
             {KIND_LABEL_RU[current.kind]}
@@ -253,6 +265,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
 
       {isLevel2 && (
         <div className="flashcard cloze">
+          {bookmark}
           <div className="kind-line">
             <span className="dot" style={{ background: `var(--${current.kind})` }} />
             {KIND_LABEL_RU[current.kind]}

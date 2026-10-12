@@ -15,7 +15,7 @@ export const api = {
   getEntity: (slug: string) => fetch(`${API_BASE}/entities/${slug}`).then((r) => json<EntityDetail>(r)),
   search: (q: string) =>
     fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`).then((r) => json<EntitySummary[]>(r)),
-  dueCards: (mode: "history" | "foundational" | "article" = "history", talkId?: number) =>
+  dueCards: (mode: "history" | "foundational" | "article" | "bookmarked" = "history", talkId?: number) =>
     fetch(`${API_BASE}/review/due?mode=${mode}${talkId != null ? `&talk_id=${talkId}` : ""}`).then((r) =>
       json<ReviewCardOut[]>(r)
     ),
@@ -36,6 +36,12 @@ export const api = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ days }),
+    }).then((r) => json<ReviewCardOut>(r)),
+  bookmark: (slug: string, bookmarked: boolean) =>
+    fetch(`${API_BASE}/review/${slug}/bookmark`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bookmarked }),
     }).then((r) => json<ReviewCardOut>(r)),
   sourceUrl: (episodeCode: string, document: string) => `${API_BASE}/sources/${episodeCode}/${document}`,
   projectFileUrl: (slug: string, path: string) =>

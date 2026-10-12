@@ -153,6 +153,14 @@ export default function App() {
   const toggleProof = useCallback((slug: string) => {
     setNodes((prev) => prev.map((n) => (n.slug === slug ? { ...n, proofOpen: !n.proofOpen } : n)));
   }, []);
+  // The violet bookmark: shown at once, and taken back if the server refuses,
+  // so a card never looks saved when it is not.
+  const setBookmark = useCallback((slug: string, on: boolean) => {
+    const apply = (value: boolean) =>
+      setDetails((prev) => (prev[slug] ? { ...prev, [slug]: { ...prev[slug], bookmarked: value } } : prev));
+    apply(on);
+    api.bookmark(slug, on).then((card) => apply(card.bookmarked)).catch(() => apply(!on));
+  }, []);
   const openSource = useCallback((d: EntityDetail) => setSourceSlug(d.slug), []);
   const closeSource = useCallback(() => setSourceSlug(null), []);
 
@@ -218,6 +226,7 @@ export default function App() {
               onClose={closeNode}
               onSetLang={setNodeLang}
               onToggleProof={toggleProof}
+              onSetBookmark={setBookmark}
               onGoto={gotoFromCard}
               onOpenSource={openSource}
             />
@@ -233,6 +242,7 @@ export default function App() {
                 ensureDetail={ensureDetail}
                 onOpenCard={openFromTrainer}
                 onOpenBoard={openBoard}
+                onSetBookmark={setBookmark}
                 request={trainerRequest}
               />
             </div>

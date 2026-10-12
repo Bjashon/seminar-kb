@@ -39,6 +39,9 @@ export interface EntityDetail {
   aliases: string[];
   /** Best first; the card underlines its defined term and opens these. */
   links: ExternalLink[];
+  /** In the owner's own study set (the violet bookmark). Absent on the
+   *  synthetic "brief" card, which is not an entity. */
+  bookmarked?: boolean;
   topic: string | null;
   source: {
     label: string | null;
@@ -95,6 +98,7 @@ export interface ReviewCardOut {
   kind: Kind;
   level: number;
   due_at: string;
+  bookmarked: boolean;
 }
 
 export type Lang = "ru" | "en";

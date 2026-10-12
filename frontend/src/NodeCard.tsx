@@ -3,6 +3,7 @@ import type { CanvasNode, EntityDetail, EntitySummary, Lang } from "./types";
 import { KIND_LABEL_RU } from "./types";
 import { mdBody } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
+import { BookmarkButton } from "./BookmarkButton";
 
 interface Props {
   node: CanvasNode;
@@ -22,13 +23,14 @@ interface Props {
   onClose: (slug: string) => void;
   onSetLang: (slug: string, lang: Lang) => void;
   onToggleProof: (slug: string) => void;
+  onSetBookmark: (slug: string, on: boolean) => void;
   onGoto: (fromSlug: string, toSlug: string) => void;
   onOpenSource: (detail: EntityDetail) => void;
 }
 
 export const NodeCard = memo(function NodeCard({
   node, detail, allEntities, zoom, boundsW, boundsH, isTop, enlarged, onToggleEnlarge, onRaise, onMove, onResize, onClose,
-  onSetLang, onToggleProof, onGoto, onOpenSource,
+  onSetLang, onToggleProof, onSetBookmark, onGoto, onOpenSource,
 }: Props) {
   const [dragging, setDragging] = useState(false);
   const dragState = useRef<{ startX: number; startY: number; origX: number; origY: number; moved: boolean } | null>(null);
@@ -186,6 +188,9 @@ export const NodeCard = memo(function NodeCard({
             >
               {enlarged ? "⤡" : "⤢"}
             </button>
+          )}
+          {detail.kind !== "brief" && (
+            <BookmarkButton on={!!detail.bookmarked} onToggle={() => onSetBookmark(node.slug, !detail.bookmarked)} />
           )}
           <div className="lang-switch">
             <button aria-selected={node.lang === "ru"} onClick={() => onSetLang(node.slug, "ru")}>RU</button>

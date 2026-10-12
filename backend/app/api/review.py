@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models import Entity, EntityKind, ReviewCard, Talk
 from app.db.session import get_db
-from app.schemas import GradeIn, ReviewCardOut, SnoozeIn
+from app.schemas import BookmarkIn, GradeIn, ReviewCardOut, SnoozeIn
 from app.services.ordering import topo_order
 from app.services.srs import apply_grade, cloze_term
 from app.services.talk_groups import paper_group
@@ -31,7 +31,7 @@ def _bypass_due_cards(db: Session, entities: list[Entity], now: datetime) -> lis
             continue
         out.append(
             ReviewCardOut(slug=entity.slug, title_ru=entity.title_ru, kind=entity.kind.value,
-                          level=card.level, due_at=card.due_at)
+                          level=card.level, due_at=card.due_at, bookmarked=card.bookmarked)
         )
     db.commit()
     return out
@@ -39,7 +39,7 @@ def _bypass_due_cards(db: Session, entities: list[Entity], now: datetime) -> lis
 
 @router.get("/due", response_model=list[ReviewCardOut])
 def due_cards(
-    mode: str = Query("history", pattern="^(history|foundational|article)$"),
+    mode: str = Query("history", pattern="^(history|foundational|article|bookmarked)$"),
     talk_id: int | None = Query(None),
     db: Session = Depends(get_db),
 ) -> list[ReviewCardOut]:
@@ -70,6 +70,18 @@ def due_cards(
         )
         return _bypass_due_cards(db, topo_order(db, entities), now)
 
+    if mode == "bookmarked":
+        # The owner's own set: whatever carries the bookmark, in the same
+        # designed order as the other fixed pools.
+        entities = (
+            db.query(Entity)
+            .join(ReviewCard, ReviewCard.entity_id == Entity.id)
+            .filter(ReviewCard.bookmarked.is_(True))
+            .order_by(Entity.topic_order, Entity.source_page.asc().nulls_first(), Entity.id)
+            .all()
+        )
+        return _bypass_due_cards(db, topo_order(db, entities), now)
+
     rows = (
         db.query(ReviewCard, Entity)
         .join(Entity, Entity.id == ReviewCard.entity_id)
@@ -79,9 +91,43 @@ def due_cards(
         .all()
     )
     return [
-        ReviewCardOut(slug=e.slug, title_ru=e.title_ru, kind=e.kind.value, level=c.level, due_at=c.due_at)
+        ReviewCardOut(slug=e.slug, title_ru=e.title_ru, kind=e.kind.value, level=c.level, due_at=c.due_at,
+                      bookmarked=c.bookmarked)
         for c, e in rows
     ]
+
+
+@router.get("/bookmarks", response_model=list[str])
+def bookmarks(db: Session = Depends(get_db)) -> list[str]:
+    """Slugs of the cards in the owner's own study set."""
+    rows = (
+        db.query(Entity.slug)
+        .join(ReviewCard, ReviewCard.entity_id == Entity.id)
+        .filter(ReviewCard.bookmarked.is_(True))
+        .order_by(Entity.topic_order, Entity.title_ru)
+        .all()
+    )
+    return [slug for (slug,) in rows]
+
+
+@router.post("/{slug}/bookmark", response_model=ReviewCardOut)
+def bookmark(slug: str, body: BookmarkIn, db: Session = Depends(get_db)) -> ReviewCardOut:
+    """Put a card into the owner's own study set, or take it out. Like
+    snooze, this is not a grade: the SRS fields stay untouched."""
+    entity = db.query(Entity).filter(Entity.slug == slug).one_or_none()
+    if entity is None:
+        raise HTTPException(status_code=404, detail="Entity not found")
+
+    card = db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).one_or_none()
+    if card is None:
+        card = ReviewCard(entity_id=entity.id)
+        db.add(card)
+
+    card.bookmarked = body.bookmarked
+    db.commit()
+
+    return ReviewCardOut(slug=entity.slug, title_ru=entity.title_ru, kind=entity.kind.value,
+                          level=card.level, due_at=card.due_at, bookmarked=card.bookmarked)
 
 
 @router.post("/{slug}/grade", response_model=ReviewCardOut)
@@ -102,7 +148,7 @@ def grade(slug: str, body: GradeIn, db: Session = Depends(get_db)) -> ReviewCard
     db.commit()
 
     return ReviewCardOut(slug=entity.slug, title_ru=entity.title_ru, kind=entity.kind.value,
-                          level=card.level, due_at=card.due_at)
+                          level=card.level, due_at=card.due_at, bookmarked=card.bookmarked)
 
 
 @router.post("/{slug}/snooze", response_model=ReviewCardOut)
@@ -123,4 +169,4 @@ def snooze(slug: str, body: SnoozeIn, db: Session = Depends(get_db)) -> ReviewCa
     db.commit()
 
     return ReviewCardOut(slug=entity.slug, title_ru=entity.title_ru, kind=entity.kind.value,
-                          level=card.level, due_at=card.due_at)
+                          level=card.level, due_at=card.due_at, bookmarked=card.bookmarked)

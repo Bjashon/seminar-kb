@@ -114,6 +114,9 @@ class ReviewCard(Base):
     # 1 = recognition (flip card), 2 = recall (cloze blank) -- promoted after a streak of good/easy grades.
     level: Mapped[int] = mapped_column(Integer, default=1)
     streak: Mapped[int] = mapped_column(Integer, default=0)
+    # Hand-picked into the owner's own study set (the violet bookmark on a
+    # card; "Мой набор" in the trainer). Independent of the SRS state.
+    bookmarked: Mapped[bool] = mapped_column(default=False)
     # "Postpone" is deliberately separate from grading (apply_grade/SM-2):
     # the user isn't saying they know or don't know the card, just that they
     # don't want it in the queue right now -- so it must not touch

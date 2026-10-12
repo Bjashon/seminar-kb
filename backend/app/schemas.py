@@ -47,6 +47,8 @@ class EntityDetailOut(BaseModel):
     aliases: list[str]
     # Outside pages about the card's own term (best first).
     links: list[ExternalLinkOut] = []
+    # In the owner's own study set ("Мой набор"): the violet bookmark.
+    bookmarked: bool = False
     topic: str | None
     source: SourceOut
     uses: list[LinkOut]
@@ -131,6 +133,12 @@ class ReviewCardOut(BaseModel):
     kind: str
     level: int
     due_at: datetime
+    # In the owner's own study set ("Мой набор").
+    bookmarked: bool = False
+
+
+class BookmarkIn(BaseModel):
+    bookmarked: bool
 
 
 class SnoozeIn(BaseModel):
