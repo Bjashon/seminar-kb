@@ -64,6 +64,8 @@ export interface Project extends ProjectSummary {
   has_lecture: boolean;
   /** The same course on claude.ai, with the Claude chat modes the site lacks. */
   lecture_claude_url: string | null;
+  /** What the course's button says, when not "Лекция по статье" ("label" in lecture.json). */
+  lecture_label: string | null;
 }
 
 export interface Board {

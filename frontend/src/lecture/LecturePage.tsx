@@ -44,6 +44,7 @@ export function LecturePage({ slug, projectTitle, allEntities, onOpenCard, onBac
       root: el,
       tocs: [tocRef.current, tocMobileRef.current].filter(Boolean) as HTMLElement[],
       data: lecture.data,
+      slug,
       onOpenCard: (s) => openCard.current(s),
     });
     mounted.current = m;
@@ -57,6 +58,7 @@ export function LecturePage({ slug, projectTitle, allEntities, onOpenCard, onBac
       m.destroy();
       mounted.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lecture]);
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export function LecturePage({ slug, projectTitle, allEntities, onOpenCard, onBac
       <div className="lecture-bar">
         <button className="article-back lecture-back" onClick={onBack}>&larr; К странице проекта</button>
         <span className="lecture-bar-right">
-          <span className="lecture-bar-title">Лекция · {projectTitle}</span>
+          <span className="lecture-bar-title">{lecture?.data.bar_label ?? "Лекция"} · {projectTitle}</span>
           {lecture?.data.claude_url?.startsWith("https://") && (
             <a
               className="lecture-bar-link"

@@ -97,7 +97,7 @@ export function ProjectsPage({ allEntities, onOpen, onOpenBoard, onOpenTrainer }
             <h2 className="title">{current.title}</h2>
             {(current.talk_id !== null || current.has_lecture) && (
               <div className="project-actions article-actions">
-                {current.has_lecture && <button onClick={() => switchView("lecture")}>Лекция по статье</button>}
+                {current.has_lecture && <button onClick={() => switchView("lecture")}>{current.lecture_label ?? "Лекция по статье"}</button>}
                 {current.lecture_claude_url && (
                   <a
                     href={current.lecture_claude_url}

@@ -81,6 +81,9 @@ class ProjectOut(BaseModel):
     # The same course on claude.ai, with the Claude chat modes the site
     # does not have ("claude_url" in lecture.json).
     lecture_claude_url: str | None = None
+    # What the course's button says when it is not a lecture on a paper
+    # ("label" in lecture.json).
+    lecture_label: str | None = None
 
 
 class LectureOut(BaseModel):

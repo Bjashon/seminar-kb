@@ -78,11 +78,13 @@ def get_project(slug: str, db: Session = Depends(get_db)) -> ProjectOut:
     # see docs/adding-talks.md ("Проекты").
     talk = db.query(Talk).filter(Talk.episode_code == f"proj_{slug}").first()
     has_lecture = (d / "lecture.html").is_file()
-    claude_url = _lecture_data(d).get("claude_url") if has_lecture else None
+    lecture = _lecture_data(d) if has_lecture else {}
+    claude_url, label = lecture.get("claude_url"), lecture.get("label")
     return ProjectOut(
         slug=slug, title=title, body_md=body, files=_downloadable(d), talk_id=talk.id if talk else None,
         has_lecture=has_lecture,
         lecture_claude_url=claude_url if isinstance(claude_url, str) and claude_url.startswith("https://") else None,
+        lecture_label=label if isinstance(label, str) and label.strip() else None,
     )
 
 
