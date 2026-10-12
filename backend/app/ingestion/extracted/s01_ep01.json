@@ -520,6 +520,7 @@
     {
       "kind": "definition",
       "slug": "field",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Field_(mathematics)"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/field"}],
       "title_en": "Field",
       "title_ru": "Поле",
       "statement_en": "A **field** is a set $F$ with two operations $+,\\cdot$ such that:\n1. $(F,+)$ is an abelian group; its identity is written $0$.\n2. $(F\\setminus\\{0\\},\\cdot)$ is an abelian group; its identity is written $1$.\n3. Multiplication distributes over addition: $a(b+c)=ab+ac$ $\\forall a,b,c\\in F$.\n\nStandard examples: $\\mathbb{Q}$, $\\mathbb{R}$, $\\mathbb{C}$ — algebras in this seminar are usually taken over $\\mathbb{C}$.",
@@ -539,6 +540,7 @@
     {
       "kind": "definition",
       "slug": "vector-space",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Vector_space"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/vector+space"}],
       "title_en": "Vector space",
       "title_ru": "Векторное пространство",
       "statement_en": "Let $F$ be a field. A **vector space** over $F$ is a set $V$ with an addition $V\\times V\\to V$ making $(V,+)$ an abelian group, together with a scalar multiplication $F\\times V\\to V$ such that $\\forall a,b\\in F$ and $u,v\\in V$:\n1. $a(u+v)=au+av$\n2. $(a+b)v=av+bv$\n3. $(ab)v=a(bv)$\n4. $1v=v$",
@@ -559,6 +561,7 @@
     {
       "kind": "definition",
       "slug": "bilinear-operation",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Bilinear_map"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/bilinear+map"}],
       "title_en": "Bilinear operation",
       "title_ru": "Билинейная операция",
       "statement_en": "Let $U,V,W$ be vector spaces over a field $F$. A map $\\beta:U\\times V\\to W$ is **bilinear** if it is linear in each argument separately:\n1. $\\beta(au_1+u_2,v)=a\\beta(u_1,v)+\\beta(u_2,v)$\n2. $\\beta(u,av_1+v_2)=a\\beta(u,v_1)+\\beta(u,v_2)$\n\n$\\forall a\\in F$. A *bilinear operation on $V$* is a bilinear map $V\\times V\\to V$ — exactly what an algebra's multiplication is.",
@@ -578,6 +581,7 @@
     {
       "kind": "definition",
       "slug": "algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Algebra_over_a_field"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/nonassociative+algebra"}],
       "title_en": "Algebra (over a field)",
       "title_ru": "Алгебра (над полем)",
       "statement_en": "An **algebra** over a field $F$ is a vector space $A$ over $F$ equipped with a bilinear operation $A\\times A\\to A$ (its *multiplication*), with no assumption of associativity or commutativity. This is the most general sense of 'algebra' used throughout the seminar — Lie algebras, Poisson algebras, transposed Poisson algebras etc. are all algebras in this sense, distinguished by extra axioms imposed on the multiplication.",
@@ -601,6 +605,7 @@
     {
       "kind": "definition",
       "slug": "associative-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Associative_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/associative+algebra"}],
       "title_en": "Associative algebra",
       "title_ru": "Ассоциативная алгебра",
       "statement_en": "An algebra $(A,\\cdot)$ is **associative** if\n$$(x\\cdot y)\\cdot z = x\\cdot(y\\cdot z)\\quad\\forall x,y,z\\in A.$$",
@@ -642,6 +647,7 @@
     {
       "kind": "definition",
       "slug": "commutative-associative-algebra",
+      "links": [{"source": "nlab", "url": "https://ncatlab.org/nlab/show/commutative+algebra"}],
       "title_en": "Commutative associative algebra",
       "title_ru": "Коммутативная ассоциативная алгебра",
       "statement_en": "An algebra $(A,\\cdot)$ is a **commutative associative algebra** if $\\forall x,y,z\\in A$:\n1. $(x\\cdot y)\\cdot z=x\\cdot(y\\cdot z)$ (associativity)\n2. $x\\cdot y=y\\cdot x$ (commutativity)",
@@ -662,6 +668,7 @@
     {
       "kind": "definition",
       "slug": "lie-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Lie_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Lie+algebra"}],
       "title_en": "Lie algebra",
       "title_ru": "Алгебра Ли",
       "statement_en": "A **Lie algebra** is an algebra $(L,[\\cdot,\\cdot])$ whose multiplication (the *Lie bracket*) satisfies:\n1. *Anticommutativity*: $[x,y]=-[y,x]$\n2. *Jacobi identity*: $[[x,y],z]+[[y,z],x]+[[z,x],y]=0$\n\n$\\forall x,y,z\\in L$.",
@@ -682,6 +689,7 @@
     {
       "kind": "definition",
       "slug": "n-lie-algebra",
+      "links": [{"source": "nlab", "url": "https://ncatlab.org/nlab/show/n-Lie+algebra"}],
       "title_en": "n-Lie algebra • Filippov algebra",
       "title_ru": "n-алгебра Ли • алгебра Филиппова",
       "statement_en": "Let $L$ be a vector space and $[\\cdot,\\dots,\\cdot]:L^n\\to L$ an alternating $n$-linear operation (it vanishes whenever two arguments coincide). $(L,[\\cdot,\\dots,\\cdot])$ is an **$n$-Lie algebra** (or *Filippov algebra*) if it satisfies the generalized Jacobi identity\n$$[[x_1,\\dots,x_n],y_2,\\dots,y_n]=\\sum_{i=1}^n[x_1,\\dots,[x_i,y_2,\\dots,y_n],\\dots,x_n]$$\n$\\forall x_1,\\dots,x_n,y_2,\\dots,y_n\\in L$. For $n=2$ this is exactly the Jacobi identity, so a $2$-Lie algebra is an ordinary Lie algebra.",
@@ -704,6 +712,7 @@
     {
       "kind": "definition",
       "slug": "witt-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Witt_algebra"}],
       "title_en": "Witt algebra",
       "title_ru": "Алгебра Витта",
       "statement_en": "The **Witt algebra** $W$ is the complex, infinite-dimensional Lie algebra with basis $\\{e_i\\}_{i\\in\\mathbb{Z}}$ and bracket\n$$[e_i,e_j]=(i-j)e_{i+j}.$$\n\nIt is realized as the Lie algebra of polynomial vector fields $e_i=-t^{i+1}\\tfrac{d}{dt}$ on $\\mathbb{C}[t,t^{-1}]$.\n\nIts unique non-trivial central extension is the Virasoro algebra.",
@@ -743,6 +752,7 @@
     {
       "kind": "definition",
       "slug": "group",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Group_(mathematics)"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/group"}],
       "title_en": "Group",
       "title_ru": "Группа",
       "statement_en": "A **group** is a set $G$ with a binary operation $G\\times G\\to G$, $(g,h)\\mapsto gh$, satisfying:\n1. $(gh)k=g(hk)\\ \\forall g,h,k\\in G$ (associativity)\n2. $\\exists\\,e\\in G:\\ eg=ge=g\\ \\forall g\\in G$ (identity)\n3. $\\forall g\\in G\\ \\exists\\,g^{-1}\\in G:\\ gg^{-1}=g^{-1}g=e$ (inverses)",
@@ -760,6 +770,7 @@
     {
       "kind": "definition",
       "slug": "abelian-group",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Abelian_group"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/abelian+group"}],
       "title_en": "Abelian group",
       "title_ru": "Абелева группа",
       "statement_en": "A group $(G,\\cdot)$ is **abelian** (or *commutative*) if, in addition, $gh=hg$ $\\forall g,h\\in G$.",
@@ -779,6 +790,7 @@
     {
       "kind": "definition",
       "slug": "infinite-dimensional-vector-space",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Dimension_(vector_space)"}],
       "title_en": "Infinite-dimensional vector space",
       "title_ru": "Бесконечномерное векторное пространство",
       "statement_en": "A vector space $V$ over a field $F$ is **infinite-dimensional** if it has no finite basis -- equivalently, for every $n$ there exist $n$ linearly independent vectors in $V$. Its dimension is then the cardinality of any basis, written $\\dim V=\\infty$.",
@@ -798,6 +810,7 @@
     {
       "kind": "definition",
       "slug": "virasoro-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Virasoro_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Virasoro+algebra"}],
       "title_en": "Virasoro algebra",
       "title_ru": "Алгебра Вирасоро",
       "statement_en": "The **Virasoro algebra** $\\mathrm{Vir}$ is the (unique, up to isomorphism) non-trivial one-dimensional central extension of the Witt algebra $W$.\n\nIt has basis $\\{L_i\\}_{i\\in\\mathbb{Z}}\\cup\\{c\\}$, with $c$ central ($[c,L_i]=0\\ \\forall i$) and\n$$[L_m,L_n]=(n-m)L_{m+n}+\\frac{c}{12}(m^3-m)\\,\\delta_{m+n,0}.$$\n\nSetting $c=0$ recovers the Witt algebra exactly. The Virasoro algebra is the symmetry algebra of 2-dimensional conformal field theory, where $c$ is the *central charge*.",
@@ -816,6 +829,7 @@
     {
       "kind": "definition",
       "slug": "commutator-of-an-associative-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Commutator"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/commutator"}],
       "title_en": "Commutator (of an associative algebra) • Lie bracket it induces",
       "title_ru": "Коммутатор (ассоциативной алгебры) • индуцированная скобка Ли",
       "statement_en": "Let $(A,\\cdot)$ be an associative algebra. Its **commutator** is\n$$[x,y]:=x\\cdot y-y\\cdot x,\\qquad x,y\\in A.$$\n\nThis bracket is automatically antisymmetric and satisfies the Jacobi identity (a short direct check), so $(A,[\\cdot,\\cdot])$ is always a Lie algebra.\n\nThis is the single most common source of Lie algebras: whenever a paper writes $[x,y]=xy-yx$ for elements of some associative algebra, it is defining a Lie algebra structure this way.",
@@ -838,6 +852,7 @@
     {
       "kind": "definition",
       "slug": "homomorphism-and-isomorphism-of-algebras",
+      "links": [{"source": "nlab", "url": "https://ncatlab.org/nlab/show/homomorphism"}],
       "title_en": "Homomorphism • isomorphism of algebras",
       "title_ru": "Гомоморфизм • изоморфизм алгебр",
       "statement_en": "Let $(A,\\cdot)$ and $(B,*)$ be algebras over the same field $F$. A linear map $\\varphi:A\\to B$ is a **homomorphism** if\n$$\\varphi(x\\cdot y)=\\varphi(x)*\\varphi(y)\\qquad\\forall x,y\\in A$$\n-- it respects both the vector-space structure (linearity) and the multiplication.\n\n$\\varphi$ is an **isomorphism** if it is additionally bijective; $A$ and $B$ are then called **isomorphic**, written $A\\cong B$, and are considered \"the same algebra\" for essentially all purposes.\n\nThe **kernel** $\\ker\\varphi:=\\{x\\in A:\\varphi(x)=0\\}$ is always a two-sided ideal, and $A/\\ker\\varphi\\cong\\mathrm{im}(\\varphi)$ (First Isomorphism Theorem).",
@@ -858,6 +873,7 @@
     {
       "kind": "definition",
       "slug": "basis-and-dimension-of-a-vector-space",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Basis_(linear_algebra)"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/basis+of+a+vector+space"}],
       "title_en": "Basis • dimension of a vector space",
       "title_ru": "Базис • размерность векторного пространства",
       "statement_en": "Let $V$ be a vector space over a field $F$. A subset $\\{e_1,\\dots,e_n\\}\\subset V$ is a **basis** if:\n1. it is linearly independent: $\\sum_i a_ie_i=0\\ (a_i\\in F)\\implies a_1=\\dots=a_n=0$;\n2. it spans $V$: every $v\\in V$ is a linear combination $v=\\sum_i a_ie_i$.\n\nEvery vector space has a basis, and any two bases of $V$ have the same cardinality -- called the **dimension** $\\dim V$. Given a basis, every element of $V$ has *unique* coordinates $(a_1,\\dots,a_n)$.",
@@ -897,6 +913,7 @@
     {
       "kind": "definition",
       "slug": "direct-sum-of-algebras",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Direct_sum"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/direct+sum"}],
       "title_en": "Direct sum of algebras",
       "title_ru": "Прямая сумма алгебр",
       "statement_en": "Given algebras $A_1,\\dots,A_k$ over the same field, their **direct sum**\n$$A_1\\oplus\\dots\\oplus A_k$$\nis the algebra whose underlying vector space is the direct sum of the $A_i$ as vector spaces (tuples $(a_1,\\dots,a_k)$, $a_i\\in A_i$), with componentwise multiplication:\n$$(a_1,\\dots,a_k)\\cdot(b_1,\\dots,b_k):=(a_1b_1,\\dots,a_kb_k).$$\n\nElements of different summands always annihilate each other under this product (e.g. $A_i\\cdot A_j=0$ for $i\\ne j$, viewing each $A_i$ as a subalgebra via $a\\mapsto(0,\\dots,a,\\dots,0)$), and $\\dim(A_1\\oplus\\dots\\oplus A_k)=\\sum_i\\dim A_i$.",
@@ -916,6 +933,7 @@
     {
       "kind": "definition",
       "slug": "center-of-an-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Center_(algebra)"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/center"}],
       "title_en": "Center of an algebra",
       "title_ru": "Центр алгебры",
       "statement_en": "Let $(A,\\cdot)$ be an algebra. Its **center** is\n$$Z(A):=\\{z\\in A:\\ z\\cdot a=a\\cdot z\\ \\ \\forall a\\in A\\}$$\n-- the elements that commute with everything.\n\n$Z(A)$ is always a commutative subalgebra of $A$; for a Lie algebra $(L,[\\cdot,\\cdot])$, the same definition reads $Z(L)=\\{z\\in L:[z,a]=0\\ \\forall a\\in L\\}$, and $Z(A)=A$ exactly when $A$ itself is commutative.",
@@ -935,6 +953,7 @@
     {
       "kind": "definition",
       "slug": "idempotent-element",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Idempotent_(ring_theory)"}],
       "title_en": "Idempotent element",
       "title_ru": "Идемпотент",
       "statement_en": "An element $e$ of an algebra $(A,\\cdot)$ is **idempotent** if\n$$e\\cdot e=e.$$\n\nTwo idempotents $e,f$ are **orthogonal** if $ef=fe=0$. The identity element $1_A$ of a unital algebra is always idempotent; more generally, the matrix units $E_{i,i}$ (diagonal entries) in $M_n(F)$ are pairwise orthogonal idempotents summing to $1$.",
@@ -954,6 +973,7 @@
     {
       "kind": "definition",
       "slug": "nilpotent-element",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Nilpotent"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/nilpotent+element"}],
       "title_en": "Nilpotent element • nilpotent algebra",
       "title_ru": "Нильпотентный элемент • нильпотентная алгебра",
       "statement_en": "An element $x$ of an algebra $A$ is **nilpotent** if\n$$x^n=0$$\nfor some integer $n\\ge1$ (where $x^n$ means $x\\cdot x\\cdots x$, $n$ times -- this requires associativity to be unambiguous).\n\n$A$ itself is a **nilpotent algebra** if there is a single $n$ with $a_1\\cdots a_n=0$ for *every* choice of $a_1,\\dots,a_n\\in A$ -- a stronger condition than every individual element merely being nilpotent.",
@@ -972,6 +992,7 @@
     {
       "kind": "definition",
       "slug": "tensor-product-of-vector-spaces",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Tensor_product"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/tensor+product+of+vector+spaces"}],
       "title_en": "Tensor product of vector spaces",
       "title_ru": "Тензорное произведение векторных пространств",
       "statement_en": "For vector spaces $U,V$ over a field $F$, the **tensor product** $U\\otimes V$ is the vector space spanned by symbols $u\\otimes v$ ($u\\in U,v\\in V$), subject only to bilinearity:\n$$(au_1+u_2)\\otimes v=a(u_1\\otimes v)+u_2\\otimes v,\\qquad u\\otimes(av_1+v_2)=a(u\\otimes v_1)+u\\otimes v_2.$$\n\nIf $\\{e_i\\}$, $\\{f_j\\}$ are bases of $U,V$, then $\\{e_i\\otimes f_j\\}$ is a basis of $U\\otimes V$, so $\\dim(U\\otimes V)=\\dim U\\cdot\\dim V$. Every bilinear map $\\beta:U\\times V\\to W$ factors uniquely through a *linear* map $U\\otimes V\\to W$ -- this is the universal property that makes tensor products the standard way to turn bilinear problems into linear ones.",

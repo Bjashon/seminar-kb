@@ -29,6 +29,7 @@
     {
       "kind": "definition",
       "slug": "pre-lie-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Pre-Lie_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/pre-Lie+algebra"}],
       "title_en": "Pre-Lie algebra",
       "title_ru": "Pre-Lie алгебра",
       "statement_en": "An algebra $(L,\\circ)$ is a **pre-Lie algebra** if\n$$(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)\\quad\\forall x,y,z\\in L$$\n(left-symmetry alone, without the right-commutativity required of a Novikov algebra). The commutator $[x,y]:=x\\circ y-y\\circ x$ of a pre-Lie algebra is always a Lie bracket; every Novikov algebra is in particular a pre-Lie algebra.",
@@ -126,6 +127,7 @@
     {
       "kind": "definition",
       "slug": "three-lie-algebra",
+      "links": [{"source": "nlab", "url": "https://ncatlab.org/nlab/show/n-Lie+algebra"}],
       "title_en": "3-Lie algebra",
       "title_ru": "3-алгебра Ли",
       "statement_en": "A **3-Lie algebra** is a vector space $A$ with a skew-symmetric linear map $[\\cdot,\\cdot,\\cdot]:\\otimes^3A\\to A$ satisfying the Fundamental Identity:\n$$[[x,y,z],u,v]=[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]\\quad\\forall x,y,z,u,v\\in A$$\n(equivalently: the adjoint action of any pair $u,v$ is a derivation of the ternary bracket). This is the $n=3$ case of an $n$-Lie algebra.",
@@ -621,6 +623,7 @@
     {
       "kind": "definition",
       "slug": "poisson-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Poisson_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Poisson+algebra"}],
       "title_en": "Poisson algebra",
       "title_ru": "Пуассонова алгебра",
       "statement_en": "Let $L$ be a vector space with two bilinear operations $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot])$ is a Lie algebra satisfying the Leibniz rule\n$$[x,y\\cdot z]=[x,y]\\cdot z+y\\cdot[x,z]\\quad\\forall x,y,z\\in L$$\n(so equivalently, the adjoint operators of the Lie algebra are derivations of the commutative associative algebra). The transposed Poisson algebra studied in this paper swaps the roles of $\\cdot$ and $[\\cdot,\\cdot]$ in this compatibility condition.",

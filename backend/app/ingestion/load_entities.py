@@ -109,6 +109,7 @@ def main() -> None:
                 entity.proof_ru = item.get("proof_ru")
                 entity.proof_en = item.get("proof_en")
                 entity.aliases = item.get("aliases", [])
+                entity.links = item.get("links", [])
                 entity.topic = item.get("topic")
                 entity.topic_order = item.get("topic_order", 0)
                 source = item.get("source") or {}

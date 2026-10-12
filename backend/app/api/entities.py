@@ -58,7 +58,7 @@ def get_entity(slug: str, db: Session = Depends(get_db)) -> EntityDetailOut:
         slug=entity.slug, kind=entity.kind.value, title_ru=entity.title_ru, title_en=entity.title_en,
         statement_ru=entity.statement_ru, statement_en=entity.statement_en,
         proof_ru=entity.proof_ru, proof_en=entity.proof_en,
-        aliases=entity.aliases or [], topic=entity.topic,
+        aliases=entity.aliases or [], links=entity.links or [], topic=entity.topic,
         source=SourceOut(
             label=entity.source_label, document=entity.source_document, page=entity.source_page,
             episode_code=entity.talk.episode_code if entity.talk else None,

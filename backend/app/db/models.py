@@ -63,6 +63,10 @@ class Entity(Base):
     proof_en: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_machine_translated: Mapped[bool] = mapped_column(default=False)
     aliases: Mapped[list] = mapped_column(JSON, default=list)
+    # Outside pages about the card's own term, best first:
+    # [{"source": "wikipedia" | "nlab" | "eom", "url": "https://..."}].
+    # The card underlines its defined term and opens these.
+    links: Mapped[list | None] = mapped_column(JSON, nullable=True, default=list)
     topic: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     topic_order: Mapped[int] = mapped_column(Integer, default=0)
     # Provenance: which document/page this came from, or None for hand-authored

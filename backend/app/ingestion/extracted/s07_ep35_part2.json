@@ -11,6 +11,7 @@
     {
       "kind": "definition",
       "slug": "semisimple-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Semisimple_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/semisimple+algebra"}],
       "title_en": "Semisimple algebra",
       "title_ru": "Полупростая алгебра",
       "statement_en": "A finite-dimensional associative $\\mathbb{C}$-algebra $A$ is **semisimple** if\n$$A\\cong\\bigoplus_{i=1}^{k}M_{n_i}(\\mathbb{C})$$\nfor some $n_1,\\dots,n_k$ -- a direct sum of full matrix algebras over $\\mathbb{C}$ (Artin-Wedderburn form). Contraction algebras are conjectured to deform flatly into algebras of exactly this shape.",

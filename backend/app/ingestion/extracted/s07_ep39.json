@@ -10,6 +10,7 @@
     {
       "kind": "definition",
       "slug": "associator",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Associator"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/associator"}],
       "title_en": "Associator",
       "title_ru": "Ассоциатор",
       "statement_en": "Let $A$ be an algebra over a field $F$ (in the book, more generally, over a commutative ring $\\Phi$ with $1$). The **associator** of elements $x,y,z\\in A$ is\n$$(x,y,z)=(xy)z-x(yz).$$\n\nIt measures how far $A$ is from being associative: $A$ is associative exactly when all associators vanish.\n\nThe associator is linear in each of its three arguments.\n\nNext to it the book uses the commutator $[x,y]=xy-yx$ and the Jordan product\n$$x\\circ y=xy+yx.$$",
@@ -30,6 +31,7 @@
     {
       "kind": "definition",
       "slug": "alternative-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Alternative_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/alternative+algebra"}],
       "title_en": "Alternative algebra",
       "title_ru": "Альтернативная алгебра",
       "statement_en": "An algebra $A$ is **alternative** if it satisfies the left and the right alternative identities\n$$(x,x,y)=0,\\qquad (x,y,y)=0\\qquad\\forall x,y\\in A,$$\nthat is, $(xx)y=x(xy)$ and $(yx)x=y(xx)$.\n\nAn algebra satisfying only the first identity is called *left alternative*; only the second — *right alternative*.\n\nOver a commutative ring $\\Phi$ the definition is the same; for $\\Phi=\\mathbb Z$ one gets *alternative rings*.\n\nExamples: every associative algebra; the 8-dimensional algebra of Cayley numbers (octonions), which is alternative but not associative.\n\nBy Artin's theorem, alternative algebras are exactly the *binary associative* algebras: any two elements generate an associative subalgebra.",
@@ -54,6 +56,7 @@
     {
       "kind": "definition",
       "slug": "flexible-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Flexible_algebra"}],
       "title_en": "Flexible algebra",
       "title_ru": "Эластичная алгебра",
       "statement_en": "An algebra $A$ is **flexible** if it satisfies the flexible identity\n$$(x,y,x)=0,\\quad\\text{i.e.}\\quad (xy)x=x(yx)\\qquad\\forall x,y\\in A.$$\n\nExamples: every commutative and every anticommutative algebra is flexible. Every alternative algebra is flexible too, since its associator is skew-symmetric.\n\nIn a flexible algebra the product $xyx$ can be written without parentheses.",

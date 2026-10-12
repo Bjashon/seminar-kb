@@ -10,6 +10,7 @@
     {
       "kind": "definition",
       "slug": "leibniz-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Leibniz_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Leibniz+algebra"}],
       "title_en": "Leibniz algebra",
       "title_ru": "Алгебра Лейбница",
       "statement_en": "A **Leibniz algebra** is a vector space $L$ with a bilinear product satisfying the (right) Leibniz identity\n$$x(yz)=(xy)z-(xz)y\\qquad\\forall x,y,z\\in L,$$\nequivalently: right multiplication by any element is a derivation of $L$.\n\nThis drops the antisymmetry $[x,y]=-[y,x]$ required of a Lie algebra, but keeps the Jacobi-type identity -- so every Lie algebra is a Leibniz algebra, and a Leibniz algebra is a Lie algebra exactly when $xx=0$ for all $x$.\n\nFirst introduced by A. Bloh (1965) as *D-algebras*, and independently rediscovered and named by J.-L. Loday (1993).",
@@ -28,8 +29,8 @@
       "slug": "nilpotent-algebra-lower-central-series",
       "title_en": "Nilpotent algebra (lower central series)",
       "title_ru": "Нильпотентная алгебра (нижний центральный ряд)",
-      "statement_en": "For an algebra $L$, define its **lower central series** by $L^{\\langle 1\\rangle}=L$, $L^{\\langle k+1\\rangle}=L^{\\langle k\\rangle}L$ ($k\\ge 1$). $L$ is **nilpotent** if $L^{\\langle m\\rangle}=0$ for some $m>0$, and the **nilpotency index** of $L$ is the smallest such $m$; it is at most $n+1$ for an $n$-dimensional nilpotent algebra.\n\nFor a Leibniz algebra this is really *right* nilpotency: left, right and strong nilpotency need not coincide (unlike for associative or Lie algebras). Example: the $2$-dimensional Leibniz algebra with $[x,x]=[y,y]=[y,x]=0$, $[x,y]=x$ is left nilpotent but *not* right nilpotent.",
-      "statement_ru": "Для алгебры $L$ **нижний центральный ряд** определяется как $L^{\\langle 1\\rangle}=L$, $L^{\\langle k+1\\rangle}=L^{\\langle k\\rangle}L$ ($k\\ge 1$). Алгебра $L$ называется **нильпотентной**, если $L^{\\langle m\\rangle}=0$ для некоторого $m>0$, а **индексом нильпотентности** — наименьшее такое $m$; он не превосходит $n+1$ для $n$-мерной нильпотентной алгебры.\n\nДля алгебры Лейбница это на самом деле *правая* нильпотентность: левая, правая и сильная нильпотентность в общем случае не совпадают (в отличие от ассоциативных алгебр и алгебр Ли). Пример: 2-мерная алгебра Лейбница с $[x,x]=[y,y]=[y,x]=0$, $[x,y]=x$ левонильпотентна, но *не* правонильпотентна.",
+      "statement_en": "For an algebra $L$, define its **lower central series** by $L^{\\langle 1\\rangle}=L$, $L^{\\langle k+1\\rangle}=L^{\\langle k\\rangle}L$ ($k\\ge 1$). $L$ is **[nilpotent](https://en.wikipedia.org/wiki/Nilpotent_algebra)** if $L^{\\langle m\\rangle}=0$ for some $m>0$, and the **nilpotency index** of $L$ is the smallest such $m$; it is at most $n+1$ for an $n$-dimensional nilpotent algebra.\n\nFor a Leibniz algebra this is really *right* nilpotency: left, right and strong nilpotency need not coincide (unlike for associative or Lie algebras). Example: the $2$-dimensional Leibniz algebra with $[x,x]=[y,y]=[y,x]=0$, $[x,y]=x$ is left nilpotent but *not* right nilpotent.",
+      "statement_ru": "Для алгебры $L$ **нижний центральный ряд** определяется как $L^{\\langle 1\\rangle}=L$, $L^{\\langle k+1\\rangle}=L^{\\langle k\\rangle}L$ ($k\\ge 1$). Алгебра $L$ называется **[нильпотентной](https://en.wikipedia.org/wiki/Nilpotent_algebra)**, если $L^{\\langle m\\rangle}=0$ для некоторого $m>0$, а **индексом нильпотентности** — наименьшее такое $m$; он не превосходит $n+1$ для $n$-мерной нильпотентной алгебры.\n\nДля алгебры Лейбница это на самом деле *правая* нильпотентность: левая, правая и сильная нильпотентность в общем случае не совпадают (в отличие от ассоциативных алгебр и алгебр Ли). Пример: 2-мерная алгебра Лейбница с $[x,x]=[y,y]=[y,x]=0$, $[x,y]=x$ левонильпотентна, но *не* правонильпотентна.",
       "depends_on": ["Algebra (over a field)"],
       "topic": "Градуировки и тождества алгебр Лейбница",
       "topic_order": 11,
@@ -58,6 +59,7 @@
     {
       "kind": "definition",
       "slug": "grading-of-an-algebra-by-a-group",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Graded_ring"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/graded+algebra"}],
       "title_en": "Grading of an algebra by a group",
       "title_ru": "Градуировка алгебры группой",
       "statement_en": "A **$G$-grading** of an algebra $L$ (for a group $G$) is a vector-space decomposition $\\Gamma:L=\\bigoplus_{g\\in G}L_g$ with $L_gL_h\\subseteq L_{gh}$ for all $g,h$. Each $L_g$ is a *homogeneous component*; a nonzero $a\\in L_g$ is *homogeneous of degree $g$*. The **support** is $\\operatorname{supp}\\Gamma=\\{g\\mid L_g\\ne0\\}$; the grading has *full support* if $\\operatorname{supp}\\Gamma=G$.\n\nTwo graded algebras $(L,\\Gamma_G)$, $(L',\\Gamma_H)$ are **equivalent** if some bijection $\\rho:\\operatorname{supp}\\Gamma_G\\to\\operatorname{supp}\\Gamma_H$ and algebra isomorphism $\\varphi:L\\to L'$ satisfy $\\varphi(L_g)=(L')_{\\rho(g)}$ for every $g$ -- so equivalence identifies gradings up to relabelling the group.",

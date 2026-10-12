@@ -40,7 +40,7 @@ export const NodeCard = memo(function NodeCard({
   const proof = node.lang === "ru" ? detail.proof_ru : detail.proof_en;
   const hasSource = !!(detail.source && detail.source.page);
 
-  const bodyHtml = mdBody(statement, node.lang, allEntities, node.slug);
+  const bodyHtml = mdBody(statement, node.lang, allEntities, node.slug, detail.links);
   const proofHtml = proof ? mdBody(proof, node.lang, allEntities, node.slug) : "";
   const body = useTypesetHtml(bodyHtml);
   const proofBox = useTypesetHtml(proofHtml);
@@ -77,7 +77,7 @@ export const NodeCard = memo(function NodeCard({
   // only starts after a few pixels of movement (and only then captures the
   // pointer): capturing on pointerdown would retarget the click to the card
   // itself, silently breaking concept links and the source title.
-  const INTERACTIVE = "button, a, input, textarea, select, [data-goto], .has-source, .node-resize";
+  const INTERACTIVE = "button, a, input, textarea, select, [data-goto], [data-ext], .has-source, .node-resize";
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
     if (e.button !== 0 || enlarged) return;
     if ((e.target as HTMLElement).closest(INTERACTIVE)) return;

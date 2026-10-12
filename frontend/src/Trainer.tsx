@@ -99,7 +99,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
 
   // Hooks must run unconditionally (before any early return below), so both
   // possible bodies are always prepared -- each is just empty when unused.
-  const answerHtml = revealed && detail && !isLevel2 ? mdBody(detail.statement_ru, "ru", allEntities, detail.slug) : "";
+  const answerHtml = revealed && detail && !isLevel2 ? mdBody(detail.statement_ru, "ru", allEntities, detail.slug, detail.links) : "";
   const clozeHtml = isLevel2 && detail ? clozeStatement(detail.statement_ru!, "ru", allEntities, detail.slug) : "";
   const answerBox = useTypesetHtml(answerHtml);
   const clozeBox = useTypesetHtml(clozeHtml);

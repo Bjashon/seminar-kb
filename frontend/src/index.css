@@ -130,6 +130,15 @@ h3.title { font-size: 19px; }
 .concept-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: currentColor; text-underline-offset: 2px; cursor: pointer; }
 .concept-link:hover { text-decoration-style: solid; }
 .term { font-style: italic; }
+/* A way out to Wikipedia / nLab / Encyclopedia of Mathematics: a light grey
+   dotted line, quieter than a link to another card (dark dotted). */
+.ext-term, .ext-link { color: inherit; text-decoration: underline dotted #a9a9a9; text-decoration-thickness: 1.5px; text-underline-offset: 3px; cursor: pointer; }
+.ext-term:hover, .ext-link:hover, .ext-term:focus-visible { text-decoration-color: var(--ink-soft); text-decoration-style: solid; outline: none; }
+.ext-menu { position: fixed; z-index: 100; min-width: 190px; display: grid; gap: 1px; padding: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 26px -10px rgba(0,0,0,.35); font-family: "Source Sans 3", sans-serif; font-size: 13.5px; }
+.ext-menu-title { padding: 3px 8px 5px; font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-soft); }
+.ext-menu a { display: flex; justify-content: space-between; gap: 18px; padding: 6px 8px; border-radius: 6px; color: var(--ink); text-decoration: none; }
+.ext-menu a::after { content: "↗"; color: var(--link-missing); }
+.ext-menu a:hover, .ext-menu a:focus-visible { background: var(--bg-soft); outline: none; }
 
 .proof-toggle { margin-top: 16px; display: inline-flex; align-items: center; gap: 6px; font-family: "Source Sans 3", sans-serif; font-size: 13px; font-weight: 600; color: var(--theorem); background: none; border: 1px solid var(--border); border-radius: 7px; padding: 6px 12px; cursor: pointer; }
 .proof-toggle:hover { border-color: var(--theorem); }

@@ -10,6 +10,7 @@
     {
       "kind": "definition",
       "slug": "automorphism-of-an-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Automorphism"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/automorphism"}],
       "title_en": "Automorphism of an algebra",
       "title_ru": "Автоморфизм алгебры",
       "statement_en": "Let $A$ be an algebra over a field $F$. An **automorphism** of $A$ is a bijective linear map $\\varphi:A\\to A$ that respects the multiplication:\n$$\\varphi(xy)=\\varphi(x)\\varphi(y)\\qquad\\forall x,y\\in A.$$\n\nIn other words, it is an isomorphism of $A$ onto itself.\n\nAll automorphisms form a group under composition, the *automorphism group*\n$$\\operatorname{Aut}(A)=\\{g\\in\\operatorname{GL}(A)\\mid g(xy)=g(x)g(y)\\ \\ \\forall x,y\\in A\\}.$$\nIt is a subgroup of $\\operatorname{GL}(A)$, the group of all invertible linear maps $A\\to A$.\n\nIf $\\dim A=n$ and $e_1,\\dots,e_n$ is a basis, the conditions $g(e_ie_j)=g(e_i)g(e_j)$ are polynomial (quadratic) equations in the matrix entries of $g$. That is why $\\operatorname{Aut}(A)$ is an algebraic group, and over $\\mathbb R$ or $\\mathbb C$ a Lie group.",
@@ -49,6 +50,7 @@
     {
       "kind": "definition",
       "slug": "lie-group",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Lie_group"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Lie+group"}],
       "title_en": "Lie group",
       "title_ru": "Группа Ли",
       "statement_en": "A **Lie group** is a group $G$ that is also a smooth manifold, such that multiplication and inversion\n$$G\\times G\\to G,\\ (g,h)\\mapsto gh,\\qquad G\\to G,\\ g\\mapsto g^{-1}$$\nare smooth maps. For a *complex* Lie group, take a complex manifold and holomorphic maps.\n\nMain example: $\\operatorname{GL}(V)$ for a finite-dimensional real or complex vector space $V$. It is the open subset $\\{\\det\\ne0\\}$ of $\\operatorname{End}(V)$.\n\nA subgroup $H\\le G$ is an *embedded Lie subgroup* if it is also an embedded submanifold; then $H$ is a Lie group itself. By Cartan's closed subgroup theorem, every *closed* subgroup of a real Lie group is an embedded Lie subgroup.\n\nWarning: a subgroup can be a Lie group in its own topology without being closed, e.g. an irrational winding of a torus. Such subgroups are only immersed, not embedded.",
@@ -68,6 +70,7 @@
     {
       "kind": "definition",
       "slug": "lie-algebra-of-a-lie-group",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Lie_group%E2%80%93Lie_algebra_correspondence"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Lie+differentiation"}],
       "title_en": "Lie algebra of a Lie group",
       "title_ru": "Алгебра Ли группы Ли",
       "statement_en": "Let $V$ be a finite-dimensional real or complex vector space and $H\\le\\operatorname{GL}(V)$ an embedded Lie subgroup. Its **Lie algebra** is the tangent space at the identity:\n$$\\operatorname{Lie}(H)=T_IH=\\{\\,T'(0)\\mid T(t)\\ \\text{a smooth curve in}\\ H,\\ T(0)=I\\,\\}\\subseteq\\operatorname{End}(V).$$\n\nEquivalently, via the matrix exponential,\n$$\\operatorname{Lie}(H)=\\{X\\in\\operatorname{End}(V)\\mid e^{tX}\\in H\\ \\ \\forall t\\in\\mathbb R\\}.$$\n\nIt is a vector space closed under the commutator $[X,Y]=XY-YX$, i.e. a Lie algebra. The standard notation is $\\mathfrak h=\\operatorname{Lie}(H)$.\n\nExamples:\n$$\\operatorname{Lie}(\\operatorname{GL}(V))=\\operatorname{End}(V),\\qquad \\operatorname{Lie}(\\operatorname{SL}_n)=\\{X\\mid\\operatorname{tr}X=0\\},$$\nand for an algebra $A$\n$$\\operatorname{Lie}(\\operatorname{Aut}(A))=\\operatorname{Der}(A).$$",
@@ -175,6 +178,7 @@
     {
       "kind": "definition",
       "slug": "constructible-set",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Constructible_set_(topology)"}],
       "title_en": "Constructible set (Zariski topology)",
       "title_ru": "Конструктивное множество (топология Зарисского)",
       "statement_en": "Let $k$ be an algebraically closed field (here $k=\\mathbb C$). In the *Zariski topology* on $k^n$ the closed sets are common zero sets of polynomials:\n$$V(S)=\\{a\\in k^n\\mid f(a)=0\\ \\ \\forall f\\in S\\},\\qquad S\\subseteq k[x_1,\\dots,x_n].$$\nA Zariski closed $X\\subseteq k^n$ is an *affine algebraic variety*.\n\nA subset of $X$ is *locally closed* if it is $U\\cap Z$ with $U$ Zariski open and $Z$ Zariski closed. A subset is **constructible** if it is a finite union of locally closed subsets.\n\nConstructible sets form a Boolean algebra: they are closed under finite unions, finite intersections and complements.\n\nKey fact, *Chevalley's theorem*: the image of a constructible set under a polynomial map (a *morphism* $X\\to Y$) is constructible. In particular, projections $X\\times Y\\to X$ preserve constructibility.\n\nExample: the image of $\\mathbb C^2\\to\\mathbb C^2$, $(x,y)\\mapsto(x,xy)$, is\n$$\\{(a,b)\\mid a\\ne0\\}\\cup\\{(0,0)\\}.$$\nIt is constructible, but neither open nor closed. So images of closed sets need not be closed; constructible sets are the natural class that survives projections.",
@@ -193,6 +197,7 @@
     {
       "kind": "definition",
       "slug": "complex-algebraic-group",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Algebraic_group"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/algebraic+group"}],
       "title_en": "Complex algebraic group",
       "title_ru": "Комплексная алгебраическая группа",
       "statement_en": "A **complex algebraic group** is a complex affine algebraic variety $G$ with a group structure such that multiplication $(g,h)\\mapsto gh$ and inversion $g\\mapsto g^{-1}$ are polynomial maps (morphisms of varieties).\n\nA subgroup $H\\le G$ is a *Zariski closed* (closed algebraic) subgroup if it is Zariski closed in $G$.\n\nExamples:\n\n- $\\operatorname{GL}_n(\\mathbb C)$; it is affine via $\\{(T,s)\\mid s\\cdot\\det T=1\\}\\subseteq\\mathbb C^{n^2+1}$;\n- for a finite-dimensional complex algebra $A$, the group $\\operatorname{Aut}(A)$ is a Zariski closed subgroup of $\\operatorname{GL}(A)$, cut out by the polynomial equations $g(xy)=g(x)g(y)$.\n\nKey fact (Borel): a subgroup $H\\le G$ that is merely *constructible* is automatically Zariski closed.\n\nEvery complex algebraic group is a complex Lie group. A Zariski closed subgroup of $\\operatorname{GL}(V)$ is a closed embedded complex Lie subgroup.",
@@ -214,6 +219,7 @@
     {
       "kind": "definition",
       "slug": "semialgebraic-set",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Semialgebraic_set"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/semialgebraic+set"}],
       "title_en": "Semialgebraic set",
       "title_ru": "Полуалгебраическое множество",
       "statement_en": "A subset $X\\subseteq\\mathbb R^n$ is **semialgebraic** if it is a finite union of sets of the form\n$$\\{x\\in\\mathbb R^n\\mid f_1(x)=\\dots=f_r(x)=0,\\ g_1(x)>0,\\dots,g_s(x)>0\\},$$\nwhere $f_i,g_j\\in\\mathbb R[x_1,\\dots,x_n]$. A map between semialgebraic sets is *semialgebraic* if its graph is semialgebraic.\n\nSemialgebraic sets form a Boolean algebra: closed under finite unions, finite intersections and complements.\n\nKey fact, the *Tarski–Seidenberg theorem*: the image of a semialgebraic set under a semialgebraic map is semialgebraic. In particular, projections preserve semialgebraicity.\n\nWhy inequalities are needed over $\\mathbb R$: the circle $x^2+y^2=1$ projects onto the segment $[-1,1]$. This segment is not the zero set of any polynomials in $x$, but it is semialgebraic:\n$$[-1,1]=\\{1-x^2>0\\}\\cup\\{1-x^2=0\\}.$$",

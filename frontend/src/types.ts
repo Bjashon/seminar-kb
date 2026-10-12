@@ -21,6 +21,12 @@ export interface LinkRef {
   kind: Kind;
 }
 
+/** An outside page about a card's own term. */
+export interface ExternalLink {
+  source: "wikipedia" | "nlab" | "eom";
+  url: string;
+}
+
 export interface EntityDetail {
   slug: string;
   kind: Kind;
@@ -31,6 +37,8 @@ export interface EntityDetail {
   proof_ru: string | null;
   proof_en: string | null;
   aliases: string[];
+  /** Best first; the card underlines its defined term and opens these. */
+  links: ExternalLink[];
   topic: string | null;
   source: {
     label: string | null;

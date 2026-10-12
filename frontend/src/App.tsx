@@ -7,6 +7,7 @@ import { IndexPage } from "./IndexPage";
 import { Trainer } from "./Trainer";
 import { ProjectsPage } from "./ProjectsPage";
 import { SourcePanel } from "./SourcePanel";
+import { installExternalLinkMenu } from "./externalLinks";
 
 type Mode = "reader" | "index" | "trainer" | "projects";
 
@@ -37,6 +38,7 @@ function briefDetail(slug: string, brief: NonNullable<Board["brief"]>): EntityDe
     proof_ru: null,
     proof_en: null,
     aliases: [],
+    links: [],
     topic: null,
     source: { label: parts, document: null, page: null, episode_code: null, citation: null },
     uses: [],
@@ -64,6 +66,7 @@ export default function App() {
   useEffect(() => {
     api.listEntities().then(setEntities);
   }, []);
+  useEffect(() => installExternalLinkMenu(), []);
 
   // Stable across renders (functional state updates only) so that
   // NodeCard, wrapped in React.memo, doesn't re-render -- and stomp on

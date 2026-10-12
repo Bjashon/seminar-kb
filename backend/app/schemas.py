@@ -18,6 +18,11 @@ class LinkOut(BaseModel):
     kind: str
 
 
+class ExternalLinkOut(BaseModel):
+    source: str  # "wikipedia" | "nlab" | "eom"
+    url: str
+
+
 class EntitySummaryOut(BaseModel):
     slug: str
     kind: str
@@ -40,6 +45,8 @@ class EntityDetailOut(BaseModel):
     proof_ru: str | None
     proof_en: str | None
     aliases: list[str]
+    # Outside pages about the card's own term (best first).
+    links: list[ExternalLinkOut] = []
     topic: str | None
     source: SourceOut
     uses: list[LinkOut]

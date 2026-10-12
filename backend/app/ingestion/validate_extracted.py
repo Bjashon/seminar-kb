@@ -40,6 +40,21 @@ def link_targets(text: str) -> list[str]:
     return [m.group(2) for m in EXPLICIT_LINK.finditer(MATH.sub("", text or ""))]
 
 
+def bad_link_targets(text: str, slugs: Counter) -> list[str]:
+    """Targets of [..](..) that are neither a card slug nor an outside https page."""
+    return [t for t in link_targets(text) if t not in slugs and not t.startswith("https://")]
+
+
+# "links" of a card: outside pages about its own term. Only these sources,
+# only at their own sites -- and each one opened and read before it goes in
+# (check_external_links.py confirms they still resolve).
+LINK_SOURCES = {
+    "wikipedia": re.compile(r"https://[a-z]{2,3}\.wikipedia\.org/wiki/\S+"),
+    "nlab": re.compile(r"https://ncatlab\.org/nlab/show/\S+"),
+    "eom": re.compile(r"https://encyclopediaofmath\.org/wiki/\S+"),
+}
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     only = set(sys.argv[1:])
@@ -90,9 +105,8 @@ def main() -> int:
             if CONTROL.search(txt):
                 errors.append(f"{name}: control character in {key} -- a LaTeX command lost its backslash (\\tfrac written as TAB+frac?)")
             targets = link_targets(txt)
-            for t in targets:
-                if t not in slugs:
-                    errors.append(f"{name}: {key} links to [..]({t}), no such slug (it would show as plain text)")
+            for t in bad_link_targets(txt, slugs):
+                errors.append(f"{name}: {key} links to [..]({t}), no such slug (it would show as plain text)")
             missing = [s for s in own if s not in targets]
             if txt and missing:
                 warnings.append(f"{name}: {key} has no [..](slug) link to {len(missing)} of the paper's cards: {', '.join(missing)}")
@@ -118,9 +132,23 @@ def main() -> int:
                     errors.append(f"{tag}: unbalanced $ in {key}")
                 if CONTROL.search(txt):
                     errors.append(f"{tag}: control character in {key} -- a LaTeX command lost its backslash (\\tfrac written as TAB+frac?)")
-                for t in link_targets(txt):
-                    if t not in slugs:
-                        errors.append(f"{tag}: {key} links to [..]({t}), no such slug (it would show as plain text)")
+                for t in bad_link_targets(txt, slugs):
+                    errors.append(f"{tag}: {key} links to [..]({t}), no such slug (it would show as plain text)")
+            links = e.get("links", [])
+            if not isinstance(links, list) or any(not isinstance(l, dict) or set(l) != {"source", "url"} for l in links):
+                errors.append(f"{tag}: links must be a list of {{\"source\", \"url\"}} objects")
+            else:
+                for l in links:
+                    pattern = LINK_SOURCES.get(l["source"])
+                    if pattern is None:
+                        errors.append(f"{tag}: link source {l['source']!r} (only {sorted(LINK_SOURCES)})")
+                    elif not pattern.fullmatch(l["url"]):
+                        errors.append(f"{tag}: {l['source']} link {l['url']!r} is not a page of that site")
+                if len({l["source"] for l in links}) != len(links):
+                    errors.append(f"{tag}: two links from the same source")
+                # The link sits under the card's defined term -- the first **bold** fragment.
+                if links and any("**" not in (e.get(k) or "") for k in ("statement_ru", "statement_en")):
+                    errors.append(f"{tag}: has links but no **bold** term to underline in statement_ru/statement_en")
             if e.get("kind") == "definition" and "**" not in (e.get("statement_ru") or ""):
                 warnings.append(f"{tag}: definition with no **bold** term in statement_ru (no fill-in-the-term trainer level)")
             for dep in e.get("depends_on", []):

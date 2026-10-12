@@ -10,6 +10,7 @@
     {
       "kind": "definition",
       "slug": "anticommutative-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Anticommutative_property"}],
       "title_en": "Anticommutative algebra",
       "title_ru": "Антикоммутативная алгебра",
       "statement_en": "An algebra $A$ is **anticommutative** if\n\n$$xy=-yx\\qquad\\forall x,y\\in A.$$\n\nPutting $y=x$ gives $2x^2=0$. So over a field of characteristic $\\ne2$ (or in a ring without 2-torsion) anticommutativity is equivalent to\n\n$$x^2=0\\qquad\\forall x\\in A.$$\n\nConversely, $x^2=0$ always implies $xy=-yx$: just expand $(x+y)^2=0$. In characteristic $2$ the condition $x^2=0$ is strictly stronger, and it is the one usually required there.\n\nExamples: Lie algebras, Malcev algebras, binary Lie algebras, the cross product on $\\mathbb R^3$.",
@@ -52,6 +53,7 @@
     {
       "kind": "definition",
       "slug": "free-nonassociative-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Non-associative_algebra"}],
       "title_en": "Free non-associative algebra",
       "title_ru": "Свободная неассоциативная алгебра",
       "statement_en": "The **free non-associative algebra** $F\\{X\\}$ on a set $X=\\{a_1,a_2,\\dots\\}$ over a field $F$ has as a basis all *non-associative words* in the letters $a_i$, i.e. products of letters with every possible placement of brackets:\n\n$$a_1,\\quad a_1a_2,\\quad (a_1a_2)a_1,\\quad a_1(a_2a_1),\\quad (a_1a_1)(a_2a_1),\\ \\dots$$\n\nWords with different bracketings are different basis elements. The product of words $u$ and $v$ is the word $(u)(v)$. The *degree* of a word is the number of letters in it, counted with multiplicity.\n\nOver $\\mathbb Z$ one gets the *free non-associative ring*: integer linear combinations of words (Gainov: elements \"in regular form\").\n\nUniversal property: every map $X\\to A$ into an algebra $A$ extends uniquely to a homomorphism $F\\{X\\}\\to A$. So elements of $F\\{X\\}$ are \"non-associative polynomials\", and elements of any algebra can be substituted into them.\n\nUnlike the free associative algebra, there are no relations at all, not even associativity.",
@@ -187,6 +189,7 @@
     {
       "kind": "definition",
       "slug": "malcev-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Malcev_algebra"}],
       "title_en": "Malcev algebra",
       "title_ru": "Алгебра Мальцева",
       "statement_en": "Let the characteristic be $\\ne2$. A **Malcev algebra** is an anticommutative algebra $M$ satisfying the Malcev identity\n\n$$J(x,y,xz)=J(x,y,z)\\,x\\qquad\\forall x,y,z\\in M,$$\n\nwhere $J(x,y,z)=(xy)z+(yz)x+(zx)y$ is the Jacobian.\n\nThe same identity without the Jacobian:\n\n$$(xy)(xz)=((xy)z)x+((yz)x)x+((zx)x)y.$$\n\nEvery Lie algebra is a Malcev algebra, since there $J\\equiv0$.\n\nMain source of examples: if $A$ is an alternative algebra, then $A$ with the commutator $[x,y]=xy-yx$ is a Malcev algebra. For instance, over a field of characteristic $\\ne2,3$ the traceless octonions form a 7-dimensional simple Malcev algebra that is not Lie.\n\nIntroduced by A. I. Malcev (1955) as \"Moufang–Lie algebras\", the tangent algebras of analytic Moufang loops; the name \"Malcev algebras\" is due to A. Sagle (1961). Every Malcev algebra is binary Lie.",
@@ -263,6 +266,7 @@
     {
       "kind": "definition",
       "slug": "power-associative-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Power_associativity"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/power-associative+algebra"}],
       "title_en": "Power-associative algebra",
       "title_ru": "Алгебра с ассоциативными степенями",
       "statement_en": "An algebra (or ring) $A$ is **power-associative** if every element $x\\in A$ generates an associative subalgebra.\n\nEquivalently, powers are well defined: every bracketing of a product $x\\,x\\cdots x$ of $n$ factors gives the same element $x^n$, and then\n\n$$x^mx^k=x^{m+k}.$$\n\nExamples:\n\n1. associative and alternative algebras;\n2. Jordan algebras (characteristic $\\ne2$);\n3. anticommutative algebras with $x^2=0$, trivially: all products of copies of $x$ vanish.\n\nGainov, following Albert, says \"ring with associative powers\".",

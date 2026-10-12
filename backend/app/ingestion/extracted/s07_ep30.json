@@ -10,6 +10,7 @@
     {
       "kind": "definition",
       "slug": "z2-graded-commutative-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Supercommutative_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/supercommutative+superalgebra"}],
       "title_en": "Z2-graded commutative algebra",
       "title_ru": "Z2-градуированная коммутативная алгебра",
       "statement_en": "Let $\\mathbb{K}=\\mathbb{R}$ or $\\mathbb{C}$. An algebra $(\\mathfrak{a},\\cdot)$ is **$\\mathbb{Z}_2$-graded** if $\\mathfrak{a}=\\mathfrak{a}_0\\oplus\\mathfrak{a}_1$ with $\\mathfrak{a}_i\\cdot\\mathfrak{a}_j\\subset\\mathfrak{a}_{i+j\\,(\\mathrm{mod}\\,2)}$. Writing $p$ for the parity function ($p|_{\\mathfrak{a}_i}=i$), it is **graded-commutative** if for all homogeneous $x,y$\n$$x\\cdot y=(-1)^{p(x)p(y)}\\,y\\cdot x.$$\nIn particular $\\mathfrak{a}_0$ is an ordinary commutative subalgebra, and the map $\\mathfrak{a}_1\\times\\mathfrak{a}_1\\to\\mathfrak{a}_0$ is skew-symmetric.",
@@ -29,6 +30,7 @@
     {
       "kind": "definition",
       "slug": "derivation-of-a-graded-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Derivation_(differential_algebra)"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/derivation"}],
       "title_en": "Derivation (of a Z2-graded algebra)",
       "title_ru": "Дифференцирование (Z2-градуированной алгебры)",
       "statement_en": "Let $\\mathfrak{a}$ be a $\\mathbb{Z}_2$-graded algebra. A homogeneous $D\\in\\mathrm{End}(\\mathfrak{a})$ of parity $p(D)$ is a **derivation** if for all homogeneous $x,y\\in\\mathfrak{a}$\n$$D(x\\cdot y)=D(x)\\cdot y+(-1)^{p(D)p(x)}\\,x\\cdot D(y),$$\nextended by linearity to all of $\\mathfrak{a}$. The space of all derivations of $\\mathfrak{a}$, denoted $\\mathrm{Der}(\\mathfrak{a})$, is a Lie superalgebra.",
@@ -48,6 +50,7 @@
     {
       "kind": "definition",
       "slug": "lie-superalgebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Lie_superalgebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/super+Lie+algebra"}],
       "title_en": "Lie superalgebra",
       "title_ru": "Супералгебра Ли",
       "statement_en": "A **Lie superalgebra** is a $\\mathbb{Z}_2$-graded vector space $\\mathfrak{g}=\\mathfrak{g}_0\\oplus\\mathfrak{g}_1$ with a bilinear bracket $[\\cdot,\\cdot]:\\mathfrak{g}\\otimes\\mathfrak{g}\\to\\mathfrak{g}$ respecting the grading, satisfying for homogeneous $x,y,z$:\n1. graded antisymmetry: $[x,y]=-(-1)^{p(x)p(y)}[y,x]$\n2. graded Jacobi identity: $(-1)^{p(x)p(z)}[x,[y,z]]+(-1)^{p(y)p(x)}[y,[z,x]]+(-1)^{p(z)p(y)}[z,[x,y]]=0$.\n\n$\\mathfrak{g}_0$ is then an ordinary Lie algebra, and $\\mathfrak{g}_1$ is a $\\mathfrak{g}_0$-module.",
@@ -145,6 +148,7 @@
     {
       "kind": "definition",
       "slug": "conformal-lie-superalgebra-K1",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Super_Virasoro_algebra"}],
       "title_en": "Conformal Lie superalgebra K(1)",
       "title_ru": "Конформная супералгебра Ли K(1)",
       "statement_en": "The **conformal Lie superalgebra** $\\mathcal{K}(1)$ (centerless Neveu-Schwarz algebra) has basis $\\{x_n,\\ n\\in\\mathbb{Z};\\ \\xi_i,\\ i\\in\\mathbb{Z}+\\tfrac12\\}$ and brackets\n$$[x_n,x_m]=(m-n)x_{n+m},\\qquad [x_n,\\xi_i]=\\Bigl(i-\\tfrac n2\\Bigr)\\xi_{i+n},\\qquad [\\xi_i,\\xi_j]=x_{i+j}.$$\nIt contains infinitely many copies of $\\mathfrak{osp}(1|2)$. Its relation to $K_3$ and $\\mathcal{AK}(1)$: $\\mathrm{Der}(K_3)=\\mathfrak{osp}(1|2)$ and $\\mathrm{Der}(\\mathcal{AK}(1))=\\mathcal{K}(1)$ -- so $\\mathcal{K}(1)$ plays for $\\mathcal{AK}(1)$ exactly the role $\\mathfrak{osp}(1|2)$ plays for $K_3$.",

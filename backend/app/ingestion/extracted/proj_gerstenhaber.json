@@ -11,6 +11,7 @@
     {
       "kind": "definition",
       "slug": "superspace-and-parity-reversal",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Super_vector_space"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/super+vector+space"}],
       "title_en": "Superspace • parity • parity reversal",
       "title_ru": "Суперпространство • чётность • обращение чётности",
       "aliases": [
@@ -81,6 +82,7 @@
     {
       "kind": "definition",
       "slug": "poisson-superalgebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Poisson_superalgebra"}],
       "title_en": "Poisson superalgebra",
       "title_ru": "Супералгебра Пуассона",
       "aliases": [],
@@ -106,6 +108,7 @@
     {
       "kind": "definition",
       "slug": "kantor-double",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Kantor_double"}],
       "title_en": "Kantor double",
       "title_ru": "Двойник Кантора",
       "aliases": [],
@@ -177,6 +180,7 @@
     {
       "kind": "definition",
       "slug": "gerstenhaber-algebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Gerstenhaber_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Gerstenhaber+algebra"}],
       "title_en": "Gerstenhaber algebra (odd Poisson superalgebra)",
       "title_ru": "Алгебра Герстенхабера (нечётная супералгебра Пуассона)",
       "aliases": [
@@ -249,6 +253,7 @@
     {
       "kind": "definition",
       "slug": "bv-algebra",
+      "links": [{"source": "nlab", "url": "https://ncatlab.org/nlab/show/BV-algebra"}, {"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Batalin%E2%80%93Vilkovisky_formalism"}],
       "title_en": "Batalin–Vilkovisky algebra (exact Gerstenhaber algebra)",
       "title_ru": "Алгебра Баталина–Вилковыского (точная алгебра Герстенхабера)",
       "aliases": [
@@ -390,6 +395,7 @@
     {
       "kind": "definition",
       "slug": "good-words-hall-basic-commutators",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Hall_word"}],
       "title_en": "Good words (Hall basic commutators)",
       "title_ru": "Хорошие слова (базисные коммутаторы Холла)",
       "aliases": [
@@ -528,6 +534,7 @@
     {
       "kind": "definition",
       "slug": "free-supercommutative-superalgebra",
+      "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Supercommutative_algebra"}],
       "title_en": "Free supercommutative superalgebra S(V)",
       "title_ru": "Свободная суперкоммутативная супералгебра S(V)",
       "aliases": [
