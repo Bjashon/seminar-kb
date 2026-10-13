@@ -92,11 +92,20 @@ def main() -> int:
         if only and name not in only:
             continue
         code = d.get("episode_code")
-        if not code:
-            errors.append(f"{name}: no episode_code")
-        for key in ("bibliography", "brief_ru", "brief_en", "source_document"):
-            if not d.get(key):
-                errors.append(f"{name}: missing top-level {key!r}")
+        # A glossary ("glossary": true) holds general notions that belong to
+        # no talk: no paper, no brief, no board -- and so no PDF to cite.
+        if d.get("glossary"):
+            if code:
+                errors.append(f"{name}: a glossary has no episode_code (its cards belong to no talk)")
+            for e in d["entities"]:
+                if (e.get("source") or {}).get("document"):
+                    errors.append(f"{name}:{e.get('slug')}: a glossary card cites a PDF -- it belongs in that paper's file")
+        else:
+            if not code:
+                errors.append(f"{name}: no episode_code")
+            for key in ("bibliography", "brief_ru", "brief_en", "source_document"):
+                if not d.get(key):
+                    errors.append(f"{name}: missing top-level {key!r}")
         own = [e["slug"] for e in d["entities"]]
         for key in ("brief_ru", "brief_en"):
             txt = d.get(key) or ""
