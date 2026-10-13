@@ -1,4 +1,5 @@
 import type { Board, EntityDetail, EntitySummary, Project, ProjectSummary, ReviewCardOut, TalkSummary } from "./types";
+import type { LecturePatch, LectureState } from "./lecture/shared";
 
 // In prod the backend serves the built frontend from the same origin, so
 // relative paths just work. In dev, Vite serves the frontend on :5173 while
@@ -25,6 +26,16 @@ export const api = {
   getProject: (slug: string) => fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}`).then((r) => json<Project>(r)),
   getLecture: (slug: string) =>
     fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/lecture`).then((r) => json<{ html: string; data: unknown }>(r)),
+  // What the owner has done in a course (modules passed, test answers,
+  // flashcard marks): kept on the server, changed one action at a time.
+  getLectureState: (slug: string) =>
+    fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/lecture/state`).then((r) => json<LectureState>(r)),
+  patchLectureState: (slug: string, patch: LecturePatch) =>
+    fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/lecture/state`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    }).then((r) => json<LectureState>(r)),
   grade: (slug: string, grade: "again" | "good" | "easy") =>
     fetch(`${API_BASE}/review/${slug}/grade`, {
       method: "POST",

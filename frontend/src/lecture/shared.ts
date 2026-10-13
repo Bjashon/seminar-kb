@@ -36,7 +36,49 @@ export const esc = (s: string) => String(s).replace(/&/g, "&amp;").replace(/</g,
 export const store = {
   get(k: string, d: any) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k: string, v: any) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+  remove(k: string) { try { localStorage.removeItem(k); } catch { /* storage unavailable */ } },
 };
+
+/** What a reader has done in a course: modules marked as passed, flashcard
+ *  marks, test answers. */
+export interface LectureState {
+  /** module id -> passed */
+  done: Record<string, boolean>;
+  /** flashcard index -> "know" | "again" */
+  cards: Record<string, string>;
+  /** quiz id -> question index -> chosen option */
+  quiz: Record<string, Record<string, number>>;
+}
+
+/** One change to it; null removes the entry. */
+export interface LecturePatch {
+  done?: Record<string, true | null>;
+  cards?: Record<string, string | null>;
+  quiz?: Record<string, Record<string, number> | null>;
+}
+
+/** Where that state is kept. On the site it is the server (one user, the
+ *  same on her phone and her desktop); a copy of the course on claude.ai
+ *  has only the browser. Changes are sent one action at a time, to be
+ *  merged -- never the whole state -- so a page left open elsewhere cannot
+ *  wipe what was done since. */
+export interface LectureStorage {
+  initial: LectureState;
+  save: (patch: LecturePatch) => void;
+}
+
+export function applyLecturePatch(state: LectureState, patch: LecturePatch): LectureState {
+  for (const [id, on] of Object.entries(patch.done ?? {})) {
+    if (on) state.done[id] = true; else delete state.done[id];
+  }
+  for (const [i, mark] of Object.entries(patch.cards ?? {})) {
+    if (mark === null) delete state.cards[i]; else state.cards[i] = mark;
+  }
+  for (const [id, answers] of Object.entries(patch.quiz ?? {})) {
+    if (answers === null) delete state.quiz[id]; else state.quiz[id] = { ...state.quiz[id], ...answers };
+  }
+  return state;
+}
 
 // MathJax may still be starting; chain every typeset through its startup
 // promise so calls never overlap.

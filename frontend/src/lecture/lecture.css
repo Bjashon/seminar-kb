@@ -198,6 +198,8 @@
 .lecture-body .q .fb b.r { color: var(--ok); }
 .lecture-body .q .fb b.w { color: var(--no); }
 .lecture-body .quiz-score { font-family: "Source Sans 3", sans-serif; font-size: 13px; color: var(--ink-soft); }
+.lecture-body .quiz-reset { border: none; background: none; padding: 0; margin-left: 10px; font: inherit; color: var(--ink-soft); cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.lecture-body .quiz-reset:hover { color: var(--ink); }
 .lecture-body .done-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-top: 24px; }
 .lecture-body .done-btn[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: var(--bg); }
 

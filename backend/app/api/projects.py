@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from fnmatch import fnmatchcase
 from pathlib import Path
 
@@ -6,9 +7,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
-from app.db.models import Talk
+from app.db.models import CourseState, Talk
 from app.db.session import get_db
-from app.schemas import LectureOut, ProjectFileGroupOut, ProjectFileOut, ProjectOut, ProjectSummaryOut
+from app.schemas import (
+    LectureOut, LectureStateOut, LectureStatePatch, ProjectFileGroupOut, ProjectFileOut, ProjectOut, ProjectSummaryOut,
+)
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -154,6 +157,68 @@ def get_lecture(slug: str) -> LectureOut:
     if not html_path.is_file():
         raise HTTPException(status_code=404, detail="Lecture not found")
     return LectureOut(html=html_path.read_text(encoding="utf-8"), data=_lecture_data(d))
+
+
+def _course_state(raw: object) -> dict:
+    """The stored state with all three sections present."""
+    raw = raw if isinstance(raw, dict) else {}
+    return {key: dict(raw.get(key) or {}) for key in ("done", "cards", "quiz")}
+
+
+@router.get("/{slug}/lecture/state", response_model=LectureStateOut)
+def get_lecture_state(slug: str, db: Session = Depends(get_db)) -> LectureStateOut:
+    """What the owner has done in the course: modules passed, test answers,
+    flashcard marks. Kept here, not in the browser, so that it is the same
+    on every device."""
+    _project_dir(slug)
+    row = db.get(CourseState, slug)
+    return LectureStateOut(**_course_state(row.state if row else None))
+
+
+@router.patch("/{slug}/lecture/state", response_model=LectureStateOut)
+def patch_lecture_state(slug: str, patch: LectureStatePatch, db: Session = Depends(get_db)) -> LectureStateOut:
+    _project_dir(slug)
+    row = db.get(CourseState, slug)
+    state = _course_state(row.state if row else None)
+
+    def key_ok(key: str) -> bool:
+        return 0 < len(key) <= 64
+
+    for module, on in (patch.done or {}).items():
+        if not key_ok(module):
+            continue
+        if on:
+            state["done"][module] = True
+        else:
+            state["done"].pop(module, None)
+    for card, mark in (patch.cards or {}).items():
+        if not key_ok(card):
+            continue
+        if mark is None:
+            state["cards"].pop(card, None)
+        elif mark in ("know", "again"):
+            state["cards"][card] = mark
+        else:
+            raise HTTPException(status_code=400, detail="a flashcard mark is 'know' or 'again'")
+    for quiz, answers in (patch.quiz or {}).items():
+        if not key_ok(quiz):
+            continue
+        if answers is None:  # the test is taken again from scratch
+            state["quiz"].pop(quiz, None)
+        else:
+            merged = dict(state["quiz"].get(quiz) or {})
+            merged.update({q: a for q, a in answers.items() if key_ok(q)})
+            state["quiz"][quiz] = merged
+    if len(json.dumps(state)) > 200_000:
+        raise HTTPException(status_code=413, detail="course state is too large")
+
+    if row is None:
+        row = CourseState(slug=slug)
+        db.add(row)
+    row.state = state  # a new dict: a change inside the old one would not be seen
+    row.updated_at = datetime.utcnow()
+    db.commit()
+    return LectureStateOut(**state)
 
 
 @router.get("/{slug}/files/{path:path}")

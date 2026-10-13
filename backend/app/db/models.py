@@ -114,6 +114,19 @@ class DeckProgress(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
+class CourseState(Base):
+    """What the owner has done in a project's course (lecture.html): modules
+    marked as passed, test answers, flashcard marks. On the server for the
+    same reason as DeckProgress."""
+    __tablename__ = "course_state"
+
+    slug: Mapped[str] = mapped_column(String(64), primary_key=True)
+    # {"done": {module id: true}, "cards": {flashcard index: "know" | "again"},
+    #  "quiz": {quiz id: {question index: chosen option}}}
+    state: Mapped[dict] = mapped_column(JSON, default=dict)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 class ReviewCard(Base):
     __tablename__ = "review_cards"
 

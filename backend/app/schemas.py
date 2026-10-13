@@ -106,6 +106,21 @@ class LectureOut(BaseModel):
     data: dict
 
 
+class LectureStateOut(BaseModel):
+    # What the owner has done in a course, the same on all her devices.
+    done: dict[str, bool] = {}            # module id -> passed
+    cards: dict[str, str] = {}            # flashcard index -> "know" | "again"
+    quiz: dict[str, dict[str, int]] = {}  # quiz id -> question index -> chosen option
+
+
+class LectureStatePatch(BaseModel):
+    # A change to it; null removes the entry. Sent one action at a time and
+    # merged on the server, so a page left open elsewhere cannot wipe the rest.
+    done: dict[str, bool | None] | None = None
+    cards: dict[str, str | None] | None = None
+    quiz: dict[str, dict[str, int] | None] | None = None
+
+
 class TalkPartOut(BaseModel):
     episode_code: str
     date: date | None

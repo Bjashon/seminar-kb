@@ -1,8 +1,32 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { EntitySummary } from "../types";
 import { api } from "../api";
-import { mountLecture, typeset, type LectureData } from "./mount";
+import {
+  clearLocalLectureState, mountLecture, readLocalLectureState, typeset,
+  type LectureData, type LecturePatch, type LectureState,
+} from "./mount";
 import "./lecture.css";
+
+/** The reader's progress in the course, from the server. What this browser
+ *  still keeps from the time progress lived here is handed over first, once.
+ *  Returns null when the server cannot be asked: the course then opens with
+ *  the browser's own copy, as it used to. */
+async function loadCourseState(slug: string): Promise<LectureState | null> {
+  try {
+    const local = readLocalLectureState(slug);
+    const patch: LecturePatch = {};
+    if (Object.keys(local.done).length) patch.done = Object.fromEntries(Object.keys(local.done).map((id) => [id, true as const]));
+    if (Object.keys(local.cards).length) patch.cards = local.cards;
+    if (Object.keys(local.quiz).length) patch.quiz = local.quiz;
+    if (Object.keys(patch).length) {
+      await api.patchLectureState(slug, patch);
+      clearLocalLectureState(slug);
+    }
+    return await api.getLectureState(slug);
+  } catch {
+    return null;
+  }
+}
 
 interface Props {
   slug: string;
@@ -17,7 +41,7 @@ interface Props {
  *  MathJax typesets it. The HTML lives outside React's reconciliation for the
  *  same reason as useTypesetHtml: MathJax rewrites it in place. */
 export function LecturePage({ slug, projectTitle, allEntities, onOpenCard, onBack }: Props) {
-  const [lecture, setLecture] = useState<{ html: string; data: LectureData } | null>(null);
+  const [lecture, setLecture] = useState<{ html: string; data: LectureData; state: LectureState | null } | null>(null);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -32,7 +56,11 @@ export function LecturePage({ slug, projectTitle, allEntities, onOpenCard, onBac
   useEffect(() => {
     setLecture(null);
     setFailed(false);
-    api.getLecture(slug).then((l) => setLecture(l as { html: string; data: LectureData })).catch(() => setFailed(true));
+    let cancelled = false;
+    Promise.all([api.getLecture(slug), loadCourseState(slug)])
+      .then(([l, state]) => { if (!cancelled) setLecture({ html: l.html, data: l.data as LectureData, state }); })
+      .catch(() => { if (!cancelled) setFailed(true); });
+    return () => { cancelled = true; };
   }, [slug]);
 
   useLayoutEffect(() => {
@@ -46,6 +74,10 @@ export function LecturePage({ slug, projectTitle, allEntities, onOpenCard, onBac
       data: lecture.data,
       slug,
       onOpenCard: (s) => openCard.current(s),
+      // Progress lives on the server; each action is sent as it happens.
+      storage: lecture.state
+        ? { initial: lecture.state, save: (patch) => { api.patchLectureState(slug, patch).catch(() => { /* kept on the page; lost if it is closed before the next change gets through */ }); } }
+        : undefined,
     });
     mounted.current = m;
     let cancelled = false;
