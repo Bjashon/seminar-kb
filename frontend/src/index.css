@@ -166,7 +166,13 @@ h3.title { font-size: 19px; }
 .index-empty { padding: 20px 4px; color: var(--ink-soft); font-size: 13.5px; }
 
 .trainer { display: flex; flex-direction: column; align-items: center; padding-top: 6vh; }
-.trainer .progress { font-size: 13px; color: var(--ink-soft); margin-bottom: 18px; }
+.trainer .progress { display: flex; align-items: baseline; gap: 12px; font-size: 13px; color: var(--ink-soft); margin-bottom: 18px; font-variant-numeric: tabular-nums; }
+.restart-btn { border: none; background: none; padding: 0; font: inherit; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.restart-btn:hover { color: var(--ink); }
+.passed-tag { margin-left: 8px; font-size: 11.5px; font-weight: 600; color: var(--ok); white-space: nowrap; }
+/* A long formula scrolls inside the trainer card instead of widening it. */
+.flashcard .answer mjx-container, .cloze-body mjx-container { max-width: 100%; }
+.flashcard .answer mjx-container[display="true"], .cloze-body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 1px; }
 .flashcard { width: 100%; max-width: 480px; border: 1px solid var(--border); border-radius: 14px; padding: 36px 32px; text-align: center; background: var(--bg-soft); }
 .flashcard.cloze { text-align: left; max-width: 560px; }
 .flashcard { position: relative; }
@@ -234,3 +240,58 @@ h3.title { font-size: 19px; }
 .project-files a { color: var(--accent); text-decoration: none; }
 .project-files a:hover { text-decoration: underline; }
 .project-file-size { color: var(--ink-soft); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+/* ---------- phone ----------
+   Same look, fitted to a narrow screen: nothing wider than the screen, and
+   everything one taps is big enough for a finger. The dashboard's cards
+   become one scrolling column (Canvas.tsx switches at the same width). */
+.canvas-empty { margin: 0; padding: 48px 24px; text-align: center; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+.canvas-viewport.stacked { overflow-x: hidden; overflow-y: auto; }
+.canvas-wrap.stacked { position: static; display: flex; flex-direction: column; gap: 12px; padding: 12px 12px 96px; }
+.canvas-wrap.stacked .node-card { position: relative; width: 100%; min-width: 0; max-width: none; cursor: default; touch-action: auto; scroll-margin-top: 12px; }
+.canvas-wrap.stacked .node-drag-handle { padding: 8px 6px 0 16px; user-select: auto; }
+.canvas-wrap.stacked .node-body { padding: 4px 16px 18px; }
+.canvas-wrap.stacked .node-close { font-size: 22px; padding: 8px 10px; }
+.canvas-wrap.stacked .bookmark-btn { padding: 10px; }
+.canvas-wrap.stacked .lang-switch button { padding: 7px 12px; }
+.canvas-wrap.stacked .source-label { margin-bottom: 14px; }
+
+@media (max-width: 700px) {
+  /* The bar keeps its 53px: the panes below are sized from it. */
+  .topbar { padding: 7px 10px 7px 16px; gap: 8px; }
+  .top-nav { gap: 2px; min-width: 0; }
+  .top-nav .hint-small { display: none; }
+  .top-nav button { padding: 10px 6px; }
+  .layout { height: calc(100dvh - 53px); }
+  .main-inner { padding: 20px 16px 72px; }
+  /* Displayed formulas a touch smaller, so that most fit without scrolling. */
+  .body-text mjx-container[display="true"], .flashcard .answer mjx-container[display="true"], .cloze-body mjx-container[display="true"] { font-size: 92%; }
+
+  .trainer { padding-top: 0; }
+  .trainer > .lang-switch { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 480px; }
+  .trainer > .lang-switch button { padding: 10px 8px; font-size: 13px; justify-content: center; }
+  .flashcard { padding: 32px 18px 22px; }
+  .flashcard h3 { font-size: 20px; }
+  .flashcard > .bookmark-btn { top: 2px; right: 2px; padding: 12px; }
+  .check-btn, .reveal-btn { padding: 12px 26px; font-size: 15px; }
+  .snooze-btn { padding: 12px 14px; font-size: 14px; }
+  .grade-row { gap: 6px; }
+  .grade-btn { max-width: none; padding: 13px 4px; font-size: 14px; }
+  .cloze-input { font-size: 16px; }
+  .trainer .hint { max-width: none; }
+
+  .article-row { flex-wrap: wrap; padding: 12px 14px; }
+  .article-main { flex-basis: 0; }
+  .article-actions { width: 100%; flex-wrap: wrap; }
+  .article-actions button, .article-actions a { flex: 1 1 auto; justify-content: center; padding: 10px 12px; }
+
+  .index-filters { gap: 10px; margin-bottom: 20px; }
+  .index-filters input { flex-basis: 100%; font-size: 16px; }
+  .index-row-open { padding: 10px 2px; font-size: 15px; }
+  .project-switch { flex-wrap: wrap; }
+  .project-switch button { padding: 8px 10px; text-align: left; }
+}
+@media (max-width: 420px) {
+  .brand-link { display: none; }
+  .top-nav { width: 100%; justify-content: space-between; }
+}

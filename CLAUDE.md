@@ -8,7 +8,7 @@
 
 - `backend/` — FastAPI + SQLAlchemy + Alembic. Локально SQLite (`backend/dev.db`), на проде Postgres.
 - `frontend/` — React + Vite + MathJax. В проде бэкенд сам раздаёт собранный `frontend/dist`.
-- `backend/app/ingestion/extracted/*.json` — весь контент (одна статья = один файл).
+- `backend/app/ingestion/extracted/*.json` — весь контент (одна статья = один файл). Общие понятия, не относящиеся ни к одной статье (алгебра Грассмана, теорема Пуанкаре–Биркгофа–Витта), — в `glossary.json` там же.
 - `backend/app/ingestion/talks_metadata.json` — снимок метаданных докладов из Notion.
 - `data/sources/<код доклада>/` — PDF для панели источника. `data/raw/` — выгрузка Notion, есть только локально, **не трогать**.
 - `projects/<slug>/project.md` — страницы исследовательских проектов, вкладка «Статьи» в приложении.
@@ -38,6 +38,8 @@ cd backend
 
 - Команды Python — через `./.venv/Scripts/python.exe` (на Windows голый `python` может быть заглушкой Store).
 - Изменения интерфейса проверять в браузере, а не только сборкой: `cd frontend && npm run build`, затем `./.venv/Scripts/python.exe -m uvicorn app.main:app --port 8000` из `backend/` и открыть http://127.0.0.1:8000. Для автоматической проверки годится `playwright-core` с системным Edge (`chromium.launch({ channel: "msedge" })`).
+- Телефон. При ширине экрана до 700px дашборд показывает карточки одной колонкой во всю ширину, без перетаскивания, линий и масштаба (`Canvas.tsx`, `usePhone`; тот же порог — в конце `index.css`). Любое изменение интерфейса проверять и в размере телефона: в playwright — `viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true`; ничто не должно быть шире экрана, верхняя полоса должна остаться высотой 53px.
+- Тренажёр помнит место в каждой колоде («Базовые понятия», каждая статья, «Мой набор») в браузере: в `localStorage` лежат карточки, уже пройденные в текущем круге (`Trainer.tsx`, `deckKey`).
 - Миграции схемы — только через Alembic (`backend/alembic/versions/`), при старте контейнера они применяются сами.
 - Деплой: пуш в `master`, затем владелец вручную жмёт **Redeploy** в EasyPanel. Автодеплой не работает (GitHub webhook → 403); это принятое решение, чинить его без её просьбы не нужно. После пуша всегда напоминать про Redeploy.
 - Не коммитить, пока не попросили или пока это не часть оговорённой задачи; перед коммитом смотреть `git status`.

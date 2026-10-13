@@ -31,6 +31,38 @@ function shuffle<T>(arr: T[]): T[] {
 
 type TrainerMode = "history" | "foundational" | "article" | "bookmarked";
 
+// Where you are in a deck is kept per deck, in this browser: the fixed decks
+// (basics, one article, your own set) are long, and switching to another one
+// and back -- or reloading the page -- must not send you to card 1 again.
+// What is stored is the cards already passed in the current round, so a deck
+// that gained a card still resumes at the right place. "History" needs none
+// of this: a graded card leaves that queue by itself.
+const deckKey = (m: TrainerMode, talkId?: number | null): string | null =>
+  m === "history" ? null : m === "article" ? (talkId == null ? null : `article:${talkId}`) : m;
+const PASSED_PREFIX = "trainer-passed-v1:";
+function readPassed(key: string): Set<string> {
+  try {
+    const v = JSON.parse(localStorage.getItem(PASSED_PREFIX + key) ?? "[]");
+    return new Set(Array.isArray(v) ? v.filter((s) => typeof s === "string") : []);
+  } catch {
+    return new Set();
+  }
+}
+function writePassed(key: string, passed: Set<string>) {
+  try {
+    if (passed.size) localStorage.setItem(PASSED_PREFIX + key, JSON.stringify([...passed]));
+    else localStorage.removeItem(PASSED_PREFIX + key);
+  } catch {
+    /* storage unavailable: the position lives until the page is closed */
+  }
+}
+/** The first card at or after `from` that has not been passed yet. */
+function firstOpen(queue: ReviewCardOut[], passed: Set<string>, from: number): number {
+  let i = from;
+  while (i < queue.length && passed.has(queue[i].slug)) i++;
+  return i;
+}
+
 export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
   // A talk asked for from outside while the mode is still switching to
@@ -39,19 +71,36 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   const pendingTalk = useRef<number | null>(null);
   const [queue, setQueue] = useState<ReviewCardOut[] | null>(null);
   const [index, setIndex] = useState(0);
+  // Cards of the current deck already passed in this round (see deckKey),
+  // and which deck the queue on screen belongs to: right after a switch the
+  // old deck is still shown until the new one arrives, and an answer given
+  // in that moment must be booked to the deck it was given in.
+  const [passed, setPassed] = useState<Set<string>>(new Set());
+  const [deck, setDeck] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [clozeResult, setClozeResult] = useState<{ correct: boolean; term: string } | null>(null);
   const [talks, setTalks] = useState<TalkSummary[] | null>(null);
   const [selectedTalk, setSelectedTalk] = useState<number | null>(null);
+  // Only the latest request may fill the queue: switching decks quickly must
+  // not let a slow answer for the previous one land on top of the new one.
+  const loadSeq = useRef(0);
 
-  function load(m: TrainerMode, talkId?: number) {
+  function load(m: TrainerMode, talkId?: number, restart = false) {
+    const seq = ++loadSeq.current;
+    const key = deckKey(m, talkId);
+    if (key && restart) writePassed(key, new Set());
     api.dueCards(m, talkId).then((cards) => {
+      if (seq !== loadSeq.current) return;
       // Only "history" is a grab-bag of whatever's due -- shuffling it is
       // fine. "foundational", "article" and "bookmarked" are a designed
       // learning sequence (the backend topologically orders them by "uses"
       // dependency), so scrambling them would defeat the point.
-      setQueue(m === "history" ? shuffle(cards) : cards);
-      setIndex(0);
+      const q = m === "history" ? shuffle(cards) : cards;
+      const done = key ? readPassed(key) : new Set<string>();
+      setQueue(q);
+      setDeck(key);
+      setPassed(done);
+      setIndex(firstOpen(q, done, 0));
       setRevealed(false);
       setClozeResult(null);
     });
@@ -65,10 +114,10 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
         pickArticle(talkId);
         return;
       }
-      // Picking an article is a separate step (see the picker below) --
-      // nothing to drill yet until one is chosen.
-      setQueue(null);
-      setSelectedTalk(null);
+      // Back to the article that was being drilled; otherwise picking one
+      // is a separate step (see the picker below).
+      if (selectedTalk !== null) load("article", selectedTalk);
+      else setQueue(null);
       return;
     }
     load(mode);
@@ -112,20 +161,36 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
     if (gotoEl) onOpenCard(gotoEl.dataset.goto!);
   }
 
-  function next() {
-    setIndex((i) => i + 1);
+  const passedHere = queue ? queue.filter((c) => passed.has(c.slug)).length : 0;
+
+  /** The card has been answered or put off: on to the next one not yet passed. */
+  function next(slug: string) {
+    if (!queue) return;
+    const done = new Set(passed);
+    if (deck) {
+      done.add(slug);
+      setPassed(done);
+      writePassed(deck, done);
+    }
+    setIndex(firstOpen(queue, done, index + 1));
     setRevealed(false);
     setClozeResult(null);
   }
 
+  function restart() {
+    load(mode, selectedTalk ?? undefined, true);
+  }
+
   function grade(g: "again" | "good" | "easy") {
     if (!current) return;
-    api.grade(current.slug, g).finally(next);
+    const slug = current.slug;
+    api.grade(slug, g).finally(() => next(slug));
   }
 
   function snooze() {
     if (!current) return;
-    api.snooze(current.slug).finally(next);
+    const slug = current.slug;
+    api.snooze(slug).finally(() => next(slug));
   }
 
   const modeSwitch = (
@@ -159,6 +224,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
           {talks !== null && talks.length === 0 && <p>Пока нет статей с определениями или свойствами.</p>}
           {talks?.map((t) => {
             const isNext = !!upcoming && t.parts.some((p) => p.date === upcoming);
+            const begun = Math.min(readPassed(deckKey("article", t.id)!).size, t.entity_count);
             return (
             <div key={t.id} className={"article-row" + (isNext ? " upcoming" : "")}>
               <div className="article-main">
@@ -173,6 +239,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                     );
                   })}
                   {isNext && <span className="upcoming-tag">ближайший доклад</span>}
+                  {begun > 0 && <span className="passed-tag">пройдено {begun} из {t.entity_count}</span>}
                 </div>
                 <div className="article-title">{t.title}</div>
               </div>
@@ -220,7 +287,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
         )}
         <div className="done">
           <p>Колода пройдена — {queue.length} карточек.</p>
-          <button onClick={() => load(mode, selectedTalk ?? undefined)}>Начать заново</button>
+          <button onClick={restart}>Начать заново</button>
         </div>
       </div>
     );
@@ -233,7 +300,12 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
       {mode === "article" && (
         <button className="article-back" onClick={() => setSelectedTalk(null)}>&larr; К списку статей</button>
       )}
-      <div className="progress">{index + 1} / {queue.length}</div>
+      <div className="progress">
+        {(deck ? passedHere : index) + 1} / {queue.length}
+        {deck && passedHere > 0 && (
+          <button className="restart-btn" onClick={restart} title="Начать эту колоду с первой карточки">с начала</button>
+        )}
+      </div>
 
       {!isLevel2 && (
         <div className="flashcard">
