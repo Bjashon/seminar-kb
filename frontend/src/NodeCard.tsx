@@ -14,9 +14,6 @@ interface Props {
    *  since there's no scrolling to go fetch a card dragged out of view. */
   boundsW: number;
   boundsH: number;
-  /** Phone layout: the card is one of a full-width column -- nothing to
-   *  drag, resize or enlarge, and the page scrolls under the finger. */
-  stacked: boolean;
   isTop: boolean;
   enlarged: boolean;
   onToggleEnlarge: (slug: string) => void;
@@ -32,7 +29,7 @@ interface Props {
 }
 
 export const NodeCard = memo(function NodeCard({
-  node, detail, allEntities, zoom, boundsW, boundsH, stacked, isTop, enlarged, onToggleEnlarge, onRaise, onMove, onResize, onClose,
+  node, detail, allEntities, zoom, boundsW, boundsH, isTop, enlarged, onToggleEnlarge, onRaise, onMove, onResize, onClose,
   onSetLang, onToggleProof, onSetBookmark, onGoto, onOpenSource,
 }: Props) {
   const [dragging, setDragging] = useState(false);
@@ -67,16 +64,14 @@ export const NodeCard = memo(function NodeCard({
     const widest = displays.reduce((max, el) => Math.max(max, el.scrollWidth), 0);
     const COMPACT_CONTENT_WIDTH = 592; // 640px card minus horizontal padding
     const CARD_PADDING = 40;
-    // In the phone column the card is as wide as the screen, and a long
-    // formula scrolls inside it instead.
-    if (widest > COMPACT_CONTENT_WIDTH && !stacked) {
+    if (widest > COMPACT_CONTENT_WIDTH) {
       card.style.width = `${Math.min(widest + CARD_PADDING, window.innerWidth * 0.95)}px`;
       card.style.maxWidth = "95vw";
     } else {
       card.style.width = "";
       card.style.maxWidth = "";
     }
-  }, [body.ready, proofBox.ready, node.proofOpen, node.lang, stacked]);
+  }, [body.ready, proofBox.ready, node.proofOpen, node.lang]);
 
   const scale = node.scale ?? 1;
 
@@ -86,7 +81,7 @@ export const NodeCard = memo(function NodeCard({
   // itself, silently breaking concept links and the source title.
   const INTERACTIVE = "button, a, input, textarea, select, [data-goto], [data-ext], .has-source, .node-resize";
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
-    if (e.button !== 0 || enlarged || stacked) return;
+    if (e.button !== 0 || enlarged) return;
     if ((e.target as HTMLElement).closest(INTERACTIVE)) return;
     e.preventDefault(); // no text selection while dragging
     onRaise(node.slug);
@@ -172,7 +167,7 @@ export const NodeCard = memo(function NodeCard({
       className={`node-card kind-${detail.kind}` + (dragging ? " dragging" : "")}
       data-slug={node.slug}
       data-scale={scale}
-      style={stacked ? undefined : { left: node.x, top: node.y, zIndex: isTop ? 3 : undefined, ...enlargeStyle }}
+      style={{ left: node.x, top: node.y, zIndex: isTop ? 3 : undefined, ...enlargeStyle }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={endDrag}
@@ -228,7 +223,7 @@ export const NodeCard = memo(function NodeCard({
           </>
         )}
       </div>
-      {!enlarged && !stacked && (
+      {!enlarged && (
         <div
           className="node-resize"
           title="Потяни, чтобы изменить размер. Двойной клик — исходный размер"

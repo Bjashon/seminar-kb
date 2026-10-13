@@ -235,7 +235,7 @@ export default function App() {
             <IndexPage entities={entities} onOpen={openFromIndex} onOpenSource={openSourceFromIndex} />
           </div>
           <div className="main-pane" hidden={mode !== "trainer"}>
-            <div className="main-inner">
+            <div className="main-inner trainer-pane">
               <Trainer
                 allEntities={entities}
                 details={details}

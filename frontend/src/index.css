@@ -241,31 +241,22 @@ h3.title { font-size: 19px; }
 .project-files a:hover { text-decoration: underline; }
 .project-file-size { color: var(--ink-soft); font-size: 12.5px; font-variant-numeric: tabular-nums; }
 
-/* ---------- phone ----------
+/* ---------- phone: the top bar and the trainer ----------
    Same look, fitted to a narrow screen: nothing wider than the screen, and
-   everything one taps is big enough for a finger. The dashboard's cards
-   become one scrolling column (Canvas.tsx switches at the same width). */
-.canvas-empty { margin: 0; padding: 48px 24px; text-align: center; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
-.canvas-viewport.stacked { overflow-x: hidden; overflow-y: auto; }
-.canvas-wrap.stacked { position: static; display: flex; flex-direction: column; gap: 12px; padding: 12px 12px 96px; }
-.canvas-wrap.stacked .node-card { position: relative; width: 100%; min-width: 0; max-width: none; cursor: default; touch-action: auto; scroll-margin-top: 12px; }
-.canvas-wrap.stacked .node-drag-handle { padding: 8px 6px 0 16px; user-select: auto; }
-.canvas-wrap.stacked .node-body { padding: 4px 16px 18px; }
-.canvas-wrap.stacked .node-close { font-size: 22px; padding: 8px 10px; }
-.canvas-wrap.stacked .bookmark-btn { padding: 10px; }
-.canvas-wrap.stacked .lang-switch button { padding: 7px 12px; }
-.canvas-wrap.stacked .source-label { margin-bottom: 14px; }
-
+   everything one taps is big enough for a finger. Only the bar and the
+   trainer are fitted; the dashboard, the index and the project pages are
+   left as they are on a phone (the owner's decision). */
 @media (max-width: 700px) {
   /* The bar keeps its 53px: the panes below are sized from it. */
   .topbar { padding: 7px 10px 7px 16px; gap: 8px; }
   .top-nav { gap: 2px; min-width: 0; }
   .top-nav .hint-small { display: none; }
   .top-nav button { padding: 10px 6px; }
-  .layout { height: calc(100dvh - 53px); }
-  .main-inner { padding: 20px 16px 72px; }
+
+  /* Room at the bottom: a phone browser's own bar covers the end of the pane. */
+  .trainer-pane { padding: 20px 16px 120px; }
   /* Displayed formulas a touch smaller, so that most fit without scrolling. */
-  .body-text mjx-container[display="true"], .flashcard .answer mjx-container[display="true"], .cloze-body mjx-container[display="true"] { font-size: 92%; }
+  .flashcard .answer mjx-container[display="true"], .cloze-body mjx-container[display="true"] { font-size: 92%; }
 
   .trainer { padding-top: 0; }
   .trainer > .lang-switch { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 480px; }
@@ -282,14 +273,8 @@ h3.title { font-size: 19px; }
 
   .article-row { flex-wrap: wrap; padding: 12px 14px; }
   .article-main { flex-basis: 0; }
-  .article-actions { width: 100%; flex-wrap: wrap; }
-  .article-actions button, .article-actions a { flex: 1 1 auto; justify-content: center; padding: 10px 12px; }
-
-  .index-filters { gap: 10px; margin-bottom: 20px; }
-  .index-filters input { flex-basis: 100%; font-size: 16px; }
-  .index-row-open { padding: 10px 2px; font-size: 15px; }
-  .project-switch { flex-wrap: wrap; }
-  .project-switch button { padding: 8px 10px; text-align: left; }
+  .article-row .article-actions { width: 100%; }
+  .article-row .article-actions button { flex: 1 1 auto; padding: 10px 12px; }
 }
 @media (max-width: 420px) {
   .brand-link { display: none; }

@@ -69,21 +69,6 @@ function clampZoom(z: number): number {
   return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, z));
 }
 
-// On a phone there is no room to place cards side by side or to drag them:
-// the same cards are shown as one scrolling column, full width, in the order
-// they were opened. The breakpoint is repeated in index.css.
-const PHONE = "(max-width: 700px)";
-function usePhone(): boolean {
-  const [phone, setPhone] = useState(() => window.matchMedia(PHONE).matches);
-  useEffect(() => {
-    const mq = window.matchMedia(PHONE);
-    const onChange = () => setPhone(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return phone;
-}
-
 function sameLines(a: number[][], b: number[][]): boolean {
   if (a.length !== b.length) return false;
   return a.every((line, i) => line.every((v, j) => Math.abs(v - b[i][j]) < 0.5));
@@ -121,9 +106,6 @@ export function Canvas({
   const zoomRef = useRef(zoom);
   zoomRef.current = zoom;
   const prevCountRef = useRef(nodes.length);
-  const stacked = usePhone();
-  const stackedRef = useRef(stacked);
-  stackedRef.current = stacked;
 
   useLayoutEffect(() => {
     const vp = viewportRef.current;
@@ -167,12 +149,6 @@ export function Canvas({
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-    // The phone column draws no connecting lines and never zooms.
-    if (stacked) {
-      setLines((prev) => (prev.length ? [] : prev));
-      prevCountRef.current = nodes.length;
-      return;
-    }
 
     const recompute = () => {
       const rectFor = (slug: string): Rect | null => {
@@ -207,7 +183,7 @@ export function Canvas({
     }, 350);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes, edges, details, zoom, stacked]);
+  }, [nodes, edges, details, zoom]);
 
   // Pack a freshly opened board by measured card size -- heights depend on
   // the typeset formulas, so a fixed grid would overlap. Cards flow in
@@ -217,15 +193,6 @@ export function Canvas({
   // narrow, and had to be shrunk to an unreadable 25%.
   useEffect(() => {
     if (!pendingLayout) return;
-    // In the phone column a board needs no packing: it is already in
-    // reading order, one card under another.
-    if (stackedRef.current) {
-      setEnlargedSlug(null);
-      setLayoutShown(true);
-      viewportRef.current?.scrollTo({ top: 0 });
-      onLayoutDone();
-      return;
-    }
     setLayoutShown(false);
     setEnlargedSlug(null);
     const apply = (requireAll: boolean) => {
@@ -282,14 +249,10 @@ export function Canvas({
         return;
       }
       setTopSlug(focus.slug);
-      if (stackedRef.current) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        const { w, h } = viewRef.current;
-        const z = zoomRef.current;
-        const c = cardRect(el);
-        if (c.x + c.w > w / z || c.y + c.h > h / z) shrinkToShowAll();
-      }
+      const { w, h } = viewRef.current;
+      const z = zoomRef.current;
+      const c = cardRect(el);
+      if (c.x + c.w > w / z || c.y + c.h > h / z) shrinkToShowAll();
       el.classList.remove("flash");
       void el.offsetWidth;
       el.classList.add("flash");
@@ -312,24 +275,17 @@ export function Canvas({
   const layerH = Math.max(boundsH, 3000);
 
   return (
-    <div className={"canvas-viewport" + (stacked ? " stacked" : "")} ref={viewportRef}>
+    <div className="canvas-viewport" ref={viewportRef}>
       <div
-        className={"canvas-wrap" + (stacked ? " stacked" : "")}
+        className="canvas-wrap"
         ref={wrapRef}
-        style={stacked
-          ? { opacity: layoutShown ? 1 : 0 }
-          : { width: layerW, height: layerH, transform: `scale(${zoom})`, opacity: layoutShown ? 1 : 0 }}
+        style={{ width: layerW, height: layerH, transform: `scale(${zoom})`, opacity: layoutShown ? 1 : 0 }}
       >
-        {stacked && nodes.length === 0 && (
-          <p className="canvas-empty">Открой карточку из «Указателя» или «Тренажёра» — она появится здесь.</p>
-        )}
-        {!stacked && (
-          <svg className="canvas-edges" width={layerW} height={layerH}>
-            {lines.map(([x1, y1, x2, y2], i) => (
-              <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#c4c4c4" strokeWidth={2} />
-            ))}
-          </svg>
-        )}
+        <svg className="canvas-edges" width={layerW} height={layerH}>
+          {lines.map(([x1, y1, x2, y2], i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#c4c4c4" strokeWidth={2} />
+          ))}
+        </svg>
         {nodes.map((node) => {
           const detail = details[node.slug];
           if (!detail) return null;
@@ -339,12 +295,11 @@ export function Canvas({
               node={node}
               detail={detail}
               allEntities={allEntities}
-              zoom={stacked ? 1 : zoom}
+              zoom={zoom}
               boundsW={boundsW}
               boundsH={boundsH}
-              stacked={stacked}
               isTop={topSlug === node.slug}
-              enlarged={!stacked && enlargedSlug === node.slug && zoom < 0.95}
+              enlarged={enlargedSlug === node.slug && zoom < 0.95}
               onToggleEnlarge={toggleEnlarge}
               onRaise={setTopSlug}
               onMove={onMove}
@@ -359,7 +314,7 @@ export function Canvas({
           );
         })}
       </div>
-      {nodes.length > 0 && !stacked && (
+      {nodes.length > 0 && (
         <div className="zoom-controls">
           <button aria-label="Уменьшить" onClick={() => setZoom((z) => clampZoom(z / ZOOM_STEP))}>−</button>
           <span className="zoom-value">{Math.round(zoom * 100)}%</span>
