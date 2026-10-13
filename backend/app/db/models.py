@@ -113,6 +113,8 @@ class ReviewCard(Base):
     last_reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     # 1 = recognition (flip card), 2 = recall (cloze blank) -- promoted after a streak of good/easy grades.
     level: Mapped[int] = mapped_column(Integer, default=1)
+    # Points towards level 2 since the last "again": a good is 2, an easy 3,
+    # and 6 promote (services/srs.py).
     streak: Mapped[int] = mapped_column(Integer, default=0)
     # Hand-picked into the owner's own study set (the violet bookmark on a
     # card; "Мой набор" in the trainer). Independent of the SRS state.

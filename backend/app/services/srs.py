@@ -5,6 +5,17 @@ from app.db.models import ReviewCard
 
 QUALITY_BY_GRADE = {"again": 2, "good": 4, "easy": 5}
 
+# Plain SM-2 gives "good" and "easy" the same next interval and only nudges
+# the ease factor, so the two buttons looked identical for weeks. "Easy" has
+# to mean "I know this, show it much later": 4 days instead of 1 the first
+# time, and a third further than "good" from then on.
+EASY_FIRST_INTERVAL_DAYS = 4
+EASY_BONUS = 1.3
+# Towards level 2 a "good" is worth 2 points and an "easy" 3, and 6 points
+# promote the card: three goods in a row, or two easies.
+STREAK_POINTS = {"good": 2, "easy": 3}
+PROMOTE_AT = 6
+
 CLOZE_RE = re.compile(r"\*\*(.+?)\*\*")
 
 
@@ -16,11 +27,12 @@ def cloze_term(statement_ru: str | None) -> str | None:
 
 
 def apply_grade(card: ReviewCard, grade: str, has_cloze_term: bool) -> None:
-    """SM-2, with a 3-button grade set mapped to quality 2/4/5.
+    """SM-2, with a 3-button grade set mapped to quality 2/4/5, and an
+    "easy" that pushes the card further than a "good" (see EASY_* above).
 
-    Level 1 is recognition (flip card); after 3 consecutive good/easy grades
-    a card with a clozable defining term is promoted to level 2 (fill in the
-    blank). A single "again" drops it back to level 1.
+    Level 1 is recognition (flip card); after three good grades in a row, or
+    two easy ones, a card with a clozable defining term is promoted to level
+    2 (fill in the blank). A single "again" drops it back to level 1.
     """
     quality = QUALITY_BY_GRADE[grade]
 
@@ -31,15 +43,17 @@ def apply_grade(card: ReviewCard, grade: str, has_cloze_term: bool) -> None:
         if card.level == 2:
             card.level = 1
     else:
+        easy = grade == "easy"
         if card.repetitions == 0:
-            card.interval_days = 1
+            interval = EASY_FIRST_INTERVAL_DAYS if easy else 1
         elif card.repetitions == 1:
-            card.interval_days = 6
+            interval = 6 * (EASY_BONUS if easy else 1)
         else:
-            card.interval_days = round(card.interval_days * card.ease_factor)
+            interval = card.interval_days * card.ease_factor * (EASY_BONUS if easy else 1)
+        card.interval_days = round(interval)
         card.repetitions += 1
-        card.streak += 1
-        if card.level == 1 and card.streak >= 3 and has_cloze_term:
+        card.streak += STREAK_POINTS[grade]
+        if card.level == 1 and card.streak >= PROMOTE_AT and has_cloze_term:
             card.level = 2
             card.streak = 0
 
