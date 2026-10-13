@@ -31,29 +31,33 @@ function shuffle<T>(arr: T[]): T[] {
 
 type TrainerMode = "history" | "foundational" | "article" | "bookmarked";
 
-// Where you are in a deck is kept per deck, in this browser: the fixed decks
-// (basics, one article, your own set) are long, and switching to another one
-// and back -- or reloading the page -- must not send you to card 1 again.
-// What is stored is the cards already passed in the current round, so a deck
-// that gained a card still resumes at the right place. "History" needs none
-// of this: a graded card leaves that queue by itself.
+// Where you are in a deck is kept per deck, on the server (the site has one
+// user, and her phone and desktop must continue from the same card): the
+// fixed decks (basics, one article, your own set) are long, and switching to
+// another one and back -- or reloading the page -- must not send you to card
+// 1 again. What is stored is the cards already passed in the current round,
+// so a deck that gained a card still resumes at the right place. "History"
+// needs none of this: a graded card leaves that queue by itself.
 const deckKey = (m: TrainerMode, talkId?: number | null): string | null =>
   m === "history" ? null : m === "article" ? (talkId == null ? null : `article:${talkId}`) : m;
-const PASSED_PREFIX = "trainer-passed-v1:";
-function readPassed(key: string): Set<string> {
+
+// For a day the position lived in the browser; hand over what is there, once.
+const OLD_PREFIX = "trainer-passed-v1:";
+async function handOverBrowserProgress(): Promise<void> {
+  let keys: string[] = [];
   try {
-    const v = JSON.parse(localStorage.getItem(PASSED_PREFIX + key) ?? "[]");
-    return new Set(Array.isArray(v) ? v.filter((s) => typeof s === "string") : []);
+    keys = Object.keys(localStorage).filter((k) => k.startsWith(OLD_PREFIX));
   } catch {
-    return new Set();
+    return;
   }
-}
-function writePassed(key: string, passed: Set<string>) {
-  try {
-    if (passed.size) localStorage.setItem(PASSED_PREFIX + key, JSON.stringify([...passed]));
-    else localStorage.removeItem(PASSED_PREFIX + key);
-  } catch {
-    /* storage unavailable: the position lives until the page is closed */
+  for (const k of keys) {
+    try {
+      const slugs = JSON.parse(localStorage.getItem(k) ?? "[]");
+      if (Array.isArray(slugs) && slugs.length) await api.deckPassed(k.slice(OLD_PREFIX.length), slugs);
+      localStorage.removeItem(k);
+    } catch {
+      /* stays in the browser until the server takes it */
+    }
   }
 }
 /** The first card at or after `from` that has not been passed yet. */
@@ -81,22 +85,32 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   const [clozeResult, setClozeResult] = useState<{ correct: boolean; term: string } | null>(null);
   const [talks, setTalks] = useState<TalkSummary[] | null>(null);
   const [selectedTalk, setSelectedTalk] = useState<number | null>(null);
+  // The passed cards of every started deck, as the server last told: the
+  // article list shows how far each one is.
+  const [decks, setDecks] = useState<Record<string, string[]>>({});
   // Only the latest request may fill the queue: switching decks quickly must
   // not let a slow answer for the previous one land on top of the new one.
   const loadSeq = useRef(0);
+  const handedOver = useRef<Promise<void> | null>(null);
 
   function load(m: TrainerMode, talkId?: number, restart = false) {
     const seq = ++loadSeq.current;
     const key = deckKey(m, talkId);
-    if (key && restart) writePassed(key, new Set());
-    api.dueCards(m, talkId).then((cards) => {
+    handedOver.current ??= handOverBrowserProgress();
+    const progress = handedOver.current
+      .then(() => (key && restart ? api.deckRestart(key) : undefined))
+      .then(() => api.deckProgress())
+      // Without the server's word the deck still opens, from its first card.
+      .catch(() => ({}) as Record<string, string[]>);
+    Promise.all([api.dueCards(m, talkId), progress]).then(([cards, all]) => {
       if (seq !== loadSeq.current) return;
       // Only "history" is a grab-bag of whatever's due -- shuffling it is
       // fine. "foundational", "article" and "bookmarked" are a designed
       // learning sequence (the backend topologically orders them by "uses"
       // dependency), so scrambling them would defeat the point.
       const q = m === "history" ? shuffle(cards) : cards;
-      const done = key ? readPassed(key) : new Set<string>();
+      const done = new Set<string>(key ? all[key] ?? [] : []);
+      setDecks(all);
       setQueue(q);
       setDeck(key);
       setPassed(done);
@@ -170,7 +184,13 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
     if (deck) {
       done.add(slug);
       setPassed(done);
-      writePassed(deck, done);
+      // The server adds the card to what it has and answers with the whole
+      // list -- which may hold cards passed meanwhile on another device.
+      const here = deck;
+      api.deckPassed(here, [slug]).then((list) => {
+        setDecks((d) => ({ ...d, [here]: list }));
+        setPassed((p) => (p === done ? new Set(list) : p));
+      }).catch(() => { /* the position stays in this page until the next answer gets through */ });
     }
     setIndex(firstOpen(queue, done, index + 1));
     setRevealed(false);
@@ -224,7 +244,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
           {talks !== null && talks.length === 0 && <p>Пока нет статей с определениями или свойствами.</p>}
           {talks?.map((t) => {
             const isNext = !!upcoming && t.parts.some((p) => p.date === upcoming);
-            const begun = Math.min(readPassed(deckKey("article", t.id)!).size, t.entity_count);
+            const begun = Math.min(decks[deckKey("article", t.id)!]?.length ?? 0, t.entity_count);
             return (
             <div key={t.id} className={"article-row" + (isNext ? " upcoming" : "")}>
               <div className="article-main">

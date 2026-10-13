@@ -1,16 +1,21 @@
+import re
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from app.db.models import Entity, EntityKind, ReviewCard, Talk
+from app.db.models import DeckProgress, Entity, EntityKind, ReviewCard, Talk
 from app.db.session import get_db
-from app.schemas import BookmarkIn, GradeIn, ReviewCardOut, SnoozeIn
+from app.schemas import BookmarkIn, DeckPassedIn, GradeIn, ReviewCardOut, SnoozeIn
 from app.services.ordering import topo_order
 from app.services.srs import apply_grade, cloze_term
 from app.services.talk_groups import paper_group
 
 router = APIRouter(prefix="/review", tags=["review"])
+
+# The trainer's fixed decks, the ones one walks through card by card (the
+# "history" queue has no position: a graded card leaves it by itself).
+DECK = re.compile(r"foundational|bookmarked|article:\d{1,9}")
 
 
 def _bypass_due_cards(db: Session, entities: list[Entity], now: datetime) -> list[ReviewCardOut]:
@@ -95,6 +100,51 @@ def due_cards(
                       bookmarked=c.bookmarked)
         for c, e in rows
     ]
+
+
+def _deck(deck: str) -> str:
+    if not DECK.fullmatch(deck):
+        raise HTTPException(status_code=404, detail="No such deck")
+    return deck
+
+
+@router.get("/decks", response_model=dict[str, list[str]])
+def deck_progress(db: Session = Depends(get_db)) -> dict[str, list[str]]:
+    """For every fixed deck that has been started: the cards already passed
+    in its current round. Stored here, not in the browser, so that every
+    device continues from the same card."""
+    return {row.deck: list(row.passed or []) for row in db.query(DeckProgress).all()}
+
+
+@router.post("/decks/{deck}/passed", response_model=list[str])
+def deck_passed(deck: str, body: DeckPassedIn, db: Session = Depends(get_db)) -> list[str]:
+    """Add cards to the deck's passed ones. Adding, not replacing: a tab left
+    open on another device knows an older state, and an answer given there
+    must not wipe out what was passed since."""
+    deck = _deck(deck)
+    known = {s for (s,) in db.query(Entity.slug).filter(Entity.slug.in_(body.slugs[:1000])).all()}
+    row = db.get(DeckProgress, deck)
+    if row is None:
+        row = DeckProgress(deck=deck, passed=[])
+        db.add(row)
+    passed = list(row.passed or [])
+    for slug in body.slugs:
+        if slug in known and slug not in passed:
+            passed.append(slug)
+    row.passed = passed  # a new list: an in-place append would not be seen as a change
+    row.updated_at = datetime.utcnow()
+    db.commit()
+    return passed
+
+
+@router.delete("/decks/{deck}", response_model=list[str])
+def deck_restart(deck: str, db: Session = Depends(get_db)) -> list[str]:
+    """Start the deck's round over."""
+    row = db.get(DeckProgress, _deck(deck))
+    if row is not None:
+        db.delete(row)
+        db.commit()
+    return []
 
 
 @router.get("/bookmarks", response_model=list[str])

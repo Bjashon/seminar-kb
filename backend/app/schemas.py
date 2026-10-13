@@ -152,6 +152,12 @@ class BookmarkIn(BaseModel):
     bookmarked: bool
 
 
+class DeckPassedIn(BaseModel):
+    # Cards passed in the deck's current round (one after an answer; several
+    # when a browser hands over what it used to keep itself).
+    slugs: list[str]
+
+
 class SnoozeIn(BaseModel):
     days: int = 3
 

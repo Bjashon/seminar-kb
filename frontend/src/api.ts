@@ -37,6 +37,17 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ days }),
     }).then((r) => json<ReviewCardOut>(r)),
+  // Where the owner is in each of the trainer's fixed decks: the cards
+  // passed in the current round, kept on the server for all her devices.
+  deckProgress: () => fetch(`${API_BASE}/review/decks`).then((r) => json<Record<string, string[]>>(r)),
+  deckPassed: (deck: string, slugs: string[]) =>
+    fetch(`${API_BASE}/review/decks/${encodeURIComponent(deck)}/passed`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slugs }),
+    }).then((r) => json<string[]>(r)),
+  deckRestart: (deck: string) =>
+    fetch(`${API_BASE}/review/decks/${encodeURIComponent(deck)}`, { method: "DELETE" }).then((r) => json<string[]>(r)),
   bookmark: (slug: string, bookmarked: boolean) =>
     fetch(`${API_BASE}/review/${slug}/bookmark`, {
       method: "POST",

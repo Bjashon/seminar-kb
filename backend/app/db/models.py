@@ -101,6 +101,19 @@ class SearchQuery(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
+class DeckProgress(Base):
+    """Where the owner is in one of the trainer's fixed decks ("foundational",
+    "bookmarked", "article:<talk id>"): the cards already passed in the
+    current round. Kept on the server -- she is the only user -- so that the
+    phone and the desktop continue from the same card."""
+    __tablename__ = "deck_progress"
+
+    deck: Mapped[str] = mapped_column(String(64), primary_key=True)
+    # Entity slugs, in the order they were passed.
+    passed: Mapped[list] = mapped_column(JSON, default=list)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 class ReviewCard(Base):
     __tablename__ = "review_cards"
 
