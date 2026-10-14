@@ -20,10 +20,14 @@
  *   push      -- класс body, который сдвигает текст под панель на широком экране
  *   closeOther-- селектор кнопки, закрывающей другую боковую панель (лектора), или null
  *   site      -- адрес сайта по умолчанию (можно поменять в панели)
+ *   askButton -- показывать под выделением и кнопку «Спросить про это»: она шлёт событие
+ *                "pk-ask" с {text, ctx, module, moduleTitle}; чат курса открывается и
+ *                добавляет к вопросу блок window.PICKS.quoteFor(detail) -- фрагмент с TeX и
+ *                абзац вокруг, чтобы лектор читал именно это место.
  */
 (function () {
   "use strict";
-  const C = Object.assign({ root: "body", modules: "section", reference: "", push: "pk-push", closeOther: null, site: "" }, window.PICKS_CONFIG || {});
+  const C = Object.assign({ root: "body", modules: "section", reference: "", push: "pk-push", closeOther: null, site: "", askButton: false }, window.PICKS_CONFIG || {});
   if (!C.project) return;
   const LOCAL = "pk-picks-v1:" + C.project;
   const KIND = { definition: "Определение", theorem: "Теорема", property: "Свойство" };
@@ -31,15 +35,17 @@
 
   // ---------------- styles ----------------
   const css = `
-.pk-add { position: absolute; z-index: 60; border: 0; border-radius: 999px; padding: 8px 14px; font: 600 14px/1.2 var(--f-ui, "Source Sans 3", system-ui, sans-serif);
-  background: var(--accent, #2a4fb0); color: var(--accent-ink, #fff); box-shadow: 0 6px 18px -6px rgba(0,0,0,.45); cursor: pointer; }
+.pk-float { position: absolute; z-index: 60; display: flex; gap: 6px; }
+.pk-float button { border: 0; border-radius: 999px; padding: 8px 14px; font: 600 14px/1.2 var(--f-ui, "Source Sans 3", system-ui, sans-serif);
+  background: var(--accent, #2a4fb0); color: var(--accent-ink, #fff); box-shadow: 0 6px 18px -6px rgba(0,0,0,.45); cursor: pointer; white-space: nowrap; }
+.pk-float .pk-ask { background: var(--card, var(--bg, #fff)); color: var(--accent, #2a4fb0); border: 1px solid var(--accent, #2a4fb0); }
 .pk-fab { position: fixed; left: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 41; border-radius: 999px; padding: 12px 18px;
   font: 600 15px/1.2 var(--f-ui, "Source Sans 3", system-ui, sans-serif); border: 1px solid var(--accent, #2a4fb0); background: var(--card, var(--bg, #fff)); color: var(--accent, #2a4fb0);
   box-shadow: 0 6px 18px -8px rgba(0,0,0,.4); cursor: pointer; }
 .pk-panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100vw); z-index: 52; display: flex; flex-direction: column;
   background: var(--card, var(--bg, #fff)); color: var(--ink, #1b1b1b); border-left: 1px solid var(--rule, var(--border, #ddd)); box-shadow: -18px 0 40px -24px rgba(0,0,0,.45);
   padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); font: 15px/1.5 var(--f-ui, "Source Sans 3", system-ui, sans-serif); }
-.pk-panel[hidden], .pk-add[hidden], .pk-fab[hidden], .pk-panel [hidden] { display: none !important; }
+.pk-panel[hidden], .pk-float[hidden], .pk-fab[hidden], .pk-panel [hidden] { display: none !important; }
 .pk-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 10px; border-bottom: 1px solid var(--rule, var(--border, #ddd)); }
 .pk-head b { font: 400 22px/1.2 var(--f-display, var(--f-body, Georgia, serif)); }
 .pk-x { border: 0; background: none; font: 26px/1 system-ui, sans-serif; color: var(--ink-soft, #666); cursor: pointer; padding: 2px 8px; }
@@ -174,7 +180,7 @@
         out += it ? (it.display ? "\n$$" + it.math + "$$\n" : "$" + it.math + "$") : (n.textContent || "");
         return;
       }
-      if (/^(SCRIPT|STYLE|BUTTON|INPUT|TEXTAREA|SVG)$/.test(tag) || n.classList.contains("pk-add")) return;
+      if (/^(SCRIPT|STYLE|BUTTON|INPUT|TEXTAREA|SVG)$/.test(tag) || n.classList.contains("pk-float")) return;
       if (tag === "BR") { out += "\n"; return; }
       const block = BLOCK.test(tag);
       if (block && out && !out.endsWith("\n")) out += "\n";
@@ -197,7 +203,7 @@
     // A selection that starts or ends inside a formula: take the formula whole, as TeX.
     const inMath = anc && anc.closest("mjx-container");
     if (inMath) anc = inMath.parentElement;
-    if (anc && anc.closest(".pk-panel, .pk-add, #drawer, .drawer")) return null;
+    if (anc && anc.closest(".pk-panel, .pk-float, #drawer, .drawer")) return null;
     const text = expandMacros(texText(anc || r, range));
     if (text.replace(/\s/g, "").length < 2 || text.length > 3000) return null;
     let ctx = expandMacros(texText(blockOf(range.commonAncestorContainer)));
@@ -210,25 +216,38 @@
     return { range, text, ctx: ctx === text ? "" : ctx, module: mod ? mod.id || "" : "", moduleTitle: modTitle.trim().slice(0, 120) };
   }
 
-  const addBtn = document.createElement("button");
-  addBtn.type = "button"; addBtn.className = "pk-add"; addBtn.hidden = true; addBtn.textContent = "＋ В карточки";
-  document.body.appendChild(addBtn);
+  // Two buttons under a selection: into the card set, and "ask the lecturer about this place"
+  // (the course's chat listens for the "pk-ask" event; see window.PICKS.quoteFor).
+  const fl = document.createElement("div");
+  fl.className = "pk-float"; fl.hidden = true;
+  fl.innerHTML = '<button type="button" class="pk-add">＋ В карточки</button>' + (C.askButton ? '<button type="button" class="pk-ask">Спросить про это</button>' : "");
+  document.body.appendChild(fl);
+  const addBtn = fl.querySelector(".pk-add"), askBtn = fl.querySelector(".pk-ask");
   let pending = null, selTimer = 0;
   function placeAddButton() {
     pending = currentPick();
-    if (!pending) { addBtn.hidden = true; return; }
+    if (!pending) { fl.hidden = true; return; }
     const rects = pending.range.getClientRects();
     const last = rects.length ? rects[rects.length - 1] : pending.range.getBoundingClientRect();
     const touch = matchMedia("(pointer: coarse)").matches;
-    addBtn.hidden = false;
-    const w = addBtn.offsetWidth || 140;
+    fl.hidden = false;
+    const w = fl.offsetWidth || 140;
     // Below the selection: a phone shows its own menu above it.
     const top = last.bottom + window.scrollY + (touch ? 34 : 8);
     const left = Math.min(Math.max(8, last.right + window.scrollX - w / 2), window.scrollX + document.documentElement.clientWidth - w - 8);
-    addBtn.style.top = top + "px"; addBtn.style.left = left + "px";
+    fl.style.top = top + "px"; fl.style.left = left + "px";
   }
   document.addEventListener("selectionchange", () => { clearTimeout(selTimer); selTimer = setTimeout(placeAddButton, 220); });
-  addBtn.addEventListener("pointerdown", (e) => e.preventDefault());  // keep the selection
+  fl.addEventListener("pointerdown", (e) => e.preventDefault());  // keep the selection
+  /** The place she points at, as the lecturer should read it: the fragment with its TeX and the paragraph around. */
+  window.PICKS = { quoteFor: (d) => `[Место в курсе${d.moduleTitle ? ", модуль «" + d.moduleTitle + "»" : ""}; формулы в TeX, как в тексте]\nВыделено: ${d.text}` + (d.ctx ? `\nАбзац вокруг: ${d.ctx}` : "") };
+  if (askBtn) askBtn.addEventListener("click", () => {
+    const p = pending || currentPick();
+    if (!p) return;
+    document.dispatchEvent(new CustomEvent("pk-ask", { detail: { text: p.text, ctx: p.ctx, module: p.module, moduleTitle: p.moduleTitle } }));
+    try { window.getSelection().removeAllRanges(); } catch (e) { /* nothing selected */ }
+    fl.hidden = true; pending = null;
+  });
   addBtn.addEventListener("click", () => {
     const p = pending || currentPick();
     if (!p) return;
@@ -237,7 +256,7 @@
     state.items = Object.assign({}, state.items, { [id]: item });
     write({ items: { [id]: item } });
     try { window.getSelection().removeAllRanges(); } catch (e) { /* nothing selected */ }
-    addBtn.hidden = true; pending = null;
+    fl.hidden = true; pending = null;
     render();
     flash(`В наборе: ${items().length}`);
   });

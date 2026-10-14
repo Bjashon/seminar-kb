@@ -65,7 +65,8 @@ RULES = r"""Ты — лектор плана-курса «Скобочные т�
 3. Гипотеза в общем виде ОТКРЫТА. Если просят доказать открытое утверждение, скажи это прямо и предложи, с чего начать, или разбери частный случай. Если предлагаешь собственное рассуждение, назови его так и укажи, где его надо проверить.
 4. Опирайся на справку ниже и на текст модуля. Чего там нет и чего ты не знаешь наверняка — так и скажи. Не выдумывай ссылок, номеров теорем и страниц.
 5. Если собеседница ошибается, скажи, в чём именно, и покажи на маленьком примере ($n\le 6$).
-6. Не пересказывай справку целиком: отвечай на заданный вопрос."""
+6. Не пересказывай справку целиком: отвечай на заданный вопрос.
+7. Если в вопросе есть блок «[Место в курсе …]», собеседница выделила это место в тексте курса: объясни именно его. Формулы в блоке записаны в TeX буквально, как в курсе, — читай их по символам и не подменяй фрагмент похожим; опирайся на абзац вокруг. Если вопрос при этом не задан, объясни, что означает выделенное и зачем оно здесь."""
 
 REFERENCE = r"""СПРАВКА (состояние на 12.10.2026)
 
@@ -215,6 +216,10 @@ SHELL_CSS = r"""
   .ask-fab { right: 14px; }
 }
 @media (min-width: 900px) { body.pk-push { padding-right: min(460px, 100vw); } body.pk-push .ask-fab { display: none; } }
+.quote-chip { display: flex; gap: 8px; align-items: flex-start; font: 13.5px/1.45 var(--f-ui); color: var(--ink-soft); border: 1px dashed var(--border); border-radius: 8px; padding: 6px 8px 6px 10px; }
+.quote-chip .qc-t { flex: 1; min-width: 0; color: var(--ink); overflow-x: auto; }
+.quote-chip .x { font-size: 20px; padding: 0 4px; }
+.msg.me .body .q { display: block; margin-top: 6px; padding-left: 8px; border-left: 2px solid var(--border); font-style: normal; color: var(--ink-soft); }
 """
 
 BODY = r"""
@@ -287,7 +292,7 @@ PAGE_JS = r"""
     d.className = "msg " + (cls || "");
     d.innerHTML = '<span class="w">' + esc(who) + '</span><div class="body"></div>';
     const b = d.querySelector(".body");
-    if (text) setMath(b, cls === "me" ? "<p>" + esc(text).replace(/\n/g, "<br>") + "</p>" : renderMD(text));
+    if (text) setMath(b, cls === "me" ? "<p>" + esc(text).split("\n").map((l) => l.startsWith("&gt; ") ? '<span class="q">' + l.slice(5) + "</span>" : l).join("<br>").replace(/<br><span/g, "<span") + "</p>" : renderMD(text));
     msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
     return b;
   }
@@ -298,7 +303,7 @@ PAGE_JS = r"""
   function renderChat() {
     msgs.innerHTML = "";
     if (!history.length) addMsg("Лектор", "Спрашивай по курсу и по задаче: определения, шаги доказательств, «а что если». Я вижу, какой модуль у тебя открыт. Гипотеза в общем виде открыта — если попросишь её доказать, я так и скажу и предложу, с чего начать.");
-    history.forEach((m) => addMsg(m.role === "user" ? "Ты" : "Лектор", m.content, m.role === "user" ? "me" : ""));
+    history.forEach((m) => addMsg(m.role === "user" ? "Ты" : "Лектор", m.shown || m.content, m.role === "user" ? "me" : ""));
     renderSuggest();
   }
   $("#suggest").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) send(b.textContent); });
@@ -313,10 +318,25 @@ PAGE_JS = r"""
   }
   $("#ask-fab").addEventListener("click", () => { const pk = document.querySelector(".pk-panel"); if (pk && !pk.hidden) pk.querySelector(".pk-x").click(); setDrawer(true); renderChat(); $("#chat-in").focus(); });
   $("#drawer-close").addEventListener("click", () => setDrawer(false));
+  let askQuote = null;
+  function showQuote() {
+    let q = $("#quote-chip");
+    if (!q) { q = document.createElement("div"); q.id = "quote-chip"; q.className = "quote-chip"; $("#composer").prepend(q); }
+    if (!askQuote) { q.hidden = true; $("#chat-in").placeholder = "Например: почему из J1 и J2 следует гипотеза?"; return; }
+    q.hidden = false;
+    q.innerHTML = '<span>Про это место:</span><span class="qc-t"></span><button type="button" class="x" aria-label="Убрать">×</button>';
+    setMath(q.querySelector(".qc-t"), esc(askQuote.text));
+    q.querySelector(".x").addEventListener("click", () => { askQuote = null; showQuote(); });
+    $("#chat-in").placeholder = "Что именно объяснить? Можно оставить пустым";
+  }
+  document.addEventListener("pk-ask", (e) => {
+    if (!sample) { $("#chat-err").textContent = ""; alert("Лектор недоступен: страница открыта не в Claude."); return; }
+    askQuote = e.detail; setDrawer(true); renderChat(); showQuote(); $("#chat-in").focus();
+  });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !drawer.hidden) setDrawer(false); });
   $("#chat-clear").addEventListener("click", () => { if (busy) return; history.length = 0; $("#chat-err").textContent = ""; renderChat(); });
   $("#chat-stop").addEventListener("click", () => { if (ctl) ctl.abort(); });
-  $("#composer").addEventListener("submit", (e) => { e.preventDefault(); const v = $("#chat-in").value.trim(); if (v) { $("#chat-in").value = ""; send(v); } });
+  $("#composer").addEventListener("submit", (e) => { e.preventDefault(); const v = $("#chat-in").value.trim(); if (v || askQuote) { $("#chat-in").value = ""; send(v || "Объясни это место."); } });
   $("#chat-in").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $("#composer").requestSubmit(); } });
   const ERR = {
     not_granted: "Доступ к Claude для этой страницы не разрешён — вопросы лектору недоступны.",
@@ -330,8 +350,13 @@ PAGE_JS = r"""
   function unavailable() { sample = null; $("#ask-fab").hidden = true; $("#ask-na").hidden = false; setDrawer(false); }
   async function send(text) {
     if (busy || !sample) return;
-    history.push({ role: "user", content: text });
-    addMsg("Ты", text, "me");
+    // The place she pointed at (see "pk-ask" below) goes to Claude in full, with its TeX;
+    // she sees her question and the fragment as a quote.
+    const q = askQuote; askQuote = null; showQuote();
+    const full = q ? text + "\n\n" + window.PICKS.quoteFor(q) : text;
+    const shown = q ? text + "\n> " + q.text : text;
+    history.push({ role: "user", content: full, shown });
+    addMsg("Ты", shown, "me");
     $("#suggest").innerHTML = "";
     const b = addMsg("Лектор", "", "pending");
     b.textContent = "Думаю…";
@@ -345,7 +370,7 @@ PAGE_JS = r"""
     busy = true; ctl = new AbortController();
     $("#chat-send").disabled = true; $("#chat-stop").hidden = false; $("#chat-err").textContent = "";
     try {
-      const res = await sample([{ role: "user", content: rules }].concat(history.slice(-16)), {
+      const res = await sample([{ role: "user", content: rules }].concat(history.slice(-16).map((m) => ({ role: m.role, content: m.content }))), {
         cache: false, signal: ctl.signal,
         onText: (ev) => { b.textContent = ev.text; msgs.scrollTop = msgs.scrollHeight; },
       });
@@ -417,7 +442,7 @@ page = "".join([
     '<script async id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>\n',
     # Picking words, formulas, statements into cards for the site's trainer (shared with the other courses).
     '<script>window.PICKS_CONFIG = { project: "monomial-identities", title: "Скобочные тождества алгебр Ли", root: ".lecture-body",\n'
-    '  modules: "section.module", reference: REFERENCE, push: "pk-push", closeOther: "#drawer-close", site: ' + js_value(SITE) + ' };</script>\n',
+    '  modules: "section.module", reference: REFERENCE, push: "pk-push", closeOther: "#drawer-close", askButton: true, site: ' + js_value(SITE) + ' };</script>\n',
     "<script>\n", PICKS, "\n</script>\n",
 ])
 assert page.lower().count("</script>") == 6, page.lower().count("</script>")
