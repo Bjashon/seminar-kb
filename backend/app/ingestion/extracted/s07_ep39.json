@@ -13,8 +13,8 @@
       "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Associator"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/associator"}],
       "title_en": "Associator",
       "title_ru": "Ассоциатор",
-      "statement_en": "Let $A$ be an algebra over a field $F$ (in the book, more generally, over a commutative ring $\\Phi$ with $1$). The **associator** of elements $x,y,z\\in A$ is\n$$(x,y,z)=(xy)z-x(yz).$$\n\nIt measures how far $A$ is from being associative: $A$ is associative exactly when all associators vanish.\n\nThe associator is linear in each of its three arguments.\n\nNext to it the book uses the commutator $[x,y]=xy-yx$ and the Jordan product\n$$x\\circ y=xy+yx.$$",
-      "statement_ru": "Пусть $A$ — алгебра над полем $F$ (в книге — более общо, над коммутативным кольцом $\\Phi$ с $1$). **Ассоциатором** элементов $x,y,z\\in A$ называется\n$$(x,y,z)=(xy)z-x(yz).$$\n\nОн измеряет, насколько $A$ далека от ассоциативной: $A$ ассоциативна ровно тогда, когда все ассоциаторы равны нулю.\n\nАссоциатор линеен по каждому из трёх аргументов.\n\nРядом с ним в книге используются коммутатор $[x,y]=xy-yx$ и йорданово произведение\n$$x\\circ y=xy+yx.$$",
+      "statement_en": "Let $A$ be an algebra over a field $F$ (in the book, over a commutative ring $\\Phi$ with $1$). The **associator** of elements $x,y,z\\in A$ is\n$$(x,y,z)=(xy)z-x(yz).$$\n\nThe associator is linear in each argument; $A$ is associative $\\iff$ $(x,y,z)=0$ for all $x,y,z\\in A$.\n\nThe book also uses the commutator and the Jordan product:\n$$[x,y]=xy-yx,\\qquad x\\circ y=xy+yx.$$",
+      "statement_ru": "Пусть $A$ — алгебра над полем $F$ (в книге — над коммутативным кольцом $\\Phi$ с $1$). **Ассоциатором** элементов $x,y,z\\in A$ называется\n$$(x,y,z)=(xy)z-x(yz).$$\n\nАссоциатор линеен по каждому аргументу; $A$ ассоциативна $\\iff$ $(x,y,z)=0$ для всех $x,y,z\\in A$.\n\nВ книге используются также коммутатор и йорданово произведение:\n$$[x,y]=xy-yx,\\qquad x\\circ y=xy+yx.$$",
       "depends_on": [
         "Algebra (over a field)",
         "Associative algebra"

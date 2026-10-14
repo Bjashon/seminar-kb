@@ -13,8 +13,8 @@
       "slug": "novikov-algebra",
       "title_en": "Novikov algebra",
       "title_ru": "Алгебра Новикова",
-      "statement_en": "An algebra $(L,\\circ)$ is a **Novikov algebra** if for all $x,y,z\\in L$:\n1. $(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)$ (left-symmetry)\n2. $(x\\circ y)\\circ z=(x\\circ z)\\circ y$ (right-commutativity)",
-      "statement_ru": "Алгебра $(L,\\circ)$ называется **алгеброй Новикова**, если для всех $x,y,z\\in L$:\n1. $(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)$ (левая симметричность)\n2. $(x\\circ y)\\circ z=(x\\circ z)\\circ y$ (правая коммутативность)",
+      "statement_en": "An algebra $(L,\\circ)$ is a **Novikov algebra** if for all $x,y,z\\in L$:\n1. $(x\\circ y)\\circ z-(y\\circ x)\\circ z$ $=x\\circ(y\\circ z)-y\\circ(x\\circ z)$ (left-symmetry)\n2. $(x\\circ y)\\circ z=(x\\circ z)\\circ y$ (right-commutativity)",
+      "statement_ru": "Алгебра $(L,\\circ)$ называется **алгеброй Новикова**, если для всех $x,y,z\\in L$:\n1. $(x\\circ y)\\circ z-(y\\circ x)\\circ z$ $=x\\circ(y\\circ z)-y\\circ(x\\circ z)$ (левая симметричность)\n2. $(x\\circ y)\\circ z=(x\\circ z)\\circ y$ (правая коммутативность)",
       "depends_on": [
         "algebra"
       ],
@@ -32,8 +32,8 @@
       "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Pre-Lie_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/pre-Lie+algebra"}],
       "title_en": "Pre-Lie algebra",
       "title_ru": "Pre-Lie алгебра",
-      "statement_en": "An algebra $(L,\\circ)$ is a **pre-Lie algebra** if\n$$(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)\\quad\\forall x,y,z\\in L$$\n(left-symmetry alone, without the right-commutativity required of a Novikov algebra). The commutator $[x,y]:=x\\circ y-y\\circ x$ of a pre-Lie algebra is always a Lie bracket; every Novikov algebra is in particular a pre-Lie algebra.",
-      "statement_ru": "Алгебра $(L,\\circ)$ называется **pre-Lie алгеброй**, если\n$$(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)\\quad\\forall x,y,z\\in L$$\n(только левая симметричность, без правой коммутативности, требуемой для алгебры Новикова). Коммутатор $[x,y]:=x\\circ y-y\\circ x$ pre-Lie алгебры всегда является скобкой Ли; всякая алгебра Новикова, в частности, является pre-Lie алгеброй.",
+      "statement_en": "An algebra $(L,\\circ)$ is a **pre-Lie algebra** if for all $x,y,z\\in L$\n$$(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)$$\n(left-symmetry).\n\nThe commutator $[x,y]:=x\\circ y-y\\circ x$ of a pre-Lie algebra is a Lie bracket. A Novikov algebra is a pre-Lie algebra that also satisfies right-commutativity $(x\\circ y)\\circ z=(x\\circ z)\\circ y$.",
+      "statement_ru": "Алгебра $(L,\\circ)$ называется **pre-Lie алгеброй**, если для всех $x,y,z\\in L$\n$$(x\\circ y)\\circ z-(y\\circ x)\\circ z=x\\circ(y\\circ z)-y\\circ(x\\circ z)$$\n(левая симметричность).\n\nКоммутатор $[x,y]:=x\\circ y-y\\circ x$ pre-Lie алгебры — скобка Ли. Алгебра Новикова — это pre-Lie алгебра, удовлетворяющая ещё правой коммутативности $(x\\circ y)\\circ z=(x\\circ z)\\circ y$.",
       "depends_on": [
         "algebra"
       ],
@@ -53,8 +53,8 @@
       "slug": "novikov-poisson-algebra",
       "title_en": "Novikov-Poisson algebra",
       "title_ru": "Пуассонова алгебра Новикова",
-      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **Novikov-Poisson algebra** if:\n1. $(L,\\cdot)$ is a commutative associative algebra\n2. $(L,\\circ)$ is a Novikov algebra\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$",
-      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **пуассоновой алгеброй Новикова**, если:\n1. $(L,\\cdot)$ — коммутативная ассоциативная алгебра\n2. $(L,\\circ)$ — алгебра Новикова\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$",
+      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **Novikov-Poisson algebra** if:\n1. $(L,\\cdot)$ is a commutative associative algebra\n2. $(L,\\circ)$ is a Novikov algebra\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z$ $=x\\circ(yz)-y\\circ(xz)$ $\\forall x,y,z\\in L$",
+      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **пуассоновой алгеброй Новикова**, если:\n1. $(L,\\cdot)$ — коммутативная ассоциативная алгебра\n2. $(L,\\circ)$ — алгебра Новикова\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z$ $=x\\circ(yz)-y\\circ(xz)$ $\\forall x,y,z\\in L$",
       "depends_on": [
         "commutative associative algebra",
         "Novikov algebra"
@@ -91,8 +91,8 @@
       "slug": "prelie-poisson-algebra",
       "title_en": "Pre-Lie Poisson algebra",
       "title_ru": "Pre-Lie пуассонова алгебра",
-      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **pre-Lie Poisson algebra** if:\n1. $(L,\\cdot)$ is a commutative associative algebra\n2. $(L,\\circ)$ is a pre-Lie algebra\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$\n\nA Novikov-Poisson algebra is a pre-Lie Poisson algebra; so is a pre-Lie commutative algebra satisfying condition 3, and so is a differential Novikov-Poisson algebra.",
-      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **pre-Lie пуассоновой алгеброй**, если:\n1. $(L,\\cdot)$ — коммутативная ассоциативная алгебра\n2. $(L,\\circ)$ — pre-Lie алгебра\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z=x\\circ(yz)-y\\circ(xz)\\ \\ \\forall x,y,z\\in L$\n\nПуассонова алгебра Новикова — это pre-Lie пуассонова алгебра; так же как и pre-Lie коммутативная алгебра, удовлетворяющая условию 3, и дифференциальная пуассонова алгебра Новикова.",
+      "statement_en": "A triple $(L,\\cdot,\\circ)$ is a **pre-Lie Poisson algebra** if:\n1. $(L,\\cdot)$ is a commutative associative algebra\n2. $(L,\\circ)$ is a pre-Lie algebra\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z$ $=x\\circ(yz)-y\\circ(xz)$ $\\forall x,y,z\\in L$\n\nA Novikov-Poisson algebra is a pre-Lie Poisson algebra; so is a pre-Lie commutative algebra satisfying condition 3, and so is a differential Novikov-Poisson algebra.",
+      "statement_ru": "Тройка $(L,\\cdot,\\circ)$ называется **pre-Lie пуассоновой алгеброй**, если:\n1. $(L,\\cdot)$ — коммутативная ассоциативная алгебра\n2. $(L,\\circ)$ — pre-Lie алгебра\n3. $(xy)\\circ z=x(y\\circ z)\\ \\ \\forall x,y,z\\in L$\n4. $(x\\circ y)z-(y\\circ x)z$ $=x\\circ(yz)-y\\circ(xz)$ $\\forall x,y,z\\in L$\n\nПуассонова алгебра Новикова — это pre-Lie пуассонова алгебра; так же как и pre-Lie коммутативная алгебра, удовлетворяющая условию 3, и дифференциальная пуассонова алгебра Новикова.",
       "depends_on": [
         "commutative associative algebra",
         "pre-Lie algebra"
@@ -130,8 +130,8 @@
       "links": [{"source": "nlab", "url": "https://ncatlab.org/nlab/show/n-Lie+algebra"}],
       "title_en": "3-Lie algebra",
       "title_ru": "3-алгебра Ли",
-      "statement_en": "A **3-Lie algebra** is a vector space $A$ with a skew-symmetric linear map $[\\cdot,\\cdot,\\cdot]:\\otimes^3A\\to A$ satisfying the Fundamental Identity:\n$$[[x,y,z],u,v]=[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]\\quad\\forall x,y,z,u,v\\in A$$\n(equivalently: the adjoint action of any pair $u,v$ is a derivation of the ternary bracket). This is the $n=3$ case of an $n$-Lie algebra.",
-      "statement_ru": "**3-алгеброй Ли** называется векторное пространство $A$ со знакопеременным линейным отображением $[\\cdot,\\cdot,\\cdot]:\\otimes^3A\\to A$, удовлетворяющим фундаментальному тождеству:\n$$[[x,y,z],u,v]=[[x,u,v],y,z]+[[y,u,v],z,x]+[[z,u,v],x,y]\\quad\\forall x,y,z,u,v\\in A$$\n(эквивалентно: присоединённое действие любой пары $u,v$ является дифференцированием тернарной скобки). Это частный случай $n$-алгебры Ли при $n=3$.",
+      "statement_en": "A **3-Lie algebra** is a vector space $A$ with a skew-symmetric linear map $[\\cdot,\\cdot,\\cdot]\\colon\\otimes^3A\\to A$ such that for all $x,y,z,u,v\\in A$ the *Fundamental Identity* holds:\n$$\\begin{aligned}&[[x,y,z],u,v]=[[x,u,v],y,z]\\\\&\\quad+[[y,u,v],z,x]+[[z,u,v],x,y].\\end{aligned}$$\n\nEquivalently: for any $u,v\\in A$ the map $x\\mapsto[x,u,v]$ is a derivation of the ternary bracket. This is an $n$-Lie algebra with $n=3$.",
+      "statement_ru": "**3-алгеброй Ли** называется векторное пространство $A$ со знакопеременным линейным отображением $[\\cdot,\\cdot,\\cdot]\\colon\\otimes^3A\\to A$, для которого при всех $x,y,z,u,v\\in A$ выполнено *фундаментальное тождество*\n$$\\begin{aligned}&[[x,y,z],u,v]=[[x,u,v],y,z]\\\\&\\quad+[[y,u,v],z,x]+[[z,u,v],x,y].\\end{aligned}$$\n\nЭквивалентно: для любых $u,v\\in A$ отображение $x\\mapsto[x,u,v]$ — дифференцирование тернарной скобки. Это $n$-алгебра Ли при $n=3$.",
       "depends_on": [
         "n-Lie algebra"
       ],
@@ -148,8 +148,8 @@
       "slug": "strong-poisson-algebra",
       "title_en": "Strong Poisson algebra",
       "title_ru": "Сильная пуассонова алгебра",
-      "statement_en": "A Poisson algebra $(L,\\cdot,[\\cdot,\\cdot])$ is **strong** if\n$$[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0\\quad\\forall x,y,z,h\\in L.$$\nEvery transposed Poisson algebra automatically satisfies this identity; for an ordinary Poisson algebra it is an extra condition.",
-      "statement_ru": "Пуассонова алгебра $(L,\\cdot,[\\cdot,\\cdot])$ называется **сильной**, если\n$$[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0\\quad\\forall x,y,z,h\\in L.$$\nВсякая транспонированная пуассонова алгебра автоматически удовлетворяет этому тождеству; для обычной пуассоновой алгебры это дополнительное условие.",
+      "statement_en": "A Poisson algebra $(L,\\cdot,[\\cdot,\\cdot])$ is **strong** if for all $x,y,z,h\\in L$\n$$[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0.$$\n\nEvery transposed Poisson algebra satisfies this identity; for a Poisson algebra it is an extra condition.",
+      "statement_ru": "Пуассонова алгебра $(L,\\cdot,[\\cdot,\\cdot])$ называется **сильной**, если для всех $x,y,z,h\\in L$\n$$[h,x][y,z]+[h,y][z,x]+[h,z][x,y]=0.$$\n\nВсякая транспонированная пуассонова алгебра удовлетворяет этому тождеству; для пуассоновой алгебры это дополнительное условие.",
       "depends_on": [
         "Poisson algebra"
       ],
@@ -166,8 +166,8 @@
       "slug": "poisson-three-lie-algebra",
       "title_en": "Poisson 3-Lie algebra",
       "title_ru": "Пуассонова 3-алгебра Ли",
-      "statement_en": "A triple $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ is a **Poisson 3-Lie algebra** if $(L,\\cdot)$ is a commutative associative algebra, $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra, and\n$$[x,y,uv]=u[x,y,v]+[x,y,u]v\\quad\\forall x,y,u,v\\in L$$\n(the adjoint action of any pair $x,y$ on $\\cdot$ is a derivation). It is **strong** if additionally\n$$-[x,y,u_1][u_2,u_3,u_4]+[x,y,u_2][u_1,u_3,u_4]-[x,y,u_3][u_1,u_2,u_4]+[x,y,u_4][u_1,u_2,u_3]=0$$\nfor all $x,y,u_1,u_2,u_3,u_4\\in L$.",
-      "statement_ru": "Тройка $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ называется **пуассоновой 3-алгеброй Ли**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли, и\n$$[x,y,uv]=u[x,y,v]+[x,y,u]v\\quad\\forall x,y,u,v\\in L$$\n(присоединённое действие любой пары $x,y$ на $\\cdot$ является дифференцированием). Она называется **сильной**, если дополнительно\n$$-[x,y,u_1][u_2,u_3,u_4]+[x,y,u_2][u_1,u_3,u_4]-[x,y,u_3][u_1,u_2,u_4]+[x,y,u_4][u_1,u_2,u_3]=0$$\nдля всех $x,y,u_1,u_2,u_3,u_4\\in L$.",
+      "statement_en": "A triple $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ is a **Poisson 3-Lie algebra** if $(L,\\cdot)$ is a commutative associative algebra, $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra and for all $x,y,u,v\\in L$\n$$[x,y,uv]=u[x,y,v]+[x,y,u]v,$$\ni.e. for any $x,y\\in L$ the map $u\\mapsto[x,y,u]$ is a derivation of $(L,\\cdot)$.\n\nA Poisson 3-Lie algebra is **strong** if additionally for all $x,y,u_1,u_2,u_3,u_4\\in L$\n$$\\begin{aligned}&-[x,y,u_1][u_2,u_3,u_4]\\\\&+[x,y,u_2][u_1,u_3,u_4]\\\\&-[x,y,u_3][u_1,u_2,u_4]\\\\&+[x,y,u_4][u_1,u_2,u_3]=0.\\end{aligned}$$",
+      "statement_ru": "Тройка $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$ называется **пуассоновой 3-алгеброй Ли**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли и для всех $x,y,u,v\\in L$\n$$[x,y,uv]=u[x,y,v]+[x,y,u]v,$$\nт.е. для любых $x,y\\in L$ отображение $u\\mapsto[x,y,u]$ — дифференцирование $(L,\\cdot)$.\n\nПуассонова 3-алгебра Ли называется **сильной**, если дополнительно для всех $x,y,u_1,u_2,u_3,u_4\\in L$\n$$\\begin{aligned}&-[x,y,u_1][u_2,u_3,u_4]\\\\&+[x,y,u_2][u_1,u_3,u_4]\\\\&-[x,y,u_3][u_1,u_2,u_4]\\\\&+[x,y,u_4][u_1,u_2,u_3]=0.\\end{aligned}$$",
       "depends_on": [
         "commutative associative algebra",
         "3-Lie algebra"
@@ -185,8 +185,8 @@
       "slug": "transposed-poisson-three-lie-algebra",
       "title_en": "Transposed Poisson 3-Lie algebra",
       "title_ru": "Транспонированная пуассонова 3-алгебра Ли",
-      "statement_en": "A triple $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$, where $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra, is a **transposed Poisson 3-Lie algebra** if\n$$3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu]\\quad\\forall x,y,z,u\\in L$$\n(the ternary analogue of the transposed Leibniz rule). This is the $n=3$ case of a transposed Poisson $n$-Lie algebra applied to a genuinely 3-ary bracket built from a binary one.",
-      "statement_ru": "Тройка $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$, где $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли, называется **транспонированной пуассоновой 3-алгеброй Ли**, если\n$$3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu]\\quad\\forall x,y,z,u\\in L$$\n(тернарный аналог транспонированного правила Лейбница). Это то же понятие, что транспонированная пуассонова $n$-алгебра Ли при $n=3$, применённое к подлинно тернарной скобке.",
+      "statement_en": "A triple $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$, where $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot,\\cdot])$ is a 3-Lie algebra, is a **transposed Poisson 3-Lie algebra** if for all $x,y,z,u\\in L$\n$$3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu].$$\n\nThis is the ternary analogue of the transposed Leibniz rule $2z[x,y]=[zx,y]+[x,zy]$ and the $n=3$ case of a transposed Poisson $n$-Lie algebra.",
+      "statement_ru": "Тройка $(L,\\cdot,[\\cdot,\\cdot,\\cdot])$, где $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot,\\cdot])$ — 3-алгебра Ли, называется **транспонированной пуассоновой 3-алгеброй Ли**, если для всех $x,y,z,u\\in L$\n$$3u[x,y,z]=[xu,y,z]+[x,yu,z]+[x,y,zu].$$\n\nЭто тернарный аналог транспонированного правила Лейбница $2z[x,y]=[zx,y]+[x,zy]$ и случай $n=3$ транспонированной пуассоновой $n$-алгебры Ли.",
       "depends_on": [
         "commutative associative algebra",
         "3-Lie algebra",
@@ -528,8 +528,8 @@
       "slug": "three-lie-via-determinant-two-derivations",
       "title_en": "3-Lie bracket via a 3×3 determinant of derivations",
       "title_ru": "3-скобка Ли через определитель 3×3 с дифференцированиями",
-      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra and $D_1,D_2$ two commuting derivations. Then\n$$[x,y,z]:=\\det\\begin{pmatrix}x&y&z\\\\D_1(x)&D_1(y)&D_1(z)\\\\D_2(x)&D_2(y)&D_2(z)\\end{pmatrix}=(\\mathrm{id}\\wedge D_1\\wedge D_2)(x,y,z)$$\ndefines a 3-Lie algebra $(L,[\\cdot,\\cdot,\\cdot])$. (This is Theorem three-lie-from-transposed-poisson-with-derivation applied to the transposed Poisson bracket $[x,y]=xD_1(y)-D_1(x)y$ with $D=D_2$.)",
-      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра и $D_1,D_2$ — два коммутирующих дифференцирования. Тогда\n$$[x,y,z]:=\\det\\begin{pmatrix}x&y&z\\\\D_1(x)&D_1(y)&D_1(z)\\\\D_2(x)&D_2(y)&D_2(z)\\end{pmatrix}=(\\mathrm{id}\\wedge D_1\\wedge D_2)(x,y,z)$$\nзадаёт 3-алгебру Ли $(L,[\\cdot,\\cdot,\\cdot])$. (Это теорема о 3-алгебре Ли из транспонированной пуассоновой алгебры с дифференцированием, применённая к скобке $[x,y]=xD_1(y)-D_1(x)y$ при $D=D_2$.)",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra and $D_1,D_2$ two commuting derivations. Then\n$$\\begin{aligned}{}[x,y,z]&:=\\det\\begin{pmatrix}x&y&z\\\\D_1(x)&D_1(y)&D_1(z)\\\\D_2(x)&D_2(y)&D_2(z)\\end{pmatrix}\\\\&=(\\mathrm{id}\\wedge D_1\\wedge D_2)(x,y,z)\\end{aligned}$$\ndefines a 3-Lie algebra $(L,[\\cdot,\\cdot,\\cdot])$. (This is Theorem three-lie-from-transposed-poisson-with-derivation applied to the transposed Poisson bracket $[x,y]=xD_1(y)-D_1(x)y$ with $D=D_2$.)",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра и $D_1,D_2$ — два коммутирующих дифференцирования. Тогда\n$$\\begin{aligned}{}[x,y,z]&:=\\det\\begin{pmatrix}x&y&z\\\\D_1(x)&D_1(y)&D_1(z)\\\\D_2(x)&D_2(y)&D_2(z)\\end{pmatrix}\\\\&=(\\mathrm{id}\\wedge D_1\\wedge D_2)(x,y,z)\\end{aligned}$$\nзадаёт 3-алгебру Ли $(L,[\\cdot,\\cdot,\\cdot])$. (Это теорема о 3-алгебре Ли из транспонированной пуассоновой алгебры с дифференцированием, применённая к скобке $[x,y]=xD_1(y)-D_1(x)y$ при $D=D_2$.)",
       "depends_on": [
         "commutative associative algebra",
         "3-Lie algebra",
@@ -548,8 +548,8 @@
       "slug": "three-lie-via-determinant-derivation-and-involution",
       "title_en": "3-Lie bracket via a determinant of a derivation and an anti-commuting involution",
       "title_ru": "3-скобка Ли через определитель из дифференцирования и антикоммутирующей инволюции",
-      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra, $D$ a derivation, and $f$ an involutive endomorphism with $Df=-fD$. Then, with $[x,y]:=xD(y)-D(x)y$,\n$$[x,y,z]=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]=\\det\\begin{pmatrix}D(x)&D(y)&D(z)\\\\f(x)&f(y)&f(z)\\\\x&y&z\\end{pmatrix}=(D\\wedge f\\wedge\\mathrm{id})(x,y,z)$$\ndefines a 3-Lie algebra.",
-      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $D$ — дифференцирование, а $f$ — инволютивный эндоморфизм с $Df=-fD$. Тогда при $[x,y]:=xD(y)-D(x)y$\n$$[x,y,z]=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]=\\det\\begin{pmatrix}D(x)&D(y)&D(z)\\\\f(x)&f(y)&f(z)\\\\x&y&z\\end{pmatrix}=(D\\wedge f\\wedge\\mathrm{id})(x,y,z)$$\nзадаёт 3-алгебру Ли.",
+      "statement_en": "Let $(L,\\cdot)$ be a commutative associative algebra, $D$ a derivation, and $f$ an involutive endomorphism with $Df=-fD$. Then, with $[x,y]:=xD(y)-D(x)y$,\n$$\\begin{aligned}{}[x,y,z]&=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]\\\\&=\\det\\begin{pmatrix}D(x)&D(y)&D(z)\\\\f(x)&f(y)&f(z)\\\\x&y&z\\end{pmatrix}\\\\&=(D\\wedge f\\wedge\\mathrm{id})(x,y,z)\\end{aligned}$$\ndefines a 3-Lie algebra.",
+      "statement_ru": "Пусть $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $D$ — дифференцирование, а $f$ — инволютивный эндоморфизм с $Df=-fD$. Тогда при $[x,y]:=xD(y)-D(x)y$\n$$\\begin{aligned}{}[x,y,z]&=f(x)[y,z]+f(y)[z,x]+f(z)[x,y]\\\\&=\\det\\begin{pmatrix}D(x)&D(y)&D(z)\\\\f(x)&f(y)&f(z)\\\\x&y&z\\end{pmatrix}\\\\&=(D\\wedge f\\wedge\\mathrm{id})(x,y,z)\\end{aligned}$$\nзадаёт 3-алгебру Ли.",
       "depends_on": [
         "commutative associative algebra",
         "3-Lie algebra from a transposed Poisson algebra with an involution"
@@ -626,8 +626,8 @@
       "links": [{"source": "wikipedia", "url": "https://en.wikipedia.org/wiki/Poisson_algebra"}, {"source": "nlab", "url": "https://ncatlab.org/nlab/show/Poisson+algebra"}],
       "title_en": "Poisson algebra",
       "title_ru": "Пуассонова алгебра",
-      "statement_en": "Let $L$ be a vector space with two bilinear operations $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot])$ is a Lie algebra satisfying the Leibniz rule\n$$[x,y\\cdot z]=[x,y]\\cdot z+y\\cdot[x,z]\\quad\\forall x,y,z\\in L$$\n(so equivalently, the adjoint operators of the Lie algebra are derivations of the commutative associative algebra). The transposed Poisson algebra studied in this paper swaps the roles of $\\cdot$ and $[\\cdot,\\cdot]$ in this compatibility condition.",
-      "statement_ru": "Пусть $L$ — векторное пространство с двумя билинейными операциями $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot])$ — алгебра Ли, удовлетворяющая правилу Лейбница\n$$[x,y\\cdot z]=[x,y]\\cdot z+y\\cdot[x,z]\\quad\\forall x,y,z\\in L$$\n(эквивалентно: присоединённые операторы алгебры Ли являются дифференцированиями коммутативной ассоциативной алгебры). Транспонированная пуассонова алгебра, изучаемая в этой статье, меняет местами роли $\\cdot$ и $[\\cdot,\\cdot]$ в этом условии совместности.",
+      "statement_en": "Let $L$ be a vector space with two bilinear operations $\\cdot,[\\cdot,\\cdot]\\colon L\\otimes L\\to L$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra, $(L,[\\cdot,\\cdot])$ is a Lie algebra and the *Leibniz rule* holds:\n$$[x,y\\cdot z]=[x,y]\\cdot z+y\\cdot[x,z]\\quad\\forall x,y,z\\in L,$$\ni.e. for each $x\\in L$ the map $y\\mapsto[x,y]$ is a derivation of $(L,\\cdot)$.",
+      "statement_ru": "Пусть $L$ — векторное пространство с двумя билинейными операциями $\\cdot,[\\cdot,\\cdot]\\colon L\\otimes L\\to L$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $(L,[\\cdot,\\cdot])$ — алгебра Ли и выполнено *правило Лейбница*\n$$[x,y\\cdot z]=[x,y]\\cdot z+y\\cdot[x,z]\\quad\\forall x,y,z\\in L,$$\nт.е. для каждого $x\\in L$ отображение $y\\mapsto[x,y]$ — дифференцирование $(L,\\cdot)$.",
       "depends_on": [
         "commutative associative algebra",
         "Lie algebra"
@@ -645,8 +645,8 @@
       "slug": "transposed-poisson-algebra",
       "title_en": "Transposed Poisson algebra",
       "title_ru": "Транспонированная пуассонова алгебра",
-      "statement_en": "Let $L$ be a vector space with two bilinear operations $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **(derivation-)transposed Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra and $(L,[\\cdot,\\cdot])$ is a Lie algebra satisfying the *transposed Leibniz rule*\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]\\quad\\forall x,y,z\\in L$$\n-- the roles of the two operations in the ordinary Leibniz rule of a Poisson algebra are switched, and the result is rescaled by a factor $2$ (this factor cannot be dropped -- see the related property below about a single derivation). It is called *unital* if $(L,\\cdot)$ has a unit $1$.",
-      "statement_ru": "Пусть $L$ — векторное пространство с двумя билинейными операциями $\\cdot,[\\cdot,\\cdot]:L\\otimes L\\to L$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **(дифференциально-)транспонированной пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, а $(L,[\\cdot,\\cdot])$ — алгебра Ли, удовлетворяющая *транспонированному правилу Лейбница*\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]\\quad\\forall x,y,z\\in L$$\n— роли двух операций в обычном правиле Лейбница пуассоновой алгебры меняются местами, а результат масштабируется множителем $2$ (этот множитель — как раз то, из-за чего тождество нельзя упростить, убрав его — см. следующее свойство про одно дифференцирование). Она называется *унитальной*, если $(L,\\cdot)$ обладает единицей $1$.",
+      "statement_en": "Let $L$ be a vector space with two bilinear operations $\\cdot,[\\cdot,\\cdot]\\colon L\\otimes L\\to L$. The triple $(L,\\cdot,[\\cdot,\\cdot])$ is a **transposed Poisson algebra** if $(L,\\cdot)$ is a commutative associative algebra, $(L,[\\cdot,\\cdot])$ is a Lie algebra and the *transposed Leibniz rule* holds:\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]\\quad\\forall x,y,z\\in L.$$\n\nThe paper's full name is *derivation-transposed Poisson algebra*. It is called *unital* if $(L,\\cdot)$ has a unit $1$.",
+      "statement_ru": "Пусть $L$ — векторное пространство с двумя билинейными операциями $\\cdot,[\\cdot,\\cdot]\\colon L\\otimes L\\to L$. Тройка $(L,\\cdot,[\\cdot,\\cdot])$ называется **транспонированной пуассоновой алгеброй**, если $(L,\\cdot)$ — коммутативная ассоциативная алгебра, $(L,[\\cdot,\\cdot])$ — алгебра Ли и выполнено *транспонированное правило Лейбница*\n$$2z\\cdot[x,y]=[z\\cdot x,y]+[x,z\\cdot y]\\quad\\forall x,y,z\\in L.$$\n\nПолное название в статье — *derivation-transposed Poisson algebra* (дифференциально-транспонированная пуассонова алгебра). Алгебра называется *унитальной*, если в $(L,\\cdot)$ есть единица $1$.",
       "depends_on": [
         "commutative associative algebra",
         "Lie algebra"
