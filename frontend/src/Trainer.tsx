@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { EntityDetail, EntitySummary, ReviewCardOut, TalkSummary } from "./types";
 import { KIND_LABEL_RU } from "./types";
 import { api } from "./api";
-import { clozeStatement, clozeTerm, mdBody } from "./markdown";
+import { clozeStatement, clozeTerm, keepMathWithNeighbours, mdBody, plainTerm, sameTerm } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
 import { partLabel, todayIso } from "./dates";
 import { BookmarkButton, BookmarkIcon } from "./BookmarkButton";
@@ -18,6 +18,8 @@ interface Props {
    *  "Тренажёр по теме" button). `seq` changes on every request so the same
    *  talk can be asked for twice in a row. */
   request: { talkId: number; seq: number } | null;
+  /** The trainer's tab is the one on screen. */
+  active: boolean;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -60,6 +62,18 @@ async function handOverBrowserProgress(): Promise<void> {
     }
   }
 }
+/** On a phone a displayed formula a little wider than the card is shrunk to
+ *  fit it -- down to 3/4 of its size; one wider still scrolls sideways. */
+function fitFormulas(box: HTMLElement | null) {
+  if (!box || !window.matchMedia("(max-width: 700px)").matches) return;
+  for (const m of box.querySelectorAll<HTMLElement>('mjx-container[display="true"]')) {
+    m.style.fontSize = "";
+    if (m.scrollWidth <= m.clientWidth + 1) continue;
+    const size = parseFloat(getComputedStyle(m).fontSize);
+    m.style.fontSize = `${size * Math.max(0.75, (m.clientWidth - 2) / m.scrollWidth)}px`;
+  }
+}
+
 /** The first card at or after `from` that has not been passed yet. */
 function firstOpen(queue: ReviewCardOut[], passed: Set<string>, from: number): number {
   let i = from;
@@ -67,7 +81,7 @@ function firstOpen(queue: ReviewCardOut[], passed: Set<string>, from: number): n
   return i;
 }
 
-export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request }: Props) {
+export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request, active }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
   // A talk asked for from outside while the mode is still switching to
   // "article" -- the mode effect below would otherwise clear the selection
@@ -164,10 +178,28 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
 
   // Hooks must run unconditionally (before any early return below), so both
   // possible bodies are always prepared -- each is just empty when unused.
-  const answerHtml = revealed && detail && !isLevel2 ? mdBody(detail.statement_ru, "ru", allEntities, detail.slug, detail.links) : "";
-  const clozeHtml = isLevel2 && detail ? clozeStatement(detail.statement_ru!, "ru", allEntities, detail.slug) : "";
+  const answerHtml = revealed && detail && !isLevel2 ? keepMathWithNeighbours(mdBody(detail.statement_ru, "ru", allEntities, detail.slug, detail.links)) : "";
+  const clozeHtml = isLevel2 && detail ? keepMathWithNeighbours(clozeStatement(detail.statement_ru!, "ru", allEntities, detail.slug)) : "";
   const answerBox = useTypesetHtml(answerHtml);
   const clozeBox = useTypesetHtml(clozeHtml);
+  useEffect(() => { if (answerBox.ready) fitFormulas(answerBox.ref.current); }, [answerBox.ready, answerBox.ref]);
+  useEffect(() => { if (clozeBox.ready) fitFormulas(clozeBox.ref.current); }, [clozeBox.ready, clozeBox.ref]);
+
+  // On a phone the deck buttons and the counter fill the first screen: each
+  // new card is brought up to just under the top bar, with them a scroll away
+  // above it; with no card (a list, a finished deck) the pane goes to its top.
+  // Coming back to the tab leaves the pane where it was.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const placed = useRef<unknown>(null);
+  const spot: unknown = current && detail ? current : `${mode}|${selectedTalk}|${queue?.length}`;
+  useEffect(() => {
+    const pane = rootRef.current?.closest<HTMLElement>(".main-pane");
+    if (!active || !pane || placed.current === spot || !window.matchMedia("(max-width: 700px)").matches) return;
+    placed.current = spot;
+    const card = cardRef.current;
+    pane.scrollTop = card ? pane.scrollTop + card.getBoundingClientRect().top - pane.getBoundingClientRect().top - 12 : 0;
+  });
 
   function onLinkClick(e: React.MouseEvent<HTMLDivElement>) {
     const target = e.target as HTMLElement;
@@ -237,7 +269,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
       .filter((d): d is string => !!d && d >= today)
       .sort()[0];
     return (
-      <div className="trainer">
+      <div className="trainer" ref={rootRef}>
         {modeSwitch}
         <div className="article-picker">
           {talks === null && <p>Загрузка списка статей…</p>}
@@ -279,7 +311,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   if (queue === null) return null;
   if (queue.length === 0) {
     return (
-      <div className="trainer">
+      <div className="trainer" ref={rootRef}>
         {modeSwitch}
         {mode === "article" && (
           <button className="article-back" onClick={() => setSelectedTalk(null)}>&larr; К списку статей</button>
@@ -300,7 +332,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   }
   if (!current) {
     return (
-      <div className="trainer">
+      <div className="trainer" ref={rootRef}>
         {modeSwitch}
         {mode === "article" && (
           <button className="article-back" onClick={() => setSelectedTalk(null)}>&larr; К списку статей</button>
@@ -315,7 +347,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   if (!detail) return null;
 
   return (
-    <div className="trainer">
+    <div className="trainer" ref={rootRef}>
       {modeSwitch}
       {mode === "article" && (
         <button className="article-back" onClick={() => setSelectedTalk(null)}>&larr; К списку статей</button>
@@ -328,7 +360,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
       </div>
 
       {!isLevel2 && (
-        <div className="flashcard">
+        <div className="flashcard" ref={cardRef}>
           {bookmark}
           <div className="kind-line" style={{ color: `var(--${current.kind})` }}>
             <span className="dot" style={{ background: `var(--${current.kind})` }} />
@@ -356,7 +388,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
       )}
 
       {isLevel2 && (
-        <div className="flashcard cloze">
+        <div className="flashcard cloze" ref={cardRef}>
           {bookmark}
           <div className="kind-line">
             <span className="dot" style={{ background: `var(--${current.kind})` }} />
@@ -371,9 +403,9 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                 onClick={() => {
                   const input = document.getElementById("cloze-input") as HTMLInputElement | null;
                   const term = clozeTerm(detail.statement_ru) ?? "";
-                  const correct = (input?.value ?? "").trim().toLowerCase() === term.trim().toLowerCase();
+                  const correct = sameTerm(input?.value ?? "", term);
                   if (input) input.disabled = true;
-                  setClozeResult({ correct, term });
+                  setClozeResult({ correct, term: plainTerm(term) });
                 }}
               >
                 Проверить

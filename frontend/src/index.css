@@ -173,6 +173,9 @@ h3.title { font-size: 19px; }
 /* A long formula scrolls inside the trainer card instead of widening it. */
 .flashcard .answer mjx-container, .cloze-body mjx-container { max-width: 100%; }
 .flashcard .answer mjx-container[display="true"], .cloze-body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 1px; }
+/* A line break right after a displayed formula ("$$…$$" and the next line) would add an empty line. */
+.flashcard .answer mjx-container[display="true"] + br, .cloze-body mjx-container[display="true"] + br { display: none; }
+.flashcard .nowrap { white-space: nowrap; }
 .flashcard { width: 100%; max-width: 480px; border: 1px solid var(--border); border-radius: 14px; padding: 36px 32px; text-align: center; background: var(--bg-soft); }
 .flashcard.cloze { text-align: left; max-width: 560px; }
 .flashcard { position: relative; }
@@ -253,8 +256,9 @@ h3.title { font-size: 19px; }
   .top-nav .hint-small { display: none; }
   .top-nav button { padding: 10px 6px; }
 
-  /* Room at the bottom: a phone browser's own bar covers the end of the pane. */
-  .trainer-pane { padding: 20px 16px 120px; }
+  /* Room at the bottom: a phone browser's own bar covers the end of the pane.
+     The extra height lets even a short card be scrolled up to the bar (Trainer). */
+  .trainer-pane { padding: 20px 16px 120px; min-height: calc(100% + 240px); }
   /* Displayed formulas a touch smaller, so that most fit without scrolling. */
   .flashcard .answer mjx-container[display="true"], .cloze-body mjx-container[display="true"] { font-size: 92%; }
 
@@ -269,7 +273,7 @@ h3.title { font-size: 19px; }
   .grade-row { gap: 6px; }
   .grade-btn { max-width: none; padding: 13px 4px; font-size: 14px; }
   .cloze-input { font-size: 16px; }
-  .trainer .hint { max-width: none; }
+  .trainer .hint { display: none; }
 
   .article-row { flex-wrap: wrap; padding: 12px 14px; }
   .article-main { flex-basis: 0; }

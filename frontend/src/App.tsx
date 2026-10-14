@@ -244,6 +244,7 @@ export default function App() {
                 onOpenBoard={openBoard}
                 onSetBookmark={setBookmark}
                 request={trainerRequest}
+                active={mode === "trainer"}
               />
             </div>
           </div>
