@@ -140,6 +140,14 @@ export const KIND_LABEL_RU: Record<Kind, string> = {
   brief: "Кратко о статье",
 };
 
+/** Where cards from a course go: the course's own deck, "Мой набор", an
+ *  existing deck, or a theme of her own under a new name. */
+export type CardTarget =
+  | { kind: "project" }
+  | { kind: "bookmarks" }
+  | { kind: "talk"; talk_id: number }
+  | { kind: "new"; title: string };
+
 /** A card made in a course on claude.ai, as the course sends it to the site
  *  (see ImportCards.tsx for the code that carries it). */
 export interface UserCard {

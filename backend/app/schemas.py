@@ -136,14 +136,24 @@ class UserCardIn(BaseModel):
     source_label: str | None = Field(default=None, max_length=200)
 
 
+class CardTargetIn(BaseModel):
+    # Where the cards go: the course's own deck, "Мой набор" (bookmarked, no
+    # deck), an existing deck (talk_id), or a theme of her own by a new name.
+    kind: Literal["project", "bookmarks", "talk", "new"] = "project"
+    talk_id: int | None = None
+    title: str | None = Field(default=None, max_length=200)
+
+
 class UserCardsIn(BaseModel):
+    project: str | None = Field(default=None, pattern=r"^[a-z0-9-]{1,64}$")  # the course they came from
+    target: CardTargetIn = CardTargetIn()
     cards: list[UserCardIn] = Field(min_length=1, max_length=100)
 
 
 class UserCardsOut(BaseModel):
     added: list[str]       # slugs of the new cards
     already: int           # the same card had come before (a link opened twice)
-    talk_id: int           # the project's deck: "Тренажёр по теме"
+    talk_id: int | None    # the deck to open; None: they went to "Мой набор"
 
 
 class TalkPartOut(BaseModel):

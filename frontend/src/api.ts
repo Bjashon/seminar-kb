@@ -1,4 +1,4 @@
-import type { Board, EntityDetail, EntitySummary, Project, ProjectSummary, ReviewCardOut, TalkSummary, UserCard } from "./types";
+import type { Board, EntityDetail, EntitySummary, Project, ProjectSummary, ReviewCardOut, TalkSummary, UserCard, CardTarget } from "./types";
 import type { LecturePatch, LectureState } from "./lecture/shared";
 
 // In prod the backend serves the built frontend from the same origin, so
@@ -36,13 +36,13 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     }).then((r) => json<LectureState>(r)),
-  // Cards she made in a project's course on claude.ai, into its own deck.
-  addUserCards: (slug: string, cards: UserCard[]) =>
-    fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/cards`, {
+  // Cards she made in a course on claude.ai, to the place she chose.
+  addUserCards: (project: string | null, target: CardTarget, cards: UserCard[]) =>
+    fetch(`${API_BASE}/cards`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cards }),
-    }).then((r) => json<{ added: string[]; already: number; talk_id: number }>(r)),
+      body: JSON.stringify({ project, target, cards }),
+    }).then((r) => json<{ added: string[]; already: number; talk_id: number | null }>(r)),
   deleteEntity: (slug: string) =>
     fetch(`${API_BASE}/entities/${encodeURIComponent(slug)}`, { method: "DELETE" }).then((r) => {
       if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);

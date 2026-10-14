@@ -7,9 +7,11 @@ export function todayIso(): string {
 
 /** How a talk is labelled next to its title: "s07_ep35 · 21/09/2026". A
  *  research project's own cards hang off a pseudo-talk coded proj_<slug>
- *  (see docs/adding-talks.md), which has no date and reads as "проект". */
+ *  (see docs/adding-talks.md), which has no date and reads as "проект"; a
+ *  theme of her own (my_<n>, made when adding cards) reads as "моя тема". */
 export function partLabel(episodeCode: string, date: string | null): string {
   if (episodeCode.startsWith("proj_")) return "проект";
+  if (/^my_\d+$/.test(episodeCode)) return "моя тема";
   return date ? `${episodeCode} · ${formatDate(date)}` : episodeCode;
 }
 

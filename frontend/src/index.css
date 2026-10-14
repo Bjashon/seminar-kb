@@ -261,6 +261,10 @@ h3.title { font-size: 19px; }
 .import-kind { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); font-family: "Source Sans 3", sans-serif; }
 .import-card h4 { margin: 2px 0 6px; font-size: 16px; }
 .import-card mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+.import-target { border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px 12px; margin: 0 0 12px; display: grid; gap: 6px; }
+.import-target legend { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); padding: 0 6px; font-family: "Source Sans 3", sans-serif; }
+.import-target label { display: flex; gap: 8px; align-items: baseline; font-size: 15px; cursor: pointer; }
+.import-target select, .import-new-theme { margin: 0 0 4px 26px; width: calc(100% - 26px); font: 14px "Source Sans 3", sans-serif; padding: 6px 8px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--ink); }
 .import-error { color: #b3303a; font-size: 14px; }
 .import-ok { color: var(--ok, #2e7d32); font-size: 14px; font-weight: 600; }
 .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }

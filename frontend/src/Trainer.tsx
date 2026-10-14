@@ -15,9 +15,10 @@ interface Props {
   onOpenBoard: (talkId: number) => void;
   onSetBookmark: (slug: string, on: boolean) => void;
   /** Start the per-article drill for this talk right away (a project page's
-   *  "Тренажёр по теме" button). `seq` changes on every request so the same
-   *  talk can be asked for twice in a row. */
-  request: { talkId: number; seq: number } | null;
+   *  "Тренажёр по теме" button); talkId null opens "Мой набор" (cards just
+   *  added there). `seq` changes on every request so the same talk can be
+   *  asked for twice in a row. */
+  request: { talkId: number | null; seq: number } | null;
   /** The trainer's tab is the one on screen. */
   active: boolean;
   /** A card she made herself was deleted here. */
@@ -158,7 +159,10 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
     if (!request) return;
     // The deck may be new (cards just sent from a course): the list must know it.
     api.listTalks().then(setTalks);
-    if (mode === "article") {
+    if (request.talkId === null) {
+      if (mode === "bookmarked") load("bookmarked");
+      else setMode("bookmarked");
+    } else if (mode === "article") {
       pickArticle(request.talkId);
     } else {
       pendingTalk.current = request.talkId;

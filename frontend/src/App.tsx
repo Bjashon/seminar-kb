@@ -58,8 +58,8 @@ export default function App() {
   const [focus, setFocus] = useState<FocusRequest | null>(null);
   // A project page asking the trainer to drill its cards: switches to the
   // trainer tab with that talk already picked (see Trainer's `request`).
-  const [trainerRequest, setTrainerRequest] = useState<{ talkId: number; seq: number } | null>(null);
-  const openTrainer = useCallback((talkId: number) => {
+  const [trainerRequest, setTrainerRequest] = useState<{ talkId: number | null; seq: number } | null>(null);
+  const openTrainer = useCallback((talkId: number | null) => {
     setTrainerRequest((prev) => ({ talkId, seq: (prev?.seq ?? 0) + 1 }));
     setMode("trainer");
   }, []);
@@ -80,7 +80,7 @@ export default function App() {
     }
   }, []);
   const onImported = useCallback(
-    (talkId: number) => {
+    (talkId: number | null) => {
       setImporting(null);
       reloadEntities();
       openTrainer(talkId);

@@ -7,11 +7,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
-from app.db.models import CourseState, Entity, EntityKind, Talk
+from app.db.models import CourseState, Talk
 from app.db.session import get_db
 from app.schemas import (
     LectureOut, LectureStateOut, LectureStatePatch, ProjectFileGroupOut, ProjectFileOut, ProjectOut, ProjectSummaryOut,
-    UserCardsIn, UserCardsOut,
 )
 
 router = APIRouter(prefix="/projects", tags=["projects"])
@@ -220,54 +219,6 @@ def patch_lecture_state(slug: str, patch: LectureStatePatch, db: Session = Depen
     row.updated_at = datetime.utcnow()
     db.commit()
     return LectureStateOut(**state)
-
-
-@router.post("/{slug}/cards", response_model=UserCardsOut)
-def add_user_cards(slug: str, payload: UserCardsIn, db: Session = Depends(get_db)) -> UserCardsOut:
-    """Cards she made in the project's course on claude.ai: picked there in
-    the text and written by Claude, sent here by a link or pasted. They go
-    into the project's own deck ("Тренажёр по теме"); a project with no cards
-    of its own gets its pseudo-talk now. A card that came before (the same
-    link opened twice) is not added again."""
-    d = _project_dir(slug)
-    title, _ = _read(d)
-    code = f"proj_{slug}"
-    talk = db.query(Talk).filter(Talk.episode_code == code).first()
-    if talk is None:
-        talk = Talk(episode_code=code, title=title)
-        db.add(talk)
-        db.flush()
-    here = db.query(Entity).filter(Entity.talk_id == talk.id).all()
-    seen = {(e.title_ru, e.statement_ru) for e in here if e.made_by_user}
-    # The project's own topic, if its cards have one; the index groups by it.
-    topic = next((e.topic for e in here if e.topic and not e.made_by_user), None) or title
-    topic_order = next((e.topic_order for e in here if e.topic and not e.made_by_user), 0)
-    prefix = f"my-{slug}-"
-    taken = {s for (s,) in db.query(Entity.slug).filter(Entity.slug.like(prefix + "%")).all()}
-    n = 1 + max((int(s[len(prefix):]) for s in taken if s[len(prefix):].isdigit()), default=0)
-
-    added: list[str] = []
-    already = 0
-    for card in payload.cards:
-        # Titles are plain text everywhere (no MathJax): a stray "$" would show.
-        title_ru = card.title_ru.replace("$", "").strip()
-        if (title_ru, card.statement_ru) in seen:
-            already += 1
-            continue
-        seen.add((title_ru, card.statement_ru))
-        entity = Entity(
-            slug=f"{prefix}{n}", kind=EntityKind(card.kind), talk_id=talk.id,
-            title_ru=title_ru, title_en=(card.title_en or "").replace("$", "").strip() or None,
-            statement_ru=card.statement_ru, statement_en=card.statement_en,
-            aliases=[], links=[], topic=topic, topic_order=topic_order,
-            source_label=(card.source_label or "Моя карточка из курса").strip(),
-            is_foundational=False, made_by_user=True,
-        )
-        db.add(entity)
-        added.append(entity.slug)
-        n += 1
-    db.commit()
-    return UserCardsOut(added=added, already=already, talk_id=talk.id)
 
 
 @router.get("/{slug}/files/{path:path}")
