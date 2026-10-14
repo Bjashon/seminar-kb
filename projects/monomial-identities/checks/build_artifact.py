@@ -10,6 +10,7 @@ The JavaScript is bundled with the frontend's own rolldown (frontend/node_module
 After publishing, the page's address goes into CLAUDE_URL of build_lecture_json.py.
 """
 import json
+import os
 import re
 import subprocess
 import sys
@@ -116,8 +117,11 @@ assert set(SUGGEST) == {m for m, _ in modules}
 for text in (RULES, REFERENCE):
     assert text.count("$") % 2 == 0
 
-# The selection-to-cards tool shared by the courses on claude.ai.
+# The selection-to-cards tool shared by the courses on claude.ai. The site's address (where
+# "Отправить на сайт" leads) comes from SEMINAR_SITE_URL, not from this public repo: the site
+# has no login. Without it the course asks for the address once.
 PICKS = (root / "artifacts" / "picks.js").read_text(encoding="utf-8")
+SITE = os.environ.get("SEMINAR_SITE_URL", "").strip()
 assert "</script>" not in PICKS.lower()
 
 # ---------------------------------------------------------------- the page
@@ -413,7 +417,7 @@ page = "".join([
     '<script async id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>\n',
     # Picking words, formulas, statements into cards for the site's trainer (shared with the other courses).
     '<script>window.PICKS_CONFIG = { project: "monomial-identities", title: "Скобочные тождества алгебр Ли", root: ".lecture-body",\n'
-    '  modules: "section.module", reference: REFERENCE, push: "pk-push", closeOther: "#drawer-close", site: "" };</script>\n',
+    '  modules: "section.module", reference: REFERENCE, push: "pk-push", closeOther: "#drawer-close", site: ' + js_value(SITE) + ' };</script>\n',
     "<script>\n", PICKS, "\n</script>\n",
 ])
 assert page.lower().count("</script>") == 6, page.lower().count("</script>")
