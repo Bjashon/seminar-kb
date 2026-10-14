@@ -12,6 +12,8 @@ export interface EntitySummary {
   source_citation: string | null;
   source_page: number | null;
   episode_code: string | null;
+  /** A card she made herself in a course on claude.ai (can be deleted). */
+  made_by_user?: boolean;
 }
 
 export interface LinkRef {
@@ -42,6 +44,8 @@ export interface EntityDetail {
   /** In the owner's own study set (the violet bookmark). Absent on the
    *  synthetic "brief" card, which is not an entity. */
   bookmarked?: boolean;
+  /** A card she made herself in a course on claude.ai (can be deleted). */
+  made_by_user?: boolean;
   topic: string | null;
   source: {
     label: string | null;
@@ -135,3 +139,14 @@ export const KIND_LABEL_RU: Record<Kind, string> = {
   property: "Свойство",
   brief: "Кратко о статье",
 };
+
+/** A card made in a course on claude.ai, as the course sends it to the site
+ *  (see ImportCards.tsx for the code that carries it). */
+export interface UserCard {
+  kind: "definition" | "theorem" | "property";
+  title_ru: string;
+  title_en?: string | null;
+  statement_ru: string;
+  statement_en?: string | null;
+  source_label?: string | null;
+}

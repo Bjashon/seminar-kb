@@ -116,6 +116,10 @@ assert set(SUGGEST) == {m for m, _ in modules}
 for text in (RULES, REFERENCE):
     assert text.count("$") % 2 == 0
 
+# The selection-to-cards tool shared by the courses on claude.ai.
+PICKS = (root / "artifacts" / "picks.js").read_text(encoding="utf-8")
+assert "</script>" not in PICKS.lower()
+
 # ---------------------------------------------------------------- the page
 TOKENS = r"""
 /* Layout: the site's course as is -- contents on the left, one column of text -- and a drawer for questions on the right. */
@@ -206,6 +210,7 @@ SHELL_CSS = r"""
   .drawer { width: 100vw; top: 12vh; border-left: 0; border-top: 1px solid var(--border); border-radius: 14px 14px 0 0; }
   .ask-fab { right: 14px; }
 }
+@media (min-width: 900px) { body.pk-push { padding-right: min(460px, 100vw); } body.pk-push .ask-fab { display: none; } }
 """
 
 BODY = r"""
@@ -293,9 +298,18 @@ PAGE_JS = r"""
     renderSuggest();
   }
   $("#suggest").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) send(b.textContent); });
-  $("#ask-fab").addEventListener("click", () => { drawer.hidden = false; renderChat(); $("#chat-in").focus(); });
-  $("#drawer-close").addEventListener("click", () => { drawer.hidden = true; });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !drawer.hidden) drawer.hidden = true; });
+  // On a wide screen the panel takes its own column and the text moves left (body.pk-push, see
+  // artifacts/picks.js); the block being read stays where it was.
+  function setDrawer(open) {
+    let keep = null;
+    for (const el of body.querySelectorAll("section.module > *")) { const r = el.getBoundingClientRect(); if (r.bottom > 90) { keep = { el, top: r.top }; break; } }
+    drawer.hidden = !open;
+    document.body.classList.toggle("pk-push", open);
+    if (keep) { const d = keep.el.getBoundingClientRect().top - keep.top; if (Math.abs(d) > 1) window.scrollTo({ top: window.scrollY + d, behavior: "instant" }); }
+  }
+  $("#ask-fab").addEventListener("click", () => { const pk = document.querySelector(".pk-panel"); if (pk && !pk.hidden) pk.querySelector(".pk-x").click(); setDrawer(true); renderChat(); $("#chat-in").focus(); });
+  $("#drawer-close").addEventListener("click", () => setDrawer(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !drawer.hidden) setDrawer(false); });
   $("#chat-clear").addEventListener("click", () => { if (busy) return; history.length = 0; $("#chat-err").textContent = ""; renderChat(); });
   $("#chat-stop").addEventListener("click", () => { if (ctl) ctl.abort(); });
   $("#composer").addEventListener("submit", (e) => { e.preventDefault(); const v = $("#chat-in").value.trim(); if (v) { $("#chat-in").value = ""; send(v); } });
@@ -309,7 +323,7 @@ PAGE_JS = r"""
     refused: "Claude отказался отвечать на такую формулировку. Попробуй переспросить иначе.",
     empty_completion: "Ответ пустой. Попробуй сформулировать вопрос проще.",
   };
-  function unavailable() { sample = null; $("#ask-fab").hidden = true; $("#ask-na").hidden = false; drawer.hidden = true; }
+  function unavailable() { sample = null; $("#ask-fab").hidden = true; $("#ask-na").hidden = false; setDrawer(false); }
   async function send(text) {
     if (busy || !sample) return;
     history.push({ role: "user", content: text });
@@ -397,7 +411,11 @@ page = "".join([
     "const RULES = ", js_value(RULES), ";\nconst REFERENCE = ", js_value(REFERENCE), ";\nconst SUGGEST = ", js_value(SUGGEST), ";\n",
     "</script>\n<script>\n", js, "\n</script>\n<script>", PAGE_JS, "</script>\n",
     '<script async id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>\n',
+    # Picking words, formulas, statements into cards for the site's trainer (shared with the other courses).
+    '<script>window.PICKS_CONFIG = { project: "monomial-identities", title: "Скобочные тождества алгебр Ли", root: ".lecture-body",\n'
+    '  modules: "section.module", reference: REFERENCE, push: "pk-push", closeOther: "#drawer-close", site: "" };</script>\n',
+    "<script>\n", PICKS, "\n</script>\n",
 ])
-assert page.lower().count("</script>") == 4, page.lower().count("</script>")
+assert page.lower().count("</script>") == 6, page.lower().count("</script>")
 out.write_text(page, encoding="utf-8", newline="\n")
 print(f"{out}: {len(page.encode('utf-8')) / 1024:.0f} KB, modules {len(modules)}, quizzes {sum(len(v) for v in data['quizzes'].values())}")

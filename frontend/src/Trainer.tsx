@@ -20,6 +20,8 @@ interface Props {
   request: { talkId: number; seq: number } | null;
   /** The trainer's tab is the one on screen. */
   active: boolean;
+  /** A card she made herself was deleted here. */
+  onDeleted: (slug: string) => void;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -81,7 +83,7 @@ function firstOpen(queue: ReviewCardOut[], passed: Set<string>, from: number): n
   return i;
 }
 
-export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request, active }: Props) {
+export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request, active, onDeleted }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
   // A talk asked for from outside while the mode is still switching to
   // "article" -- the mode effect below would otherwise clear the selection
@@ -154,6 +156,8 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
 
   useEffect(() => {
     if (!request) return;
+    // The deck may be new (cards just sent from a course): the list must know it.
+    api.listTalks().then(setTalks);
     if (mode === "article") {
       pickArticle(request.talkId);
     } else {
@@ -237,6 +241,16 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
     if (!current) return;
     const slug = current.slug;
     api.grade(slug, g).finally(() => next(slug));
+  }
+
+  /** Only a card she made herself (in a course on claude.ai). */
+  function removeMine() {
+    if (!current || !window.confirm("Удалить эту карточку? Её можно будет снова прислать из курса.")) return;
+    const slug = current.slug;
+    api.deleteEntity(slug).then(() => {
+      next(slug);
+      onDeleted(slug);
+    }).catch(() => window.alert("Не получилось удалить карточку."));
   }
 
   function snooze() {
@@ -365,6 +379,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
           <div className="kind-line" style={{ color: `var(--${current.kind})` }}>
             <span className="dot" style={{ background: `var(--${current.kind})` }} />
             {KIND_LABEL_RU[current.kind]}
+            {detail.made_by_user && <span className="level-tag">· моя</span>}
           </div>
           <h3>{current.title_ru}</h3>
           {!revealed && (
@@ -382,6 +397,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                 <button className="grade-btn" onClick={() => grade("easy")}>Легко</button>
               </div>
               <button className="snooze-btn" onClick={snooze}>Отложить</button>
+              {detail.made_by_user && <button className="snooze-btn" onClick={removeMine}>Удалить мою карточку</button>}
             </>
           )}
         </div>

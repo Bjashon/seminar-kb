@@ -2,6 +2,7 @@ import re
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.db.models import DeckProgress, Entity, EntityKind, ReviewCard, Talk
@@ -69,7 +70,9 @@ def due_cards(
         entities = (
             db.query(Entity)
             .filter(Entity.talk_id.in_(group_ids))
-            .filter(Entity.kind.in_([EntityKind.definition, EntityKind.property]))
+            # Theorems are for the board, not drilled -- except a card she
+            # made herself, which she picked to learn, whatever its kind.
+            .filter(or_(Entity.kind.in_([EntityKind.definition, EntityKind.property]), Entity.made_by_user.is_(True)))
             .order_by(Entity.source_page.asc().nulls_first(), Entity.id)
             .all()
         )

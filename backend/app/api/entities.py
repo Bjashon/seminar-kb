@@ -26,6 +26,7 @@ def list_entities(db: Session = Depends(get_db)) -> list[EntitySummaryOut]:
             topic=e.topic, topic_order=e.topic_order,
             source_citation=e.source_citation, source_page=e.source_page,
             episode_code=e.talk.episode_code if e.talk else None,
+            made_by_user=e.made_by_user,
         )
         for e in entities
     ]
@@ -60,7 +61,7 @@ def get_entity(slug: str, db: Session = Depends(get_db)) -> EntityDetailOut:
         slug=entity.slug, kind=entity.kind.value, title_ru=entity.title_ru, title_en=entity.title_en,
         statement_ru=entity.statement_ru, statement_en=entity.statement_en,
         proof_ru=entity.proof_ru, proof_en=entity.proof_en,
-        aliases=entity.aliases or [], links=entity.links or [], bookmarked=card.bookmarked, topic=entity.topic,
+        aliases=entity.aliases or [], links=entity.links or [], bookmarked=card.bookmarked, made_by_user=entity.made_by_user, topic=entity.topic,
         source=SourceOut(
             label=entity.source_label, document=entity.source_document, page=entity.source_page,
             episode_code=entity.talk.episode_code if entity.talk else None,
@@ -69,3 +70,18 @@ def get_entity(slug: str, db: Session = Depends(get_db)) -> EntityDetailOut:
         uses=[_link_out(e) for e in uses],
         used_by=[_link_out(e) for e in used_by],
     )
+
+
+@router.delete("/{slug}", status_code=204)
+def delete_entity(slug: str, db: Session = Depends(get_db)) -> None:
+    """Only a card she made herself (in a course on claude.ai) can go: the
+    others come back from extracted/*.json on every deploy anyway."""
+    entity = db.query(Entity).filter(Entity.slug == slug).one_or_none()
+    if entity is None:
+        raise HTTPException(status_code=404, detail="Entity not found")
+    if not entity.made_by_user:
+        raise HTTPException(status_code=403, detail="Only a card made in a course can be deleted")
+    db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).delete()
+    db.query(EntityLink).filter((EntityLink.from_entity_id == entity.id) | (EntityLink.to_entity_id == entity.id)).delete()
+    db.delete(entity)
+    db.commit()

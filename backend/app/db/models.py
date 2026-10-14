@@ -2,6 +2,7 @@ import enum
 from datetime import date, datetime
 
 from sqlalchemy import Date, DateTime, Enum, Float, ForeignKey, Integer, JSON, String, Text, UniqueConstraint
+from sqlalchemy import false as sql_false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -79,6 +80,11 @@ class Entity(Base):
     # whether the entity was ever looked up, unlike the default history-only
     # queue. Set by hand for now (see load_entities.py); may grow a UI toggle.
     is_foundational: Mapped[bool] = mapped_column(default=False)
+    # A card the owner made herself -- picked in a course on claude.ai and
+    # written there by Claude -- not one extracted into extracted/*.json:
+    # load_entities never touches it, the trainer drills it whatever its kind,
+    # and it can be deleted from the trainer.
+    made_by_user: Mapped[bool] = mapped_column(default=False, server_default=sql_false())
 
     talk: Mapped["Talk"] = relationship(back_populates="entities")
 

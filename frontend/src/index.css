@@ -249,6 +249,25 @@ h3.title { font-size: 19px; }
    everything one taps is big enough for a finger. Only the bar and the
    trainer are fitted; the dashboard, the index and the project pages are
    left as they are on a phone (the owner's decision). */
+/* "Карточки из курса": what a course on claude.ai sent, before it is added. */
+.modal-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(20, 20, 20, .35); display: flex; align-items: flex-start; justify-content: center; padding: 6vh 16px; overflow-y: auto; }
+.modal { width: 100%; max-width: 640px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; box-shadow: 0 12px 40px -12px rgba(0, 0, 0, .35); }
+.modal h2 { margin: 0 0 6px; font-size: 20px; }
+.modal .hint-line { color: var(--ink-soft); font-size: 14px; margin: 0 0 12px; }
+.modal textarea { width: 100%; min-height: 120px; font: 13px/1.4 ui-monospace, Consolas, monospace; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--bg); color: var(--ink); }
+.import-list { max-height: 55vh; overflow-y: auto; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 8px 0 12px; }
+.import-card { padding: 12px 2px; border-bottom: 1px dashed var(--border); }
+.import-card:last-child { border-bottom: none; }
+.import-kind { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); font-family: "Source Sans 3", sans-serif; }
+.import-card h4 { margin: 2px 0 6px; font-size: 16px; }
+.import-card mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+.import-error { color: #b3303a; font-size: 14px; }
+.import-ok { color: var(--ok, #2e7d32); font-size: 14px; font-weight: 600; }
+.modal-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.modal-actions button { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent); font-size: 14px; font-weight: 600; cursor: pointer; font-family: "Source Sans 3", sans-serif; }
+.modal-actions button.primary { background: var(--accent); color: var(--bg); }
+.modal-actions button:disabled { opacity: .5; cursor: default; }
+
 @media (max-width: 700px) {
   /* The bar keeps its 53px: the panes below are sized from it. */
   .topbar { padding: 7px 10px 7px 16px; gap: 8px; }

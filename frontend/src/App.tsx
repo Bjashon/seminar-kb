@@ -6,6 +6,7 @@ import { partLabel } from "./dates";
 import { IndexPage } from "./IndexPage";
 import { Trainer } from "./Trainer";
 import { ProjectsPage } from "./ProjectsPage";
+import { ImportCards } from "./ImportCards";
 import { SourcePanel } from "./SourcePanel";
 import { installExternalLinkMenu } from "./externalLinks";
 
@@ -63,9 +64,29 @@ export default function App() {
     setMode("trainer");
   }, []);
 
-  useEffect(() => {
+  const reloadEntities = useCallback(() => {
     api.listEntities().then(setEntities);
   }, []);
+  useEffect(reloadEntities, [reloadEntities]);
+
+  // Cards made in a course on claude.ai arrive as a link "…/#import=<code>"
+  // (or are pasted on a project page); nothing is added until she says so.
+  const [importing, setImporting] = useState<{ code: string | null } | null>(() =>
+    window.location.hash.startsWith("#import=") ? { code: window.location.hash.slice("#import=".length) } : null
+  );
+  useEffect(() => {
+    if (window.location.hash.startsWith("#import=")) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+  }, []);
+  const onImported = useCallback(
+    (talkId: number) => {
+      setImporting(null);
+      reloadEntities();
+      openTrainer(talkId);
+    },
+    [reloadEntities, openTrainer]
+  );
   useEffect(() => installExternalLinkMenu(), []);
 
   // Stable across renders (functional state updates only) so that
@@ -161,6 +182,19 @@ export default function App() {
     apply(on);
     api.bookmark(slug, on).then((card) => apply(card.bookmarked)).catch(() => apply(!on));
   }, []);
+  // A card she made herself was deleted (from the trainer): forget it everywhere.
+  const forgetEntity = useCallback(
+    (slug: string) => {
+      setEntities((prev) => prev.filter((e) => e.slug !== slug));
+      setDetails((prev) => {
+        const rest = { ...prev };
+        delete rest[slug];
+        return rest;
+      });
+      closeNode(slug);
+    },
+    [closeNode]
+  );
   const openSource = useCallback((d: EntityDetail) => setSourceSlug(d.slug), []);
   const closeSource = useCallback(() => setSourceSlug(null), []);
 
@@ -245,15 +279,25 @@ export default function App() {
                 onSetBookmark={setBookmark}
                 request={trainerRequest}
                 active={mode === "trainer"}
+                onDeleted={forgetEntity}
               />
             </div>
           </div>
           <div className="main-pane" hidden={mode !== "projects"}>
-            <ProjectsPage allEntities={entities} onOpen={openFromIndex} onOpenBoard={openBoard} onOpenTrainer={openTrainer} />
+            <ProjectsPage
+              allEntities={entities}
+              onOpen={openFromIndex}
+              onOpenBoard={openBoard}
+              onOpenTrainer={openTrainer}
+              onImportCards={() => setImporting({ code: null })}
+            />
           </div>
         </main>
         {sourceDetail && <SourcePanel detail={sourceDetail} onClose={closeSource} />}
       </div>
+      {importing && (
+        <ImportCards code={importing.code} entities={entities} onClose={() => setImporting(null)} onAdded={onImported} />
+      )}
     </>
   );
 }

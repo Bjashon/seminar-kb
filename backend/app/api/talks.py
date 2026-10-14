@@ -2,7 +2,7 @@ import re
 from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.db.models import Entity, EntityKind, EntityLink, Season, Talk
@@ -30,14 +30,15 @@ def _display_title(raw: str, strip_part: bool) -> str:
 
 @router.get("", response_model=list[TalkSummaryOut])
 def list_talks(db: Session = Depends(get_db)) -> list[TalkSummaryOut]:
-    """Talks with at least one definition/property entity -- the pool the
-    per-article trainer mode can offer, since that's all it drills."""
+    """Talks with at least one definition/property entity (or a card she made
+    herself, of any kind) -- the pool the per-article trainer mode can offer,
+    since that's all it drills."""
     rows = (
         db.query(Talk, Season.number, func.count(Entity.id))
         .join(Entity, Entity.talk_id == Talk.id)
         .outerjoin(Season, Season.id == Talk.season_id)
         .filter(Talk.episode_code.isnot(None))
-        .filter(Entity.kind.in_([EntityKind.definition, EntityKind.property]))
+        .filter(or_(Entity.kind.in_([EntityKind.definition, EntityKind.property]), Entity.made_by_user.is_(True)))
         .group_by(Talk.id, Season.number)
         .order_by(Talk.episode_code, Talk.date)
         .all()

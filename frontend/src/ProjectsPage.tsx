@@ -10,6 +10,8 @@ interface Props {
   onOpen: (slug: string) => void;
   onOpenBoard: (talkId: number) => void;
   onOpenTrainer: (talkId: number) => void;
+  /** Paste the code a course on claude.ai gives for the cards made there. */
+  onImportCards: () => void;
 }
 
 type View = "page" | "lecture";
@@ -26,7 +28,7 @@ function formatSize(bytes: number): string {
  *  the project's files for download and, when the project has cards of its
  *  own, its trainer and board; when it has a course (lecture.html), the
  *  course opens in place of the page. */
-export function ProjectsPage({ allEntities, onOpen, onOpenBoard, onOpenTrainer }: Props) {
+export function ProjectsPage({ allEntities, onOpen, onOpenBoard, onOpenTrainer, onImportCards }: Props) {
   const [projects, setProjects] = useState<ProjectSummary[] | null>(null);
   const [current, setCurrent] = useState<Project | null>(null);
   const [view, setView] = useState<View>("page");
@@ -104,6 +106,11 @@ export function ProjectsPage({ allEntities, onOpen, onOpenBoard, onOpenTrainer }
                   </a>
                 )}
                 {current.talk_id !== null && <button onClick={() => onOpenTrainer(current.talk_id!)}>Тренажёр по теме</button>}
+                {current.lecture_claude_url && (
+                  <button onClick={onImportCards} title="Карточки, собранные в курсе на claude.ai: вставить код, который он дал">
+                    Карточки из курса
+                  </button>
+                )}
                 {current.talk_id !== null && <button onClick={() => onOpenBoard(current.talk_id!)}>Доска темы</button>}
               </div>
             )}

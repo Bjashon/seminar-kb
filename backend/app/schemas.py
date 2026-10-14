@@ -1,6 +1,8 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 
 class SourceOut(BaseModel):
@@ -33,6 +35,7 @@ class EntitySummaryOut(BaseModel):
     source_citation: str | None
     source_page: int | None
     episode_code: str | None
+    made_by_user: bool = False
 
 
 class EntityDetailOut(BaseModel):
@@ -49,6 +52,8 @@ class EntityDetailOut(BaseModel):
     links: list[ExternalLinkOut] = []
     # In the owner's own study set ("Мой набор"): the violet bookmark.
     bookmarked: bool = False
+    # She made it herself (see Entity.made_by_user): it can be deleted.
+    made_by_user: bool = False
     topic: str | None
     source: SourceOut
     uses: list[LinkOut]
@@ -119,6 +124,26 @@ class LectureStatePatch(BaseModel):
     done: dict[str, bool | None] | None = None
     cards: dict[str, str | None] | None = None
     quiz: dict[str, dict[str, int] | None] | None = None
+
+
+class UserCardIn(BaseModel):
+    # One card she made in a course on claude.ai: picked there, written by Claude.
+    kind: Literal["definition", "theorem", "property"]
+    title_ru: str = Field(min_length=1, max_length=300)
+    title_en: str | None = Field(default=None, max_length=300)
+    statement_ru: str = Field(min_length=1, max_length=20000)
+    statement_en: str | None = Field(default=None, max_length=20000)
+    source_label: str | None = Field(default=None, max_length=200)
+
+
+class UserCardsIn(BaseModel):
+    cards: list[UserCardIn] = Field(min_length=1, max_length=100)
+
+
+class UserCardsOut(BaseModel):
+    added: list[str]       # slugs of the new cards
+    already: int           # the same card had come before (a link opened twice)
+    talk_id: int           # the project's deck: "Тренажёр по теме"
 
 
 class TalkPartOut(BaseModel):
