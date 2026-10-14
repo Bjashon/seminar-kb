@@ -304,7 +304,7 @@
     try { const u = new URL(String(s).trim()); if (u.protocol !== "https:" && u.hostname !== "localhost" && u.hostname !== "127.0.0.1") return ""; return u.origin + u.pathname.replace(/\/+$/, ""); } catch (e) { return ""; }
   }
 
-  let note = { text: "", bad: false }, sent = false, editingSite = false;
+  let note = { text: "", bad: false }, sent = false, editingSite = false, busyText = "";
   function render() {
     const list = items();
     fab.hidden = !list.length && !(state.cards || []).length;
@@ -316,7 +316,7 @@
     h += `<div class="pk-h">Собрано: ${list.length}</div>`;
     h += list.length ? list.map(([id, it]) => `<div class="pk-item"><div class="pk-mod">${esc(it.moduleTitle || "")}</div><div class="pk-text">${md(it.text)}</div><button class="pk-del" type="button" data-del="${id}" aria-label="Убрать">×</button></div>`).join("")
       : `<p class="pk-note">Пока пусто.</p>`;
-    h += `<div class="pk-row"><button class="pk-btn solid" type="button" data-act="make" ${!list.length || busy || !sample ? "disabled" : ""}>${busy ? "Claude пишет карточки…" : cards.length ? "Сделать карточки заново" : "Сделать карточки"}</button></div>`;
+    h += `<div class="pk-row"><button class="pk-btn solid" type="button" data-act="make" ${!list.length || busy || !sample ? "disabled" : ""}>${busy ? busyText || "Claude пишет карточки…" : cards.length ? "Сделать карточки заново" : "Сделать карточки"}</button></div>`;
     if (!sample) h += `<p class="pk-msg">Claude здесь недоступен, поэтому карточки не сделать. Собранное сохранится.</p>`;
     if (note.text) h += `<p class="pk-msg ${note.bad ? "err" : "ok"}">${esc(note.text)}</p>`;
     if (cards.length) {
@@ -378,46 +378,92 @@
   });
 
   // ---------------- making cards ----------------
-  const RULES = `Ты готовишь карточки для тренажёра с интервальным повторением по курсу «${C.title || ""}». Читает их студентка-математик, по-русски в первую очередь.
-Ниже — справка по статье курса и фрагменты, которые она выделила в тексте курса (у каждого — модуль и абзац, где он стоит).
+  // She asked (14/10/2026) for full, detailed mathematical definitions, not approximate ones:
+  // Claude gets the whole text of the modules the fragments come from, and these demands.
+  const RULES = `Ты готовишь карточки для тренажёра с интервальным повторением по курсу «${C.title || ""}». Читает их профессиональный математик, по-русски в первую очередь.
+Ниже: справка по статье курса; полный текст модулей курса, из которых взяты фрагменты (формулы в TeX); фрагменты, которые она выделила, — с абзацем вокруг.
 
-Сделай карточки по выделенному:
-- одна карточка на одно понятие, обозначение, теорему или факт; несколько фрагментов про одно и то же — одна карточка; фрагмент без самостоятельного смысла объедини с соседним по смыслу или пропусти;
-- kind: "definition" — понятие или обозначение; "theorem" — теорема, лемма, утверждение статьи; "property" — факт, свойство, формула, пример;
-- title_ru: короткое название обычным текстом, БЕЗ $ и без TeX (формулы юникодом: «{1,1}», «n·n!», «𝔇»);
-- statement_ru: сначала точная формулировка — формально, каждое условие формулой с кванторами, без рассуждений вокруг. Формулы в $...$, ключевые — отдельной строкой в $$...$$; две формулы подряд — одним блоком \\begin{aligned}...\\end{aligned}. Только стандартные макросы MathJax (никаких \\coloneqq, \\llbracket, своих команд). В карточке-определении первый фрагмент **жирным** — сам определяемый термин. Затем пустая строка и абзац «*Пояснение.* …»: 2–5 предложений — что это значит, расшифровка обозначений, откуда берётся, зачем нужно в статье, при случае простой пример;
+ГЛАВНОЕ: каждая карточка содержит ПОЛНОЕ и ТОЧНОЕ математическое утверждение, а не пересказ и не «примерно».
+- Определение: объемлющая структура и все условия (над каким полем или кольцом, какая градуировка, однородны ли элементы, есть ли единица, чётность операций); все аксиомы — нумерованным списком, каждая формулой с кванторами («для всех однородных $a,b,c\\in V$»); каждый символ, который встречается в формулах, определён в самой карточке (например, $\\|a\\|=|a|+1$) или является общепринятым; равносильные формулировки, которыми пользуется статья, — тоже.
+- Теорема, лемма, предложение: все предположения и точное заключение формулами; номер из статьи — в названии («Теорема 14: …»).
+- Факт, свойство, формула: точное утверждение с кванторами и условиями, при которых оно верно.
+- Формулировки бери из текста модулей и справки, по существу дословно. Ничего не упрощай и не опускай: ни условий, ни знаков, ни особых случаев («при $\\mathfrak D=0$ …»). Если выделено слово из большого определения — карточка про всё понятие целиком. Если формулировка опирается на понятие, определённое в курсе раньше, — дай и его определение (пунктом в той же карточке или отдельной карточкой).
+- В формулировке нет слов «примерно», «грубо говоря», «по сути», «что-то вроде», «и т. п.».
+
+Сделай карточки по выделенному: одна карточка на одно понятие, теорему или факт; фрагменты про одно и то же — одна карточка.
+Каждая карточка:
+- kind: "definition" — понятие или обозначение; "theorem" — теорема, лемма, предложение статьи; "property" — факт, свойство, формула, пример;
+- title_ru: короткое название обычным текстом, без $ и без TeX (формулы юникодом: «{1,1}», «n·n!», «𝔇»);
+- statement_ru: сначала формулировка, как сказано выше. Формулы в $...$; каждая аксиома и ключевое тождество — отдельной строкой в $$...$$, несколько подряд — одним блоком \\begin{aligned}...\\end{aligned}; списки «1.», «2.» с новой строки; абзацы разделены пустой строкой. Только стандартные команды MathJax (\\mathbb, \\mathfrak, \\operatorname, \\begin{aligned} и т. п.; никаких \\coloneqq, \\llbracket и своих сокращений). В определении первый фрагмент **жирным** — сам определяемый термин. После формулировки — пустая строка и абзац «*Пояснение.* …»: 2–5 предложений — смысл, расшифровка обозначений, зачем это в статье, простой пример;
 - title_en, statement_en — то же по-английски («*Explanation.*»);
 - from — номера фрагментов, из которых сделана карточка.
-Пиши только то, что есть в статье и курсе или следует из них; знаки и обозначения — как в курсе.
+
+Перед ответом перечитай каждую карточку: названы ли все условия, определены ли все символы, совпадают ли знаки и обозначения со статьёй. Пиши только то, что есть в статье и курсе или прямо из них следует.
 
 Ответ — только JSON такого вида:
 {"cards":[{"kind":"definition","title_ru":"…","statement_ru":"…","title_en":"…","statement_en":"…","from":[1]}]}`;
 
+  const BATCH = 5;  // fragments per request: full definitions are long, a huge answer can be cut off
+  const bytes = (s) => new TextEncoder().encode(s).length;
+  /** The full text of the modules these fragments come from (TeX restored), within a byte budget. */
+  function moduleTexts(batch, budget) {
+    const out = [];
+    for (const id of [...new Set(batch.map(([, it]) => it.module).filter(Boolean))]) {
+      const el = document.getElementById(id);
+      if (!el || budget < 3000) continue;
+      let t = expandMacros(texText(el));
+      while (bytes(t) > Math.min(budget, 60000) && t.length > 3000) t = t.slice(0, Math.floor(t.length * 0.85)) + "\n…";
+      budget -= bytes(t);
+      out.push(`--- Модуль «${el.dataset.title || id}» ---\n${t}`);
+    }
+    return out.join("\n\n");
+  }
+  async function makeBatch(batch, maxBytes) {
+    const frag = batch.map(([, it], i) => `${i + 1}. [модуль «${it.moduleTitle || "?"}»]\nВыделено: ${it.text}` + (it.ctx ? `\nАбзац вокруг: ${it.ctx}` : "")).join("\n\n");
+    const head = RULES + (C.reference ? "\n\n=== Справка по статье ===\n" + C.reference : "");
+    const tail = "\n\n=== Фрагменты ===\n" + frag;
+    const mods = moduleTexts(batch, maxBytes - bytes(head) - bytes(tail) - 2000);
+    const input = head + (mods ? "\n\n=== Текст модулей курса ===\n" + mods : "") + tail;
+    const res = await sample.json([{ role: "user", content: input }], { cache: false, modelTier: "complex" });
+    const raw = res && Array.isArray(res.cards) ? res.cards : Array.isArray(res) ? res : [];
+    const ids = batch.map(([id]) => id);
+    return raw.filter((c) => c && KIND[c.kind] && typeof c.title_ru === "string" && typeof c.statement_ru === "string" && c.title_ru.trim() && c.statement_ru.trim())
+      .map((c) => {
+        const from = (Array.isArray(c.from) ? c.from : []).map((n) => ids[n - 1]).filter(Boolean);
+        const first = from.length ? state.items[from[0]] : null;
+        return { kind: c.kind, title_ru: c.title_ru.replace(/\$/g, "").trim(), title_en: typeof c.title_en === "string" ? c.title_en.replace(/\$/g, "").trim() : null,
+          statement_ru: expandMacros(c.statement_ru.trim()), statement_en: typeof c.statement_en === "string" ? expandMacros(c.statement_en.trim()) : null, from, moduleTitle: first ? first.moduleTitle : "" };
+      });
+  }
   async function make() {
     const list = items();
     if (!list.length || !sample || busy) return;
     busy = true; note = { text: "", bad: false }; render();
-    const frag = list.map(([, it], i) => `${i + 1}. [модуль «${it.moduleTitle || "?"}»]\nВыделено: ${it.text}` + (it.ctx ? `\nАбзац вокруг: ${it.ctx}` : "")).join("\n\n");
-    const input = RULES + (C.reference ? "\n\n=== Справка по статье ===\n" + C.reference : "") + "\n\n=== Фрагменты ===\n" + frag;
+    let maxBytes = 250000;
+    try { const lim = await sample.limits(); if (lim && lim.maxPromptBytes) maxBytes = lim.maxPromptBytes - 6000; } catch (e) { /* default */ }
+    const batches = [];
+    for (let i = 0; i < list.length; i += BATCH) batches.push(list.slice(i, i + BATCH));
+    const cards = [];
+    let failed = 0, lastErr = null;
     try {
-      const res = await sample.json([{ role: "user", content: input }], { cache: false, modelTier: "default" });
-      const raw = res && Array.isArray(res.cards) ? res.cards : Array.isArray(res) ? res : [];
-      const ids = list.map(([id]) => id);
-      const cards = raw.filter((c) => c && KIND[c.kind] && typeof c.title_ru === "string" && typeof c.statement_ru === "string" && c.title_ru.trim() && c.statement_ru.trim())
-        .slice(0, 60)
-        .map((c) => {
-          const from = (Array.isArray(c.from) ? c.from : []).map((n) => ids[n - 1]).filter(Boolean);
-          const first = from.length ? state.items[from[0]] : null;
-          return { kind: c.kind, title_ru: c.title_ru.replace(/\$/g, "").trim(), title_en: typeof c.title_en === "string" ? c.title_en.replace(/\$/g, "").trim() : null,
-            statement_ru: expandMacros(c.statement_ru.trim()), statement_en: typeof c.statement_en === "string" ? expandMacros(c.statement_en.trim()) : null, from, moduleTitle: first ? first.moduleTitle : "" };
-        });
-      if (!cards.length) note = { text: "Claude не вернул ни одной карточки. Попробуй ещё раз или убери лишние фрагменты.", bad: true };
-      else { state.cards = cards; sent = false; write({ cards }); note = { text: "Проверь карточки и убери лишние (×).", bad: false }; }
-    } catch (err) {
-      const why = { not_granted: "Доступ к Claude для этой страницы не разрешён.", rate_limited: "Слишком много запросов подряд — подожди немного.", invalid_json: "Claude ответил не в том виде — нажми ещё раз.", prompt_too_large: "Слишком много собрано за раз — убери часть фрагментов." };
-      note = { text: (err && why[err.code]) || "Не получилось сделать карточки. Попробуй ещё раз.", bad: true };
-      if (err && err.code === "not_granted") sample = null;
-    } finally { busy = false; render(); }
+      for (let b = 0; b < batches.length; b++) {
+        busyText = batches.length > 1 ? `Claude пишет карточки… (${b + 1} из ${batches.length})` : "Claude пишет карточки…";
+        render();
+        try { cards.push(...await makeBatch(batches[b], maxBytes)); }
+        catch (err) {
+          failed++; lastErr = err;
+          if (err && (err.code === "not_granted" || err.code === "rate_limited")) break;
+        }
+      }
+      const why = { not_granted: "Доступ к Claude для этой страницы не разрешён.", rate_limited: "Слишком много запросов подряд — подожди немного.", invalid_json: "Claude ответил не в том виде — нажми ещё раз.", prompt_too_large: "Слишком много текста за раз — убери часть фрагментов." };
+      if (lastErr && lastErr.code === "not_granted") sample = null;
+      if (!cards.length) note = { text: (lastErr && why[lastErr.code]) || "Claude не вернул ни одной карточки. Попробуй ещё раз или убери лишние фрагменты.", bad: true };
+      else {
+        state.cards = cards.slice(0, 80); sent = false; write({ cards: state.cards });
+        note = failed ? { text: `Часть фрагментов не обработана (${failed} из ${batches.length} порций): ${(lastErr && why[lastErr.code]) || "ошибка"}. Готовые карточки ниже; «Сделать карточки заново» повторит всё.`, bad: true }
+          : { text: "Проверь карточки и убери лишние (×).", bad: false };
+      }
+    } finally { busy = false; busyText = ""; render(); }
   }
 
   // ---------------- connecting ----------------
