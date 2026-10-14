@@ -29,6 +29,21 @@ app.include_router(projects.router)
 app.include_router(cards.router)
 
 
+@app.middleware("http")
+async def cache_headers(request, call_next):
+    """The page itself is asked for afresh on every visit (cheap: its ETag
+    answers "not modified"), so a phone shows the new version right after a
+    Redeploy instead of one it remembered -- without a Cache-Control header a
+    browser guesses for itself and may keep the old page for hours. The built
+    scripts and styles carry a hash in their names and can be kept for good."""
+    response = await call_next(request)
+    if request.url.path.startswith("/assets/"):
+        response.headers.setdefault("Cache-Control", "public, max-age=31536000, immutable")
+    elif response.headers.get("content-type", "").startswith("text/html"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
