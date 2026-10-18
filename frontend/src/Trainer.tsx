@@ -286,41 +286,52 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
       .flatMap((t) => t.parts.map((p) => p.date))
       .filter((d): d is string => !!d && d >= today)
       .sort()[0];
+    // Her own themes (newest first) and the courses' decks have no date, so
+    // among the papers they would sink to the very bottom: they go on top.
+    const ownNo = (t: TalkSummary) => Number(/^my_(\d+)$/.exec(t.episode_code)?.[1] ?? 0);
+    const own = (talks ?? [])
+      .filter((t) => ownNo(t) > 0 || t.episode_code.startsWith("proj_"))
+      .sort((a, b) => ownNo(b) - ownNo(a));
+    const papers = (talks ?? []).filter((t) => !own.includes(t));
+    const row = (t: TalkSummary) => {
+      const isNext = !!upcoming && t.parts.some((p) => p.date === upcoming);
+      const begun = Math.min(decks[deckKey("article", t.id)!]?.length ?? 0, t.entity_count);
+      return (
+        <div key={t.id} className={"article-row" + (isNext ? " upcoming" : "")}>
+          <div className="article-main">
+            <div className="article-codes">
+              {t.parts.map((p, i) => {
+                const label = partLabel(p.episode_code, p.date);
+                return (
+                  <span key={p.episode_code + i}>
+                    {i > 0 && ", "}
+                    {p.date === upcoming ? <mark className="marker">{label}</mark> : label}
+                  </span>
+                );
+              })}
+              {isNext && <span className="upcoming-tag">ближайший доклад</span>}
+              {begun > 0 && <span className="passed-tag">пройдено {begun} из {t.entity_count}</span>}
+            </div>
+            <div className="article-title">{t.title}</div>
+          </div>
+          <span className="article-count" title="определений и свойств">{t.entity_count}</span>
+          <div className="article-actions">
+            <button onClick={() => pickArticle(t.id)}>Тренажёр</button>
+            <button onClick={() => onOpenBoard(t.id)}>Доска</button>
+          </div>
+        </div>
+      );
+    };
     return (
       <div className="trainer" ref={rootRef}>
         {modeSwitch}
         <div className="article-picker">
           {talks === null && <p>Загрузка списка статей…</p>}
           {talks !== null && talks.length === 0 && <p>Пока нет статей с определениями или свойствами.</p>}
-          {talks?.map((t) => {
-            const isNext = !!upcoming && t.parts.some((p) => p.date === upcoming);
-            const begun = Math.min(decks[deckKey("article", t.id)!]?.length ?? 0, t.entity_count);
-            return (
-            <div key={t.id} className={"article-row" + (isNext ? " upcoming" : "")}>
-              <div className="article-main">
-                <div className="article-codes">
-                  {t.parts.map((p, i) => {
-                    const label = partLabel(p.episode_code, p.date);
-                    return (
-                      <span key={p.episode_code + i}>
-                        {i > 0 && ", "}
-                        {p.date === upcoming ? <mark className="marker">{label}</mark> : label}
-                      </span>
-                    );
-                  })}
-                  {isNext && <span className="upcoming-tag">ближайший доклад</span>}
-                  {begun > 0 && <span className="passed-tag">пройдено {begun} из {t.entity_count}</span>}
-                </div>
-                <div className="article-title">{t.title}</div>
-              </div>
-              <span className="article-count" title="определений и свойств">{t.entity_count}</span>
-              <div className="article-actions">
-                <button onClick={() => pickArticle(t.id)}>Тренажёр</button>
-                <button onClick={() => onOpenBoard(t.id)}>Доска</button>
-              </div>
-            </div>
-            );
-          })}
+          {own.length > 0 && <div className="article-group">Мои темы и курсы</div>}
+          {own.map(row)}
+          {own.length > 0 && papers.length > 0 && <div className="article-group">Статьи</div>}
+          {papers.map(row)}
         </div>
       </div>
     );
