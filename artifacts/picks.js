@@ -1,7 +1,9 @@
 /* Набор карточек в курсе на claude.ai -- общий для курсов-артефактов.
  *
  * Выделила в тексте слово, формулу, утверждение -> кнопка «＋ В карточки» -> фрагмент
- * (с TeX-исходником формул и абзацем вокруг) ложится в набор. В наборе «Сделать карточки»:
+ * (с TeX-исходником формул и абзацем вокруг) ложится в набор. Или вписала в панели сама
+ * («Написать самой»: термин, определение своими словами, формулы в $…$) -> тоже в набор,
+ * с пометкой own и модулем, который она читала. В наборе «Сделать карточки»:
  * Claude (capability `sample`) пишет из фрагментов карточки для тренажёра сайта -- формальная
  * формулировка и абзац «Пояснение». «Отправить на сайт» открывает сайт по ссылке
  * <сайт>/#import=<код>; сайт показывает карточки и добавляет их в «Тренажёр по теме» проекта
@@ -71,6 +73,11 @@
 .pk-site input, .pk-code { width: 100%; font: 13px/1.4 ui-monospace, Consolas, monospace; border: 1px solid var(--rule, var(--border, #ddd)); border-radius: 6px; padding: 6px 8px;
   background: var(--paper, #fff); color: var(--ink, #111); }
 .pk-code { min-height: 90px; }
+.pk-own textarea { width: 100%; min-height: 76px; resize: vertical; box-sizing: border-box; font: 16px/1.45 var(--f-body, Georgia, serif); border: 1px solid var(--rule, var(--border, #ddd));
+  border-radius: 8px; padding: 8px 10px; background: var(--paper, #fff); color: var(--ink, #111); }
+.pk-own-prev { font: 15.5px/1.5 var(--f-body, Georgia, serif); margin-top: 6px; padding: 6px 10px; border-left: 3px solid var(--rule, var(--border, #ddd)); }
+.pk-own-prev:empty { display: none; }
+.pk-own-prev p { margin: 0 0 6px; }
 .pk-flash { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 61; padding: 8px 16px; border-radius: 999px;
   background: var(--card, var(--bg, #fff)); color: var(--ink, #111); border: 1px solid var(--rule, var(--border, #ddd)); box-shadow: 0 6px 18px -8px rgba(0,0,0,.4);
   font: 14px/1.3 var(--f-ui, "Source Sans 3", system-ui, sans-serif); white-space: nowrap; }
@@ -324,17 +331,29 @@
   }
 
   let note = { text: "", bad: false }, sent = false, editingSite = false, busyText = "";
+  // What she is typing in "Написать самой": kept in this browser until it goes into the set.
+  const DRAFT = LOCAL + ":draft";
+  let draft = "";
+  try { draft = localStorage.getItem(DRAFT) || ""; } catch (e) { /* storage unavailable */ }
   function render() {
     const list = items();
-    fab.hidden = !list.length && !(state.cards || []).length;
-    fab.textContent = `Набор карточек · ${list.length}`;
+    // Always there: with an empty set it is the way to the panel, to type a definition in.
+    fab.hidden = false;
+    fab.textContent = list.length ? `Набор карточек · ${list.length}` : "Набор карточек";
     if (panel.hidden) return;
     const cards = state.cards || [];
     const site = siteBase(state.site);
-    let h = `<p class="pk-note">Выделяй в тексте слово, формулу или утверждение и жми «＋ В карточки». Потом Claude сделает из собранного карточки с пояснениями, и они уйдут в «Тренажёр по теме» на сайте.</p>`;
+    // The panel is drawn anew on every change (her other device included): what she is
+    // typing, and where the cursor is, must survive that.
+    const ta = body.querySelector("[data-own]");
+    const typing = ta && document.activeElement === ta ? [ta.selectionStart, ta.selectionEnd] : null;
+    let h = `<p class="pk-note">Выделяй в тексте слово, формулу или утверждение и жми «＋ В карточки» — или впиши своё в поле ниже. Потом Claude сделает из собранного карточки с пояснениями, и они уйдут в «Тренажёр по теме» на сайте.</p>`;
     h += `<div class="pk-h">Собрано: ${list.length}</div>`;
-    h += list.length ? list.map(([id, it]) => `<div class="pk-item"><div class="pk-mod">${esc(it.moduleTitle || "")}</div><div class="pk-text">${md(it.text)}</div><button class="pk-del" type="button" data-del="${id}" aria-label="Убрать">×</button></div>`).join("")
+    h += list.length ? list.map(([id, it]) => `<div class="pk-item"><div class="pk-mod">${esc((it.own ? "Своё" + (it.moduleTitle ? " · " : "") : "") + (it.moduleTitle || ""))}</div><div class="pk-text">${md(it.text)}</div><button class="pk-del" type="button" data-del="${id}" aria-label="Убрать">×</button></div>`).join("")
       : `<p class="pk-note">Пока пусто.</p>`;
+    h += `<div class="pk-h">Написать самой</div><div class="pk-own"><textarea data-own rows="3" placeholder="Термин или определение своими словами; формулы в $…$">${esc(draft)}</textarea>` +
+      `<div class="pk-own-prev">${draft.trim() ? md(draft) : ""}</div>` +
+      `<div class="pk-row"><button class="pk-btn" type="button" data-act="own-add" ${draft.trim() ? "" : "disabled"}>＋ В набор</button></div></div>`;
     h += `<div class="pk-row"><button class="pk-btn solid" type="button" data-act="make" ${!list.length || busy || !sample ? "disabled" : ""}>${busy ? busyText || "Claude пишет карточки…" : cards.length ? "Сделать карточки заново" : "Сделать карточки"}</button></div>`;
     if (!sample) h += `<p class="pk-msg">Claude здесь недоступен, поэтому карточки не сделать. Собранное сохранится.</p>`;
     if (note.text) h += `<p class="pk-msg ${note.bad ? "err" : "ok"}">${esc(note.text)}</p>`;
@@ -354,6 +373,40 @@
       : `<div class="pk-site"><input type="url" placeholder="https://…" value="${esc(state.site || "")}" data-site><div class="pk-row"><button class="pk-btn" type="button" data-act="site-save">Сохранить адрес</button></div></div>`);
     body.innerHTML = h;
     typeset(body);
+    if (typing) { const t = body.querySelector("[data-own]"); t.focus(); t.setSelectionRange(typing[0], typing[1]); }
+  }
+
+  // ---------------- a definition of her own ----------------
+  let prevTimer = 0;
+  body.addEventListener("input", (e) => {
+    if (!e.target.matches("[data-own]")) return;
+    draft = e.target.value;
+    try { if (draft) localStorage.setItem(DRAFT, draft); else localStorage.removeItem(DRAFT); } catch (err) { /* storage unavailable */ }
+    body.querySelector('[data-act="own-add"]').disabled = !draft.trim();
+    // How the formulas come out, as she types.
+    clearTimeout(prevTimer);
+    prevTimer = setTimeout(() => { const p = body.querySelector(".pk-own-prev"); if (p) { p.innerHTML = draft.trim() ? md(draft) : ""; typeset(p); } }, 350);
+  });
+  body.addEventListener("keydown", (e) => {
+    if (e.target.matches("[data-own]") && e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); addOwn(); }
+  });
+  function addOwn() {
+    const text = expandMacros(draft.trim());
+    if (text.replace(/\s/g, "").length < 2) return;
+    if (text.length > 3000) { note = { text: "Слишком длинно для одной карточки — раздели на несколько.", bad: true }; render(); return; }
+    // The module she is reading goes with it: Claude gets that module's text as context.
+    const anchor = readingAnchor();
+    const mod = anchor ? anchor.el.closest(C.modules) : null;
+    const modTitle = mod ? (mod.dataset.title || (mod.querySelector("h2, h3") || {}).textContent || mod.id || "") : "";
+    const id = "o" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const item = { text, ctx: "", module: mod ? mod.id || "" : "", moduleTitle: modTitle.trim().slice(0, 120), own: true, at: Date.now() };
+    state.items = Object.assign({}, state.items, { [id]: item });
+    write({ items: { [id]: item } });
+    draft = "";
+    try { localStorage.removeItem(DRAFT); } catch (err) { /* storage unavailable */ }
+    note = { text: "", bad: false };
+    render();
+    flash(`В наборе: ${items().length}`);
   }
 
   body.addEventListener("click", async (e) => {
@@ -371,7 +424,8 @@
       render(); return;
     }
     const act = t.dataset.act;
-    if (act === "make") make();
+    if (act === "own-add") addOwn();
+    else if (act === "make") make();
     else if (act === "sent") { sent = true; setTimeout(render, 300); }
     else if (act === "copy") {
       const text = "seminar-cards:" + packetCode();
@@ -400,7 +454,7 @@
   // She asked (14/10/2026) for full, detailed mathematical definitions, not approximate ones:
   // Claude gets the whole text of the modules the fragments come from, and these demands.
   const RULES = `Ты готовишь карточки для тренажёра с интервальным повторением по курсу «${C.title || ""}». Читает их профессиональный математик, по-русски в первую очередь.
-Ниже: справка по статье курса; полный текст модулей курса, из которых взяты фрагменты (формулы в TeX); фрагменты, которые она выделила, — с абзацем вокруг.
+Ниже: справка по статье курса; полный текст модулей курса, из которых взяты фрагменты (формулы в TeX); фрагменты — выделенные ею в тексте (с абзацем вокруг) и написанные ею самой.
 
 ГЛАВНОЕ: каждая карточка содержит ПОЛНОЕ и ТОЧНОЕ математическое утверждение, а не пересказ и не «примерно».
 - Определение: объемлющая структура и все условия (над каким полем или кольцом, какая градуировка, однородны ли элементы, есть ли единица, чётность операций); все аксиомы — нумерованным списком, каждая формулой с кванторами («для всех однородных $a,b,c\\in V$»); каждый символ, который встречается в формулах, определён в самой карточке (например, $\\|a\\|=|a|+1$) или является общепринятым; равносильные формулировки, которыми пользуется статья, — тоже.
@@ -408,6 +462,7 @@
 - Факт, свойство, формула: точное утверждение с кванторами и условиями, при которых оно верно.
 - Формулировки бери из текста модулей и справки, по существу дословно. Ничего не упрощай и не опускай: ни условий, ни знаков, ни особых случаев («при $\\mathfrak D=0$ …»). Если выделено слово из большого определения — карточка про всё понятие целиком. Если формулировка опирается на понятие, определённое в курсе раньше, — дай и его определение (пунктом в той же карточке или отдельной карточкой).
 - В формулировке нет слов «примерно», «грубо говоря», «по сути», «что-то вроде», «и т. п.».
+- Фрагмент с пометкой «написала сама» — не цитата из курса, а её собственный текст: термин, определение или утверждение своими словами, возможно неполное или в своих обозначениях. Карточка по нему пишется по тем же правилам. Есть понятие в курсе или справке — формулировка оттуда; нет — стандартное точное определение из литературы, в её обозначениях, если они корректны. Если в её тексте ошибка (неверный знак, пропущенное условие, не то тождество), в карточке верная формулировка, а в «Пояснении» одной фразой сказано, что исправлено и почему.
 
 Сделай карточки по выделенному: одна карточка на одно понятие, теорему или факт; фрагменты про одно и то же — одна карточка.
 Каждая карточка:
@@ -438,7 +493,9 @@
     return out.join("\n\n");
   }
   async function makeBatch(batch, maxBytes) {
-    const frag = batch.map(([, it], i) => `${i + 1}. [модуль «${it.moduleTitle || "?"}»]\nВыделено: ${it.text}` + (it.ctx ? `\nАбзац вокруг: ${it.ctx}` : "")).join("\n\n");
+    const frag = batch.map(([, it], i) => it.own
+      ? `${i + 1}. [написала сама${it.moduleTitle ? `, читая модуль «${it.moduleTitle}»` : ""}]\nТекст: ${it.text}`
+      : `${i + 1}. [модуль «${it.moduleTitle || "?"}»]\nВыделено: ${it.text}` + (it.ctx ? `\nАбзац вокруг: ${it.ctx}` : "")).join("\n\n");
     const head = RULES + (C.reference ? "\n\n=== Справка по статье ===\n" + C.reference : "");
     const tail = "\n\n=== Фрагменты ===\n" + frag;
     const mods = moduleTexts(batch, maxBytes - bytes(head) - bytes(tail) - 2000);
