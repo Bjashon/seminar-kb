@@ -43,6 +43,7 @@
 .lecture-body li { margin-bottom: 6px; }
 .lecture-body a { color: var(--accent); text-underline-offset: 3px; }
 .lecture-body mjx-container { max-width: 100%; }
+.lecture-body mjx-assistive-mml { max-width: 100% !important; }  /* the hidden copy for screen readers must not widen the page on a phone */
 .lecture-body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 1px; margin: 10px 0 !important; }
 .lecture-body .eyebrow { font-family: "Source Sans 3", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
 .lecture-body h2 { font-family: "Literata", Georgia, serif; font-weight: 600; font-size: clamp(22px, 2.8vw, 27px); line-height: 1.25; margin: 0 0 14px; text-wrap: balance; }

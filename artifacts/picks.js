@@ -83,6 +83,23 @@
   font: 14px/1.3 var(--f-ui, "Source Sans 3", system-ui, sans-serif); white-space: nowrap; }
 .pk-flash.bad { color: var(--bad, #b3303a); white-space: normal; max-width: calc(100vw - 32px); }
 .pk-panel mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+.pk-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.pk-mini { border: 1px solid var(--rule, var(--border, #ddd)); background: var(--card, var(--bg, #fff)); color: var(--ink-soft, #666); border-radius: 6px; padding: 4px 9px;
+  font: 600 12.5px/1.2 var(--f-ui, system-ui, sans-serif); cursor: pointer; }
+.pk-mini:hover { color: var(--accent, #2a4fb0); border-color: var(--accent, #2a4fb0); }
+.pk-mini.danger:hover { color: var(--bad, #b3303a); border-color: var(--bad, #b3303a); }
+.pk-mini.armed, .pk-btn.armed { color: var(--bad, #b3303a); border-color: var(--bad, #b3303a); }
+.pk-badge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--rule, var(--border, #ddd)); font-size: 10.5px; letter-spacing: .04em; text-transform: none; }
+.pk-badge.ok { color: var(--good, #1c7a49); border-color: currentColor; }
+.pk-card.pk-sent { opacity: .82; }
+.pk-editing { background: var(--card, var(--bg, #fff)); border-color: var(--accent, #2a4fb0); }
+.pk-lab { display: block; font: 700 11.5px/1.3 var(--f-ui, system-ui, sans-serif); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft, #666); margin: 8px 0 4px; }
+.pk-editing input, .pk-editing select, .pk-editing textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--rule, var(--border, #ddd)); border-radius: 6px; padding: 6px 8px;
+  background: var(--paper, #fff); color: var(--ink, #111); font: 16px/1.45 var(--f-body, Georgia, serif); }
+.pk-editing textarea { resize: vertical; min-height: 120px; font: 14.5px/1.45 ui-monospace, Consolas, monospace; }
+.pk-en { margin-top: 8px; }
+.pk-en summary { cursor: pointer; font-size: 13px; color: var(--ink-soft, #666); }
+.pk-en input, .pk-en textarea { margin-top: 6px; }
 @media (min-width: 900px) { body.pk-push { padding-right: min(460px, 100vw); } }
 @media (max-width: 640px) { .pk-panel { width: 100vw; top: 12vh; border-left: 0; border-top: 1px solid var(--rule, var(--border, #ddd)); border-radius: 12px 12px 0 0; } .pk-fab { left: 14px; } }
 `;
@@ -94,6 +111,15 @@
   let state = { items: {}, cards: [], site: C.site || "" };
   let ref = null, exists = false, queue = Promise.resolve(), sample = null, busy = false;
   const items = () => Object.entries(state.items || {}).filter(([, v]) => v && v.text).sort((a, b) => (a[1].at || 0) - (b[1].at || 0));
+  // Every card has an id (kept in the record), so editing and deleting stay on the right card
+  // when the set changes on her other device. Cards made before ids existed get one here, once.
+  const newId = () => "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  function giveIds() {
+    const cards = state.cards || [];
+    if (cards.every((c) => c && c.id)) return false;
+    state.cards = cards.filter(Boolean).map((c) => (c.id ? c : Object.assign({}, c, { id: newId() })));
+    return true;
+  }
 
   function loadLocal() {
     try { const v = JSON.parse(localStorage.getItem(LOCAL) || "null"); if (v && typeof v === "object") state = Object.assign(state, v); } catch (e) { /* nothing kept */ }
@@ -316,8 +342,9 @@
     (MJ.startup && MJ.startup.promise ? MJ.startup.promise : Promise.resolve()).then(() => MJ.typesetPromise([el])).catch((e) => console.warn(e));
   }
 
+  // Only the cards not sent yet: a card that has gone to the site is edited there now.
   function packetCode() {
-    const packet = { v: 1, project: C.project, title: C.title || "", cards: (state.cards || []).map((c) => ({
+    const packet = { v: 1, project: C.project, title: C.title || "", cards: (state.cards || []).filter((c) => !c.sent).map((c) => ({
       kind: c.kind, title_ru: c.title_ru, title_en: c.title_en || null, statement_ru: c.statement_ru, statement_en: c.statement_en || null,
       source_label: "Моя карточка из курса" + (c.moduleTitle ? ": " + c.moduleTitle : ""),
     })) };
@@ -330,7 +357,44 @@
     try { const u = new URL(String(s).trim()); if (u.protocol !== "https:" && u.hostname !== "localhost" && u.hostname !== "127.0.0.1") return ""; return u.origin + u.pathname.replace(/\/+$/, ""); } catch (e) { return ""; }
   }
 
-  let note = { text: "", bad: false }, sent = false, editingSite = false, busyText = "";
+  let note = { text: "", bad: false }, editingSite = false, busyText = "";
+  // The card being edited (by id) and what she has typed so far: survives redrawing.
+  let editId = null, editDraft = null;
+  // A deleting button pressed once waits for a second press (no browser dialogs in an artifact).
+  let armed = "", armTimer = 0;
+  function arm(key) {
+    armed = key; clearTimeout(armTimer);
+    armTimer = setTimeout(() => { armed = ""; render(); }, 4000);
+    render();
+  }
+  const sentCards = () => (state.cards || []).filter((c) => c.sent);
+  /** Fragments that went into kept cards (sent or edited by her): «Сделать карточки» leaves them alone. */
+  const covered = () => new Set((state.cards || []).filter((c) => c.sent || c.edited).flatMap((c) => c.from || []));
+
+  function cardHtml(c) {
+    const id = esc(c.id || "");
+    const all = (c.from || []).length;
+    return `<div class="pk-card${c.sent ? " pk-sent" : ""}"><div class="pk-kind">${KIND[c.kind] || ""}` +
+      (c.sent ? `<span class="pk-badge ok">отправлена</span>` : "") + (c.edited ? `<span class="pk-badge">исправлена</span>` : "") + `</div>` +
+      `<div class="pk-title">${esc(c.title_ru)}</div><div class="pk-st">${md(c.statement_ru)}</div><div class="pk-acts">` +
+      (c.sent ? `<button class="pk-mini" type="button" data-resend="${id}" title="Снова включить в отправку на сайт">Отправить снова</button>`
+        : `<button class="pk-mini" type="button" data-edit="${id}">Изменить</button>`) +
+      `<button class="pk-mini danger${armed === "card:" + c.id ? " armed" : ""}" type="button" data-card="${id}">${armed === "card:" + c.id ? "Точно удалить?" : "Удалить"}</button>` +
+      (all ? `<button class="pk-mini danger${armed === "all:" + c.id ? " armed" : ""}" type="button" data-card-all="${id}">${armed === "all:" + c.id ? "Точно? Нажми ещё раз" : "Удалить с фрагментами"}</button>` : "") +
+      `</div></div>`;
+  }
+  function editorHtml() {
+    const d = editDraft;
+    return `<div class="pk-card pk-editing">` +
+      `<label class="pk-lab">Вид</label><select data-ed="kind">` +
+      Object.entries(KIND).map(([k, v]) => `<option value="${k}"${d.kind === k ? " selected" : ""}>${v}</option>`).join("") + `</select>` +
+      `<label class="pk-lab">Название</label><input type="text" data-ed="title_ru" value="${esc(d.title_ru)}">` +
+      `<label class="pk-lab">Текст карточки</label><textarea data-ed="statement_ru" rows="9">${esc(d.statement_ru)}</textarea>` +
+      `<div class="pk-own-prev" data-ed-prev>${d.statement_ru.trim() ? md(d.statement_ru) : ""}</div>` +
+      `<details class="pk-en"${d.enOpen ? " open" : ""}><summary>Английская версия — поправь, если меняешь смысл</summary>` +
+      `<input type="text" data-ed="title_en" value="${esc(d.title_en || "")}"><textarea data-ed="statement_en" rows="6">${esc(d.statement_en || "")}</textarea></details>` +
+      `<div class="pk-row"><button class="pk-btn solid" type="button" data-act="ed-save">Сохранить</button><button class="pk-btn" type="button" data-act="ed-cancel">Отмена</button></div></div>`;
+  }
   // What she is typing in "Написать самой": kept in this browser until it goes into the set.
   const DRAFT = LOCAL + ":draft";
   let draft = "";
@@ -345,40 +409,64 @@
     const site = siteBase(state.site);
     // The panel is drawn anew on every change (her other device included): what she is
     // typing, and where the cursor is, must survive that.
-    const ta = body.querySelector("[data-own]");
-    const typing = ta && document.activeElement === ta ? [ta.selectionStart, ta.selectionEnd] : null;
+    const act = document.activeElement;
+    const focusSel = act && body.contains(act) ? (act.matches("[data-own]") ? "[data-own]" : act.dataset && act.dataset.ed ? `[data-ed="${act.dataset.ed}"]` : null) : null;
+    const typing = focusSel && typeof act.selectionStart === "number" ? [act.selectionStart, act.selectionEnd] : null;
+    const sentFrom = new Set(sentCards().flatMap((c) => c.from || []));
+    const fresh = list.filter(([id]) => !covered().has(id));
+    const replaced = cards.filter((c) => !c.sent && !c.edited).length;
+    const unsent = cards.filter((c) => !c.sent).length;
     let h = `<p class="pk-note">Выделяй в тексте слово, формулу или утверждение и жми «＋ В карточки» — или впиши своё в поле ниже. Потом Claude сделает из собранного карточки с пояснениями, и они уйдут в «Тренажёр по теме» на сайте.</p>`;
     h += `<div class="pk-h">Собрано: ${list.length}</div>`;
-    h += list.length ? list.map(([id, it]) => `<div class="pk-item"><div class="pk-mod">${esc((it.own ? "Своё" + (it.moduleTitle ? " · " : "") : "") + (it.moduleTitle || ""))}</div><div class="pk-text">${md(it.text)}</div><button class="pk-del" type="button" data-del="${id}" aria-label="Убрать">×</button></div>`).join("")
+    h += list.length ? list.map(([id, it]) => `<div class="pk-item"><div class="pk-mod">${esc((it.own ? "Своё" + (it.moduleTitle ? " · " : "") : "") + (it.moduleTitle || ""))}` +
+      (sentFrom.has(id) ? `<span class="pk-badge ok">карточка отправлена</span>` : "") + `</div><div class="pk-text">${md(it.text)}</div><button class="pk-del" type="button" data-del="${id}" aria-label="Удалить фрагмент" title="Удалить фрагмент">×</button></div>`).join("")
       : `<p class="pk-note">Пока пусто.</p>`;
     h += `<div class="pk-h">Написать самой</div><div class="pk-own"><textarea data-own rows="3" placeholder="Термин или определение своими словами; формулы в $…$">${esc(draft)}</textarea>` +
       `<div class="pk-own-prev">${draft.trim() ? md(draft) : ""}</div>` +
       `<div class="pk-row"><button class="pk-btn" type="button" data-act="own-add" ${draft.trim() ? "" : "disabled"}>＋ В набор</button></div></div>`;
-    h += `<div class="pk-row"><button class="pk-btn solid" type="button" data-act="make" ${!list.length || busy || !sample ? "disabled" : ""}>${busy ? busyText || "Claude пишет карточки…" : cards.length ? "Сделать карточки заново" : "Сделать карточки"}</button></div>`;
+    h += `<div class="pk-row"><button class="pk-btn solid" type="button" data-act="make" ${!fresh.length || busy || !sample ? "disabled" : ""}>${busy ? busyText || "Claude пишет карточки…" : replaced ? "Сделать карточки заново" : "Сделать карточки"}</button></div>`;
+    if (list.length && !fresh.length && !busy) h += `<p class="pk-note">Все фрагменты уже в отправленных или исправленных карточках. Добавь новые — или удали ненужное.</p>`;
+    else if (cards.length - replaced > 0 && !busy) h += `<p class="pk-note">«Сделать карточки» не тронет отправленные и исправленные тобой карточки и возьмёт только остальные фрагменты.</p>`;
     if (!sample) h += `<p class="pk-msg">Claude здесь недоступен, поэтому карточки не сделать. Собранное сохранится.</p>`;
     if (note.text) h += `<p class="pk-msg ${note.bad ? "err" : "ok"}">${esc(note.text)}</p>`;
     if (cards.length) {
-      h += `<div class="pk-h">Карточки: ${cards.length}</div>`;
-      h += cards.map((c, i) => `<div class="pk-card"><div class="pk-kind">${KIND[c.kind] || ""}</div><div class="pk-title">${esc(c.title_ru)}</div><div class="pk-st">${md(c.statement_ru)}</div><button class="pk-del" type="button" data-card="${i}" aria-label="Убрать карточку">×</button></div>`).join("");
-      const code = packetCode();
-      h += `<div class="pk-row">` +
-        (site ? `<a class="pk-btn solid" href="${esc(site + "/#import=" + code)}" target="_blank" rel="noopener" data-act="sent">Отправить на сайт</a>` : "") +
-        `<button class="pk-btn" type="button" data-act="copy">Скопировать код</button></div>`;
-      h += `<textarea class="pk-code" readonly hidden></textarea>`;
-      h += `<p class="pk-note">${site ? "Сайт откроется в новой вкладке и покажет карточки — останется нажать «Добавить»." : "Впиши ниже адрес сайта, и появится кнопка «Отправить на сайт»."} Если вкладка не открылась: «Скопировать код», потом на сайте страница проекта → «Карточки из курса» → вставить.</p>`;
-      if (sent) h += `<div class="pk-row"><button class="pk-btn" type="button" data-act="clear">Карточки на сайте — очистить набор</button></div>`;
+      const nSent = cards.length - unsent;
+      h += `<div class="pk-h">Карточки: ${cards.length}${nSent ? ` · отправлено ${nSent}` : ""}</div>`;
+      h += cards.map((c) => (editId && c.id === editId && editDraft ? editorHtml() : cardHtml(c))).join("");
+      if (unsent) {
+        const code = packetCode();
+        h += `<div class="pk-row">` +
+          (site ? `<a class="pk-btn solid" href="${esc(site + "/#import=" + code)}" target="_blank" rel="noopener" data-act="sent"${editId ? ` aria-disabled="true"` : ""}>Отправить на сайт (${unsent})</a>` : "") +
+          `<button class="pk-btn" type="button" data-act="copy"${editId ? " disabled" : ""}>Скопировать код</button></div>`;
+        if (editId) h += `<p class="pk-msg">Сначала сохрани или отмени правку карточки.</p>`;
+        h += `<textarea class="pk-code" readonly hidden></textarea>`;
+        h += `<p class="pk-note">${site ? "Сайт откроется в новой вкладке и покажет карточки — останется нажать «Добавить»." : "Впиши ниже адрес сайта, и появится кнопка «Отправить на сайт»."} Если вкладка не открылась: «Скопировать код», потом на сайте страница проекта → «Карточки из курса» → вставить. Уйдут только неотправленные карточки.</p>`;
+      } else h += `<p class="pk-note">Все карточки отправлены. Исправлять их теперь можно на сайте (✎ на карточке).</p>`;
+      if (nSent) h += `<div class="pk-row"><button class="pk-btn${armed === "drop-sent" ? " armed" : ""}" type="button" data-act="drop-sent">${armed === "drop-sent" ? "Точно убрать? Нажми ещё раз" : `Убрать отправленные (${nSent}) и их фрагменты`}</button></div>`;
     }
     h += `<div class="pk-h">Сайт</div>` + (site && !editingSite
       ? `<div class="pk-site">${esc(site)} <button class="pk-btn" type="button" data-act="site-edit" style="padding:3px 8px;font-size:12.5px">изменить</button></div>`
       : `<div class="pk-site"><input type="url" placeholder="https://…" value="${esc(state.site || "")}" data-site><div class="pk-row"><button class="pk-btn" type="button" data-act="site-save">Сохранить адрес</button></div></div>`);
     body.innerHTML = h;
     typeset(body);
-    if (typing) { const t = body.querySelector("[data-own]"); t.focus(); t.setSelectionRange(typing[0], typing[1]); }
+    if (focusSel) {
+      const t = body.querySelector(focusSel);
+      if (t) { t.focus(); if (typing && typeof t.setSelectionRange === "function") try { t.setSelectionRange(typing[0], typing[1]); } catch (e) { /* not a text field */ } }
+    }
   }
 
   // ---------------- a definition of her own ----------------
   let prevTimer = 0;
   body.addEventListener("input", (e) => {
+    // Editing a generated card: what she types lives in editDraft until «Сохранить».
+    if (e.target.dataset && e.target.dataset.ed && editDraft) {
+      editDraft[e.target.dataset.ed] = e.target.value;
+      if (e.target.dataset.ed === "statement_ru") {
+        clearTimeout(prevTimer);
+        prevTimer = setTimeout(() => { const p = body.querySelector("[data-ed-prev]"); if (p && editDraft) { p.innerHTML = editDraft.statement_ru.trim() ? md(editDraft.statement_ru) : ""; typeset(p); } }, 350);
+      }
+      return;
+    }
     if (!e.target.matches("[data-own]")) return;
     draft = e.target.value;
     try { if (draft) localStorage.setItem(DRAFT, draft); else localStorage.removeItem(DRAFT); } catch (err) { /* storage unavailable */ }
@@ -389,7 +477,70 @@
   });
   body.addEventListener("keydown", (e) => {
     if (e.target.matches("[data-own]") && e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); addOwn(); }
+    else if (e.target.dataset && e.target.dataset.ed && e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveEdit(); }
   });
+  // The English part folded or open: kept across redrawing (toggle does not bubble).
+  body.addEventListener("toggle", (e) => { if (editDraft && e.target.matches && e.target.matches(".pk-en")) editDraft.enOpen = e.target.open; }, true);
+
+  function startEdit(id) {
+    const c = (state.cards || []).find((x) => x.id === id);
+    if (!c || c.sent) return;
+    editId = id;
+    editDraft = { kind: c.kind, title_ru: c.title_ru || "", statement_ru: c.statement_ru || "", title_en: c.title_en || "", statement_en: c.statement_en || "", enOpen: false };
+    render();
+    const t = body.querySelector('[data-ed="statement_ru"]');
+    if (t) { t.focus(); t.scrollIntoView({ block: "nearest" }); }
+  }
+  function saveEdit() {
+    const cards = state.cards || [];
+    const i = cards.findIndex((c) => c.id === editId);
+    if (i < 0 || !editDraft) { editId = null; editDraft = null; note = { text: "Этой карточки уже нет в наборе.", bad: true }; render(); return; }
+    const d = editDraft, old = cards[i];
+    const title = d.title_ru.replace(/\$/g, "").trim(), st = expandMacros(d.statement_ru.trim());
+    if (!title || !st) { note = { text: "У карточки должны быть название и текст.", bad: true }; render(); return; }
+    const titleEn = (d.title_en || "").replace(/\$/g, "").trim(), stEn = (d.statement_en || "").trim();
+    const nc = Object.assign({}, old, { kind: KIND[d.kind] ? d.kind : old.kind, title_ru: title, statement_ru: st,
+      title_en: titleEn || null, statement_en: stEn ? expandMacros(stEn) : null });
+    const changed = ["kind", "title_ru", "statement_ru", "title_en", "statement_en"].some((k) => (nc[k] || null) !== (old[k] || null));
+    editId = null; editDraft = null; note = { text: "", bad: false };
+    if (changed) {
+      nc.edited = true;
+      state.cards = cards.slice(); state.cards[i] = nc;
+      write({ cards: state.cards });
+      flash("Карточка исправлена");
+    }
+    render();
+  }
+  /** Removes cards (by id); with `withFrags` also the fragments they were made from, unless another card still uses them. */
+  function removeCards(ids, withFrags) {
+    const drop = new Set(ids);
+    const all = state.cards || [];
+    const gone = all.filter((c) => drop.has(c.id)), keep = all.filter((c) => !drop.has(c.id));
+    if (!gone.length) return;
+    let itemsPatch = null;
+    if (withFrags) {
+      const still = new Set(keep.flatMap((c) => c.from || []));
+      const frags = [...new Set(gone.flatMap((c) => c.from || []))].filter((id) => !still.has(id) && state.items && state.items[id]);
+      if (frags.length) {
+        state.items = Object.assign({}, state.items); itemsPatch = {};
+        frags.forEach((id) => { delete state.items[id]; itemsPatch[id] = null; });
+      }
+    }
+    state.cards = keep;
+    if (editId && drop.has(editId)) { editId = null; editDraft = null; }
+    armed = "";
+    write(itemsPatch ? { cards: keep, items: itemsPatch } : { cards: keep });
+    render();
+    flash(gone.length === 1 ? (itemsPatch ? "Карточка и её фрагменты удалены" : "Карточка удалена") : `Удалено карточек: ${gone.length}`);
+  }
+  /** Marks the not-yet-sent cards as sent: next time only new ones go to the site. */
+  function markSent() {
+    const now = Date.now();
+    let any = false;
+    state.cards = (state.cards || []).map((c) => (c.sent ? c : (any = true, Object.assign({}, c, { sent: now }))));
+    if (editId && state.cards.some((c) => c.id === editId && c.sent)) { editId = null; editDraft = null; }
+    if (any) write({ cards: state.cards });
+  }
   function addOwn() {
     const text = expandMacros(draft.trim());
     if (text.replace(/\s/g, "").length < 2) return;
@@ -410,7 +561,7 @@
   }
 
   body.addEventListener("click", async (e) => {
-    const t = e.target.closest("[data-del], [data-card], [data-act]");
+    const t = e.target.closest("[data-del], [data-card], [data-card-all], [data-edit], [data-resend], [data-act]");
     if (!t) return;
     if (t.dataset.del) {
       const id = t.dataset.del;
@@ -418,29 +569,42 @@
       write({ items: { [id]: null } });
       render(); return;
     }
-    if (t.dataset.card !== undefined) {
-      state.cards = (state.cards || []).filter((_, i) => i !== +t.dataset.card);
-      write({ cards: state.cards });
-      render(); return;
+    if (t.dataset.edit) { startEdit(t.dataset.edit); return; }
+    if (t.dataset.card) {
+      const key = "card:" + t.dataset.card;
+      if (armed !== key) { arm(key); return; }
+      removeCards([t.dataset.card], false); return;
+    }
+    if (t.dataset.cardAll) {
+      const key = "all:" + t.dataset.cardAll;
+      if (armed !== key) { arm(key); return; }
+      removeCards([t.dataset.cardAll], true); return;
+    }
+    if (t.dataset.resend) {
+      state.cards = (state.cards || []).map((c) => (c.id === t.dataset.resend ? Object.assign({}, c, { sent: null }) : c));
+      write({ cards: state.cards }); render(); return;
     }
     const act = t.dataset.act;
     if (act === "own-add") addOwn();
     else if (act === "make") make();
-    else if (act === "sent") { sent = true; setTimeout(render, 300); }
+    else if (act === "ed-save") saveEdit();
+    else if (act === "ed-cancel") { editId = null; editDraft = null; render(); }
+    else if (act === "sent") { if (editId) { e.preventDefault(); return; } setTimeout(() => { markSent(); render(); }, 300); }
     else if (act === "copy") {
       const text = "seminar-cards:" + packetCode();
       let ok = false;
       try { await navigator.clipboard.writeText(text); ok = true; } catch (err) { /* no clipboard here */ }
-      sent = true; render();
+      markSent(); render();
       if (ok) { note = { text: "Код скопирован. На сайте: страница проекта → «Карточки из курса» → вставить.", bad: false }; render(); }
-      else { const ta = body.querySelector(".pk-code"); ta.hidden = false; ta.value = text; ta.focus(); ta.select(); note = { text: "Скопируй код из поля ниже.", bad: false }; }
-    } else if (act === "clear") {
-      const used = new Set((state.cards || []).flatMap((c) => c.from || []));
-      const keep = {};
-      Object.entries(state.items || {}).forEach(([id, it]) => { if (it && it.text && !used.has(id)) keep[id] = it; });
-      state = Object.assign({}, state, { items: keep, cards: [] });
-      sent = false; note = { text: "", bad: false };
-      write(null, true); render();
+      else {
+        // Nothing left to send after marking, so the field is drawn here, with the code in it.
+        let ta = body.querySelector(".pk-code");
+        if (!ta) { ta = document.createElement("textarea"); ta.className = "pk-code"; ta.readOnly = true; body.appendChild(ta); }
+        ta.hidden = false; ta.value = text; ta.focus(); ta.select(); note = { text: "Скопируй код из поля ниже.", bad: false };
+      }
+    } else if (act === "drop-sent") {
+      if (armed !== "drop-sent") { arm("drop-sent"); return; }
+      removeCards(sentCards().map((c) => c.id), true);
     } else if (act === "site-edit") { editingSite = true; render(); }
     else if (act === "site-save") {
       const v = siteBase(body.querySelector("[data-site]").value);
@@ -517,7 +681,9 @@
       });
   }
   async function make() {
-    const list = items();
+    // Cards she has sent or corrected stay; only the remaining fragments go to Claude.
+    const done = covered();
+    const list = items().filter(([id]) => !done.has(id));
     if (!list.length || !sample || busy) return;
     busy = true; note = { text: "", bad: false }; render();
     let maxBytes = 250000;
@@ -540,15 +706,18 @@
       if (lastErr && lastErr.code === "not_granted") sample = null;
       if (!cards.length) note = { text: (lastErr && why[lastErr.code]) || "Claude не вернул ни одной карточки. Попробуй ещё раз или убери лишние фрагменты.", bad: true };
       else {
-        state.cards = cards.slice(0, 80); sent = false; write({ cards: state.cards });
+        const kept = (state.cards || []).filter((c) => c.sent || c.edited);
+        state.cards = kept.concat(cards.slice(0, 80).map((c) => Object.assign({ id: newId() }, c)));
+        if (editId && !state.cards.some((c) => c.id === editId)) { editId = null; editDraft = null; }
+        write({ cards: state.cards });
         note = failed ? { text: `Часть фрагментов не обработана (${failed} из ${batches.length} порций): ${(lastErr && why[lastErr.code]) || "ошибка"}. Готовые карточки ниже; «Сделать карточки заново» повторит всё.`, bad: true }
-          : { text: "Проверь карточки и убери лишние (×).", bad: false };
+          : { text: "Проверь карточки: неточное исправь («Изменить»), лишнее удали.", bad: false };
       }
     } finally { busy = false; busyText = ""; render(); }
   }
 
   // ---------------- connecting ----------------
-  loadLocal(); render();
+  loadLocal(); if (giveIds()) saveLocal(); render();
   if (window.claude && typeof window.claude.use === "function") {
     window.claude.use("sample").then((s) => { sample = s; render(); }).catch(() => { /* no Claude here */ });
     Promise.all([window.claude.use("db"), window.claude.use("user")]).then(async ([db, user]) => {
@@ -570,6 +739,8 @@
         } else if (d) {
           state = { items: d.items || {}, cards: d.cards || [], site: d.site || state.site };
         }
+        if (giveIds()) write({ cards: state.cards });
+        if (editId && !(state.cards || []).some((c) => c.id === editId && !c.sent)) { editId = null; editDraft = null; }
         render();
       }, (e) => console.warn("picks sync stopped", e));
     }).catch(() => { /* the browser keeps the set */ });
