@@ -1,9 +1,10 @@
 """Builds the claude.ai copy of the course on problem 2.6: one self-contained HTML page.
 
-The page is the site's course as is -- the same lecture.html, lecture.json, styles
+The course is read only there: the site does not show it, its project page links to the
+copy. The page is lecture.html and lecture.json with the course's styles
 (frontend/src/lecture/lecture.css) and code (frontend/src/lecture/mount.ts with the
-bracket calculators) -- plus what the site does not have: a drawer "Спросить лектора"
-that asks Claude through the artifact runtime (`sample` capability).
+bracket calculators), plus a drawer "Спросить лектора" that asks Claude through the
+artifact runtime (`sample` capability).
 
 Usage: python build_artifact.py <repo root> <output .html>
 The JavaScript is bundled with the frontend's own rolldown (frontend/node_modules).

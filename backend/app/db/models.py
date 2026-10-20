@@ -85,8 +85,18 @@ class Entity(Base):
     # load_entities never touches it, the trainer drills it whatever its kind,
     # and it can be deleted from the trainer.
     made_by_user: Mapped[bool] = mapped_column(default=False, server_default=sql_false())
+    # Her own wording of a card from extracted/*.json: each field she changed
+    # on the site (one of EDITABLE_FIELDS) mapped to the text the JSON has
+    # for it, kept current by load_entities -- so a reload doesn't overwrite
+    # her text, and she can restore the original. None for a card she never
+    # edited, and for her own cards (load_entities doesn't touch them).
+    edited_fields: Mapped[dict | None] = mapped_column(JSON(none_as_null=True), nullable=True)
 
     talk: Mapped["Talk"] = relationship(back_populates="entities")
+
+
+# The card text the owner can change on the site (PATCH /entities/<slug>).
+EDITABLE_FIELDS = ("title_ru", "title_en", "statement_ru", "statement_en", "proof_ru", "proof_en")
 
 
 class EntityLink(Base):
@@ -123,7 +133,11 @@ class DeckProgress(Base):
 class CourseState(Base):
     """What the owner has done in a project's course (lecture.html): modules
     marked as passed, test answers, flashcard marks. On the server for the
-    same reason as DeckProgress."""
+    same reason as DeckProgress.
+
+    No longer used: the site stopped showing courses (20/10/2026; they live
+    on claude.ai only, and keep their progress there). The table stays, with
+    what was saved in it, and nothing reads or writes it."""
     __tablename__ = "course_state"
 
     slug: Mapped[str] = mapped_column(String(64), primary_key=True)

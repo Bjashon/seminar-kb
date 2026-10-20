@@ -195,6 +195,16 @@ export default function App() {
     },
     [closeNode]
   );
+  // She rewrote a card on the site (or brought its original back): the new
+  // text everywhere at once, and the titles anew -- texts link the terms
+  // they mention by the cards' titles.
+  const applyEdit = useCallback(
+    (d: EntityDetail) => {
+      setDetails((prev) => ({ ...prev, [d.slug]: d }));
+      reloadEntities();
+    },
+    [reloadEntities]
+  );
   const openSource = useCallback((d: EntityDetail) => setSourceSlug(d.slug), []);
   const closeSource = useCallback(() => setSourceSlug(null), []);
 
@@ -263,6 +273,7 @@ export default function App() {
               onSetBookmark={setBookmark}
               onGoto={gotoFromCard}
               onOpenSource={openSource}
+              onEdited={applyEdit}
             />
           </div>
           <div className="main-pane" hidden={mode !== "index"}>
@@ -280,6 +291,7 @@ export default function App() {
                 request={trainerRequest}
                 active={mode === "trainer"}
                 onDeleted={forgetEntity}
+                onEdited={applyEdit}
               />
             </div>
           </div>

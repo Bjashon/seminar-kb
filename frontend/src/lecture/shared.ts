@@ -10,11 +10,10 @@ export interface AtlasLevel {
 }
 
 export interface LectureData {
-  /** The same course on claude.ai, with the Claude chat modes the site lacks. */
+  /** The course on claude.ai; the project page on the site links to it. */
   claude_url?: string;
-  /** What the course is called on its button and in its top bar ("Лекция по статье" / "Лекция" by default). */
+  /** Set for a course that is not a lecture on a paper: the link then says "Курс на claude.ai", not "Лекция на claude.ai". */
   label?: string;
-  bar_label?: string;
   /** Which set of calculators the text uses (see LABS in mount.ts). */
   labs?: string;
   quizzes: Record<string, { q: string; o: string[]; a: number; e: string }[]>;
@@ -36,7 +35,6 @@ export const esc = (s: string) => String(s).replace(/&/g, "&amp;").replace(/</g,
 export const store = {
   get(k: string, d: any) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k: string, v: any) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
-  remove(k: string) { try { localStorage.removeItem(k); } catch { /* storage unavailable */ } },
 };
 
 /** What a reader has done in a course: modules marked as passed, flashcard
@@ -57,11 +55,10 @@ export interface LecturePatch {
   quiz?: Record<string, Record<string, number> | null>;
 }
 
-/** Where that state is kept. On the site it is the server (one user, the
- *  same on her phone and her desktop); a copy of the course on claude.ai
- *  has only the browser. Changes are sent one action at a time, to be
- *  merged -- never the whole state -- so a page left open elsewhere cannot
- *  wipe what was done since. */
+/** Where that state is kept: the browser by default, or whatever the page
+ *  hands in (an artifact's own db). Changes are sent one action at a time,
+ *  to be merged -- never the whole state -- so a page left open elsewhere
+ *  cannot wipe what was done since. */
 export interface LectureStorage {
   initial: LectureState;
   save: (patch: LecturePatch) => void;

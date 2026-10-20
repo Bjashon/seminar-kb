@@ -11,13 +11,18 @@ regardless of file order:
      rows for the resolvable ones. Unresolved names are reported, not
      silently dropped -- a dangling dependency usually just means that
      concept hasn't been extracted from any talk yet.
+
+Text the owner changed on the site (Entity.edited_fields) stays hers: for
+those fields the JSON's version only refreshes edited_fields, so that she can
+still restore the original. Cards she made herself aren't in the JSON and
+are never touched.
 """
 
 import json
 from pathlib import Path
 
 from app.db.base import Base
-from app.db.models import Entity, EntityLink, EntityKind, Talk
+from app.db.models import EDITABLE_FIELDS, Entity, EntityLink, EntityKind, Talk
 from app.db.session import SessionLocal, engine
 
 EXTRACTED_DIR = Path(__file__).resolve().parent / "extracted"
@@ -54,6 +59,7 @@ def main() -> None:
                 all_payloads.append((path, json.load(f)))
 
         created, updated = 0, 0
+        kept_hers: list[str] = []  # slugs
         depends_on_map: dict[str, list[str]] = {}  # slug -> [depended-on names]
 
         for path, payload in all_payloads:
@@ -102,12 +108,22 @@ def main() -> None:
 
                 entity.kind = EntityKind(item["kind"])
                 entity.talk_id = talk.id if talk else None
-                entity.title_ru = item.get("title_ru")
-                entity.title_en = item.get("title_en")
-                entity.statement_ru = item.get("statement_ru")
-                entity.statement_en = item.get("statement_en")
-                entity.proof_ru = item.get("proof_ru")
-                entity.proof_en = item.get("proof_en")
+                # A field she rewrote on the site keeps her text; the JSON's
+                # goes into edited_fields, for "restore the original". Once
+                # the JSON says exactly what she wrote, the field is the
+                # JSON's again.
+                edited = dict(entity.edited_fields or {})
+                for field in EDITABLE_FIELDS:
+                    if field not in edited:
+                        setattr(entity, field, item.get(field))
+                    elif item.get(field) == getattr(entity, field):
+                        del edited[field]
+                    else:
+                        edited[field] = item.get(field)
+                # A new dict (or None): a change made in place wouldn't be saved.
+                entity.edited_fields = edited or None
+                if edited:
+                    kept_hers.append(slug)
                 entity.aliases = item.get("aliases", [])
                 entity.links = item.get("links", [])
                 entity.topic = item.get("topic")
@@ -138,10 +154,15 @@ def main() -> None:
 
         # Build a name -> Entity lookup covering every title_en and alias,
         # now that all entities from this run (and prior runs) exist.
+        # depends_on is written against the JSON's English titles, so a card
+        # she renamed on the site is found by its JSON title, not by hers --
+        # her renaming must not make links vanish or move.
         entities_by_key: dict[str, Entity] = {}
         for entity in db.query(Entity).all():
-            if entity.title_en:
-                entities_by_key[entity.title_en.strip().lower()] = entity
+            edited = entity.edited_fields or {}
+            title_en = edited["title_en"] if "title_en" in edited else entity.title_en
+            if title_en:
+                entities_by_key[title_en.strip().lower()] = entity
             for alias in entity.aliases or []:
                 entities_by_key[alias.strip().lower()] = entity
 
@@ -164,6 +185,10 @@ def main() -> None:
 
         db.commit()
         print(f"Entities: {created} created, {updated} updated. Links created: {links_created}.")
+        if kept_hers:
+            # A fix to these cards in the JSON won't show on the site for the
+            # fields she rewrote (it waits in edited_fields until she restores).
+            print(f"Kept the owner's own text (edited on the site) on {len(kept_hers)} entities: {', '.join(kept_hers)}")
         if unresolved:
             print(f"Unresolved dependencies ({len(unresolved)}):")
             for slug, name in unresolved:

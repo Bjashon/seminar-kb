@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import type { EntityDetail, EntitySummary, ReviewCardOut, TalkSummary } from "./types";
+import type { EntityDetail, EntitySummary, Lang, ReviewCardOut, TalkSummary } from "./types";
 import { KIND_LABEL_RU } from "./types";
 import { api } from "./api";
 import { clozeStatement, clozeTerm, keepMathWithNeighbours, mdBody, plainTerm, sameTerm } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
 import { partLabel, todayIso } from "./dates";
 import { BookmarkButton, BookmarkIcon } from "./BookmarkButton";
+import { CardEditor } from "./CardEditor";
 
 interface Props {
   allEntities: EntitySummary[];
@@ -23,6 +24,8 @@ interface Props {
   active: boolean;
   /** A card she made herself was deleted here. */
   onDeleted: (slug: string) => void;
+  /** She saved her own wording of a card here (or brought its original back). */
+  onEdited: (detail: EntityDetail) => void;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -84,7 +87,7 @@ function firstOpen(queue: ReviewCardOut[], passed: Set<string>, from: number): n
   return i;
 }
 
-export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request, active, onDeleted }: Props) {
+export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request, active, onDeleted, onEdited }: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
   // A talk asked for from outside while the mode is still switching to
   // "article" -- the mode effect below would otherwise clear the selection
@@ -105,6 +108,10 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   // The passed cards of every started deck, as the server last told: the
   // article list shows how far each one is.
   const [decks, setDecks] = useState<Record<string, string[]>>({});
+  // The card whose text she is rewriting (the editor opens over the trainer),
+  // and the language edited: the trainer itself shows Russian only.
+  const [editing, setEditing] = useState<string | null>(null);
+  const [editLang, setEditLang] = useState<Lang>("ru");
   // Only the latest request may fill the queue: switching decks quickly must
   // not let a slow answer for the previous one land on top of the new one.
   const loadSeq = useRef(0);
@@ -277,6 +284,21 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   const bookmark = current && detail && (
     <BookmarkButton on={!!detail.bookmarked} onToggle={() => onSetBookmark(current.slug, !detail.bookmarked)} />
   );
+  const editButton = current && (
+    <button
+      className="snooze-btn"
+      onClick={() => {
+        setEditLang("ru");
+        setEditing(current.slug);
+      }}
+    >
+      Изменить
+    </button>
+  );
+  const edited = !!detail?.edited?.length && (
+    <span className="level-tag" title="Текст изменён на сайте; исходный можно вернуть в редакторе">· изменено</span>
+  );
+  const editDetail = editing ? details[editing] : undefined;
 
   if (mode === "article" && selectedTalk === null) {
     // The next talk on the calendar, today's included: whichever part of
@@ -395,12 +417,15 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
             <span className="dot" style={{ background: `var(--${current.kind})` }} />
             {KIND_LABEL_RU[current.kind]}
             {detail.made_by_user && <span className="level-tag">· моя</span>}
+            {edited}
           </div>
-          <h3>{current.title_ru}</h3>
+          {/* From the card, not the queue: the queue keeps the title it was loaded with. */}
+          <h3>{detail.title_ru ?? current.title_ru}</h3>
           {!revealed && (
             <>
               <button className="reveal-btn" onClick={() => setRevealed(true)}>Показать</button>
               <button className="snooze-btn" onClick={snooze}>Отложить</button>
+              {editButton}
             </>
           )}
           {revealed && (
@@ -412,6 +437,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                 <button className="grade-btn" onClick={() => grade("easy")}>Легко</button>
               </div>
               <button className="snooze-btn" onClick={snooze}>Отложить</button>
+              {editButton}
               {detail.made_by_user && <button className="snooze-btn" onClick={removeMine}>Удалить мою карточку</button>}
             </>
           )}
@@ -425,6 +451,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
             <span className="dot" style={{ background: `var(--${current.kind})` }} />
             {KIND_LABEL_RU[current.kind]}
             <span className="level-tag">· уровень 2 · впиши термин</span>
+            {edited}
           </div>
           <div className="cloze-body" ref={clozeBox.ref} onClick={onLinkClick} style={{ opacity: clozeBox.ready ? 1 : 0 }} />
           {!clozeResult && (
@@ -442,6 +469,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                 Проверить
               </button>
               <button className="snooze-btn" onClick={snooze}>Отложить</button>
+              {editButton}
             </>
           )}
           {clozeResult && (
@@ -454,8 +482,32 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                 <button className="grade-btn" onClick={() => grade("good")}>Хорошо</button>
                 <button className="grade-btn" onClick={() => grade("easy")}>Легко</button>
               </div>
+              {editButton}
             </>
           )}
+        </div>
+      )}
+
+      {editDetail && (
+        <div className="modal-backdrop card-editor-backdrop">
+          <div className="modal card-editor-modal" role="dialog" aria-label="Изменить карточку">
+            <div className="kind-line" style={{ color: `var(--${editDetail.kind})` }}>
+              <span className="dot" style={{ background: `var(--${editDetail.kind})` }} />
+              {KIND_LABEL_RU[editDetail.kind]}
+              <span className="level-tag">· правка карточки</span>
+            </div>
+            <CardEditor
+              detail={editDetail}
+              lang={editLang}
+              onSetLang={setEditLang}
+              allEntities={allEntities}
+              onSaved={(d) => {
+                setEditing(null);
+                onEdited(d);
+              }}
+              onCancel={() => setEditing(null)}
+            />
+          </div>
         </div>
       )}
 

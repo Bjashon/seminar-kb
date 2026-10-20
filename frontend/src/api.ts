@@ -1,5 +1,4 @@
-import type { Board, EntityDetail, EntitySummary, Project, ProjectSummary, ReviewCardOut, TalkSummary, UserCard, CardTarget } from "./types";
-import type { LecturePatch, LectureState } from "./lecture/shared";
+import type { Board, EditableField, EntityDetail, EntitySummary, Project, ProjectSummary, ReviewCardOut, TalkSummary, UserCard, CardTarget } from "./types";
 
 // In prod the backend serves the built frontend from the same origin, so
 // relative paths just work. In dev, Vite serves the frontend on :5173 while
@@ -24,18 +23,6 @@ export const api = {
   getBoard: (talkId: number) => fetch(`${API_BASE}/talks/${talkId}/board`).then((r) => json<Board>(r)),
   listProjects: () => fetch(`${API_BASE}/projects`).then((r) => json<ProjectSummary[]>(r)),
   getProject: (slug: string) => fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}`).then((r) => json<Project>(r)),
-  getLecture: (slug: string) =>
-    fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/lecture`).then((r) => json<{ html: string; data: unknown }>(r)),
-  // What the owner has done in a course (modules passed, test answers,
-  // flashcard marks): kept on the server, changed one action at a time.
-  getLectureState: (slug: string) =>
-    fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/lecture/state`).then((r) => json<LectureState>(r)),
-  patchLectureState: (slug: string, patch: LecturePatch) =>
-    fetch(`${API_BASE}/projects/${encodeURIComponent(slug)}/lecture/state`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patch),
-    }).then((r) => json<LectureState>(r)),
   // Cards she made in a course on claude.ai, to the place she chose.
   addUserCards: (project: string | null, target: CardTarget, cards: UserCard[]) =>
     fetch(`${API_BASE}/cards`, {
@@ -43,6 +30,16 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ project, target, cards }),
     }).then((r) => json<{ added: string[]; already: number; talk_id: number | null }>(r)),
+  // Her own wording of a card: only the fields sent change; the original
+  // stays on the server and can be brought back (restoreEntity).
+  editEntity: (slug: string, fields: Partial<Record<EditableField, string | null>>) =>
+    fetch(`${API_BASE}/entities/${encodeURIComponent(slug)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(fields),
+    }).then((r) => json<EntityDetail>(r)),
+  restoreEntity: (slug: string) =>
+    fetch(`${API_BASE}/entities/${encodeURIComponent(slug)}/restore`, { method: "POST" }).then((r) => json<EntityDetail>(r)),
   deleteEntity: (slug: string) =>
     fetch(`${API_BASE}/entities/${encodeURIComponent(slug)}`, { method: "DELETE" }).then((r) => {
       if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);

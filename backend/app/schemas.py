@@ -2,7 +2,7 @@ from datetime import date, datetime
 
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class SourceOut(BaseModel):
@@ -54,10 +54,26 @@ class EntityDetailOut(BaseModel):
     bookmarked: bool = False
     # She made it herself (see Entity.made_by_user): it can be deleted.
     made_by_user: bool = False
+    # Fields of a card from the JSON she rewrote on the site (title_ru, ...,
+    # proof_en): their original can be restored. Empty for her own cards.
+    edited: list[str] = []
     topic: str | None
     source: SourceOut
     uses: list[LinkOut]
     used_by: list[LinkOut]
+
+
+class EntityEditIn(BaseModel):
+    # Her own wording of a card, written on the site: only the fields sent
+    # change. title_ru can't be emptied; an empty other field becomes null.
+    model_config = ConfigDict(extra="forbid")
+
+    title_ru: str | None = Field(default=None, max_length=300)
+    title_en: str | None = Field(default=None, max_length=300)
+    statement_ru: str | None = Field(default=None, max_length=20000)
+    statement_en: str | None = Field(default=None, max_length=20000)
+    proof_ru: str | None = Field(default=None, max_length=20000)
+    proof_en: str | None = Field(default=None, max_length=20000)
 
 
 class BoardEdgeOut(BaseModel):
@@ -94,36 +110,12 @@ class ProjectOut(BaseModel):
     # The pseudo-talk holding the project's own cards, if it has any
     # (episode code proj_<slug>) -- gives the page its trainer and board.
     talk_id: int | None
-    # projects/<slug>/lecture.html exists: the page offers the course.
-    has_lecture: bool = False
-    # The same course on claude.ai, with the Claude chat modes the site
-    # does not have ("claude_url" in lecture.json).
+    # The project's course on claude.ai, with the lecturer ("claude_url" in
+    # lecture.json); the site does not show courses itself, only links there.
     lecture_claude_url: str | None = None
-    # What the course's button says when it is not a lecture on a paper
-    # ("label" in lecture.json).
+    # "label" in lecture.json: set for a course that is not a lecture on a
+    # paper (the link then says "Курс на claude.ai", not "Лекция …").
     lecture_label: str | None = None
-
-
-class LectureOut(BaseModel):
-    # The course text (HTML fragment with formulas) and its interactive data
-    # (quizzes, flashcards, glossary, calculator presets) from lecture.json.
-    html: str
-    data: dict
-
-
-class LectureStateOut(BaseModel):
-    # What the owner has done in a course, the same on all her devices.
-    done: dict[str, bool] = {}            # module id -> passed
-    cards: dict[str, str] = {}            # flashcard index -> "know" | "again"
-    quiz: dict[str, dict[str, int]] = {}  # quiz id -> question index -> chosen option
-
-
-class LectureStatePatch(BaseModel):
-    # A change to it; null removes the entry. Sent one action at a time and
-    # merged on the server, so a page left open elsewhere cannot wipe the rest.
-    done: dict[str, bool | None] | None = None
-    cards: dict[str, str | None] | None = None
-    quiz: dict[str, dict[str, int] | None] | None = None
 
 
 class UserCardIn(BaseModel):

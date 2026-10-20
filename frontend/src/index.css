@@ -149,6 +149,38 @@ h3.title { font-size: 19px; }
 .proof-toggle:hover { border-color: var(--theorem); }
 .proof-body { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); font-family: "Literata", Georgia, serif; }
 
+/* Her own wording of a card (CardEditor.tsx): on the board in place of the
+   card's body, in the trainer over it. TeX source in the boxes, and under
+   each text the card's own rendering of it. */
+.node-edit { background: none; border: none; padding: 2px 4px; font-size: 15px; line-height: 1; color: var(--link-missing); cursor: pointer; }
+.node-edit:hover { color: var(--ink); }
+.node-card.editing { cursor: default; }
+.node-card.editing .node-drag-handle { position: sticky; top: 0; z-index: 2; background: var(--bg); padding-bottom: 8px; }
+.card-editor { display: flex; flex-direction: column; padding: 4px 20px 0; cursor: auto; font-family: "Source Sans 3", sans-serif; }
+.ce-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 2px; }
+.ce-hint { font-size: 12.5px; line-height: 1.45; color: var(--ink-soft); }
+.ce-hint code { font: 12px ui-monospace, Consolas, monospace; background: var(--bg-soft); border-radius: 4px; padding: .05em .3em; white-space: nowrap; }
+.ce-label { margin: 14px 0 5px; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-soft); }
+.card-editor .ce-input { display: block; width: 100%; min-height: 0; resize: none; overflow: hidden; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--bg); color: var(--ink); cursor: text; }
+.card-editor .ce-input:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+.card-editor .ce-title { font: 600 17px/1.35 "Literata", Georgia, serif; }
+.card-editor .ce-text { font: 13.5px/1.55 ui-monospace, Consolas, monospace; }
+.ce-note { margin-top: 5px; font-size: 12.5px; color: var(--no); }
+.ce-preview { margin-top: 8px; padding: 10px 14px 12px; border: 1px dashed var(--border); border-radius: 8px; overflow-wrap: break-word; }
+.ce-preview-label { margin-bottom: 6px; font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--link-missing); }
+.ce-preview .body-text, .ce-preview .proof-body { transition: opacity .15s ease; }
+.ce-preview .proof-body { margin-top: 0; padding-top: 0; border-top: none; }
+.ce-preview .proof-body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+.card-editor .import-error { margin-top: 12px; }
+/* Always in reach, however long the text: the buttons stay at the bottom edge. */
+.ce-actions { position: sticky; bottom: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; padding: 12px 0 18px; background: var(--bg); border-top: 1px solid var(--border); }
+.ce-spacer { flex: 1; }
+.ce-actions button { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent); font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: "Source Sans 3", sans-serif; }
+.ce-actions button.primary { background: var(--accent); color: var(--bg); }
+.ce-actions button.ce-restore { border-color: var(--border); color: var(--ink-soft); font-weight: 400; }
+.ce-actions button.ce-restore:hover { border-color: var(--no); color: var(--no); }
+.ce-actions button:disabled { opacity: .5; cursor: default; }
+
 .index-filters { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; flex-wrap: wrap; }
 .index-filters input { flex: 1; min-width: 180px; padding: 8px 11px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg); color: var(--ink); font-size: 13.5px; font-family: inherit; }
 .index-filters input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
@@ -273,6 +305,11 @@ h3.title { font-size: 19px; }
 .modal-actions button { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent); font-size: 14px; font-weight: 600; cursor: pointer; font-family: "Source Sans 3", sans-serif; }
 .modal-actions button.primary { background: var(--accent); color: var(--bg); }
 .modal-actions button:disabled { opacity: .5; cursor: default; }
+/* The card editor over the trainer. No padding at the bottom of the backdrop:
+   it would lift the sticky buttons and let the text show through below them. */
+.card-editor-backdrop { overscroll-behavior: contain; padding-bottom: 0; }
+.modal.card-editor-modal { max-width: 760px; padding: 18px 0 0; margin-bottom: 6vh; }
+.card-editor-modal > .kind-line { padding: 0 20px 6px; }
 
 @media (max-width: 700px) {
   /* The bar keeps its 53px: the panes below are sized from it. */
@@ -299,6 +336,17 @@ h3.title { font-size: 19px; }
   .grade-btn { max-width: none; padding: 13px 4px; font-size: 14px; }
   .cloze-input { font-size: 16px; }
   .trainer .hint { display: none; }
+  /* The editor over the trainer: the whole width, and 16px text in the boxes
+     (a phone zooms the page in on a smaller one). */
+  .card-editor-backdrop { padding: 10px 8px 0; }
+  .modal.card-editor-modal { margin-bottom: 40px; }
+  .card-editor-modal .card-editor { padding: 2px 14px 0; }
+  .card-editor-modal > .kind-line { padding: 0 14px 6px; }
+  .card-editor-modal .ce-top { flex-direction: column-reverse; align-items: stretch; gap: 8px; }
+  .card-editor-modal .ce-top .lang-switch { align-self: flex-end; }
+  .card-editor-modal .ce-input { font-size: 16px; }
+  .card-editor-modal .ce-preview { padding: 10px 10px 12px; }
+  .card-editor-modal .ce-actions button { padding: 11px 14px; font-size: 15px; }
 
   .article-row { flex-wrap: wrap; padding: 12px 14px; }
   .article-main { flex-basis: 0; }

@@ -12,11 +12,29 @@ const sgn = (e: number) => (((e % 2) + 2) % 2 === 0 ? 1 : -1); // (-1)^e
 function letterHTML(l: number) { return l === 0 ? "1" : "x<sub>" + l + "</sub>"; }
 function wordHTML(w: any): string { return w.deg === 1 ? letterHTML(w.l) : "{" + wordHTML(w.u) + ", " + wordHTML(w.v) + "}"; }
 
-export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
+export function mountGerstenhaberLabs({ root, $, $$, data }: LabContext) {
   const presets = data.presets ?? [];
+  // Each calculator runs only when its block is in the text, wherever it stands. A block that is
+  // not there is skipped; one that is incomplete, or a calculator that fails, is reported inside
+  // its own block and does not stop the others.
+  const lab = (id: string, needs: string[], init: () => void) => {
+    const missing = needs.filter((s) => !root.querySelector(s));
+    if (missing.length === needs.length) return;
+    try {
+      if (missing.length) throw new Error("в блоке нет " + missing.join(", "));
+      init();
+    } catch (e) {
+      console.error(`Вычислитель ${id}:`, e);
+      const at = root.querySelector("#" + id) ?? root.querySelector(needs.find((s) => root.querySelector(s))!)?.closest(".lab") ?? root;
+      const note = document.createElement("p");
+      note.className = "err";
+      note.textContent = "Вычислитель не запустился: " + (e instanceof Error ? e.message : String(e));
+      at.appendChild(note);
+    }
+  };
 
   // ---------- lab: signs ----------
-  {
+  lab("lab-signs", ["#sig-out", "#perm-in", "#perm-out"], () => {
     const out = $("#sig-out");
     const par: Record<string, number> = { a: 0, b: 1 };
     $$("[data-sig]").forEach((seg: HTMLElement) => bindSeg(seg, (v) => { par[seg.dataset.sig!] = +v; render(); }));
@@ -45,10 +63,10 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
       } catch (e: any) { pout.innerHTML = `<div class="err">${esc(e.message)}</div>`; }
     };
     inp.addEventListener("input", perm); perm();
-  }
+  });
 
   // ---------- lab: superpolynomial brackets ----------
-  {
+  lab("lab-po", ["#po-out", "#po-mode", "#po-preset", "#po-a", "#po-b", "#po-c", "#po-keys"], () => {
     const out = $("#po-out"), modeSeg = $("#po-mode"), sel = $("#po-preset");
     const A = $("#po-a"), B = $("#po-b"), Cc = $("#po-c");
     let lastFocus = A;
@@ -131,10 +149,10 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
     }
     $$("[data-po]").forEach((b: HTMLElement) => b.addEventListener("click", () => run(b.dataset.po!)));
     [A, B, Cc].forEach((i: HTMLInputElement) => i.addEventListener("keydown", (e) => { if (e.key === "Enter") run("ab"); }));
-  }
+  });
 
   // ---------- lab: example 1 ----------
-  {
+  lab("lab-ex1", ["#ex1-k", "#ex1-table", "#ex1-out"], () => {
     const seg = $("#ex1-k"), tbl = $("#ex1-table"), out = $("#ex1-out");
     const E = [[1, 0], [0, 1]], names = ["1", "\\varepsilon"], par = [0, 1];
     const add = (x: number[], y: number[]) => [x[0] + y[0], x[1] + y[1]], sc = (s: number, x: number[]) => [s * x[0], s * x[1]];
@@ -164,10 +182,10 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
         `<p>$\\mathfrak{D}(1\\cdot1)=${tex(D11)}$, $\\ \\mathfrak{D}(1)\\cdot1+1\\cdot\\mathfrak{D}(1)=${tex(Dsum)}$ — ${D11[1] === Dsum[1] ? "$\\mathfrak{D}$ здесь дифференцирование." : "$\\mathfrak{D}$ <b>не</b> дифференцирование, как и предсказывает формула $\\mathfrak{D}(bc)=\\mathfrak{D}(b)c+(-1)^{|b|}b\\mathfrak{D}(c)-\\mathfrak{D}(1)bc$."}</p>`);
     };
     bindSeg(seg, render); render();
-  }
+  });
 
   // ---------- lab: good words ----------
-  {
+  lab("lab-hall", ["#hall-n", "#hall-d", "#hall-par", "#hall-out", "#hq-word", "#hq-fb", "#hq-next"], () => {
     const nSeg = $("#hall-n"), dSeg = $("#hall-d"), parBox = $("#hall-par"), out = $("#hall-out");
     const parity = [0, 1, 0, 1];
     const render = () => {
@@ -219,10 +237,10 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
     }));
     $("#hq-next").addEventListener("click", next);
     next();
-  }
+  });
 
   // ---------- lab: expansion of {x1, x2 x3} ----------
-  {
+  lab("lab-expand", ["#ex-par", "#ex-out"], () => {
     const box = $("#ex-par"), out = $("#ex-out");
     const par = [0, 0, 1, 0];
     box.innerHTML = [1, 2, 3].map((i) => `<span class="small">$x_${i}$:</span><span class="seg" data-xp="${i}"><button type="button" aria-pressed="${par[i] === 0}" data-v="0">чётная</button><button type="button" aria-pressed="${par[i] === 1}" data-v="1">нечётная</button></span>`).join("");
@@ -241,10 +259,10 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
     };
     $$("[data-xp]", box).forEach((seg: HTMLElement) => bindSeg(seg, (v) => { par[+seg.dataset.xp!] = +v; render(); }));
     typeset(box); render();
-  }
+  });
 
   // ---------- lab: where the coefficient n-1 comes from ----------
-  {
+  lab("lab-step", ["#step-out", "#step-n", "#step-prev", "#step-next"], () => {
     const steps = [
       "Начало: $\\{a,\\,b_1b_2b_3\\}$, где $a\\in\\widehat{\\mathfrak{L}}$. Хотим выразить через скобки $\\{a,b_j\\}$.",
       "Правило Лейбница для $b_1\\cdot(b_2b_3)$: $$\\{a,b_1b_2b_3\\}=\\{a,b_1\\}b_2b_3\\pm b_1\\{a,b_2b_3\\}-\\{a,1\\}b_1b_2b_3.$$ Одна поправка уже появилась.",
@@ -262,10 +280,10 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
     $("#step-prev").addEventListener("click", () => { if (i > 0) { i--; render(); } });
     $("#step-next").addEventListener("click", () => { if (i < steps.length - 1) { i++; render(); } });
     render();
-  }
+  });
 
   // ---------- lab: basis of GenGer(n) ----------
-  {
+  lab("lab-basis", ["#gb-n", "#gb-out"], () => {
     const seg = $("#gb-n"), out = $("#gb-out");
     const blockHTML = (b: number[]) => "{" + b.slice().sort((x, y) => x - y).map(letterHTML).join(", ") + "}";
     const render = () => {
@@ -282,10 +300,10 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
       setMath(out, html);
     };
     bindSeg(seg, render); render();
-  }
+  });
 
   // ---------- lab: permutations and cycles ----------
-  {
+  lab("lab-dim", ["#dm-n", "#dm-out", "#dm-table"], () => {
     const seg = $("#dm-n"), out = $("#dm-out"), tbl = $("#dm-table");
     const perms = (arr: number[]): number[][] => (arr.length <= 1 ? [arr] : arr.flatMap((x, i) => perms(arr.slice(0, i).concat(arr.slice(i + 1))).map((p) => [x].concat(p))));
     const cycles = (p: number[]) => {
@@ -311,5 +329,5 @@ export function mountGerstenhaberLabs({ $, $$, data }: LabContext) {
     let rows = "";
     for (let n = 1; n <= 7; n++) rows += `<tr><td class="num">${n}</td><td class="num">${fact(n + 1)}</td><td class="num">${fact(n)}</td><td class="num">${genGerCount(n)}</td><td class="num">${n * fact(n)}</td></tr>`;
     setMath(tbl, `<thead><tr><th>$n$</th><th>$(n+1)!$</th><th>$n!$</th><th>$\\sum_\\pi\\prod(|B|-1)!$</th><th>$n\\cdot n!$</th></tr></thead><tbody>${rows}</tbody>`);
-  }
+  });
 }

@@ -1,0 +1,540 @@
+% Доклад по статье «Базис свободных обобщённых алгебр Герстенхабера» (И. Кайгородов, К. Вяткина).
+% ≈ 40 минут. Собирается XeLaTeX (или tectonic): tectonic Gerstenhaber_doklad.tex
+\RequirePackage{fix-cm}
+\documentclass[aspectratio=169,10pt,xcolor=table]{beamer}
+
+\usefonttheme{professionalfonts}
+\usepackage{fontspec}
+\setsansfont{FiraSans}[Extension=.otf, UprightFont=*-Regular, BoldFont=*-SemiBold,
+  ItalicFont=*-Italic, BoldItalicFont=*-SemiBoldItalic]
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[russian]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash\hyphenpenalty=10000}p{#1}}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+\usepackage[most]{tcolorbox}
+
+% ---------------------------------------------------------------- цвета
+\definecolor{applegreen}{rgb}{0.55,0.71,0.0}   % #8DB600
+\colorlet{deepgreen}{applegreen!58!black}
+\colorlet{softgreen}{applegreen!9!white}
+\colorlet{midgreen}{applegreen!35!white}
+\definecolor{ink}{HTML}{22261C}
+\definecolor{mute}{HTML}{70766A}
+
+% ---------------------------------------------------------------- обозначения статьи
+\newcommand{\F}{\mathbb F}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\G}{\mathfrak G}
+\newcommand{\LL}{\mathfrak L}
+\newcommand{\D}{\mathfrak D}
+\newcommand{\Sm}{\mathcal S}
+\newcommand{\Lh}{\widehat{\mathfrak L}}
+\newcommand{\rp}[1]{\|#1\|}
+\DeclareMathOperator{\spn}{span}
+\newcommand{\hl}[1]{{\color{deepgreen}\textbf{#1}}}
+\newcommand{\nohyph}{\hyphenpenalty=10000\exhyphenpenalty=10000\relax}
+
+% ---------------------------------------------------------------- оформление
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=1.25cm, text margin right=1.25cm}
+\setbeamercolor{normal text}{fg=ink,bg=white}
+\setbeamercolor{structure}{fg=deepgreen}
+\setbeamercolor{alerted text}{fg=deepgreen}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{footline}{size=\scriptsize}
+
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[applegreen] (current page.north west) rectangle ([xshift=0.22cm]current page.south west);
+  \end{tikzpicture}}
+
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip\vskip0.4cm
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=1.25cm,rightskip=1.25cm plus 1fil]{frametitle}
+    \usebeamerfont{frametitle}\color{ink}\insertframetitle\par
+    \vskip0.16cm{\color{applegreen}\rule{2.2cm}{2.2pt}}
+  \end{beamercolorbox}\vskip0.02cm}
+
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=1.25cm,rightskip=0.9cm]{footline}
+    \usebeamerfont{footline}\color{mute}\insertshorttitle\hfill
+    {\color{deepgreen}\insertframenumber}\,/\,\inserttotalframenumber
+  \end{beamercolorbox}}
+
+\setbeamertemplate{itemize item}{\color{applegreen}\raisebox{0.18ex}{\rule{0.42em}{0.42em}}}
+\setbeamertemplate{itemize subitem}{\color{applegreen}\textbullet}
+\setbeamertemplate{enumerate item}{\color{deepgreen}\textbf{\insertenumlabel.}}
+\setlength{\leftmargini}{1.3em}
+
+% рамки: определение, теорема, пример
+\newtcolorbox{defbox}[1]{enhanced, colback=softgreen, colframe=applegreen, boxrule=0pt,
+  leftrule=2.8pt, arc=1.5pt, outer arc=1.5pt, left=8pt, right=8pt, top=4pt, bottom=5pt,
+  title={#1}, coltitle=deepgreen, colbacktitle=softgreen, fonttitle=\bfseries\small,
+  toptitle=4pt, bottomtitle=-2pt, titlerule=0pt}
+\newtcolorbox{thmbox}[1]{enhanced, colback=white, colframe=applegreen, boxrule=0.9pt,
+  arc=1.5pt, outer arc=1.5pt, left=8pt, right=8pt, top=4pt, bottom=5pt,
+  title={#1}, coltitle=white, colbacktitle=applegreen!88!black, fonttitle=\bfseries\small,
+  toptitle=2pt, bottomtitle=2pt}
+\newtcolorbox{exbox}[1]{enhanced, colback=black!3, colframe=mute!60, boxrule=0pt,
+  leftrule=2.8pt, arc=1.5pt, outer arc=1.5pt, left=8pt, right=8pt, top=4pt, bottom=5pt,
+  title={#1}, coltitle=mute, colbacktitle=black!3, fonttitle=\bfseries\small,
+  toptitle=4pt, bottomtitle=-2pt, titlerule=0pt}
+
+% слайд-разделитель части
+\newcommand{\partslide}[2]{%
+  {\setbeamertemplate{background}{%
+     \begin{tikzpicture}[remember picture,overlay]
+       \fill[applegreen] (current page.north west) rectangle (current page.south east);
+       \node[anchor=south west, text=white, opacity=0.35, font=\fontsize{96}{96}\selectfont\bfseries, inner sep=0pt]
+         at ([xshift=1.25cm,yshift=0.35cm]current page.west) {#1};
+       \node[anchor=north west, text=white, font=\fontsize{28}{34}\selectfont\bfseries, text width=0.78\paperwidth, inner sep=0pt]
+         at ([xshift=1.3cm,yshift=-0.2cm]current page.west) {\hyphenpenalty=10000 #2};
+     \end{tikzpicture}}%
+   \setbeamertemplate{footline}{}%
+   \begin{frame}[plain,noframenumbering]\end{frame}}}
+
+\title{Базис свободных обобщённых алгебр Герстенхабера}
+\author{И.\,Кайгородов, К.\,Вяткина}
+\date{}
+
+\begin{document}
+
+% ================================================================ титул
+{\setbeamertemplate{background}{}\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[applegreen] (current page.north west) rectangle ([yshift=-0.56\paperheight]current page.north east);
+  \node[anchor=north east, text=white, opacity=0.2, font=\fontsize{40}{40}\selectfont]
+    at ([xshift=-0.8cm,yshift=-0.45cm]current page.north east) {$\{1,1\}\neq0$};
+  \node[anchor=south west, text width=0.86\paperwidth, align=left, text=white,
+        font=\fontsize{23}{29}\selectfont\bfseries]
+    at ([xshift=1.25cm,yshift=-0.56\paperheight+0.6cm]current page.north west)
+    {\hyphenpenalty=10000\exhyphenpenalty=10000 Базис свободных обобщённых\\ алгебр Герстенхабера};
+  \node[anchor=north west, text width=0.82\paperwidth, align=left, text=ink]
+    at ([xshift=1.25cm,yshift=-0.56\paperheight-0.75cm]current page.north west)
+    {{\Large И.\,Кайгородов, \ К.\,Вяткина}\\[0.55em]
+     {\color{mute}Семинар по неассоциативным алгебрам}};
+  \fill[applegreen] ([xshift=1.25cm,yshift=-0.56\paperheight-2.75cm]current page.north west)
+    rectangle ++(2.2cm,2.2pt);
+\end{tikzpicture}
+\end{frame}}
+
+% ================================================================ план
+\begin{frame}{План доклада}
+\vskip0.3cm
+\begin{enumerate}\setlength{\itemsep}{0.75em}
+  \item \textbf{Контекст:} базисы свободных алгебр, алгебры Пуассона и Герстенхабера
+  \item \textbf{Обобщённые алгебры Герстенхабера} и элемент $\{1,1\}$
+  \item \textbf{Главная теорема:} базис $U$ свободной алгебры
+  \item \textbf{Доказательство:} метод Ширшова, модельная алгебра, якобиатор
+  \item \textbf{Размерность} мультилинейной части: $n\cdot n!$
+\end{enumerate}
+\end{frame}
+
+% ================================================================ 1. контекст
+\partslide{01}{Контекст}
+
+\begin{frame}{Базисы свободных алгебр}
+\footnotesize\renewcommand{\arraystretch}{1.45}
+\begin{tabular}{@{}L{4.2cm}L{5.0cm}L{3.3cm}@{}}
+\toprule
+\textbf{Класс} & \textbf{Базис свободной алгебры} & \textbf{Кто}\\
+\midrule
+алгебры Ли & хорошие слова (коммутаторы Холла) & Холл 1950, Ширшов 1958\\
+супералгебры Ли & хорошие слова и квадраты нечётных & Штерн 1986; БМПЗ\\
+(супер)алгебры Пуассона & одночлены от хороших слов & Шестаков 1993\\
+обобщённые супералгебры Пуассона & одночлены от $M\setminus\{1\}$, буква $1$ & Кайгородов 2017\\
+\rowcolor{softgreen}
+\textbf{обобщённые алгебры Герстенхабера} & \textbf{?} & \textbf{эта работа}\\
+\bottomrule
+\end{tabular}
+
+\vskip0.45cm
+\begin{itemize}\small
+  \item Базис свободной алгебры — нормальная форма: тождества, размерности, сравнение классов.
+  \item Метод Ширшова (как в K17): \hl{порождение} + \hl{модель}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Соглашения}
+\begin{itemize}\setlength{\itemsep}{0.55em}
+  \item $\F$ — поле характеристики $0$; все пространства $\Z_2$-градуированы: $V=V_0\oplus V_1$.
+  \item $|a|\in\Z_2$ — чётность однородного $a$; \quad \hl{обращённая чётность} $\rp a=|a|+1$.
+  \item Суперкоммутативность: $\quad ab=(-1)^{|a||b|}\,ba$.
+  \item \hl{Нечётная скобка:} $\quad |\{a,b\}|=|a|+|b|+1 \iff \rp{\{a,b\}}=\rp a+\rp b$.
+\end{itemize}
+\vskip0.3cm
+\begin{defbox}{Нечётная супералгебра Ли}
+$$\{a,b\}=-(-1)^{\rp a\rp b}\{b,a\},\qquad
+  \{a,\{b,c\}\}=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\}.$$
+Это ровно супералгебра Ли на $\Pi V$ (та же $V$ с обращённой чётностью).
+\end{defbox}
+\end{frame}
+
+\begin{frame}{Алгебры Герстенхабера}
+\begin{defbox}{Алгебра Герстенхабера (нечётная супералгебра Пуассона)}
+Ассоциативная суперкоммутативная супералгебра с $1$ и нечётной скобкой, для которой $\Pi V$ — супералгебра Ли и
+$$\{a,bc\}=\{a,b\}c+(-1)^{\rp a|b|}\,b\{a,c\},$$
+т.\,е. $\{a,\cdot\}$ — супердифференцирование чётности $\rp a$.
+\end{defbox}
+\vskip0.15cm
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\textbf{Источники}
+\begin{itemize}\small
+  \item когомологии Хохшильда $HH^\bullet(A,A)$ (Герстенхабер, 1963)
+  \item $\Lambda(\mathfrak g)$ со скобкой Схоутена
+  \item BV-алгебры (Баталин–Вилковыский)
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\textbf{Поливекторные поля} $PO(n,n)=\F[x_i]\otimes\Lambda(\xi_i)$:
+\small
+$$\{f,g\}=\sum_i\Bigl(\tfrac{\partial f}{\partial x_i}\tfrac{\partial g}{\partial \xi_i}+(-1)^{|f|}\tfrac{\partial f}{\partial \xi_i}\tfrac{\partial g}{\partial x_i}\Bigr)$$
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Обобщённые супералгебры Пуассона (чётная скобка)}
+\begin{defbox}{Правило Лейбница с поправкой}
+$$\{a,bc\}=\{a,b\}c+(-1)^{|a||b|}\,b\{a,c\}-\D(a)\,bc,\qquad \D(a)=\{a,1\}.$$
+\end{defbox}
+\vskip0.1cm
+\begin{exbox}{Пример}
+$\F[x]$ со скобкой векторных полей на прямой $\{f,g\}=fg'-f'g$. Здесь $\{f,1\}=-f'$:
+$$\{f,gh\}=\{f,g\}h+g\{f,h\}-\{f,1\}\,gh .$$
+\end{exbox}
+\begin{itemize}\small
+  \item Происхождение: двойник Кантора, йордановы скобки (Кантор 1990; Кинг–МакКриммон 1992).
+  \item Простые линейно компактные — Кантарини–Кац 2007; базис свободных — Кайгородов 2017.
+  \item В чётном случае $\{1,1\}=-\{1,1\}=0$ \ по кососимметричности.
+\end{itemize}
+\end{frame}
+
+% ================================================================ 2. определения
+\partslide{02}{Обобщённые алгебры\\ Герстенхабера}
+
+\begin{frame}{Определение}
+\begin{defbox}{Определение 1}
+$\Z_2$-градуированное пространство $V$ с $1\in V_0$ и операциями $ab$, $\{a,b\}$:
+$$\begin{aligned}
+&(1)\quad |ab|=|a|+|b|,\qquad |\{a,b\}|=|a|+|b|+1;\\
+&(2)\quad (ab)c=a(bc),\qquad ab=(-1)^{|a||b|}ba,\qquad 1a=a;\\
+&(3)\quad \{a,b\}=-(-1)^{\rp a\rp b}\{b,a\};\\
+&(4)\quad \{a,\{b,c\}\}=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\};\\
+&(5)\quad \{a,bc\}=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}+(-1)^{\rp a}\D(a)\,bc,\qquad \D(a)=\{1,a\}.
+\end{aligned}$$
+\end{defbox}
+\begin{itemize}\small
+  \item $\D=0$ $\Rightarrow$ алгебры Герстенхабера.
+  \item Это в точности \emph{odd generalized Poisson superalgebras} Кантарини–Каца (2010).
+  \item Естественные примеры с $\D\neq0$: супералгебры $PO(n,n+1)$ (Кантарини–Кац).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Что меняет поправка}
+\begin{itemize}\setlength{\itemsep}{0.5em}
+  \item {\color{mute}Зам. 2.} \ $(1),(3),(4)$ $\iff$ $(\Pi V,\{\,,\})$ — супералгебра Ли.
+  \item {\color{mute}Зам. 3.} \ $(5)$ $\iff$ $d_a(b)=\{a,b\}+(-1)^{\rp a}\D(a)\,b$ — супердифференцирование чётности $\rp a$.
+  \item Подстановка $a=1$ в $(5)$:
+  $$\D(bc)=\D(b)\,c+(-1)^{|b|}\,b\,\D(c)-\D(1)\,bc .$$
+\end{itemize}
+\begin{thmbox}{Вывод}
+$\D$ — нечётное дифференцирование $\iff$ $\D(1)=\{1,1\}=0$.\\[0.3em]
+Но $(3)$ при $a=b=1$ даёт $\{1,1\}=\{1,1\}$: \ $\rp1=1$, условия \hl{нет}.
+\end{thmbox}
+\end{frame}
+
+\begin{frame}{Пример: $\{1,1\}\neq0$}
+\begin{exbox}{Пример 1}
+$V=\F1\oplus\F\varepsilon$, \ $|\varepsilon|=1$, \ $\varepsilon^2=0$;\qquad
+$\{1,1\}=\varepsilon,\quad \{1,\varepsilon\}=\{\varepsilon,1\}=\{\varepsilon,\varepsilon\}=0 .$
+\end{exbox}
+\begin{itemize}\setlength{\itemsep}{0.5em}
+  \item $(3)$ при $a=b=1$: \ $\{1,1\}=\{1,1\}$.
+  \item $(4)$: все скобки лежат в $\F\varepsilon$, а $\{\varepsilon,V\}=0$.
+  \item $(5)$ при $a=b=c=1$: \quad $\varepsilon=\varepsilon+\varepsilon-\varepsilon$; \ остальные тройки дают $0=0$.
+\end{itemize}
+\vskip0.2cm
+\begin{thmbox}{Итог}
+$V$ — обобщённая алгебра Герстенхабера, но $\D$ не дифференцирование:
+$$\D(1\cdot1)=\varepsilon\ \neq\ 2\varepsilon=\D(1)\cdot1+1\cdot\D(1).$$
+\end{thmbox}
+\end{frame}
+
+% ================================================================ 3. базис
+\partslide{03}{Свободная алгебра\\ и её базис}
+
+\begin{frame}{Свободная обобщённая алгебра Герстенхабера}
+\begin{itemize}\setlength{\itemsep}{0.55em}
+  \item $X=\{1<x_1<x_2<\cdots\}$, \ $|1|=0$, \ чётности $|x_i|$ произвольны.
+  \item $D_X$ — все неассоциативные слова от $X$ с операциями $\cdot$ и $\{\,,\}$.
+  \item $I$ — идеал, порождённый тождествами $(1)$–$(5)$; \quad $\G=D_X/I$.
+  \item Универсальность: любое сохраняющее чётность $\{x_i\}\to V$ однозначно продолжается до гомоморфизма $\G\to V$, $1\mapsto1$.
+\end{itemize}
+\vskip0.3cm
+\begin{thmbox}{Ключевое наблюдение}
+$1$ — одновременно \hl{единица умножения} и \hl{буква скобки}:
+$\{1,x_i\}$, $\{1,1\}$, $\{\{x_i,1\},1\},\ \dots$ — новые элементы.
+\end{thmbox}
+\end{frame}
+
+\begin{frame}{Хорошие слова (базисные коммутаторы Холла)}
+\begin{defbox}{Определение}
+Буквы — хорошие слова степени 1. Слово $w$ степени $n$ \hl{хорошее}, если
+\begin{enumerate}\small
+  \item $w=\{u,v\}$, где $u,v$ — хорошие и $u>v$;
+  \item если $u=\{u_1,u_2\}$, то $u_2\le v$.
+\end{enumerate}
+Порядок: большая степень больше; одна степень — лексикографически по $(u,v)$.
+\end{defbox}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}\small
+\textbf{Примеры} над $\{1<x_1<x_2\}$:
+$$\{x_1,1\},\ \{x_2,1\},\ \{x_2,x_1\},$$
+$$\{\{x_1,1\},1\},\ \{\{x_1,1\},x_2\},\ \{\{x_2,1\},x_1\}$$
+\end{column}
+\begin{column}{0.5\textwidth}\small
+\textbf{Не хорошее:} $\{\{x_2,x_1\},1\}$, так как $x_1>1$.
+По Якоби оно выражается через $\{\{x_2,1\},x_1\}$ и $\{\{x_1,1\},x_2\}$.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Множество $M$}
+$$M=\bigl\{\,u,\ \{v,v\}\ \bigm|\ u,v\ \text{— хорошие слова},\ |v|=0\,\bigr\},\qquad e_1=1<e_2<e_3<\cdots$$
+\begin{thmbox}{Лемма 4}
+$M$ — базис свободной нечётной супералгебры Ли $\LL$, порождённой $X$.
+\end{thmbox}
+\begin{itemize}\setlength{\itemsep}{0.45em}
+  \item По замечанию 2: $\LL$ — свободная супералгебра Ли на $X$ с чётностью $\rp x$.
+  \item Её базис: хорошие слова и квадраты слов с $\rp v=1$ \ (Штерн 1986; БМПЗ; Бокуть–Канг–Ли–Малкольмсон).
+  \item $\rp v=1\iff|v|=0$: квадраты \hl{чётных} слов. В частности, $\{1,1\}\in M$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Главная теорема}
+$$U=\bigl\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\ \bigm|\ r\ge0,\ 1<i_1<\dots<i_r,\ k_j\ge1,\ k_j=1\ \text{при}\ |e_{i_j}|=1\,\bigr\}$$
+\centerline{\small\color{mute}суперкоммутативные одночлены от $M\setminus\{1\}$}
+\vskip0.25cm
+\begin{thmbox}{Теорема 12}
+$U$ — базис свободной унитальной обобщённой алгебры Герстенхабера $\G$, порождённой $X$.
+Более того, $\G\cong\Sm$ — свободная суперкоммутативная супералгебра над $\LL'=\spn(M\setminus\{1\})$
+с явно заданной скобкой.
+\end{thmbox}
+\begin{itemize}\small
+  \item Шаблон тот же, что у Шестакова: «свободная $=$ симметрическая алгебра над свободной скобочной частью».
+  \item Новое: буква $1$ в скобках и базисный элемент $\{1,1\}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Следствие и пример}
+\begin{thmbox}{Следствие 13}
+В $\G$: \ $\{1,1\}\neq0$, и $\D$ не является дифференцированием.
+Более того, $\{1,1\}$, \ $\{1,1\}x_i$, \ $\{1,x_i\}$ \ линейно независимы.
+\end{thmbox}
+{\small\color{mute}Без теоремы 12: гомоморфизм $\G\to V$ (пример 1), $1\mapsto1$, $x_i\mapsto0$, переводит $\{1,1\}\mapsto\varepsilon\neq0$.}
+\vskip0.3cm
+\begin{exbox}{Пример 2: мультилинейные элементы $U$ по $1,x_1,\dots,x_n$}
+$n=1$: \quad $\{x_1,1\}$\\[0.3em]
+$n=2$: \quad $\{x_1,1\}\,x_2,\quad \{x_2,1\}\,x_1,\quad \{\{x_1,1\},x_2\},\quad \{\{x_2,1\},x_1\}$
+\end{exbox}
+\end{frame}
+
+% ================================================================ 4. доказательство
+\partslide{04}{Доказательство}
+
+\begin{frame}{Схема: метод Ширшова}
+\centering
+\begin{tikzpicture}[
+  box/.style={draw=applegreen, line width=0.9pt, fill=softgreen, rounded corners=2pt,
+              text width=5.6cm, align=left, inner sep=7pt, font=\small\nohyph},
+  arr/.style={-{Stealth[length=7pt]}, line width=1pt, deepgreen}]
+  \node[box] (span) {\textbf{\color{deepgreen}Порождение} (лемма 5)\\[0.2em]
+     $U$ линейно порождает $\G$: скобки переписываются по $(5)$, индукция по $e$-степени.};
+  \node[box, right=1.1cm of span] (model) {\textbf{\color{deepgreen}Модель} (теорема 11)\\[0.2em]
+     На $\Sm=S(\LL')$ задаём скобку $\{\,,\}^*$ формулами (7), (8) и проверяем \mbox{аксиомы $(1)$–$(5)$}.};
+  \node[box, text width=12.2cm, below=1.0cm of $(span.south)!0.5!(model.south)$, fill=white] (iso)
+     {\textbf{\color{deepgreen}Изоморфизм} (теорема 12)\quad
+      $\varphi\colon\G\to\Sm$, $\varphi|_X=\mathrm{id}$, переводит $U$ в базис $\Sm$ $\Rightarrow$ $U$ независимо, $\G\cong\Sm$.};
+  \draw[arr] (span.south) -- (span.south |- iso.north);
+  \draw[arr] (model.south) -- (model.south |- iso.north);
+\end{tikzpicture}
+\vskip0.45cm
+\raggedright\small
+Трудная часть — модель: нужна скобка, для которой проверяются все аксиомы, в том числе с $\{1,1\}\neq0$.
+\end{frame}
+
+\begin{frame}{Лемма 5: $U$ порождает $\G$}
+\begin{itemize}\setlength{\itemsep}{0.45em}
+  \item $\psi\colon\LL\to\G$ — гомоморфизм нечётных супералгебр Ли; $\psi(\LL)=\spn M$ (лемма 4).
+  \item $\{u,v\}\in\spn U$ для $u,v\in U$ — индукция по $N=\deg_e u+\deg_e v$:
+  $$\{u,v_1v_2\}=\{u,v_1\}v_2+(-1)^{\rp u|v_1|}v_1\{u,v_2\}+(-1)^{\rp u}\{1,u\}\,v_1v_2 .$$
+  \item $\spn U$ замкнуто относительно обеих операций и содержит $X$ $\Rightarrow$ $\spn U=\G$.
+\end{itemize}
+\vskip0.2cm
+\begin{exbox}{Почему не по числу букв}
+$1a=a$ уменьшает число букв, а поправка в $(5)$ увеличивает:
+$\{x_1,x_2x_3\}$ (4 буквы) содержит $(-1)^{\rp{x_1}}\{1,x_1\}x_2x_3$ (5 букв).
+\end{exbox}
+\end{frame}
+
+\begin{frame}{Модельная алгебра}
+\small
+$\LL'=\spn(M\setminus\{1\})$, \ $\Sm=S(\LL')$, \ $\Lh=\F1\oplus\LL'\cong\LL$ (скобка переносится); \
+$\D(u)=\{1,u\}$ для $u\in\Lh$.\\[0.2em]
+Для $a=a_1\cdots a_m$: \ $a_{<i}=a_1\cdots a_{i-1}$, \ $a_{>i}=a_{i+1}\cdots a_m$, \ $a_{\hat\imath}=a_{<i}a_{>i}$.
+\begin{defbox}{Формулы (7), (8)}
+$$\D(a)=\sum_{i=1}^m(-1)^{|a_{<i}|}\,a_{<i}\{1,a_i\}a_{>i}\;-\;(m-1)\{1,1\}\,a,$$
+$$\begin{aligned}
+\{a,b\}^*=\sum_{i,j}(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}\,a_{\hat\imath}\{a_i,b_j\}b_{\hat\jmath}
+&-(m-1)\,a\D(b)+(n-1)(-1)^{\rp a}\D(a)\,b\\
+&-(m-1)(n-1)\,a\D(1)\,b .
+\end{aligned}$$
+\end{defbox}
+\begin{itemize}
+  \item Двойная сумма: «$a_i$ — в правый конец $a$, $b_j$ — в левый конец $b$, скобка соседей».
+  \item Остальное — поправки с $\D$; при $\D=0$ остаётся обычное бидифференцирование.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Свойства скобки $\{\,,\}^*$}
+\begin{thmbox}{Лемма 6}
+(7), (8) не зависят от разложения на множители из $\Lh$, и
+\begin{enumerate}\small
+  \item[(i)] $\{u,v\}^*=\{u,v\}$, \ $\D(u)=\{1,u\}$ при $u,v\in\Lh$;\qquad
+  (ii) $\{1,a\}^*=\D(a)$;
+  \item[(iii)] $\D(bc)=\D(b)c+(-1)^{|b|}b\D(c)-\D(1)bc$;\qquad
+  (iv) $|\{a,b\}^*|=|a|+|b|+1$.
+\end{enumerate}
+\end{thmbox}
+\vskip0.1cm
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{thmbox}{Лемма 7}
+$\{a,b\}^*=-(-1)^{\rp a\rp b}\{b,a\}^*$
+\end{thmbox}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{thmbox}{Лемма 8}
+Правило $(5)$ для $\{\,,\}^*$
+\end{thmbox}
+\end{column}
+\end{columns}
+\vskip0.1cm
+{\small Проверки прямые: формула (8) — замкнутая, без рекурсии.}
+\end{frame}
+
+\begin{frame}{Якобиатор}
+\begin{thmbox}{Лемма 9}
+Пусть выполнены $(1),(2),(3),(5)$ (без тождества Якоби), и
+$$J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\}.$$
+Тогда
+\begin{enumerate}
+  \item[(i)] $J(a,b,c)=-(-1)^{\rp a\rp b}J(b,a,c)=-(-1)^{\rp b\rp c}J(a,c,b)$;
+  \item[(ii)] $J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}\,x\,J(a,b,y)\;{\color{deepgreen}-\,J(a,b,1)\,xy}$.
+\end{enumerate}
+\end{thmbox}
+\begin{itemize}\small
+  \item Якобиатор — «дифференцирование с поправкой»; без поправки это классический факт для алгебр Пуассона.
+  \item Доказательство: раскрыть три члена по $(5)$, лишние члены сокращаются попарно.
+  \item Общая формула, может быть полезна сама по себе.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Тождество Якоби и завершение}
+\begin{enumerate}\setlength{\itemsep}{0.5em}
+  \item \textbf{Предложение 10.} $J=0$ на $\Sm$:
+  \begin{itemize}\small
+    \item $J(u,v,w)=0$ при $u,v,w\in\Lh$ — это Якоби в $\LL$;
+    \item по (ii) и индукции по числу множителей — для любого третьего аргумента;
+    \item по (i) — для всех аргументов.
+  \end{itemize}
+  \item \textbf{Теорема 11.} $(\Sm,\cdot,\{\,,\}^*)$ — унитальная обобщённая алгебра Герстенхабера, порождённая $X$.
+  \item \textbf{Теорема 12.} $\varphi\colon\G\to\Sm$ сюръективен, $\varphi(u)=u$ для $u\in U$, а $U$ — базис $\Sm$;
+  вместе с леммой 5: $U$ — базис $\G$ и $\varphi$ — изоморфизм. \hfill$\square$
+\end{enumerate}
+\end{frame}
+
+% ================================================================ 5. размерность
+\partslide{05}{Размерность}
+
+\begin{frame}{Мультилинейная часть}
+\begin{itemize}\setlength{\itemsep}{0.45em}
+  \item $X=\{1,x_1,\dots,x_n\}$; \ $\mathrm{GenGer}(n)$ — оболочка элементов $U$, где каждая из букв $1,x_1,\dots,x_n$ встречается ровно один раз.
+  \item Это не однородная компонента: $1a=a$ и поправка в $(5)$ не однородны по $1$.
+\end{itemize}
+\vskip0.2cm
+\begin{thmbox}{Теорема 14}
+\centering\Large $\dim\mathrm{GenGer}(n)=n\cdot n!$
+\end{thmbox}
+\vskip0.2cm
+\centering
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+$n$ & 1 & 2 & 3 & 4\\
+\midrule
+обобщённые алгебры Герстенхабера: $n\cdot n!$ & \textbf{1} & \textbf{4} & \textbf{18} & \textbf{96}\\
+алгебры Герстенхабера ($\D=0$, по $x_1,\dots,x_n$): $n!$ & 1 & 2 & 6 & 24\\
+\bottomrule
+\end{tabular}
+\vskip0.15cm
+{\small\color{mute}Ответ $n\cdot n!$ совпадает с ответом для обобщённых супералгебр Пуассона (K17).}
+\end{frame}
+
+\begin{frame}{Доказательство: перестановки и циклы}
+\begin{itemize}\setlength{\itemsep}{0.5em}
+  \item Мультилинейный элемент $U$ $\leftrightarrow$ разбиение $\pi$ множества $X$ на блоки, \hl{без блока $\{1\}$}, и мультилинейное хорошее слово на каждом блоке.
+  \item Хороших мультилинейных слов на $k$ буквах — $(k-1)!$ (размерность для свободной алгебры Ли).
+  \item Квадраты $\{v,v\}$ не мультилинейны.
+\end{itemize}
+$$\dim\mathrm{GenGer}(n)=\sum_{\pi}\ \prod_{B\in\pi}(|B|-1)!$$
+\begin{thmbox}{Подсчёт}
+Разбиение $Y$ с циклическим порядком на каждом блоке $=$ перестановка $Y$ (блоки — циклы):
+\quad $\sum_{\pi}\prod_B(|B|-1)!=|Y|!$.\\[0.3em]
+Вычитаем разбиения с блоком $\{1\}$: \quad $(n+1)!-n!=n\cdot n!$.
+\end{thmbox}
+\end{frame}
+
+% ================================================================ итоги
+\begin{frame}{Итоги}
+\begin{itemize}\setlength{\itemsep}{0.6em}
+  \item Построен базис $U$ свободной обобщённой алгебры Герстенхабера: одночлены от хороших слов и квадратов чётных хороших слов, где $1$ — буква скобки.
+  \item Новое явление: $\{1,1\}\neq0$, и $\D$ — не дифференцирование.
+  \item Модель задана замкнутой формулой для скобки; Якоби — через общую лемму о якобиаторе.
+  \item $\dim\mathrm{GenGer}(n)=n\cdot n!$.
+  \item При $\D=0$ получается известный базис свободной алгебры Герстенхабера (замечание 15).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Литература}
+\footnotesize
+\begin{itemize}\setlength{\itemsep}{0.35em}
+  \item M.~Hall, \emph{A basis for free Lie rings and higher commutators in free groups}, Proc. AMS \textbf{1} (1950), 575--581.
+  \item A.~Shtern, \emph{Free Lie superalgebras}, Sib. Math. J. \textbf{27} (1986), 136--140.
+  \item I.~Shestakov, \emph{Quantization of Poisson superalgebras and speciality of Jordan Poisson superalgebras}, Algebra and Logic \textbf{32} (1993), 309--317.
+  \item N.~Cantarini, V.~Kac, \emph{Classification of linearly compact simple Jordan and generalized Poisson superalgebras}, J. Algebra \textbf{313} (2007), 100--124.
+  \item N.~Cantarini, V.~Kac, \emph{Classification of linearly compact simple rigid superalgebras}, IMRN (2010), 3341--3393.
+  \item I.~Kaygorodov, \emph{Algebras of Jordan brackets and generalized Poisson algebras}, Linear Multilinear Algebra \textbf{65} (2017), 1142--1157.
+  \item M.~Gerstenhaber, \emph{The cohomology structure of an associative ring}, Ann. Math. \textbf{78} (1963), 267--288.
+\end{itemize}
+\end{frame}
+
+% ================================================================ финал
+{\setbeamertemplate{background}{%
+   \begin{tikzpicture}[remember picture,overlay]
+     \fill[applegreen] (current page.north west) rectangle (current page.south east);
+     \node[text=white, opacity=0.25, font=\fontsize{54}{54}\selectfont, anchor=south east]
+       at ([xshift=-0.9cm,yshift=0.8cm]current page.south east) {$\dim=n\cdot n!$};
+     \node[text=white, font=\fontsize{34}{40}\selectfont\bfseries, anchor=west]
+       at ([xshift=1.3cm,yshift=0.5cm]current page.west) {Спасибо за внимание!};
+     \node[text=white, anchor=north west, font=\large]
+       at ([xshift=1.3cm,yshift=-0.35cm]current page.west) {Вопросы?};
+   \end{tikzpicture}}%
+ \setbeamertemplate{footline}{}%
+ \begin{frame}[plain,noframenumbering]\end{frame}}
+
+\end{document}

@@ -1,5 +1,5 @@
 // Brings a project's course (projects/<slug>/lecture.html + lecture.json) to
-// life after LecturePage has put its HTML into the page: table of contents,
+// life once its HTML is in the page: table of contents,
 // progress, quizzes, flashcards, links to the knowledge base's cards, and the
 // course's own calculators (labs/, chosen by "labs" in lecture.json). Plain
 // DOM code on purpose -- a course is a long static text with a few widgets,
@@ -38,19 +38,15 @@ interface MountOptions {
 const storageKey = (what: "progress" | "cards" | "quiz", slug: string) =>
   slug === "gerstenhaber" ? `gg-lecture-${what}-v1` : `lecture-${what}-v1:${slug}`;
 
-/** What this browser keeps about a course (the site used to keep everything
- *  here, and a copy of a course outside the site still does). */
-export function readLocalLectureState(slug: string): LectureState {
+/** What this browser keeps about a course (where a copy of a course on
+ *  claude.ai keeps its progress unless given a storage). */
+function readLocalLectureState(slug: string): LectureState {
   const done: Record<string, boolean> = {};
   for (const id of store.get(storageKey("progress", slug), [])) if (typeof id === "string") done[id] = true;
   const cards: Record<string, string> = {};
   for (const [i, mark] of Object.entries(store.get(storageKey("cards", slug), {}) ?? {})) if (typeof mark === "string") cards[i] = mark;
   const quiz = store.get(storageKey("quiz", slug), {}) ?? {};
   return { done, cards, quiz: typeof quiz === "object" ? quiz : {} };
-}
-
-export function clearLocalLectureState(slug: string) {
-  (["progress", "cards", "quiz"] as const).forEach((what) => store.remove(storageKey(what, slug)));
 }
 
 function localLectureStorage(slug: string): LectureStorage {
@@ -238,13 +234,19 @@ export function mountLecture({ root, tocs, data, slug, onOpenCard, storage = loc
   }
 
   // ---------- flashcards and glossary ----------
-  if ($("#fc-card")) {
+  // Each only when its block is in the text; a block that lacks a part is skipped
+  // with a word in the console instead of taking the page down.
+  const fcParts = ["#fc-card", "#fc-list", "#fc-stat", "#fc-prev", "#fc-next", "#fc-shuffle"];
+  const fcMissing = fcParts.filter((s) => !$(s));
+  if (fcMissing.length && fcMissing.length < fcParts.length) console.error("Карточки курса: в блоке нет " + fcMissing.join(", "));
+  if (!fcMissing.length && data.flashcards?.length) {
     const marks: Record<number, string> = state.cards;
     const cards = data.flashcards;
     let order = cards.map((_, i) => i), pos = 0, shown = false;
     const card = $("#fc-card"), list = $("#fc-list");
     const stat = () => {
-      const know = Object.values(marks).filter((v) => v === "know").length;
+      // marks of cards the text no longer has are not counted
+      const know = Object.entries(marks).filter(([i, v]) => v === "know" && cards[+i]).length;
       $("#fc-stat").textContent = `Карточка ${pos + 1} из ${cards.length} · знаю: ${know}`;
     };
     const renderList = () => setMath(list, cards.map((c, i) => `<button type="button" data-fc="${i}"><span class="st ${marks[i] || ""}">${marks[i] === "know" ? "✓" : marks[i] === "again" ? "↻" : "·"}</span> ${c[0]}</button>`).join(""));
@@ -274,7 +276,7 @@ export function mountLecture({ root, tocs, data, slug, onOpenCard, storage = loc
     renderList(); render();
   }
   const glossary = $("#glossary");
-  if (glossary) setMath(glossary, data.glossary.map((g) => `<tr><td>${g[0]}</td><td>${esc(g[1])}</td></tr>`).join(""));
+  if (glossary) setMath(glossary, (data.glossary ?? []).map((g) => `<tr><td>${g[0]}</td><td>${esc(g[1])}</td></tr>`).join(""));
 
   return {
     setEntities(list: EntitySummary[]) { entities = list; renderCards(); },

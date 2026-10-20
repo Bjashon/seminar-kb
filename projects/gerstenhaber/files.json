@@ -12,6 +12,13 @@
       ]
     },
     {
+      "title": "Доклад",
+      "files": [
+        {"path": "Gerstenhaber_doklad.pdf", "note": "Презентация для доклада на семинаре: около 40 минут, формат 16:9"},
+        {"path": "Gerstenhaber_doklad.tex", "note": "Её исходник (Beamer; собирается XeLaTeX или tectonic)"}
+      ]
+    },
+    {
       "title": "Объяснение",
       "files": [
         {"path": "objasnenie.md", "note": "Подробно по-русски: что доказано, что изменено в черновике, что проверено"}
@@ -27,6 +34,14 @@
         {"path": "checks/jacobiator_check.py", "note": "Лемма о якобиаторе"},
         {"path": "checks/jacobiator_all_parities.txt", "note": "Результат: все расстановки чётностей"},
         {"path": "checks/formal_identities_check.py", "note": "Леммы 6, 7, 8 как формальные тождества"}
+      ]
+    },
+    {
+      "title": "Копия курса на claude.ai",
+      "note": "Курс с панелью «Спросить лектора» и репетицией. На сайте курса нет: страница проекта ведёт на claude.ai.",
+      "files": [
+        {"path": "artifact/build_artifact.py", "note": "Собирает копию из lecture.html и lecture.json по шаблону artifact/template.html"},
+        {"path": "artifact/suggest_old.json", "note": "Подсказки лектору из прежней копии; уже перенесены в lecture.json (поле suggest)"}
       ]
     },
     {

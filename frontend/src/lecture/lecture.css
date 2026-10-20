@@ -7,6 +7,8 @@
   --soft-note: #fffbe6;
 }
 .lecture [hidden] { display: none !important; }
+/* What the text marks for its copy on claude.ai only (projects/gerstenhaber/artifact/build_artifact.py). */
+.lecture-body [data-only="copy"] { display: none !important; }
 .main-inner.lecture-wrap { max-width: 1160px; padding-top: 0; }
 .lecture-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding: 14px 0 12px; margin-bottom: 22px; background: var(--bg); border-bottom: 1px solid var(--border); }

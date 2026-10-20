@@ -46,6 +46,9 @@ export interface EntityDetail {
   bookmarked?: boolean;
   /** A card she made herself in a course on claude.ai (can be deleted). */
   made_by_user?: boolean;
+  /** Fields of a card from the content JSON she rewrote on the site: their
+   *  original can be restored. Absent on the synthetic "brief" card. */
+  edited?: EditableField[];
   topic: string | null;
   source: {
     label: string | null;
@@ -57,6 +60,9 @@ export interface EntityDetail {
   uses: LinkRef[];
   used_by: LinkRef[];
 }
+
+/** The card text she can change on the site (CardEditor). */
+export type EditableField = "title_ru" | "title_en" | "statement_ru" | "statement_en" | "proof_ru" | "proof_en";
 
 export interface ProjectSummary {
   slug: string;
@@ -77,11 +83,9 @@ export interface Project extends ProjectSummary {
   /** The same files in blocks, as the page shows them (the project's files.json). */
   file_groups: { title: string; note: string | null; files: ProjectFile[] }[];
   talk_id: number | null;
-  /** projects/<slug>/lecture.html exists: the page offers the course. */
-  has_lecture: boolean;
-  /** The same course on claude.ai, with the Claude chat modes the site lacks. */
+  /** The project's course, on claude.ai with the lecturer ("claude_url" in lecture.json); the site does not show courses itself. */
   lecture_claude_url: string | null;
-  /** What the course's button says, when not "Лекция по статье" ("label" in lecture.json). */
+  /** "label" in lecture.json: set for a course that is not a lecture on a paper; the link then says "Курс на claude.ai", not "Лекция на claude.ai". */
   lecture_label: string | null;
 }
 
@@ -139,6 +143,11 @@ export const KIND_LABEL_RU: Record<Kind, string> = {
   property: "Свойство",
   brief: "Кратко о статье",
 };
+
+/** What a card's third block is called: a theorem's or a property's proof.
+ *  A definition has no proof (none in the content JSON has one), so there it
+ *  is an explanation. */
+export const PROOF_LABEL_RU = (kind: Kind): string => (kind === "definition" ? "пояснение" : "доказательство");
 
 /** Where cards from a course go: the course's own deck, "Мой набор", an
  *  existing deck, or a theme of her own under a new name. */

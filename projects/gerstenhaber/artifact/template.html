@@ -1,0 +1,1551 @@
+<!--TEMPLATE
+The claude.ai copy of the Gerstenhaber course without its content. build_artifact.py (next to
+this file) fills it from projects/gerstenhaber/lecture.html and lecture.json; this comment is
+dropped. Placeholders (@@...@@; in HTML they sit in comments, in JavaScript in /* */):
+  @@TITLE@@, @@TITLE_JS@@   the course title (the title in the header of lecture.html)
+  @@HERO@@                  the header of lecture.html (lec-hero -> hero, lec-title -> h1)
+  @@MODULES@@               all <section class="module"> of lecture.html and its footer
+  @@REHEARSAL ... REHEARSAL@@  the block "Репетиция с «залом»"; the build puts it into the text
+  @@LECTURE_DATA@@          lecture.json without claude_url (quizzes, flashcards, glossary, presets)
+  @@SUGGEST@@               suggested questions per module id ("suggest" in lecture.json)
+  @@SITE_JS@@               the site's address, from SEMINAR_SITE_URL (never in the repo)
+  @@PICKS_JS@@              artifacts/picks.js
+Everything else -- styles, the lecturer's panel and its texts (REFERENCE, RULES_ASK, RULES_HALL),
+the calculators, progress in the artifact's db -- is the copy's own and is edited here.
+-->
+<title>@@TITLE@@</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=PT+Mono&family=PT+Sans:ital,wght@0,400;0,700;1,400&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+<style>
+/* Layout: тетрадь в клетку (в тёмной теме — школьная доска); слева закладка-оглавление,
+   справа одна колонка лекции, реплики диалога отделены красным полем, как в тетради. */
+:root {
+  --paper: #fbfcfe;
+  --grid: rgba(58, 104, 168, 0.075);
+  --ink: #1b2130;
+  --ink-soft: #566074;
+  --rule: #d5dbe6;
+  --card: #ffffff;
+  --card-2: #f3f5f9;
+  --accent: #2346b4;
+  --accent-ink: #ffffff;
+  --margin: #d4544f;
+  --good: #1c7a49;
+  --bad: #b3303a;
+  --even: #2458c9;
+  --odd: #b8630a;
+  --marker: #fff1b8;
+  --shadow: 0 1px 2px rgba(20, 30, 60, .06), 0 10px 26px -14px rgba(20, 30, 60, .28);
+
+  --f-display: "Old Standard TT", "Times New Roman", Times, serif;
+  --f-body: "PT Serif", Georgia, "Times New Roman", serif;
+  --f-ui: "PT Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "PT Mono", ui-monospace, Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #17221e; --grid: rgba(214, 232, 220, 0.028); --ink: #e4ebe5; --ink-soft: #a3b1a8;
+    --rule: #334239; --card: #1e2b26; --card-2: #22312b; --accent: #93b7ff; --accent-ink: #0e1916;
+    --margin: #ff8f88; --good: #86d7a1; --bad: #ff8f88; --even: #93b7ff; --odd: #ffc56d;
+    --marker: #3b3a20; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 26px -14px rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #17221e; --grid: rgba(214, 232, 220, 0.028); --ink: #e4ebe5; --ink-soft: #a3b1a8;
+  --rule: #334239; --card: #1e2b26; --card-2: #22312b; --accent: #93b7ff; --accent-ink: #0e1916;
+  --margin: #ff8f88; --good: #86d7a1; --bad: #ff8f88; --even: #93b7ff; --odd: #ffc56d;
+  --marker: #3b3a20; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 26px -14px rgba(0, 0, 0, .6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font: 17px/1.62 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+.page { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 120px; }
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 44px; align-items: start; }
+.main { min-width: 0; max-width: 760px; width: 100%; }
+.table-wrap, .lab, .box, .q, .card-q { max-width: 100%; }
+
+/* ---------- title ---------- */
+.hero { padding-block: 18px 30px; border-bottom: 1px solid var(--rule); margin-bottom: 34px; }
+.eyebrow { font: 700 12.5px/1.3 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 10px; }
+h1 { font: 400 clamp(34px, 5.2vw, 54px)/1.08 var(--f-display); margin: 0 0 14px; text-wrap: balance; letter-spacing: -.005em; }
+h1 em { font-style: italic; }
+.lede { font-size: 19px; max-width: 62ch; margin: 0 0 20px; color: var(--ink); }
+.hero-row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+.progress { display: flex; align-items: center; gap: 10px; font: 14px/1.2 var(--f-ui); color: var(--ink-soft); }
+.progress-bar { width: 150px; height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; }
+.progress-bar span { display: block; height: 100%; width: 0; background: var(--good); transition: width .3s; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent);
+  font: 700 14.5px/1 var(--f-ui); padding: 10px 16px; border-radius: 6px; text-decoration: none; }
+.btn:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.btn.solid { background: var(--accent); color: var(--accent-ink); }
+.btn.solid:hover { background: color-mix(in srgb, var(--accent) 85%, var(--ink)); }
+.btn.small { font-size: 13px; padding: 7px 11px; }
+.btn[disabled] { opacity: .45; cursor: default; }
+
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px 22px; margin: 26px 0 0; padding: 0; list-style: none;
+  font: 14.5px/1.45 var(--f-ui); color: var(--ink-soft); }
+.legend b { color: var(--ink); }
+
+/* ---------- table of contents ---------- */
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 18px); font: 14.5px/1.35 var(--f-ui); }
+.toc-title { font: 700 12px/1 var(--f-ui); letter-spacing: .09em; text-transform: uppercase; color: var(--ink-soft); margin: 4px 0 12px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a { display: grid; grid-template-columns: 26px minmax(0, 1fr) 16px; gap: 6px; align-items: baseline; padding: 6px 8px; border-radius: 5px;
+  color: var(--ink); text-decoration: none; }
+.toc a:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.toc a.current { background: var(--card); box-shadow: inset 2px 0 0 var(--margin); }
+.toc .n { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.toc .ok { color: var(--good); font-weight: 700; visibility: hidden; }
+.toc a.done .ok { visibility: visible; }
+.toc-mobile { display: none; }
+
+/* ---------- modules ---------- */
+.module { padding-block: 10px 36px; border-bottom: 1px solid var(--rule); margin-bottom: 40px; scroll-margin-top: 16px; }
+.mod-head .eyebrow { margin-bottom: 6px; }
+h2 { font: 400 clamp(28px, 3.6vw, 36px)/1.15 var(--f-display); margin: 0 0 14px; text-wrap: balance; }
+h3 { font: 700 21px/1.3 var(--f-body); margin: 34px 0 12px; text-wrap: balance; }
+h4 { font: 700 13px/1.3 var(--f-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-soft); margin: 22px 0 8px; }
+p { margin: 0 0 14px; }
+.goals { font: 15px/1.5 var(--f-ui); color: var(--ink-soft); background: var(--card-2); border-radius: 6px; padding: 12px 16px; margin: 0 0 22px; }
+.goals b { color: var(--ink); }
+.goals ul { margin: 6px 0 0; padding-left: 20px; }
+ul, ol { padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+/* dialogue, set like a play script with the notebook's red margin */
+.dlg { display: grid; grid-template-columns: 92px minmax(0, 1fr); column-gap: 18px; margin: 18px 0 20px; position: relative; }
+.dlg::before { content: ""; position: absolute; left: 100px; top: 2px; bottom: 2px; width: 1.5px; background: var(--margin); opacity: .55; }
+.dlg > .who { font: 700 12.5px/1.9 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; text-align: right; color: var(--ink-soft); padding-top: 1px; }
+.dlg > .who.you { color: var(--accent); }
+.dlg > .line { margin-bottom: 14px; min-width: 0; }
+.dlg > .line.you { font-style: italic; }
+.dlg > .line > :last-child { margin-bottom: 0; }
+
+/* boxed statements */
+.box { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px 4px; margin: 18px 0 22px; box-shadow: var(--shadow); }
+.box > .lbl { display: block; font: 700 12.5px/1.2 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; }
+.box.thm > .lbl { color: var(--accent); }
+.box.warn > .lbl { color: var(--margin); }
+.eqn-tag { float: right; font: 13px/2.4 var(--f-ui); color: var(--ink-soft); }
+
+.think { margin: 16px 0 20px; border: 1px dashed color-mix(in srgb, var(--accent) 55%, var(--rule)); border-radius: 6px; background: color-mix(in srgb, var(--card) 70%, transparent); }
+.think > summary { cursor: pointer; padding: 10px 14px; list-style: none; }
+.think > summary::-webkit-details-marker { display: none; }
+.think > summary::before { content: "Подумай"; font: 700 12px/1 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--accent);
+  border: 1px solid currentColor; border-radius: 3px; padding: 3px 6px; margin-right: 10px; }
+.think > summary .hint { font: 13px var(--f-ui); color: var(--ink-soft); margin-left: 6px; }
+.think[open] > summary .hint { display: none; }
+.think > .ans { padding: 2px 16px 4px; margin: 0 10px 10px; background: var(--marker); border-radius: 4px; }
+.think > .ans > p:first-child { padding-top: 10px; }
+
+.table-wrap { overflow-x: auto; margin: 16px 0 22px; }
+table { border-collapse: collapse; width: 100%; font: 15px/1.4 var(--f-ui); }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+th { font-weight: 700; color: var(--ink-soft); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; }
+
+.ev { color: var(--even); }
+.od { color: var(--odd); }
+mjx-container { max-width: 100%; }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-block: 2px; margin: 12px 0 !important; }
+.mono { font-family: var(--f-mono); }
+.tag { display: inline-block; font: 700 11.5px/1 var(--f-ui); letter-spacing: .05em; padding: 4px 6px; border-radius: 3px; background: var(--card-2); color: var(--ink-soft); vertical-align: 2px; }
+
+/* ---------- lab (interactive tools) ---------- */
+.lab { background: var(--card); border: 1.5px solid color-mix(in srgb, var(--accent) 45%, var(--rule)); border-radius: 8px; padding: 16px 18px 18px; margin: 22px 0 26px; box-shadow: var(--shadow); }
+.lab > .lbl { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; margin-bottom: 10px; }
+.lab > .lbl b { font: 700 12.5px/1 var(--f-ui); letter-spacing: .09em; text-transform: uppercase; color: var(--accent); }
+.lab > .lbl span { font: 700 17px/1.3 var(--f-body); }
+.lab .desc { font: 15px/1.5 var(--f-ui); color: var(--ink-soft); margin-bottom: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin: 8px 0; }
+.field { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 8px; align-items: center; margin: 6px 0; }
+.field label { font: 700 15px var(--f-ui); color: var(--ink-soft); text-align: right; }
+.inp { width: 100%; min-width: 0; border: 1px solid var(--rule); background: var(--paper); border-radius: 5px; padding: 8px 10px; font: 16px/1.3 var(--f-mono); }
+.inp:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.keys { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 4px; }
+.key { border: 1px solid var(--rule); background: var(--card-2); border-radius: 4px; padding: 5px 9px; font: 15px/1 var(--f-mono); min-width: 34px; }
+.key:hover { border-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 7px 12px; font: 14px/1 var(--f-ui); color: var(--ink-soft); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+select.inp { font-family: var(--f-ui); font-size: 15px; width: auto; }
+.out { margin-top: 12px; border-top: 1px dashed var(--rule); padding-top: 10px; min-height: 40px; overflow-x: auto; }
+.q .fb, .card-q, .msg .body, .box { overflow-x: auto; }
+.out .res { margin: 6px 0; }
+.out .err { color: var(--bad); font: 15px var(--f-ui); }
+.ok-mark { color: var(--good); font: 700 14px var(--f-ui); }
+.bad-mark { color: var(--bad); font: 700 14px var(--f-ui); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 15px/1.2 var(--f-body); padding: 5px 8px; border-radius: 4px; background: var(--card-2); border: 1px solid var(--rule); white-space: nowrap; }
+.chip.ev { border-color: color-mix(in srgb, var(--even) 55%, var(--rule)); }
+.chip.od { border-color: color-mix(in srgb, var(--odd) 55%, var(--rule)); }
+.chip.sq { border-style: dashed; }
+.word sub { font-size: 70%; }
+.deg-row { display: grid; grid-template-columns: 94px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.deg-row .d { font: 700 13.5px/1.35 var(--f-ui); color: var(--ink-soft); }
+.small { font: 14px/1.45 var(--f-ui); color: var(--ink-soft); }
+.stat { font: 14.5px/1.5 var(--f-ui); }
+.stat b { font-variant-numeric: tabular-nums; }
+
+/* ---------- quiz ---------- */
+.quiz { margin: 26px 0 8px; }
+.quiz > h4 { color: var(--accent); }
+.q { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; margin: 10px 0; }
+.q .qt { margin-bottom: 8px; }
+.q .opts { display: grid; gap: 6px; }
+.q .opt { text-align: left; border: 1px solid var(--rule); background: var(--paper); border-radius: 5px; padding: 8px 12px; font: 16px/1.4 var(--f-body); }
+.q .opt:hover:not([disabled]) { border-color: var(--accent); }
+.q .opt.right { border-color: var(--good); box-shadow: inset 3px 0 0 var(--good); }
+.q .opt.wrong { border-color: var(--bad); box-shadow: inset 3px 0 0 var(--bad); }
+.q .fb { margin-top: 8px; font: 15px/1.5 var(--f-ui); }
+.q .fb b.r { color: var(--good); } .q .fb b.w { color: var(--bad); }
+.quiz-score { font: 14px var(--f-ui); color: var(--ink-soft); }
+
+.done-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-top: 26px; }
+.done-btn[aria-pressed="true"] { background: var(--good); border-color: var(--good); color: var(--accent-ink); }
+
+/* ---------- proof map ---------- */
+.map { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; margin: 18px 0 24px; }
+.map .col { display: grid; gap: 8px; align-content: start; }
+.map .col-title { font: 700 12px/1.2 var(--f-ui); letter-spacing: .09em; text-transform: uppercase; color: var(--ink-soft); text-align: center; }
+.node { display: block; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 12px; text-decoration: none; color: var(--ink); font: 14.5px/1.35 var(--f-ui); }
+.node b { display: block; color: var(--accent); font-size: 13px; letter-spacing: .03em; }
+.node:hover { border-color: var(--accent); }
+.arrow { text-align: center; color: var(--ink-soft); font: 18px/1 var(--f-ui); }
+.map .join { grid-column: 1 / -1; display: grid; gap: 8px; justify-items: center; }
+.map .join .node { max-width: 420px; width: 100%; border-width: 1.5px; border-color: var(--accent); }
+.map .leaves { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+/* ---------- flashcards ---------- */
+.cards-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin: 12px 0; }
+.card-q { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 18px 20px; box-shadow: var(--shadow); min-height: 180px; }
+.card-q .cq { font: 700 19px/1.45 var(--f-body); margin-bottom: 12px; }
+.card-q .ca { border-top: 1px dashed var(--rule); padding-top: 12px; }
+.card-list { columns: 2 280px; column-gap: 26px; font: 14.5px/1.45 var(--f-ui); margin-top: 16px; }
+.card-list button { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 4px 0; color: var(--ink); break-inside: avoid; }
+.card-list button:hover { color: var(--accent); }
+.card-list .st { display: inline-block; width: 16px; font-weight: 700; }
+.card-list .st.know { color: var(--good); } .card-list .st.again { color: var(--odd); }
+
+/* ---------- ask the lecturer ---------- */
+.ask-fab { position: fixed; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 40; box-shadow: var(--shadow);
+  border-radius: 999px; padding: 13px 20px; font-size: 15px; }
+:root { --drawer-w: clamp(460px, 50vw, 960px); }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(var(--drawer-w), 100vw); z-index: 50; background: var(--card); border-left: 1px solid var(--rule);
+  box-shadow: -18px 0 40px -24px rgba(0, 0, 0, .45); display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.drawer-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid var(--rule); }
+.drawer-head .t { font: 400 22px/1.2 var(--f-display); }
+.x { border: 0; background: none; font: 26px/1 var(--f-ui); color: var(--ink-soft); padding: 2px 8px; }
+.x:hover { color: var(--ink); }
+.drawer-note { font: 13.5px/1.45 var(--f-ui); color: var(--ink-soft); padding: 8px 16px 0; }
+.msgs { flex: 1; overflow-y: auto; padding: 12px 16px; display: grid; gap: 12px; align-content: start; }
+.msg { font-size: 16px; line-height: 1.55; min-width: 0; }
+.msg .w { display: block; font: 700 11.5px/1.4 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 2px; }
+.msg.me .w { color: var(--accent); }
+.msg.me .body { font-style: italic; }
+.msg .body p { margin: 0 0 10px; }
+.msg .body p:last-child { margin-bottom: 0; }
+.msg .body ul, .msg .body ol { margin: 0 0 10px; padding-left: 20px; }
+.msg .body code { font-family: var(--f-mono); font-size: 14px; background: var(--card-2); padding: 1px 4px; border-radius: 3px; }
+.msg.pending .body { color: var(--ink-soft); }
+.suggest { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 8px; }
+.suggest button { border: 1px solid var(--rule); background: var(--paper); border-radius: 999px; padding: 6px 11px; font: 13.5px/1.2 var(--f-ui); color: var(--ink); text-align: left; }
+.suggest button:hover { border-color: var(--accent); }
+.composer { border-top: 1px solid var(--rule); padding: 10px 16px 14px; display: grid; gap: 8px; }
+.composer textarea { width: 100%; min-height: 72px; max-height: 40vh; resize: vertical; border: 1px solid var(--rule); background: var(--paper); border-radius: 6px; padding: 9px 11px; font: 16px/1.45 var(--f-body); }
+.composer textarea:focus { border-color: var(--accent); outline: none; }
+.composer .row { justify-content: space-between; margin: 0; }
+.chat-err { color: var(--bad); font: 14px var(--f-ui); }
+/* The panel's left edge is a handle: drag it to make the panel wider or narrower. */
+.drawer-grip { position: absolute; left: -6px; top: 0; bottom: 0; width: 12px; cursor: ew-resize; touch-action: none; z-index: 2; }
+.drawer-grip::after { content: ""; position: absolute; left: 4px; top: 50%; width: 4px; height: 56px; margin-top: -28px; border-radius: 2px;
+  background: var(--rule); transition: background .15s; }
+.drawer-grip:hover::after, body.drawer-resizing .drawer-grip::after { background: var(--accent); }
+body.drawer-resizing { user-select: none; -webkit-user-select: none; cursor: ew-resize; }
+body.pk-open { --drawer-w: 460px; }
+/* On a wide screen the panel takes its own column: the lecture moves left instead of hiding
+   under it (and goes to one column while the panel is open). */
+@media (min-width: 900px) {
+  body.drawer-open { padding-right: min(var(--drawer-w), 100vw); }
+  body.drawer-open .ask-fab { display: none; }
+}
+@media (min-width: 900px) {
+  body.drawer-open .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  body.drawer-open .toc-side { display: none; }
+  body.drawer-open .toc-mobile { display: block; margin: 0 0 28px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+  body.drawer-open .toc-mobile > summary { cursor: pointer; padding: 12px 14px; font: 700 14px var(--f-ui); }
+  body.drawer-open .toc-mobile .toc { position: static; padding: 0 8px 10px; }
+  body.drawer-open .main { max-width: 760px; margin: 0 auto; }
+}
+.quiz-reset { margin-top: 10px; }
+.resume-toast { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 45;
+  display: flex; gap: 12px; align-items: center; max-width: calc(100vw - 32px); padding: 8px 8px 8px 16px;
+  background: var(--card); color: var(--ink); border: 1px solid var(--rule); border-radius: 999px; box-shadow: var(--shadow); font: 14px/1.3 var(--f-ui); white-space: nowrap; }
+.resume-toast .btn { flex: none; }
+.quote-chip { display: flex; gap: 8px; align-items: flex-start; font: 13.5px/1.45 var(--f-ui); color: var(--ink-soft); border: 1px dashed var(--rule); border-radius: 8px; padding: 6px 8px 6px 10px; }
+.quote-chip .qc-t { flex: 1; min-width: 0; color: var(--ink); overflow-x: auto; }
+.quote-chip .x { font-size: 20px; padding: 0 4px; }
+.msg.me .body .q { display: block; margin-top: 6px; padding-left: 8px; border-left: 2px solid var(--rule); font-style: normal; color: var(--ink-soft); }
+body.drawer-open .resume-toast { left: calc((100vw - min(var(--drawer-w), 100vw)) / 2); }
+
+/* ---------- classes of the site's lecture.html ---------- */
+/* The summary of the paper is set like a theorem; definitions like the other boxes. */
+.box.brief > .lbl { color: var(--accent); }
+.box.def > .lbl { color: var(--ink-soft); }
+.lec-foot { padding-block: 10px 40px; }
+.chip.muted { opacity: .6; }
+.lab > .err, .main > .err { color: var(--bad); font: 15px var(--f-ui); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .toc-side { display: none; }
+  .toc-mobile { display: block; margin: 0 0 28px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+  .toc-mobile > summary { cursor: pointer; padding: 12px 14px; font: 700 14px var(--f-ui); }
+  .toc-mobile .toc { position: static; padding: 0 8px 10px; }
+  .main { max-width: 760px; margin: 0 auto; }
+}
+@media (max-width: 640px) {
+  body { font-size: 16.5px; }
+  .page { padding-inline: 16px; }
+  .dlg { grid-template-columns: minmax(0, 1fr); }
+  .dlg::before { display: none; }
+  .dlg > .who { text-align: left; line-height: 1.2; padding: 0 0 2px 12px; border-left: 1.5px solid var(--margin); }
+  .dlg > .line { padding-left: 12px; border-left: 1.5px solid color-mix(in srgb, var(--margin) 45%, transparent); }
+  .map { grid-template-columns: minmax(0, 1fr); }
+  .map .leaves { grid-template-columns: minmax(0, 1fr); }
+  .field { grid-template-columns: 26px minmax(0, 1fr); }
+  .drawer { width: 100vw; top: 12vh; border-left: 0; border-top: 1px solid var(--rule); border-radius: 12px 12px 0 0; }
+  .drawer-grip { display: none; }
+  .ask-fab { right: 14px; }
+}
+</style>
+
+<div class="page">
+<div class="layout">
+
+<aside class="toc-side" aria-label="Содержание">
+  <nav class="toc" id="toc-side"></nav>
+</aside>
+
+<main class="main" id="top">
+
+<!--@@HERO@@-->
+
+<details class="toc-mobile"><summary>Содержание курса</summary><nav class="toc" id="toc-mobile"></nav></details>
+
+<!--@@MODULES@@-->
+</main>
+</div>
+</div>
+
+<!--@@REHEARSAL
+<h3>Репетиция с «залом»</h3>
+<div id="rehearse-box">
+  <p>Claude сыграет слушателя семинара: задаст вопрос по статье, выслушает твой ответ, скажет, что в нём верно и чего не хватило, и задаст следующий.</p>
+  <button class="btn solid" id="rehearse-btn" hidden>Начать репетицию</button>
+  <p class="small" id="rehearse-na">Репетиция и вопросы лектору работают, когда страница открыта в Claude: ответы пишет Claude от имени твоего аккаунта. Если кнопки нет, этой возможности в текущем просмотре нет — карточки выше работают всегда.</p>
+</div>
+REHEARSAL@@-->
+
+<button class="btn solid ask-fab" id="ask-fab" hidden>Спросить лектора</button>
+
+<aside class="drawer" id="drawer" hidden aria-label="Спросить лектора">
+  <div class="drawer-grip" id="drawer-grip" role="separator" aria-orientation="vertical" aria-label="Ширина панели" title="Потяни, чтобы сделать панель шире или уже. Двойной щелчок — широкая / обычная"></div>
+  <div class="drawer-head">
+    <span class="t" id="drawer-title">Спросить лектора</span>
+    <span class="seg" id="chat-mode"><button aria-pressed="true" data-v="ask">Вопрос лектору</button><button aria-pressed="false" data-v="hall">Вопросы из зала</button></span>
+    <button class="x" id="drawer-close" aria-label="Закрыть">×</button>
+  </div>
+  <div class="drawer-note" id="drawer-note">Отвечает Claude, опираясь на текст статьи и текущий модуль. Формулы проверяй по статье.</div>
+  <div class="msgs" id="msgs" aria-live="polite"></div>
+  <div class="suggest" id="suggest"></div>
+  <form class="composer" id="composer">
+    <textarea id="chat-in" placeholder="Например: почему в формуле (8) коэффициент n−1?" aria-label="Сообщение"></textarea>
+    <div class="row"><span class="chat-err" id="chat-err" aria-live="polite"></span>
+      <span class="row" style="margin:0"><button type="button" class="btn small" id="chat-stop" hidden>Остановить</button><button type="button" class="btn small" id="chat-clear">Очистить</button><button type="submit" class="btn small solid" id="chat-send">Отправить</button></span></div>
+  </form>
+</aside>
+
+<script>
+window.MathJax = {
+  loader: { load: ["[tex]/html"] },
+  tex: {
+    inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]],
+    packages: { "[+]": ["html"] },
+    macros: {
+      D: "\\mathfrak{D}", G: "\\mathfrak{G}", LL: "\\mathfrak{L}", Sm: "\\mathcal{S}", Lh: "\\widehat{\\mathfrak{L}}",
+      F: "\\mathbb{F}", Z: "\\mathbb{Z}", rp: ["\\|#1\\|", 1], spn: "\\operatorname{span}",
+      ev: ["\\class{ev}{#1}", 1], od: ["\\class{od}{#1}", 1]
+    }
+  },
+  svg: { fontCache: "global" }
+};
+</script>
+
+<script>
+// ===== Superpolynomials: even x1..x3, odd ξ1..ξ3 and τ =====
+// A monomial is x^a ξ_S with S a strictly increasing list of odd indices
+// (0,1,2 = ξ1,ξ2,ξ3; 3 = τ). A polynomial is a Map key -> integer coefficient.
+const NX = 3, TAU = 3;
+function mkey(a, S) { return a.join(",") + "|" + S.join(","); }
+function parseKey(k) {
+  const [xs, ss] = k.split("|");
+  return { a: xs.split(",").map(Number), S: ss === "" ? [] : ss.split(",").map(Number) };
+}
+function P() { return new Map(); }
+function addTerm(p, a, S, c) {
+  if (!c) return p;
+  const k = mkey(a, S);
+  const v = (p.get(k) || 0) + c;
+  if (v === 0) p.delete(k); else p.set(k, v);
+  return p;
+}
+function pconst(c) { return addTerm(P(), [0, 0, 0], [], c); }
+function pvarX(i) { const a = [0, 0, 0]; a[i] = 1; return addTerm(P(), a, [], 1); }
+function pvarO(j) { return addTerm(P(), [0, 0, 0], [j], 1); }
+function padd(p, q, s = 1) {
+  const r = new Map(p);
+  for (const [k, c] of q) { const { a, S } = parseKey(k); addTerm(r, a, S, s * c); }
+  return r;
+}
+function pscale(p, s) { const r = P(); for (const [k, c] of p) { const { a, S } = parseKey(k); addTerm(r, a, S, s * c); } return r; }
+// Product of odd lists: concatenate, sort by adjacent swaps counting the sign; repeated index -> 0.
+function mergeOdd(S, T) {
+  const seen = new Set(S);
+  for (const t of T) if (seen.has(t)) return null;
+  const arr = S.concat(T);
+  let sign = 1;
+  for (let i = 0; i < arr.length; i++)
+    for (let j = 0; j < arr.length - 1 - i; j++)
+      if (arr[j] > arr[j + 1]) { const t = arr[j]; arr[j] = arr[j + 1]; arr[j + 1] = t; sign = -sign; }
+  return { S: arr, sign };
+}
+function pmul(p, q) {
+  const r = P();
+  for (const [k1, c1] of p) {
+    const m1 = parseKey(k1);
+    for (const [k2, c2] of q) {
+      const m2 = parseKey(k2);
+      const mo = mergeOdd(m1.S, m2.S);
+      if (!mo) continue;
+      addTerm(r, m1.a.map((v, i) => v + m2.a[i]), mo.S, mo.sign * c1 * c2);
+    }
+  }
+  return r;
+}
+function ppow(p, n) { let r = pconst(1); for (let i = 0; i < n; i++) r = pmul(r, p); return r; }
+function dX(p, i) {
+  const r = P();
+  for (const [k, c] of p) { const { a, S } = parseKey(k); if (a[i] > 0) { const b = a.slice(); b[i]--; addTerm(r, b, S, c * a[i]); } }
+  return r;
+}
+// Left derivative in an odd variable: ∂/∂ξ_j (ξ_{s1}...ξ_{sk}) = (-1)^{r-1} (omit ξ_j) if j = s_r.
+function dO(p, j) {
+  const r = P();
+  for (const [k, c] of p) {
+    const { a, S } = parseKey(k);
+    const pos = S.indexOf(j);
+    if (pos >= 0) addTerm(r, a, S.slice(0, pos).concat(S.slice(pos + 1)), (pos % 2 ? -1 : 1) * c);
+  }
+  return r;
+}
+function parityPart(p, par) { const r = P(); for (const [k, c] of p) { const { a, S } = parseKey(k); if (S.length % 2 === par) addTerm(r, a, S, c); } return r; }
+function isZero(p) { return p.size === 0; }
+function homParity(p) { // 0, 1, or null if inhomogeneous / zero
+  let par = null;
+  for (const k of p.keys()) { const { S } = parseKey(k); const q = S.length % 2; if (par === null) par = q; else if (par !== q) return null; }
+  return par;
+}
+// Euler operator E = Σ (x_i ∂/∂x_i + ξ_i ∂/∂ξ_i), i = 1..n (τ not counted).
+function euler(p) { const r = P(); for (const [k, c] of p) { const { a, S } = parseKey(k); const d = a.reduce((s, v) => s + v, 0) + S.filter(t => t !== TAU).length; addTerm(r, a, S, c * d); } return r; }
+// Buttin bracket {f,g}_H = Σ_i (∂f/∂x_i ∂g/∂ξ_i + (-1)^{p(f)} ∂f/∂ξ_i ∂g/∂x_i), bilinear.
+function buttinHom(f, g, pf) {
+  let r = P();
+  for (let i = 0; i < NX; i++) {
+    r = padd(r, pmul(dX(f, i), dO(g, i)));
+    r = padd(r, pscale(pmul(dO(f, i), dX(g, i)), pf ? -1 : 1));
+  }
+  return r;
+}
+// Cantarini–Kac PO(n,n+1): {f,g}_K = {f,g}_H + (E-2)(f) ∂g/∂τ + (-1)^{p(f)} ∂f/∂τ (E-2)(g).
+function kHom(f, g, pf) {
+  const Em2 = h => padd(euler(h), pscale(h, -2));
+  let r = buttinHom(f, g, pf);
+  r = padd(r, pmul(Em2(f), dO(g, TAU)));
+  r = padd(r, pscale(pmul(dO(f, TAU), Em2(g)), pf ? -1 : 1));
+  return r;
+}
+function bracket(f, g, mode) {
+  const hom = mode === "K" ? kHom : buttinHom;
+  let r = P();
+  for (const pf of [0, 1]) { const fp = parityPart(f, pf); if (!isZero(fp)) r = padd(r, hom(fp, g, pf)); }
+  return r;
+}
+
+// ---- parser: integers, x1..x3, ξ1..ξ3 (also xi1, s1), τ (also tau, t), + - * ^ ( ), implicit product
+function tokenize(src) {
+  const s = src.replace(/·|⋅|×/g, "*").replace(/−/g, "-").replace(/\s+/g, "");
+  const toks = []; let i = 0;
+  const sub = { "₁": "1", "₂": "2", "₃": "3" };
+  while (i < s.length) {
+    const ch = s[i];
+    if (/[0-9]/.test(ch)) { let j = i; while (j < s.length && /[0-9]/.test(s[j])) j++; toks.push({ t: "num", v: Number(s.slice(i, j)) }); i = j; continue; }
+    if ("+-*^()".includes(ch)) { toks.push({ t: ch }); i++; continue; }
+    const rest = s.slice(i);
+    let m;
+    if ((m = rest.match(/^(?:ξ|xi|s)([1-3₁₂₃])/))) { toks.push({ t: "var", odd: true, i: Number(sub[m[1]] || m[1]) - 1 }); i += m[0].length; continue; }
+    if ((m = rest.match(/^x([1-3₁₂₃])/))) { toks.push({ t: "var", odd: false, i: Number(sub[m[1]] || m[1]) - 1 }); i += m[0].length; continue; }
+    if ((m = rest.match(/^(?:τ|tau|t)/))) { toks.push({ t: "var", odd: true, i: TAU }); i += m[0].length; continue; }
+    throw new Error("Не понимаю символ «" + ch + "» (позиция " + (i + 1) + ")");
+  }
+  return toks;
+}
+function parse(src) {
+  const toks = tokenize(src); let pos = 0;
+  const peek = () => toks[pos];
+  function expr() {
+    let sign = 1;
+    if (peek() && (peek().t === "+" || peek().t === "-")) { if (peek().t === "-") sign = -1; pos++; }
+    let r = pscale(term(), sign);
+    while (peek() && (peek().t === "+" || peek().t === "-")) { const s = peek().t === "-" ? -1 : 1; pos++; r = padd(r, term(), s); }
+    return r;
+  }
+  function term() {
+    let r = power();
+    while (peek() && (peek().t === "*" || peek().t === "num" || peek().t === "var" || peek().t === "(")) { if (peek().t === "*") pos++; r = pmul(r, power()); }
+    return r;
+  }
+  function power() {
+    let b = atom();
+    if (peek() && peek().t === "^") { pos++; const e = peek(); if (!e || e.t !== "num") throw new Error("После ^ нужна степень-число"); pos++; if (e.v > 12) throw new Error("Слишком большая степень"); b = ppow(b, e.v); }
+    return b;
+  }
+  function atom() {
+    const tk = peek();
+    if (!tk) throw new Error("Выражение оборвалось");
+    if (tk.t === "num") { pos++; return pconst(tk.v); }
+    if (tk.t === "var") { pos++; return tk.odd ? pvarO(tk.i) : pvarX(tk.i); }
+    if (tk.t === "(") { pos++; const r = expr(); if (!peek() || peek().t !== ")") throw new Error("Не хватает «)»"); pos++; return r; }
+    if (tk.t === "-") { pos++; return pscale(atom(), -1); }
+    throw new Error("Неожиданный символ «" + tk.t + "»");
+  }
+  if (!toks.length) throw new Error("Пустое выражение");
+  const r = expr();
+  if (pos < toks.length) throw new Error("Лишний символ «" + toks[pos].t + "»");
+  return r;
+}
+// ---- TeX output, terms in a stable order
+function monoTeX(a, S) {
+  let s = "";
+  a.forEach((e, i) => { if (e) s += "x_" + (i + 1) + (e > 1 ? "^{" + e + "}" : ""); });
+  S.forEach(j => { s += j === TAU ? "\\tau " : "\\xi_" + (j + 1); });
+  return s;
+}
+function toTeX(p) {
+  if (isZero(p)) return "0";
+  const terms = [...p.entries()].map(([k, c]) => ({ ...parseKey(k), c }));
+  terms.sort((u, v) => {
+    const du = u.a.reduce((s, x) => s + x, 0) + u.S.length, dv = v.a.reduce((s, x) => s + x, 0) + v.S.length;
+    if (du !== dv) return dv - du;
+    const ku = mkey(u.a, u.S), kv = mkey(v.a, v.S);
+    return ku < kv ? 1 : ku > kv ? -1 : 0;
+  });
+  let out = "";
+  terms.forEach((t, idx) => {
+    const m = monoTeX(t.a, t.S);
+    const abs = Math.abs(t.c);
+    const coef = m === "" ? String(abs) : abs === 1 ? "" : String(abs);
+    out += (t.c < 0 ? (idx ? " - " : "-") : (idx ? " + " : "")) + coef + m;
+  });
+  return out;
+}
+
+// ===== Good words (Hall basic commutators) =====
+// Letter 0 is the unit 1, letters 1..n are x_1..x_n; 1 < x_1 < x_2 < ...
+function leaf(l) { return { l, deg: 1 }; }
+function node(u, v) { return { u, v, deg: u.deg + v.deg }; }
+function cmpW(w, z) {
+  if (w.deg !== z.deg) return w.deg - z.deg;
+  if (w.deg === 1) return w.l - z.l;
+  const c = cmpW(w.u, z.u);
+  return c !== 0 ? c : cmpW(w.v, z.v);
+}
+function wordParity(w, par) { // |w|: letters' parities plus one per bracket
+  if (w.deg === 1) return par[w.l];
+  return (wordParity(w.u, par) + wordParity(w.v, par) + 1) % 2;
+}
+function goodWords(letters, maxDeg) {
+  const byDeg = [[], letters.map(leaf).sort(cmpW)];
+  for (let n = 2; n <= maxDeg; n++) {
+    const out = [];
+    for (let p = n - 1; p >= 1; p--) {
+      const q = n - p;
+      if (q > p) continue;
+      for (const u of byDeg[p]) for (const v of byDeg[q]) {
+        if (cmpW(u, v) <= 0) continue;
+        if (u.deg > 1 && cmpW(u.v, v) > 0) continue;
+        out.push(node(u, v));
+      }
+    }
+    out.sort(cmpW);
+    byDeg.push(out);
+  }
+  return byDeg;
+}
+// Why a bracket {u,v} of good words is (not) good
+function goodReason(u, v) {
+  if (cmpW(u, v) <= 0) return { ok: false, why: "нужно u > v" };
+  if (u.deg > 1 && cmpW(u.v, v) > 0) return { ok: false, why: "u = {u₁,u₂}, но u₂ > v" };
+  return { ok: true, why: "u > v" + (u.deg > 1 ? " и u₂ ≤ v" : "") };
+}
+function letterTeX(l) { return l === 0 ? "1" : "x_" + l; }
+function wordTeX(w) { return w.deg === 1 ? letterTeX(w.l) : "\\{" + wordTeX(w.u) + "," + wordTeX(w.v) + "\\}"; }
+function lettersOf(w, acc = []) { if (w.deg === 1) acc.push(w.l); else { lettersOf(w.u, acc); lettersOf(w.v, acc); } return acc; }
+
+// ===== Multilinear basis of GenGer(n) =====
+function setPartitions(arr) {
+  if (!arr.length) return [[]];
+  const [first, ...rest] = arr;
+  const res = [];
+  for (const p of setPartitions(rest)) {
+    res.push([[first], ...p]);
+    p.forEach((blk, i) => { const q = p.map(b => b.slice()); q[i] = [first, ...blk]; res.push(q); });
+  }
+  return res;
+}
+function multilinearGood(block) {
+  const byDeg = goodWords(block, block.length);
+  return byDeg[block.length].filter(w => { const ls = lettersOf(w).sort((a, b) => a - b); return ls.join() === block.slice().sort((a, b) => a - b).join(); });
+}
+function genGerBasis(n) {
+  const X = [...Array(n + 1).keys()];
+  const out = [];
+  for (const part of setPartitions(X)) {
+    if (part.some(b => b.length === 1 && b[0] === 0)) continue;
+    let combos = [[]];
+    for (const b of part) {
+      const ws = multilinearGood(b);
+      const next = [];
+      for (const c of combos) for (const w of ws) next.push(c.concat([w]));
+      combos = next;
+    }
+    for (const c of combos) out.push({ part, words: c.slice().sort((a, b) => -cmpW(a, b)) });
+  }
+  return out;
+}
+const fact = n => (n <= 1 ? 1 : n * fact(n - 1));
+function genGerCount(n) { // Σ over partitions of {1,x1..xn} without block {1} of Π (|B|-1)!
+  let s = 0;
+  for (const part of setPartitions([...Array(n + 1).keys()])) {
+    if (part.some(b => b.length === 1 && b[0] === 0)) continue;
+    s += part.reduce((m, b) => m * fact(b.length - 1), 1);
+  }
+  return s;
+}
+
+
+// ===================== course data =====================
+// Filled by build_artifact.py from lecture.json (the same data as the site's course).
+const LECTURE = /*@@LECTURE_DATA@@*/{};
+const QUIZZES = LECTURE.quizzes || {};
+const FLASHCARDS = LECTURE.flashcards || [];
+const GLOSSARY = LECTURE.glossary || [];
+const PRESETS = LECTURE.presets || [];
+
+// What the "lecturer" reads with every question: the paper in brief.
+const REFERENCE = String.raw`СПРАВКА ПО СТАТЬЕ «A basis of free generalized Gerstenhaber algebras» (И. Кайгородов, К. Вяткина).
+
+Обозначения. Поле F характеристики 0. Всё Z_2-градуировано; |a| — чётность, \|a\| = |a|+1 — обращённая чётность (чётность в \Pi V). D(a) = {1,a}.
+
+Определение 1. Обобщённая алгебра Герстенхабера: V = V_0 ⊕ V_1, 1 ∈ V_0, операции ab и {a,b}:
+(1) |ab| = |a|+|b|, |{a,b}| = |a|+|b|+1;
+(2) (ab)c = a(bc), ab = (-1)^{|a||b|} ba, 1a = a;
+(3) {a,b} = -(-1)^{\|a\|\|b\|} {b,a};
+(4) {a,{b,c}} = {{a,b},c} + (-1)^{\|a\|\|b\|} {b,{a,c}};
+(5) {a,bc} = {a,b}c + (-1)^{\|a\||b|} b{a,c} + (-1)^{\|a\|} D(a)bc.
+При D = 0 — алгебра Герстенхабера (= нечётная супералгебра Пуассона). Определение 1 — в точности odd generalized Poisson superalgebra Кантарини–Каца (CK10, (0.14)). По (3) (-1)^{\|a\|}D(a) = -{a,1}, так что поправка в (5) равна -{a,1}bc.
+Замечание 2: (1),(3),(4) <=> (\Pi V,{,}) — супералгебра Ли («нечётная супералгебра Ли»); свободная нечётная супералгебра Ли на X = свободная супералгебра Ли на X с обращёнными чётностями.
+Замечание 3: (a) при a = 1: D(bc) = D(b)c + (-1)^{|b|} b D(c) - D(1)bc; D — нечётное дифференцирование <=> D(1) = {1,1} = 0; в общем случае дифференцирование — D - D(1)id. В обобщённых супералгебрах Пуассона (чётная скобка) {1,1} = 0 по кососимметричности; здесь \|1\| = 1 и (3) ничего не даёт. (b) (5) <=> d_a(b) = {a,b} + (-1)^{\|a\|} D(a) b = {a,b} - {a,1}b — супердифференцирование чётности \|a\|; d_a(1) = 0.
+Пример 1: V = F1 ⊕ Fε, |ε| = 1, ε^2 = 0, {1,1} = ε, остальные скобки базисных элементов 0. Все аксиомы выполнены, D(1) = ε ≠ 0, D(ε) = 0, D(1·1) = ε ≠ 2ε.
+Примеры с D ≠ 0 (CK10): PO(n,n+1) = F[[x_1..x_n]] ⊗ Λ(ξ_1..ξ_n, τ), {f,g}_K = {f,g}_H + (E-2)(f) ∂g/∂τ + (-1)^{|f|} ∂f/∂τ (E-2)(g), E = Σ(x_i ∂/∂x_i + ξ_i ∂/∂ξ_i), {f,g}_H = Σ(∂f/∂x_i ∂g/∂ξ_i + (-1)^{|f|} ∂f/∂ξ_i ∂g/∂x_i) — скобка Баттина; D = -2∂/∂τ, {1,1} = 0. PO(n,n) со скобкой Баттина — алгебра Герстенхабера (скобка Схоутена поливекторных полей). CK10: каждая простая линейно компактная нечётная обобщённая супералгебра Пуассона калибровочно эквивалентна PO(n,n) или PO(n,n+1). В CK10 в скобках сказано, что D — нечётное дифференцирование; это верно при {1,1} = 0, но из аксиом не следует (пример 1, следствие 13).
+
+Раздел 3. X = {1, x_1, x_2, ...}, 1 < x_1 < x_2 < ..., 1 чётна, чётности x_i произвольны. D_X — свободная алгебра с двумя операциями, I — идеал, порождённый аксиомами; G = D_X/I — свободная унитальная обобщённая алгебра Герстенхабера (универсальное свойство).
+Хорошие слова (базисные коммутаторы Холла): буквы X; w = {u,v} хорошее <=> u,v хорошие, u > v и, если u = {u_1,u_2}, то u_2 <= v. Порядок: по степени, при равной степени — лексикографически по парам компонент. Для хорошего w = {u,v}: w > u > v.
+M = { u, {v,v} : u, v хорошие, |v| = 0 } (квадраты чётных слов); порядок продолжен (квадрат — как пара (v,v)); 1 — наименьший; e_1 = 1 < e_2 < ...
+L — свободная нечётная супералгебра Ли на X (1 — обычная буква).
+Лемма 4: M — базис L. (Через обращение чётности и теорему о базисе свободной супералгебры Ли: множество Холла + квадраты нечётных элементов; Штерн 1986, Бахтурин–Михалёв–Петроградский–Зайцев, Бокуть–Канг–Ли–Малкольмсон. В TeX есть заметка авторам: проверить, что ссылки покрывают базисные коммутаторы Холла с этим порядком.)
+U = { e_{i1}^{k1} ... e_{ir}^{kr} : r >= 0, 1 < i1 < ... < ir, k_j >= 1, k_j = 1 для нечётных e_{ij} } — суперкоммутативные одночлены от M \ {1}; deg_e(u) = Σ k_j.
+Лемма 5: U порождает G. Гомоморфизм ψ: L -> G даёт {e,e'} ∈ span M для e,e' ∈ M. Индукция по N = deg_e(u) + deg_e(v): если deg_e(v) >= 2, v = v_1 v_2 и по (5) {u,v_1v_2} = {u,v_1}v_2 + (-1)^{\|u\||v_1|} v_1{u,v_2} + (-1)^{\|u\|}{1,u}v_1v_2 (у пар (u,v_1), (u,v_2), (1,u) сумма меньше N); если deg_e(v) <= 1 < deg_e(u) — кососимметричность. Индукция по числу букв некорректна: 1a = a уменьшает число букв, поправка в (5) увеличивает (пример: разложение {x_1, x_2x_3} содержит {1,x_1}x_2x_3). Этот пробел первой версии нашёл Aristotle (Harmonic), индукцию перевели на e-степень.
+
+Раздел 4 (модель). L' = span(M \ {1}), S = S(L') — свободная суперкоммутативная супералгебра (базис U), \hat L = F1 ⊕ L' ≅ L (буква 1 <-> единица S); скобка L переносится на \hat L; D(u) = {1,u}; D(1) = {1,1} — нечётный элемент M \ {1}.
+Для a = a_1...a_m (a_i ∈ \hat L): a_{<i} = a_1...a_{i-1}, a_{>i} = a_{i+1}...a_m, a_{\hat i} = a_{<i} a_{>i}.
+(7) D(a) = Σ_i (-1)^{|a_{<i}|} a_{<i} {1,a_i} a_{>i} - (m-1){1,1} a.
+(8) {a,b}^* = Σ_{i,j} (-1)^{|a_i||a_{>i}| + |b_j||b_{<j}|} a_{\hat i} {a_i,b_j} b_{\hat j} - (m-1) a D(b) + (n-1)(-1)^{\|a\|} D(a) b - (m-1)(n-1) a D(1) b.
+Смысл: двойная сумма — «каждый множитель с каждым» (как для бидифференцирования); (n-1)(-1)^{\|a\|}D(a)b — n-1 применений (5), каждое даёт -{a,1}b; -(m-1)aD(b) — то же по первому аргументу; -(m-1)(n-1)aD(1)b отсутствует у Кайгородова 2017, где D(1) = 0. Член -(m-1){1,1}a в (7) компенсирует вставку лишнего множителя 1. Скобка на S однозначно определяется значениями на \hat L и аксиомами (3), (5); (8) — её замкнутый вид.
+Лемма 6: правые части (7), (8) не зависят от разложения на множители из \hat L (суперсимметричность; вычёркивание единиц); (i) на \hat L совпадают со скобкой L; (ii) {1,a}^* = D(a); (iii) D(bc) = D(b)c + (-1)^{|b|} bD(c) - D(1)bc; (iv) чётности.
+Лемма 7: нечётная кососимметричность {,}^*. Лемма 8: правило (5) для {,}^*.
+Лемма 9 (якобиатор): если выполнены (1),(2),(3),(5) (без Якоби), то J(a,b,c) = {a,{b,c}} - {{a,b},c} - (-1)^{\|a\|\|b\|}{b,{a,c}} удовлетворяет (i) J(a,b,c) = -(-1)^{\|a\|\|b\|} J(b,a,c) = -(-1)^{\|b\|\|c\|} J(a,c,b); (ii) J(a,b,xy) = J(a,b,x)y + (-1)^{(|a|+|b|)|x|} x J(a,b,y) - J(a,b,1)xy. Доказательство: раскрыть три члена по (5); шестнадцать лишних членов сокращаются парами.
+Предложение 10: Якоби на S: J = 0 на \hat L (Якоби в L) -> по (ii) и индукции по числу множителей для любого третьего аргумента -> по (i) для всех аргументов.
+Теорема 11: (S, ·, {,}^*) — унитальная обобщённая алгебра Герстенхабера, порождённая X.
+Теорема 12: U — базис G; φ: G -> S, тождественный на X, — изоморфизм (сюръекция по универсальному свойству, φ(u) = u, U — базис S, плюс лемма 5).
+Следствие 13: {1,1} ≠ 0 в G; D не дифференцирование; {1,1}, {1,1}x_i, {1,x_i} линейно независимы ({1,x_i} = -(-1)^{\|x_i\|}{x_i,1}). Второе доказательство первой части: гомоморфизм G -> V из примера 1 (1 -> 1, x_i -> 0) переводит {1,1} в ε.
+GenGer(n): для X = {1,x_1,...,x_n} — оболочка элементов U, мультилинейных по 1,x_1,...,x_n. Не однородная компонента: число вхождений 1 не градуировка (1a = a и поправка в (5)); мультистепень по x_i — градуировка, но компонента мультистепени (1,...,1) бесконечномерна.
+Теорема 14: dim GenGer(n) = n·n!. Доказательство: мультилинейные элементы U <-> разбиения X на блоки без блока {1} + мультилинейное хорошее слово на каждом блоке ((k-1)! на блоке из k букв, число не зависит от чётностей; квадраты не мультилинейны); Σ_π Π_B (|B|-1)! = N! (перестановки = разбиения на циклы), откуда (n+1)! - n!.
+Пример 2: GenGer(1) = <{x_1,1}>; GenGer(2): {x_1,1}x_2, {x_2,1}x_1, {{x_1,1},x_2}, {{x_2,1},x_1}; слово {{x_2,x_1},1} не хорошее.
+Замечание 15: при D = 0 базис свободной алгебры Герстенхабера на x_1, x_2, ... — элементы U без буквы 1 (S от свободной нечётной супералгебры Ли); мультилинейная часть n!.
+
+Контекст. Кайгородов 2017 (K17): свободные обобщённые супералгебры Пуассона (чётная скобка; {a,bc} = {a,b}c + (-1)^{|a||b|} b{a,c} - D(a)bc, D(a) = {a,1} — чётное дифференцирование): базис — одночлены от M \ {1}, M = хорошие слова + квадраты нечётных; dim GenP(n) = n·n!; супералгебры йордановых скобок (замена скобки {a,b}_D = {a,b} + (aD(b) - D(a)b)/2); аналог теоремы Фаркаша. Двойник Кантора K(A) = A ⊕ Ax, ax*bx = (-1)^{|b|}{a,b}; йордановы скобки — если K(A) йорданова (Кантор; Кинг–МакКриммон). Базисы свободных алгебр: алгебр Ли — Холл 1950, Ширшов; супералгебр Ли — Штерн 1986, БМПЗ, БКЛМ; супералгебр Пуассона — Шестаков 1993 (S от свободной супералгебры Ли). Алгебры Герстенхабера: когомологии Хохшильда (Герстенхабер 1963), поливекторные поля (скобка Схоутена), Λ(g), BV-алгебры (оператор Δ, Δ^2 = 0, {a,b} = (-1)^{|a|}(Δ(ab) - Δ(a)b - (-1)^{|a|} a Δ(b)); в PO(n,n) Δ = Σ ∂^2/∂x_i∂ξ_i), алгеброиды Ли (Сюй 1999).
+Проверки (не часть доказательства): размерности компонент свободной алгебры при n <= 3 и всех чётностях совпали с |U|; формулы (7), (8) проверены символьно (39 200 тождеств); лемма 9 — для всех 16 расстановок чётностей.
+Почему характеристика 0: теорема о базисе свободной супералгебры Ли (в хар. 3 [v,[v,v]] = 0 не следует из Якоби, в хар. 2 кососимметричность не даёт [a,a] = 0); a^2 = 0 для нечётного a.`;
+
+const RULES_ASK = String.raw`Ты — лектор-алгебраист на консультации. Студентка 3 курса, алгебраист, соавтор статьи И. Кайгородова и К. Вяткиной «A basis of free generalized Gerstenhaber algebras», готовит по ней доклад. Многие понятия вокруг статьи (супералгебры, нечётные скобки, свободные алгебры, базис Холла, алгебры Пуассона и Герстенхабера и т. п.) она могла ещё не проходить. Ты объясняешь, а не перечисляешь.
+
+Как отвечать:
+1. Каждое понятие, обозначение и конструкцию, которые используешь, сначала определи — формально — и одной-двумя фразами скажи, зачем оно здесь. Не считай, что она это знает, даже если это стандартно. Если понятие уже определено в курсе, напомни определение.
+2. Все выкладки — полностью, по шагам: один переход — одна строка, и рядом, какое правило, тождество или определение применено. Знаки $(-1)^{\dots}$ считай явно, с подстановкой чётностей.
+3. Пример доводи до конца вычислением. Не пиши «проверь сама» и не оставляй вычисление читателю.
+4. Никогда не пиши «очевидно», «легко видеть», «нетрудно проверить», «аналогично», «как известно», «хорошо известно», «стандартный факт», «всем известно» и не ссылайся на то, что «это все знают». Вместо этого покажи. Если доказательство известного результата слишком длинное, прямо скажи, что его не приводишь, точно сформулируй утверждение, назови источник из справки и объясни идею доказательства.
+5. Длина — сколько нужно для полного объяснения; ограничения нет. Порядок: что спрашивается → нужные определения → выкладка → вывод.
+6. Длинные формулы разбивай на строки (окружение aligned), каждая строка не длиннее примерно 60 символов TeX, чтобы не приходилось прокручивать вбок.
+
+Отвечай по-русски. Формулы пиши в LaTeX: строчные между $...$, выносные между $$...$$. Используй обозначения статьи: |a| — чётность, \|a\| = |a|+1 — обращённая чётность, \mathfrak D(a) = \{1,a\}, \mathfrak G, \mathfrak L, \mathcal S. Опирайся на справку ниже. Если вопрос выходит за её рамки, скажи об этом и объясни так же подробно, отмечая, что это вне статьи. Не выдумывай ссылок, номеров и фактов; если не уверен в знаке или формулировке — скажи прямо. Если в вопросе есть блок «[Место в курсе …]», студентка выделила это место в тексте курса: объясни именно его. Формулы в блоке записаны в TeX буквально, как в курсе, — читай их по символам и не подменяй фрагмент похожим; опирайся на абзац вокруг. Если вопрос при этом не задан, объясни, что означает выделенное и зачем оно здесь, и разверни все шаги, пропущенные в этом месте. Без эмодзи.`;
+
+const RULES_HALL = String.raw`Ты играешь слушателя научного семинара по неассоциативным алгебрам. Докладчица рассказывает статью И. Кайгородова и К. Вяткиной «A basis of free generalized Gerstenhaber algebras» (справка ниже). Задавай по одному вопросу за раз — такие, какие реально задают на докладе: об определениях и их мотивировке, примерах, логике доказательства, сравнении с работами Кайгородова 2017 и Кантарини–Каца, о возможных обобщениях. Чередуй простые и трудные вопросы, не повторяйся. Когда докладчица ответит: 1) коротко оцени ответ (что верно, что неточно или упущено); 2) дай образцовый ответ в 2–4 предложениях; 3) задай следующий вопрос отдельной строкой, начиная её со слов «Вопрос:». Пиши по-русски, формулы — в LaTeX между $...$. Опирайся на справку; не выдумывай фактов. Без эмодзи.`;
+
+// Suggested questions in the panel, per module id ("suggest" in lecture.json; two generic ones otherwise).
+const SUGGEST = /*@@SUGGEST@@*/{};
+
+// ===================== page logic =====================
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable: keep going */ } },
+};
+// Progress lives in the viewer's own record of this artifact on claude.ai (the `db`
+// capability, data/users/<id>/progress), so every device continues from the same place.
+// Changes go out one small patch at a time and merge there: a page left open on another
+// device cannot wipe what was marked since. Until db answers (or when it never does) the
+// page keeps module and card marks in this browser, as it always did.
+const sync = { ref: null, exists: false, queue: Promise.resolve() };
+function save(patch) {
+  if (!sync.ref) return;
+  sync.queue = sync.queue.then(async () => {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        if (sync.exists) await sync.ref.update(patch);
+        else { await sync.ref.set(Object.assign({ done: {}, cards: {}, quiz: {} }, patch)); sync.exists = true; }
+        return;
+      } catch (e) {
+        if (e && e.code === "invalid_argument" && sync.exists) { sync.exists = false; continue; }  // removed elsewhere: create it again
+        if (e && e.code === "unavailable" && attempt === 0) { await new Promise(r => setTimeout(r, 400 + Math.random() * 600)); continue; }
+        console.warn("progress not saved", e);
+        return;
+      }
+    }
+  });
+}
+function typeset(el) {
+  const MJ = window.MathJax;
+  if (MJ && MJ.startup && MJ.startup.promise && MJ.typesetPromise) {
+    MJ.startup.promise = MJ.startup.promise.then(() => MJ.typesetPromise([el])).catch(e => console.warn(e));
+  }
+}
+function setMath(el, html) {
+  const MJ = window.MathJax;
+  if (MJ && MJ.typesetClear) { try { MJ.typesetClear([el]); } catch (e) { /* not typeset yet */ } }
+  el.innerHTML = html;
+  typeset(el);
+}
+const sgn = e => ((e % 2) + 2) % 2 === 0 ? 1 : -1;       // (-1)^e
+const sgnTeX = (s, first) => (s > 0 ? (first ? "" : "+") : "-");
+function segValue(seg) { const b = seg.querySelector('button[aria-pressed="true"]'); return b ? b.dataset.v : null; }
+function bindSeg(seg, onChange) {
+  seg.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || !seg.contains(b)) return;
+    seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    onChange(b.dataset.v);
+  });
+}
+
+// ---------- modules, table of contents, progress ----------
+const MODULES = $$("section.module").map(s => ({ id: s.id, title: s.dataset.title, el: s }));
+const PROGRESS_KEY = "gg-lecture-progress-v1";
+let done = new Set(store.get(PROGRESS_KEY, []));
+function buildToc(nav) {
+  nav.innerHTML = '<div class="toc-title">Модули</div><ol>' + MODULES.map((m, i) =>
+    `<li><a href="#${m.id}" data-toc="${m.id}"><span class="n">${i}</span><span>${esc(m.title)}</span><span class="ok" aria-label="пройден">✓</span></a></li>`).join("") + "</ol>";
+}
+buildToc($("#toc-side")); buildToc($("#toc-mobile"));
+$$("#toc-mobile a").forEach(a => a.addEventListener("click", () => { $(".toc-mobile").open = false; }));
+function renderProgress() {
+  $$("[data-toc]").forEach(a => a.classList.toggle("done", done.has(a.dataset.toc)));
+  $$("[data-done]").forEach(b => {
+    const on = done.has(b.dataset.done);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.textContent = on ? "Пройден ✓" : "Модуль пройден";
+  });
+  if (!MODULES.length) return;
+  // Module ids and their number come from the text; marks of modules no longer in it are not counted.
+  const n = MODULES.filter(m => done.has(m.id)).length;
+  const fill = $("#progress-fill"), text = $("#progress-text"), btn = $("#continue-btn");
+  if (fill) fill.style.width = (100 * n / MODULES.length) + "%";
+  if (text) text.textContent = `Пройдено ${n} из ${MODULES.length}`;
+  if (!btn) return;
+  const next = MODULES.find(m => !done.has(m.id));
+  // When everything is done the button leads to the last module (its words: data-done-text).
+  if (!next) { btn.textContent = btn.dataset.doneText || "Курс пройден — к последнему модулю"; btn.href = "#" + MODULES[MODULES.length - 1].id; }
+  else if (n === 0) { btn.textContent = "Начать с модуля 0"; btn.href = "#" + MODULES[0].id; }
+  else { btn.textContent = `Продолжить: модуль ${MODULES.indexOf(next)}`; btn.href = "#" + next.id; }
+}
+$$("[data-done]").forEach(b => b.addEventListener("click", () => {
+  const id = b.dataset.done;
+  if (done.has(id)) done.delete(id); else done.add(id);
+  if (sync.ref) save({ done: { [id]: done.has(id) } }); else store.set(PROGRESS_KEY, [...done]);
+  renderProgress();
+}));
+renderProgress();
+let currentModule = MODULES[0];
+if ("IntersectionObserver" in window) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        currentModule = MODULES.find(m => m.el === en.target) || currentModule;
+        $$("[data-toc]").forEach(a => a.classList.toggle("current", a.dataset.toc === currentModule.id));
+        renderSuggest();
+      }
+    });
+  }, { rootMargin: "-35% 0px -60% 0px" });
+  MODULES.forEach(m => obs.observe(m.el));
+}
+
+// ---------- quizzes ----------
+// Answers are kept with the progress; "Пройти тест заново" clears them.
+const quizApi = {};
+$$(".quiz[data-quiz]").forEach(box => {
+  const id = box.dataset.quiz, qs = QUIZZES[id] || [];
+  box.innerHTML = "<h4>Проверь себя</h4>" + qs.map((q, i) =>
+    `<div class="q" data-i="${i}"><div class="qt">${i + 1}. ${q.q}</div><div class="opts">` +
+    q.o.map((o, j) => `<button class="opt" data-j="${j}">${o}</button>`).join("") + `</div><div class="fb" aria-live="polite"></div></div>`).join("") +
+    `<button class="btn small quiz-reset" type="button" hidden>Пройти тест заново</button>`;
+  const reset = box.querySelector(".quiz-reset");
+  let answers = {};  // question index -> chosen option
+  function paint() {
+    qs.forEach((q, i) => {
+      const qd = box.querySelector(`.q[data-i="${i}"]`), j = answers[i], on = j !== undefined;
+      qd.querySelectorAll(".opt").forEach((x, k) => {
+        x.disabled = on;
+        x.classList.toggle("right", on && k === q.a);
+        x.classList.toggle("wrong", on && k === j && j !== q.a);
+      });
+      const fb = qd.querySelector(".fb"), key = on ? String(j) : "";
+      if (fb.dataset.j === key) return;
+      fb.dataset.j = key;
+      setMath(fb, on ? (j === q.a ? '<b class="r">Верно.</b> ' : '<b class="w">Не совсем.</b> ') + q.e : "");
+    });
+    const given = Object.keys(answers), right = given.filter(i => answers[i] === qs[i].a).length;
+    const sc = $(`[data-score="${id}"]`);
+    if (sc) sc.textContent = given.length ? `Тест: ${right} из ${given.length} верно` + (given.length === qs.length ? "" : ` (всего вопросов ${qs.length})`) : "";
+    reset.hidden = !given.length;
+  }
+  box.addEventListener("click", e => {
+    if (e.target.closest(".quiz-reset")) {
+      const patch = {};
+      Object.keys(answers).forEach(i => { patch[i] = null; });
+      answers = {}; paint();
+      if (sync.ref) save({ quiz: { [id]: patch } });
+      return;
+    }
+    const b = e.target.closest(".opt"); if (!b) return;
+    const i = +b.closest(".q").dataset.i, j = +b.dataset.j;
+    if (answers[i] !== undefined) return;
+    answers[i] = j; paint();
+    if (sync.ref) save({ quiz: { [id]: { [i]: j } } });
+  });
+  quizApi[id] = {
+    apply(remote) {
+      const next = {};
+      // Only answers to questions the test still has (the text may have changed since).
+      Object.entries(remote || {}).forEach(([i, j]) => { if (typeof j === "number" && qs[i] && j < qs[i].o.length) next[i] = j; });
+      if (JSON.stringify(next) !== JSON.stringify(answers)) { answers = next; paint(); }
+    },
+  };
+});
+
+// ---------- the calculators ----------
+// Each one runs only when its block is in the text, wherever it stands. A block that is not
+// there is skipped; one that is incomplete, or a calculator that fails, is reported inside its
+// own block and does not stop the others.
+function lab(id, needs, init) {
+  const missing = needs.filter(s => !$(s));
+  if (missing.length === needs.length) return;
+  try {
+    if (missing.length) throw new Error("в блоке нет " + missing.join(", "));
+    init();
+  } catch (e) {
+    console.error("Вычислитель " + id + ":", e);
+    const at = $("#" + id) || $(needs.find(s => $(s))).closest(".lab") || $(".main");
+    const note = document.createElement("p");
+    note.className = "err";
+    note.textContent = "Вычислитель не запустился: " + (e && e.message ? e.message : String(e));
+    if (at) at.appendChild(note);
+  }
+}
+
+// ---------- lab: signs ----------
+lab("lab-signs", ["#sig-out", "#perm-in", "#perm-out"], function signsLab() {
+  const out = $("#sig-out");
+  const par = { a: 0, b: 1 };
+  $$('[data-sig]').forEach(seg => bindSeg(seg, v => { par[seg.dataset.sig] = +v; render(); }));
+  function render() {
+    const a = par.a, b = par.b, ra = (a + 1) % 2, rb = (b + 1) % 2;
+    const s = x => (x > 0 ? "+" : "-");
+    const rows = [
+      ["Чётность произведения", `|ab|=${a}+${b}=${(a + b) % 2}`],
+      ["Перестановка множителей", `ab=${s(sgn(a * b))}\\,ba`],
+      ["Обращённые чётности", `\\rp a=${ra},\\quad \\rp b=${rb}`],
+      ["Чётность скобки", `|\\{a,b\\}|=${a}+${b}+1=${(a + b + 1) % 2}`],
+      ["Кососимметричность (3)", `\\{a,b\\}=${s(-sgn(ra * rb))}\\{b,a\\}`],
+      ["Знак в правиле Лейбница (5)", `(-1)^{\\rp a|b|}=${sgn(ra * b) > 0 ? "+1" : "-1"}`],
+      ["Может ли $\\{a,a\\}\\neq0$?", ra === 1 ? "\\text{да: } \\rp a=1" : "\\text{нет: } \\{a,a\\}=-\\{a,a\\}"],
+    ];
+    setMath(out, '<div class="table-wrap" style="margin:0"><table><tbody>' +
+      rows.map(r => `<tr><td>${r[0]}</td><td>$${r[1]}$</td></tr>`).join("") + "</tbody></table></div>");
+  }
+  render();
+  const inp = $("#perm-in"), pout = $("#perm-out");
+  function perm() {
+    try {
+      const p = parse(inp.value);
+      setMath(pout, `<div class="res"><span class="mono">${esc(inp.value.trim())}</span> $\\;=\\;${toTeX(p)}$</div>` +
+        (isZero(p) ? '<div class="small">Какая-то нечётная переменная встретилась дважды — такое произведение равно нулю.</div>' : ""));
+    }
+    catch (e) { pout.innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+  }
+  inp.addEventListener("input", perm); perm();
+});
+
+// ---------- lab: superpolynomial brackets ----------
+lab("lab-po", ["#po-out", "#po-mode", "#po-preset", "#po-a", "#po-b", "#po-c", "#po-keys"], function poLab() {
+  const out = $("#po-out"), modeSeg = $("#po-mode"), sel = $("#po-preset");
+  const A = $("#po-a"), B = $("#po-b"), Cc = $("#po-c");
+  let lastFocus = A;
+  [A, B, Cc].forEach(i => i.addEventListener("focus", () => { lastFocus = i; }));
+  const keys = ["x1", "x2", "x3", "ξ1", "ξ2", "ξ3", "τ", "^", "(", ")", "+", "-"];
+  const keyLabel = { x1: "x₁", x2: "x₂", x3: "x₃", "ξ1": "ξ₁", "ξ2": "ξ₂", "ξ3": "ξ₃", "-": "−" };
+  $("#po-keys").innerHTML = keys.map(k => `<button class="key" type="button" data-k="${k}">${keyLabel[k] || k}</button>`).join("");
+  $("#po-keys").addEventListener("click", e => {
+    const b = e.target.closest("[data-k]"); if (!b) return;
+    const el = lastFocus, k = b.dataset.k, ins = /^[xξτ]/.test(k) ? " " + k + " " : k;
+    const s = el.selectionStart ?? el.value.length, en = el.selectionEnd ?? el.value.length;
+    el.value = el.value.slice(0, s) + ins + el.value.slice(en);
+    el.focus(); el.selectionStart = el.selectionEnd = s + ins.length;
+  });
+  PRESETS.forEach((p, i) => { const o = document.createElement("option"); o.value = i; o.textContent = p.name; sel.appendChild(o); });
+  function setMode(m) { modeSeg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === m ? "true" : "false")); }
+  sel.addEventListener("change", () => {
+    const p = PRESETS[+sel.value]; if (!p) return;
+    setMode(p.mode); A.value = p.a; B.value = p.b; Cc.value = p.c;
+    run(p.mode === "K" && p.name.startsWith("Лейбниц") ? "check" : p.name.startsWith("Ли") || p.name.startsWith("Непу") ? "aa" : p.name.startsWith("D(") ? "D" : "ab");
+  });
+  bindSeg(modeSeg, () => run("ab"));
+  $$("[data-po-jump]").forEach(a => a.addEventListener("click", () => {
+    setMode("K"); const p = PRESETS.findIndex(x => x.name.startsWith("Лейбниц")); sel.value = p; sel.dispatchEvent(new Event("change"));
+  }));
+  const mode = () => segValue(modeSeg);
+  const br = (x, y) => bracket(x, y, mode());
+  const parTxt = p => { const h = homParity(p); return h === null ? (isZero(p) ? "ноль" : "неоднородный") : h === 0 ? "чётный" : "нечётный"; };
+  const T = p => toTeX(p);
+  function get(inp, name) {
+    const v = inp.value.trim(); if (!v) throw new Error(`Поле ${name} пустое`);
+    const p = parse(v);
+    if (mode() === "H" && [...p.keys()].some(k => k.split("|")[1].split(",").includes("3"))) throw new Error(`В ${name} есть τ — переключи режим на PO(3,4)`);
+    return p;
+  }
+  function run(what) {
+    try {
+      const a = get(A, "a");
+      let html = "";
+      if (what === "ab" || what === "ba") {
+        const b = get(B, "b");
+        html = what === "ab" ? `$$\\{a,b\\}=${T(br(a, b))}$$` : `$$\\{b,a\\}=${T(br(b, a))}$$`;
+        html += `<p class="small">$a=${T(a)}$ — ${parTxt(a)}; $b=${T(b)}$ — ${parTxt(b)}.</p>`;
+      } else if (what === "aa") {
+        const r = br(a, a);
+        html = `$$\\{a,a\\}=${T(r)}$$<p class="small">$a=${T(a)}$ — ${parTxt(a)}. ` +
+          (homParity(a) === 1 ? "Для нечётного $a$ всегда $\\{a,a\\}=0$ (кососимметричность)." :
+            isZero(r) ? "Квадрат нулевой — для бивектора это условие Пуассона." : "Квадрат ненулевой — для бивектора это значит, что производная скобка не удовлетворяет тождеству Якоби.") + "</p>";
+      } else if (what === "D") {
+        html = `$$\\D(a)=\\{1,a\\}=${T(br(pconst(1), a))}$$<p class="small">${mode() === "H" ? "В $PO(3,3)$ всегда $\\D=0$: это алгебра Герстенхабера." : "В $PO(3,4)$ $\\D=-2\\,\\partial/\\partial\\tau$."}</p>`;
+      } else if (what === "check") {
+        const b = get(B, "b"), c = get(Cc, "c");
+        const pa = homParity(a), pb = homParity(b), pc = homParity(c);
+        if (pa === null || pb === null || pc === null) throw new Error("Для проверки нужны однородные (чётные или нечётные) ненулевые элементы.");
+        const ra = (pa + 1) % 2, rb = (pb + 1) % 2;
+        const eq = (x, y) => isZero(padd(x, y, -1));
+        const mark = ok => ok ? '<span class="ok-mark">✓ выполнено</span>' : '<span class="bad-mark">✗ нарушено</span>';
+        const l3 = br(a, b), r3 = pscale(br(b, a), -sgn(ra * rb));
+        const l4 = br(a, br(b, c)), r4 = padd(br(br(a, b), c), pscale(br(b, br(a, c)), sgn(ra * rb)));
+        const L5 = br(a, pmul(b, c)), t1 = pmul(br(a, b), c), t2 = pscale(pmul(b, br(a, c)), sgn(ra * pb));
+        const corr = pscale(pmul(pmul(br(pconst(1), a), b), c), sgn(ra));
+        const R5 = padd(padd(t1, t2), corr), noCorr = padd(t1, t2);
+        html = `<p class="small">$|a|=${pa},\\ |b|=${pb},\\ |c|=${pc}$; $\\rp a=${ra},\\ \\rp b=${rb}$.</p>` +
+          `<p><b>(3)</b> $\\{a,b\\}=${T(l3)}$, $\\ -(-1)^{\\rp a\\rp b}\\{b,a\\}=${T(r3)}$ — ${mark(eq(l3, r3))}</p>` +
+          `<p><b>(4)</b> $\\{a,\\{b,c\\}\\}=${T(l4)}$, $\\ \\{\\{a,b\\},c\\}+(-1)^{\\rp a\\rp b}\\{b,\\{a,c\\}\\}=${T(r4)}$ — ${mark(eq(l4, r4))}</p>` +
+          `<p><b>(5)</b> $\\{a,bc\\}=${T(L5)}$</p><p>$\\{a,b\\}c+(-1)^{\\rp a|b|}b\\{a,c\\}=${T(noCorr)}$</p>` +
+          `<p>поправка $(-1)^{\\rp a}\\D(a)bc=${T(corr)}$ — ${mark(eq(L5, R5))}` +
+          (isZero(corr) ? "" : `; без поправки правило нарушилось бы ровно на этот член.`) + `</p>`;
+      } else if (what === "derived") {
+        const X = [1, 2, 3].map(i => parse("x" + i));
+        const d = (u, v) => br(br(u, a), v);
+        let rows = "";
+        for (let i = 0; i < 3; i++) {
+          rows += "<tr>" + [0, 1, 2].map(j => `<td>$\\{x_${i + 1},x_${j + 1}\\}_a=${T(d(X[i], X[j]))}$</td>`).join("") + "</tr>";
+        }
+        const J = padd(padd(d(X[0], d(X[1], X[2])), d(X[1], d(X[2], X[0]))), d(X[2], d(X[0], X[1])));
+        html = `<p class="small">Производная скобка $\\{f,g\\}_a=\\{\\{f,a\\},g\\}$ на координатах:</p><div class="table-wrap" style="margin:6px 0"><table><tbody>${rows}</tbody></table></div>` +
+          `<p>Якобиатор $\\{x_1,\\{x_2,x_3\\}_a\\}_a+\\text{цикл.}=${T(J)}$; $\\ \\{a,a\\}=${T(br(a, a))}$.</p>`;
+      }
+      setMath(out, html);
+    } catch (e) { out.innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+  }
+  $$("[data-po]").forEach(b => b.addEventListener("click", () => run(b.dataset.po)));
+  [A, B, Cc].forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") run("ab"); }));
+});
+
+// ---------- lab: example 1 ----------
+lab("lab-ex1", ["#ex1-k", "#ex1-table", "#ex1-out"], function ex1Lab() {
+  const seg = $("#ex1-k"), tbl = $("#ex1-table"), out = $("#ex1-out");
+  const E = [[1, 0], [0, 1]], names = ["1", "\\varepsilon"], par = [0, 1];
+  const add = (x, y) => [x[0] + y[0], x[1] + y[1]], sc = (s, x) => [s * x[0], s * x[1]];
+  const mul = (x, y) => [x[0] * y[0], x[0] * y[1] + x[1] * y[0]];
+  const tex = x => { const t = []; if (x[0]) t.push((x[0] === 1 ? "" : x[0] === -1 ? "-" : x[0]) + (Math.abs(x[0]) === 1 ? "1" : "")); if (x[1]) t.push((x[1] === 1 ? "" : x[1] === -1 ? "-" : x[1]) + "\\varepsilon"); return t.length ? t.join("+").replace("+-", "-") : "0"; };
+  function render() {
+    const k = +segValue(seg);
+    const br = (x, y) => [0, k * x[0] * y[0]];
+    const D = x => br(E[0], x);
+    let rows = "", allOk = true;
+    for (const ia of [0, 1]) for (const ib of [0, 1]) for (const ic of [0, 1]) {
+      const a = E[ia], b = E[ib], c = E[ic], ra = (par[ia] + 1) % 2;
+      const L = br(a, mul(b, c));
+      const t1 = mul(br(a, b), c), t2 = sc(sgn(ra * par[ib]), mul(b, br(a, c))), t3 = sc(sgn(ra), mul(mul(D(a), b), c));
+      const R = add(add(t1, t2), t3), ok = L[0] === R[0] && L[1] === R[1];
+      allOk = allOk && ok;
+      rows += `<tr><td>$${names[ia]},${names[ib]},${names[ic]}$</td><td>$${tex(L)}$</td><td>$${tex(t1)}$</td><td>$${tex(t2)}$</td><td>$${tex(t3)}$</td><td>${ok ? '<span class="ok-mark">✓</span>' : '<span class="bad-mark">✗</span>'}</td></tr>`;
+    }
+    setMath(tbl, `<table><thead><tr><th>$a,b,c$</th><th>$\\{a,bc\\}$</th><th>$\\{a,b\\}c$</th><th>$\\pm b\\{a,c\\}$</th><th>$(-1)^{\\rp a}\\D(a)bc$</th><th></th></tr></thead><tbody>${rows}</tbody></table>`);
+    const D11 = D(mul(E[0], E[0])), Dsum = add(mul(D(E[0]), E[0]), mul(E[0], D(E[0])));
+    setMath(out, `<p>Правило Лейбница: ${allOk ? '<span class="ok-mark">✓ во всех 8 случаях</span>' : '<span class="bad-mark">нарушено</span>'}. Кососимметричность: единственная возможно ненулевая скобка $\\{1,1\\}$, а (3) для неё пусто. Якоби: все скобки лежат в $\\F\\varepsilon$, а скобки с $\\varepsilon$ нулевые — обе части равны $0$.</p>` +
+      `<p>$\\D(1\\cdot1)=${tex(D11)}$, $\\ \\D(1)\\cdot1+1\\cdot\\D(1)=${tex(Dsum)}$ — ${D11[1] === Dsum[1] ? "$\\D$ здесь дифференцирование." : "$\\D$ <b>не</b> дифференцирование, как и предсказывает формула $\\D(bc)=\\D(b)c+(-1)^{|b|}b\\D(c)-\\D(1)bc$."}</p>`);
+  }
+  bindSeg(seg, render); render();
+});
+
+// ---------- good words ----------
+const subDigits = "₀₁₂₃₄₅₆₇₈₉";
+function letterHTML(l) { return l === 0 ? "1" : "x<sub>" + l + "</sub>"; }
+function wordHTML(w) { return w.deg === 1 ? letterHTML(w.l) : "{" + wordHTML(w.u) + ", " + wordHTML(w.v) + "}"; }
+lab("lab-hall", ["#hall-n", "#hall-d", "#hall-par", "#hall-out", "#hq-word", "#hq-fb", "#hq-next"], function hallLab() {
+  const nSeg = $("#hall-n"), dSeg = $("#hall-d"), parBox = $("#hall-par"), out = $("#hall-out");
+  let parity = [0, 1, 0, 1];
+  function renderPar() {
+    const n = +segValue(nSeg);
+    parBox.innerHTML = [...Array(n).keys()].map(i => `<span class="small">$x_${i + 1}$:</span><span class="seg" data-hp="${i + 1}"><button aria-pressed="${parity[i + 1] === 0}" data-v="0">чётная</button><button aria-pressed="${parity[i + 1] === 1}" data-v="1">нечётная</button></span>`).join("");
+    $$("[data-hp]", parBox).forEach(seg => bindSeg(seg, v => { parity[+seg.dataset.hp] = +v; render(); }));
+    typeset(parBox);
+  }
+  function render() {
+    const n = +segValue(nSeg), dmax = +segValue(dSeg);
+    const letters = [...Array(n + 1).keys()];
+    const byDeg = goodWords(letters, dmax);
+    let html = "", total = 0;
+    for (let d = 1; d <= dmax; d++) {
+      const ws = byDeg[d];
+      const squares = d % 2 === 0 ? (byDeg[d / 2] || []).filter(v => wordParity(v, parity) === 0) : [];
+      total += ws.length + squares.length;
+      const chips = ws.map(w => { const p = wordParity(w, parity); return `<span class="chip word ${p ? "od" : "ev"}" title="|w| = ${p}">${wordHTML(w)}</span>`; }).join("") +
+        squares.map(v => `<span class="chip word sq od" title="квадрат чётного слова: нечётный элемент M">{${wordHTML(v)}, ${wordHTML(v)}}</span>`).join("");
+      html += `<div class="deg-row"><div class="d">степень ${d}<br><span style="font-weight:400">${ws.length} хор.${squares.length ? ` + ${squares.length} кв.` : ""}</span></div><div class="chips">${chips}</div></div>`;
+    }
+    html += `<p class="stat" style="margin-top:10px">Элементов $M$ степени не выше ${dmax}: <b>${total}</b>. Число хороших слов каждой степени совпадает с формулой Витта для свободной алгебры Ли на ${n + 1} образующих.</p>`;
+    setMath(out, html);
+  }
+  bindSeg(nSeg, () => { renderPar(); render(); });
+  bindSeg(dSeg, render);
+  renderPar(); render();
+
+  // exercise
+  const pool = goodWords([0, 1, 2], 3);
+  const all = [].concat(pool[1], pool[2], pool[3]);
+  let cur = null, answered = false;
+  function next() {
+    answered = false;
+    let u, v, tries = 0;
+    do {
+      if (Math.random() < 0.45) { const g = (Math.random() < 0.5 ? pool[2] : pool[3]); const w = g[Math.floor(Math.random() * g.length)]; u = w.u; v = w.v; }
+      else { u = all[Math.floor(Math.random() * all.length)]; v = all[Math.floor(Math.random() * all.length)]; }
+      tries++;
+    } while ((u.deg + v.deg > 4 || (cur && cur.u === u && cur.v === v)) && tries < 50);
+    cur = { u, v };
+    $("#hq-word").innerHTML = "{" + wordHTML(u) + ", " + wordHTML(v) + "}";
+    $("#hq-fb").textContent = "";
+  }
+  $$("[data-hq]").forEach(b => b.addEventListener("click", () => {
+    if (!cur || answered) return;
+    answered = true;
+    const r = goodReason(cur.u, cur.v), guess = b.dataset.hq === "1";
+    const fb = $("#hq-fb");
+    fb.innerHTML = (guess === r.ok ? '<span class="ok-mark">Верно.</span> ' : '<span class="bad-mark">Нет.</span> ') +
+      (r.ok ? "Хорошее: " : "Не хорошее: ") + esc(r.why) + (cur.u.deg > 1 ? ` (здесь u₂ = ${wordHTML(cur.u.v)}, v = ${wordHTML(cur.v)}).` : ".");
+  }));
+  $("#hq-next").addEventListener("click", next);
+  next();
+});
+
+// ---------- lab: expansion of {x1, x2 x3} ----------
+lab("lab-expand", ["#ex-par", "#ex-out"], function expandLab() {
+  const box = $("#ex-par"), out = $("#ex-out");
+  const par = [0, 0, 1, 0];   // index 1..3
+  box.innerHTML = [1, 2, 3].map(i => `<span class="small">$x_${i}$:</span><span class="seg" data-xp="${i}"><button aria-pressed="${par[i] === 0}" data-v="0">чётная</button><button aria-pressed="${par[i] === 1}" data-v="1">нечётная</button></span>`).join("");
+  $$("[data-xp]", box).forEach(seg => bindSeg(seg, v => { par[+seg.dataset.xp] = +v; render(); }));
+  const r = i => (par[i] + 1) % 2;
+  function coef(s, first) { return s > 0 ? (first ? "" : "+") : "-"; }
+  function render() {
+    const s1 = sgn(r(1) * par[2]), s2 = sgn(r(1));
+    const ca = -sgn(r(1) * r(2)), cb = -sgn(r(1) * r(3)), cc = -sgn(r(1));
+    const k1 = ca, k2 = s1 * cb, k3 = s2 * cc;
+    const html =
+      `<p class="small">$\\rp{x_1}=${r(1)},\\ \\rp{x_2}=${r(2)},\\ \\rp{x_3}=${r(3)}$.</p>` +
+      `<p><b>Шаг 1</b>, правило (5):</p>$$\\{x_1,x_2x_3\\}=\\{x_1,x_2\\}x_3${coef(s1)}x_2\\{x_1,x_3\\}${coef(s2)}\\{1,x_1\\}x_2x_3.$$` +
+      `<p><b>Шаг 2</b>, кососимметричность (3) приводит скобки к хорошим словам:</p>$$\\{x_1,x_2\\}=${coef(ca, true)}\\{x_2,x_1\\},\\quad \\{x_1,x_3\\}=${coef(cb, true)}\\{x_3,x_1\\},\\quad \\{1,x_1\\}=${coef(cc, true)}\\{x_1,1\\}.$$` +
+      `<p><b>Итог</b> — комбинация элементов $U$:</p>$$\\{x_1,x_2x_3\\}=${coef(k1, true)}\\{x_2,x_1\\}x_3${coef(k2)}x_2\\{x_3,x_1\\}${coef(k3)}\\{x_1,1\\}x_2x_3.$$` +
+      `<p class="small">Слева 4 буквы, в последнем слагаемом 5 — поэтому индукция по числу букв не работает.</p>`;
+    setMath(out, html);
+  }
+  typeset(box); render();
+});
+
+// ---------- lab: stepper for the coefficient n-1 ----------
+lab("lab-step", ["#step-out", "#step-n", "#step-prev", "#step-next"], function stepLab() {
+  const steps = [
+    "Начало: $\\{a,\\,b_1b_2b_3\\}$, где $a\\in\\Lh$. Хотим выразить через скобки $\\{a,b_j\\}$.",
+    "Правило Лейбница для $b_1\\cdot(b_2b_3)$: $$\\{a,b_1b_2b_3\\}=\\{a,b_1\\}b_2b_3\\pm b_1\\{a,b_2b_3\\}-\\{a,1\\}b_1b_2b_3.$$ Одна поправка уже появилась.",
+    "Ещё раз — для $b_2\\cdot b_3$ внутри второго слагаемого: $$\\{a,b_2b_3\\}=\\{a,b_2\\}b_3\\pm b_2\\{a,b_3\\}-\\{a,1\\}b_2b_3.$$",
+    "Собираем. Поправка из шага 2 стоит после $\\pm b_1$; переставляя $\\{a,1\\}$ через $b_1$, получаем тот же знак, и она становится второй копией $-\\{a,1\\}b_1b_2b_3$: $$\\{a,b_1b_2b_3\\}=\\{a,b_1\\}b_2b_3\\pm b_1\\{a,b_2\\}b_3\\pm b_1b_2\\{a,b_3\\}-2\\{a,1\\}b_1b_2b_3.$$",
+    "Итог: $n=3$ слагаемых «со всеми множителями» и $n-1=2$ копии поправки. Так как $-\\{a,1\\}=(-1)^{\\rp a}\\D(a)$, это ровно формула (8) при $m=1$: двойная сумма и член $(n-1)(-1)^{\\rp a}\\D(a)b$. С произведением слева то же самое даёт $-(m-1)a\\D(b)$, а «поправка к поправке» — $-(m-1)(n-1)a\\D(1)b$.",
+  ];
+  let i = 0;
+  const out = $("#step-out");
+  function render() {
+    setMath(out, `<p>${steps[i]}</p>`);
+    $("#step-n").textContent = `шаг ${i} из ${steps.length - 1}`;
+    $("#step-prev").disabled = i === 0; $("#step-next").disabled = i === steps.length - 1;
+  }
+  $("#step-prev").addEventListener("click", () => { if (i > 0) { i--; render(); } });
+  $("#step-next").addEventListener("click", () => { if (i < steps.length - 1) { i++; render(); } });
+  render();
+});
+
+// ---------- lab: basis of GenGer(n) ----------
+function blockHTML(b) { return "{" + b.slice().sort((x, y) => x - y).map(letterHTML).join(", ") + "}"; }
+lab("lab-basis", ["#gb-n", "#gb-out"], function basisLab() {
+  const seg = $("#gb-n"), out = $("#gb-out");
+  function render() {
+    const n = +segValue(seg);
+    const els = genGerBasis(n);
+    const groups = new Map();
+    els.forEach(e => {
+      const key = e.part.map(b => b.slice().sort((x, y) => x - y)).sort((x, y) => x[0] - y[0]).map(blockHTML).join(" ∪ ");
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(e.words.map(wordHTML).join(" · "));
+    });
+    let html = `<p class="stat">Всего <b>${els.length}</b> элементов, $n\\cdot n!=${n}\\cdot${fact(n)}=${n * fact(n)}$.</p>`;
+    groups.forEach((list, key) => {
+      html += `<div class="deg-row"><div class="d">${key}</div><div class="chips">${list.map(t => `<span class="chip word">${t}</span>`).join("")}</div></div>`;
+    });
+    setMath(out, html);
+  }
+  bindSeg(seg, render); render();
+});
+
+// ---------- lab: permutations and cycles ----------
+lab("lab-dim", ["#dm-n", "#dm-out", "#dm-table"], function dimLab() {
+  const seg = $("#dm-n"), out = $("#dm-out"), tbl = $("#dm-table");
+  function perms(arr) { if (arr.length <= 1) return [arr]; const r = []; arr.forEach((x, i) => perms(arr.slice(0, i).concat(arr.slice(i + 1))).forEach(p => r.push([x].concat(p)))); return r; }
+  function cycles(p) {
+    const seen = new Set(), cs = [];
+    for (let i = 0; i < p.length; i++) {
+      if (seen.has(i)) continue;
+      const c = []; let j = i;
+      while (!seen.has(j)) { seen.add(j); c.push(j); j = p[j]; }
+      cs.push(c);
+    }
+    return cs;
+  }
+  const cycHTML = c => "(" + c.map(letterHTML).join(" ") + ")";
+  function render() {
+    const n = +segValue(seg);
+    const all = perms([...Array(n + 1).keys()]);
+    const inc = [], exc = [];
+    all.forEach(p => { const cs = cycles(p); (p[0] === 0 ? exc : inc).push(cs.map(cycHTML).join("")); });
+    setMath(out, `<p class="stat">Перестановок $(n+1)!=${fact(n + 1)}$; с неподвижной $1$ — $n!=${fact(n)}$; остаётся <b>${inc.length}</b> $=n\\cdot n!$.</p>` +
+      `<div class="deg-row"><div class="d">считаются</div><div class="chips">${inc.map(t => `<span class="chip word">${t}</span>`).join("")}</div></div>` +
+      `<div class="deg-row"><div class="d">вычитаются: $1$ неподвижна</div><div class="chips">${exc.map(t => `<span class="chip word" style="opacity:.6">${t}</span>`).join("")}</div></div>`);
+  }
+  bindSeg(seg, render); render();
+  let rows = "";
+  for (let n = 1; n <= 7; n++) rows += `<tr><td class="num">${n}</td><td class="num">${fact(n + 1)}</td><td class="num">${fact(n)}</td><td class="num">${genGerCount(n)}</td><td class="num">${n * fact(n)}</td></tr>`;
+  setMath(tbl, `<thead><tr><th>$n$</th><th>$(n+1)!$</th><th>$n!$</th><th>$\\sum_\\pi\\prod(|B|-1)!$</th><th>$n\\cdot n!$</th></tr></thead><tbody>${rows}</tbody>`);
+});
+
+// ---------- flashcards and glossary ----------
+const cardsApi = { apply() {} };
+lab("fc-card", ["#fc-card", "#fc-list", "#fc-stat", "#fc-prev", "#fc-next", "#fc-shuffle"], function cards() {
+  const KEY = "gg-lecture-cards-v1";
+  if (!FLASHCARDS.length) return;
+  const marks = store.get(KEY, {});
+  const saveCard = (i, mark) => { if (sync.ref) save({ cards: { [i]: mark } }); else store.set(KEY, marks); };
+  let order = FLASHCARDS.map((_, i) => i), pos = 0, shown = false;
+  const card = $("#fc-card"), list = $("#fc-list");
+  function stat() {
+    // Marks of cards the text no longer has are not counted.
+    const know = Object.entries(marks).filter(([i, v]) => v === "know" && FLASHCARDS[i]).length;
+    $("#fc-stat").textContent = `Карточка ${pos + 1} из ${FLASHCARDS.length} · знаю: ${know}`;
+  }
+  function renderList() {
+    setMath(list, FLASHCARDS.map((c, i) => `<button data-fc="${i}"><span class="st ${marks[i] || ""}">${marks[i] === "know" ? "✓" : marks[i] === "again" ? "↻" : "·"}</span> ${c[0]}</button>`).join(""));
+  }
+  function render() {
+    const i = order[pos], c = FLASHCARDS[i];
+    setMath(card, `<div class="cq">${c[0]}</div>` + (shown
+      ? `<div class="ca">${c[1]}</div><div class="row" style="margin-top:12px"><button class="btn small" data-mark="again">Повторить</button><button class="btn small solid" data-mark="know">Знаю</button></div>`
+      : `<button class="btn small solid" id="fc-show">Показать ответ</button>`));
+    stat();
+  }
+  card.addEventListener("click", e => {
+    if (e.target.closest("#fc-show")) { shown = true; render(); return; }
+    const m = e.target.closest("[data-mark]");
+    if (m) { marks[order[pos]] = m.dataset.mark; saveCard(order[pos], m.dataset.mark); renderList(); pos = (pos + 1) % order.length; shown = false; render(); }
+  });
+  list.addEventListener("click", e => { const b = e.target.closest("[data-fc]"); if (!b) return; pos = order.indexOf(+b.dataset.fc); shown = false; render(); card.scrollIntoView({ block: "nearest" }); });
+  $("#fc-next").addEventListener("click", () => { pos = (pos + 1) % order.length; shown = false; render(); });
+  $("#fc-prev").addEventListener("click", () => { pos = (pos - 1 + order.length) % order.length; shown = false; render(); });
+  $("#fc-shuffle").addEventListener("click", () => {
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    pos = 0; shown = false; render();
+  });
+  cardsApi.apply = remote => {
+    const next = {};
+    Object.entries(remote || {}).forEach(([i, v]) => { if (v === "know" || v === "again") next[i] = v; });
+    if (JSON.stringify(next) === JSON.stringify(marks)) return;
+    Object.keys(marks).forEach(i => delete marks[i]);
+    Object.assign(marks, next);
+    renderList(); stat();
+  };
+  renderList(); render();
+});
+lab("glossary", ["#glossary"], () => setMath($("#glossary"), GLOSSARY.map(g => `<tr><td>${g[0]}</td><td>${esc(g[1])}</td></tr>`).join("")));
+
+// ---------- ask the lecturer (Claude via the `sample` capability) ----------
+let sample = null, chatMode = "ask", ctl = null, busy = false;
+const chatHistory = { ask: [], hall: [] };
+const drawer = $("#drawer"), msgs = $("#msgs");
+// Panel width: drag the left edge; remembered in this browser (a per-device convenience).
+const DRAWER_W_KEY = "gerst-drawer-w";
+let drawerW = 0;
+function setDrawerW(px, save) {
+  drawerW = Math.round(Math.max(360, Math.min(px, window.innerWidth * 0.9)));
+  document.documentElement.style.setProperty("--drawer-w", drawerW + "px");
+  if (save) { try { localStorage.setItem(DRAWER_W_KEY, String(drawerW)); } catch (e) { /* private window: just not remembered */ } }
+}
+try { const w = Number(localStorage.getItem(DRAWER_W_KEY)); if (w > 0) setDrawerW(w, false); } catch (e) { /* no storage */ }
+(function () {
+  const grip = $("#drawer-grip");
+  let keep = null;
+  const restore = () => {
+    if (!keep) return;
+    const shift = keep.el.getBoundingClientRect().top - keep.top;
+    if (Math.abs(shift) > 1) window.scrollTo({ top: window.scrollY + shift, behavior: "instant" });
+  };
+  grip.addEventListener("pointerdown", e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    grip.setPointerCapture(e.pointerId);
+    keep = readingPlace();
+    document.body.classList.add("drawer-resizing");
+  });
+  grip.addEventListener("pointermove", e => {
+    if (!grip.hasPointerCapture(e.pointerId)) return;
+    setDrawerW(window.innerWidth - e.clientX, false);
+    restore();
+  });
+  const end = e => {
+    if (!grip.hasPointerCapture(e.pointerId)) return;
+    grip.releasePointerCapture(e.pointerId);
+    document.body.classList.remove("drawer-resizing");
+    if (drawerW) setDrawerW(drawerW, true);
+    restore(); keep = null;
+  };
+  grip.addEventListener("pointerup", end);
+  grip.addEventListener("pointercancel", end);
+  grip.addEventListener("dblclick", () => {
+    keep = readingPlace();
+    const wide = drawer.getBoundingClientRect().width >= window.innerWidth * 0.6;
+    setDrawerW(wide ? Math.max(460, window.innerWidth * 0.5) : window.innerWidth * 0.75, true);
+    restore(); keep = null;
+  });
+})();
+// The block of the lecture at the top of the screen: the reading place to keep when the
+// panel opens or closes (the text reflows) and the place to remember across devices.
+const TOP = 90;
+function readingPlace() {
+  for (const m of MODULES) {
+    if (m.el.getBoundingClientRect().bottom <= TOP) continue;
+    const kids = m.el.children;
+    for (let k = 0; k < kids.length; k++) {
+      const r = kids[k].getBoundingClientRect();
+      if (r.bottom > TOP) return { m: m.id, k, el: kids[k], top: r.top };
+    }
+    return { m: m.id, k: 0, el: m.el, top: m.el.getBoundingClientRect().top };
+  }
+  return null;
+}
+function setDrawer(open) {
+  const keep = readingPlace();
+  drawer.hidden = !open;
+  document.body.classList.toggle("drawer-open", open);
+  if (keep) {
+    const shift = keep.el.getBoundingClientRect().top - keep.top;
+    if (Math.abs(shift) > 1) window.scrollTo({ top: window.scrollY + shift, behavior: "instant" });
+  }
+}
+function renderMD(text) {
+  const math = [];
+  let t = String(text).replace(/\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\$[^$\n]+?\$|\\\([\s\S]+?\\\)/g, m => { math.push(m); return "\u0000" + (math.length - 1) + "\u0000"; });
+  t = esc(t);
+  const inline = s => s.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<i>$2</i>").replace(/`([^`\n]+)`/g, "<code>$1</code>");
+  const blocks = t.split(/\n{2,}/).map(b => {
+    const lines = b.split("\n");
+    if (lines.every(l => /^\s*[-*•]\s+/.test(l))) return "<ul>" + lines.map(l => "<li>" + inline(l.replace(/^\s*[-*•]\s+/, "")) + "</li>").join("") + "</ul>";
+    if (lines.every(l => /^\s*\d+[.)]\s+/.test(l))) return "<ol>" + lines.map(l => "<li>" + inline(l.replace(/^\s*\d+[.)]\s+/, "")) + "</li>").join("") + "</ol>";
+    if (/^#{1,4}\s/.test(lines[0])) return "<p><b>" + inline(lines[0].replace(/^#{1,4}\s/, "")) + "</b>" + (lines.length > 1 ? "<br>" + lines.slice(1).map(inline).join("<br>") : "") + "</p>";
+    return "<p>" + lines.map(inline).join("<br>") + "</p>";
+  });
+  return blocks.join("").replace(/\u0000(\d+)\u0000/g, (_, i) => esc(math[+i]));
+}
+function addMsg(who, text, cls) {
+  const d = document.createElement("div");
+  d.className = "msg " + (cls || "");
+  d.innerHTML = `<span class="w">${esc(who)}</span><div class="body"></div>`;
+  const body = d.querySelector(".body");
+  if (text) setMath(body, cls === "me" ? "<p>" + esc(text).split("\n").map(l => l.startsWith("&gt; ") ? '<span class="q">' + l.slice(5) + "</span>" : l).join("<br>").replace(/<br><span/g, "<span") + "</p>" : renderMD(text));
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+  return body;
+}
+function renderChat() {
+  msgs.innerHTML = "";
+  const h = chatHistory[chatMode];
+  if (!h.length) {
+    const intro = chatMode === "ask"
+      ? "Спрашивай о чём угодно по статье и по курсу: определения, шаги доказательства, «а что если». Я вижу, какой модуль ты сейчас читаешь."
+      : "Я — слушатель на семинаре. Нажми «Начать репетицию» или напиши «Задай вопрос», и я спрошу тебя по статье, а потом разберу твой ответ.";
+    addMsg(chatMode === "ask" ? "Лектор" : "Зал", intro);
+  }
+  h.forEach(m => addMsg(m.role === "user" ? "Ты" : chatMode === "ask" ? "Лектор" : "Зал", m.shown || m.content, m.role === "user" ? "me" : ""));
+  renderSuggest();
+}
+function renderSuggest() {
+  const box = $("#suggest"); if (!box) return;
+  const list = chatMode === "hall" ? (chatHistory.hall.length ? [] : ["Задай первый вопрос"]) : (SUGGEST[currentModule.id] || []);
+  box.innerHTML = list.map(s => `<button type="button">${esc(s)}</button>`).join("");
+}
+$("#suggest").addEventListener("click", e => { const b = e.target.closest("button"); if (b) send(b.textContent); });
+function openDrawer(mode) {
+  if (mode) { chatMode = mode; $$("#chat-mode button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === mode ? "true" : "false")); }
+  $("#drawer-title").textContent = chatMode === "ask" ? "Спросить лектора" : "Вопросы из зала";
+  setDrawer(true); renderChat(); $("#chat-in").focus();
+}
+bindSeg($("#chat-mode"), v => { if (busy) return; chatMode = v; openDrawer(); });
+$("#drawer-close").addEventListener("click", () => setDrawer(false));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hidden) setDrawer(false); });
+$("#ask-fab").addEventListener("click", () => openDrawer("ask"));
+let askQuote = null;
+function showQuote() {
+  let q = $("#quote-chip");
+  if (!q) { q = document.createElement("div"); q.id = "quote-chip"; q.className = "quote-chip"; $("#composer").prepend(q); }
+  if (!askQuote) { q.hidden = true; $("#chat-in").placeholder = "Например: почему в формуле (8) коэффициент n−1?"; return; }
+  q.hidden = false;
+  q.innerHTML = '<span>Про это место:</span><span class="qc-t"></span><button type="button" class="x" aria-label="Убрать">×</button>';
+  setMath(q.querySelector(".qc-t"), esc(askQuote.text));
+  q.querySelector(".x").addEventListener("click", () => { askQuote = null; showQuote(); });
+  $("#chat-in").placeholder = "Что именно объяснить? Можно оставить пустым";
+}
+document.addEventListener("pk-ask", e => {
+  if (!sample) { alert("Лектор недоступен: страница открыта не в Claude."); return; }
+  askQuote = e.detail; openDrawer("ask"); showQuote(); $("#chat-in").focus();
+});
+const showEl = (sel, on) => { const el = $(sel); if (el) el.hidden = !on; };
+if ($("#rehearse-btn")) $("#rehearse-btn").addEventListener("click", () => { openDrawer("hall"); if (!chatHistory.hall.length) send("Начнём. Задай первый вопрос."); });
+$("#chat-clear").addEventListener("click", () => { if (busy) return; chatHistory[chatMode] = []; $("#chat-err").textContent = ""; renderChat(); });
+$("#chat-stop").addEventListener("click", () => { if (ctl) ctl.abort(); });
+$("#composer").addEventListener("submit", e => { e.preventDefault(); const v = $("#chat-in").value.trim(); if (v || askQuote) { $("#chat-in").value = ""; send(v || "Объясни это место."); } });
+$("#chat-in").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $("#composer").requestSubmit(); } });
+const ERR = {
+  not_granted: "Доступ к Claude для этой страницы не разрешён — вопросы лектору недоступны.",
+  sampling_disabled: "Claude недоступен для этого аккаунта.",
+  rate_limited: "Слишком много запросов подряд. Подожди немного и спроси ещё раз.",
+  session_expired: "Сессия истекла — войди в Claude заново.",
+  prompt_too_large: "Разговор стал слишком длинным. Нажми «Очистить» и задай вопрос заново.",
+  refused: "Claude отказался отвечать на такую формулировку. Попробуй переспросить иначе.",
+  empty_completion: "Ответ пустой. Попробуй сформулировать вопрос проще.",
+};
+async function send(text) {
+  if (busy || !sample) return;
+  const mode = chatMode;
+  // The place she pointed at (see "pk-ask" below) goes to Claude in full, with its TeX;
+  // she sees her question and the fragment as a quote.
+  const q = askQuote; askQuote = null; showQuote();
+  const full = q ? text + "\n\n" + window.PICKS.quoteFor(q) : text;
+  const shown = q ? text + "\n> " + q.text : text;
+  chatHistory[mode].push({ role: "user", content: full, shown });
+  addMsg("Ты", shown, "me");
+  $("#suggest").innerHTML = "";
+  const body = addMsg(mode === "ask" ? "Лектор" : "Зал", "", "pending");
+  body.textContent = "Думаю…";
+  const turns = chatHistory[mode].slice(-16).map(m => ({ role: m.role, content: m.content }));
+  const rules = (mode === "ask" ? RULES_ASK : RULES_HALL) + "\n\n" + REFERENCE +
+    `\n\nСтудентка сейчас читает модуль курса «${currentModule.title}».`;
+  busy = true; ctl = new AbortController();
+  $("#chat-send").disabled = true; $("#chat-stop").hidden = false; $("#chat-err").textContent = "";
+  try {
+    const { text: answer, truncated } = await sample([{ role: "user", content: rules }].concat(turns), {
+      cache: false, signal: ctl.signal,
+      onText: ({ text: t }) => { body.textContent = t; msgs.scrollTop = msgs.scrollHeight; },
+    });
+    chatHistory[mode].push({ role: "assistant", content: answer });
+    body.parentElement.classList.remove("pending");
+    setMath(body, renderMD(answer) + (truncated ? '<p class="small">Ответ оборвался — напиши «продолжи», и лектор допишет с того же места.</p>' : ""));
+  } catch (e) {
+    body.parentElement.classList.remove("pending");
+    if (e && e.text) { chatHistory[mode].push({ role: "assistant", content: e.text }); setMath(body, renderMD(e.text)); }
+    else { body.parentElement.remove(); chatHistory[mode].pop(); }
+    if (!e || e.code !== "cancelled") $("#chat-err").textContent = (e && ERR[e.code]) || "Не получилось получить ответ. Попробуй ещё раз.";
+    if (e && ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e.code)) { sample = null; showEl("#ask-fab", false); showEl("#rehearse-btn", false); showEl("#rehearse-na", true); }
+  } finally {
+    busy = false; ctl = null;
+    $("#chat-send").disabled = false; $("#chat-stop").hidden = true;
+    msgs.scrollTop = msgs.scrollHeight; renderSuggest();
+  }
+}
+if (window.claude && typeof window.claude.use === "function") {
+  window.claude.use("sample").then(s => {
+    if (!s) return;
+    sample = s;
+    showEl("#ask-fab", true); showEl("#rehearse-btn", true); showEl("#rehearse-na", false);
+  }).catch(() => { /* unavailable: the page works without it */ });
+}
+
+// ---------- progress on claude.ai: the same on every device ----------
+let userMoved = false, lastPlace = "", placeTimer = 0, placeReady = false;
+["wheel", "touchmove", "keydown", "mousedown"].forEach(t => window.addEventListener(t, () => { userMoved = true; }, { passive: true }));
+function afterMath(fn) {
+  let n = 0;
+  (function wait() {
+    const MJ = window.MathJax;
+    if (MJ && MJ.startup && MJ.startup.promise) MJ.startup.promise.then(() => setTimeout(fn, 60), fn);
+    else if (n++ < 80) setTimeout(wait, 100);
+    else fn();
+  })();
+}
+function showResumeToast() {
+  const t = document.createElement("div");
+  t.className = "resume-toast"; t.setAttribute("role", "status");
+  t.innerHTML = '<span>Ты остановилась здесь</span><button class="btn small" type="button">В начало</button><button class="x" type="button" aria-label="Закрыть">×</button>';
+  t.querySelector(".btn").addEventListener("click", () => { window.scrollTo({ top: 0, behavior: "instant" }); t.remove(); });
+  t.querySelector(".x").addEventListener("click", () => t.remove());
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 9000);
+}
+function restorePlace(place) {
+  if (!place || !place.m || location.hash) { placeReady = true; return; }
+  afterMath(() => {
+    placeReady = true;
+    if (userMoved || window.scrollY > 200) return;
+    const sec = document.getElementById(place.m), el = sec && sec.children[place.k];
+    if (!el) return;
+    lastPlace = place.m + ":" + place.k;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - TOP + 6, behavior: "instant" });
+    showResumeToast();
+  });
+}
+window.addEventListener("scroll", () => {
+  if (!sync.ref || !placeReady) return;
+  clearTimeout(placeTimer);
+  placeTimer = setTimeout(() => {
+    const p = readingPlace(); if (!p) return;
+    const key = p.m + ":" + p.k;
+    if (key === lastPlace) return;
+    lastPlace = key;
+    save({ place: { m: p.m, k: p.k } });
+  }, 1500);
+}, { passive: true });
+function applyProgress(d) {
+  const nd = new Set(Object.keys(d.done || {}).filter(k => d.done[k] === true));
+  if (nd.size !== done.size || [...nd].some(k => !done.has(k))) { done = nd; renderProgress(); }
+  cardsApi.apply(d.cards);
+  Object.entries(quizApi).forEach(([id, q]) => q.apply((d.quiz || {})[id]));
+}
+// What this browser kept before: handed over once, only what the record does not mention yet.
+function handOver(d) {
+  const patch = {}, oldDone = store.get(PROGRESS_KEY, null), oldCards = store.get("gg-lecture-cards-v1", null);
+  if (Array.isArray(oldDone)) oldDone.forEach(id => { if (!(id in (d.done || {}))) (patch.done = patch.done || {})[id] = true; });
+  if (oldCards && typeof oldCards === "object") Object.entries(oldCards).forEach(([i, v]) => { if (!(i in (d.cards || {})) && (v === "know" || v === "again")) (patch.cards = patch.cards || {})[i] = v; });
+  try { localStorage.removeItem(PROGRESS_KEY); localStorage.removeItem("gg-lecture-cards-v1"); } catch (e) { /* nothing to remove */ }
+  if (!Object.keys(patch).length) return d;
+  save(patch);
+  return { ...d, done: { ...(d.done || {}), ...(patch.done || {}) }, cards: { ...(d.cards || {}), ...(patch.cards || {}) } };
+}
+if (window.claude && typeof window.claude.use === "function") {
+  Promise.all([window.claude.use("db"), window.claude.use("user")]).then(async ([db, user]) => {
+    const uid = db && user ? await user.id() : null;
+    if (!db || !uid) { placeReady = true; return; }  // signed out or not granted: the browser keeps the marks
+    sync.ref = db.doc("data/users/" + uid + "/progress");
+    let first = true;
+    sync.ref.onSnapshot(snap => {
+      sync.exists = snap.exists;
+      let d = snap.exists ? snap.data() : {};
+      if (first) { first = false; d = handOver(d); applyProgress(d); restorePlace(d.place); return; }
+      applyProgress(d);
+    }, e => { console.warn("progress sync stopped", e); });
+  }).catch(() => { placeReady = true; });
+}
+
+</script>
+<script async id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<script>window.PICKS_CONFIG = { project: "gerstenhaber", title: /*@@TITLE_JS@@*/"", root: ".main", modules: "section.module",
+  reference: typeof REFERENCE === "string" ? REFERENCE : "", push: "drawer-open", closeOther: "#drawer-close", askButton: true, site: /*@@SITE_JS@@*/"" };</script>
+<script>
+/*@@PICKS_JS@@*/
+</script>
