@@ -22,7 +22,8 @@ def add_user_cards(payload: UserCardsIn, db: Session = Depends(get_db)) -> UserC
     choice: the course's own deck ("Тренажёр по теме", made for a project that
     has none yet), "Мой набор" (bookmarked, in no deck), any existing deck, or a
     theme of her own under a new name. A card that came before to the same
-    place (the same link opened twice) is not added again."""
+    place (the same link opened twice) is not added again; one she had
+    deleted there is brought back instead (and counts as added)."""
     project_title = None
     if payload.project:
         project_title, _ = _read(_project_dir(payload.project))
@@ -66,7 +67,9 @@ def add_user_cards(payload: UserCardsIn, db: Session = Depends(get_db)) -> UserC
         topic, topic_order = project_title or (talk.title if talk else "Мои карточки"), 1000
 
     talk_id = talk.id if talk else None
-    seen = {(e.title_ru, e.statement_ru) for e in db.query(Entity).filter(Entity.made_by_user.is_(True), Entity.talk_id.is_(talk_id) if talk_id is None else Entity.talk_id == talk_id)}
+    mine_here = db.query(Entity).filter(Entity.made_by_user.is_(True), Entity.talk_id.is_(talk_id) if talk_id is None else Entity.talk_id == talk_id).all()
+    seen = {(e.title_ru, e.statement_ru) for e in mine_here if e.deleted_at is None}
+    deleted = {(e.title_ru, e.statement_ru): e for e in mine_here if e.deleted_at is not None}
     prefix = f"my-{payload.project or 'card'}-"
     taken = {s for (s,) in db.query(Entity.slug).filter(Entity.slug.like(prefix + "%")).all()}
     n = 1 + max((int(s[len(prefix):]) for s in taken if s[len(prefix):].isdigit()), default=0)
@@ -80,6 +83,17 @@ def add_user_cards(payload: UserCardsIn, db: Session = Depends(get_db)) -> UserC
             already += 1
             continue
         seen.add((title_ru, card.statement_ru))
+        back = deleted.get((title_ru, card.statement_ru))
+        if back is not None:
+            back.deleted_at = None
+            if target.kind == "bookmarks":
+                review = db.query(ReviewCard).filter(ReviewCard.entity_id == back.id).one_or_none()
+                if review is None:
+                    db.add(ReviewCard(entity_id=back.id, bookmarked=True))
+                else:
+                    review.bookmarked = True
+            added.append(back.slug)
+            continue
         entity = Entity(
             slug=f"{prefix}{n}", kind=EntityKind(card.kind), talk_id=talk_id,
             title_ru=title_ru, title_en=(card.title_en or "").replace("$", "").strip() or None,

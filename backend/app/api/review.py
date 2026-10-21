@@ -54,7 +54,7 @@ def due_cards(
     if mode == "foundational":
         entities = (
             db.query(Entity)
-            .filter(Entity.is_foundational.is_(True))
+            .filter(Entity.is_foundational.is_(True), Entity.deleted_at.is_(None))
             .order_by(Entity.topic_order, Entity.source_page.asc().nulls_first(), Entity.id)
             .all()
         )
@@ -69,7 +69,7 @@ def due_cards(
         group_ids = [t.id for t in paper_group(talk, db.query(Talk).all())]
         entities = (
             db.query(Entity)
-            .filter(Entity.talk_id.in_(group_ids))
+            .filter(Entity.talk_id.in_(group_ids), Entity.deleted_at.is_(None))
             # Theorems are for the board, not drilled -- except a card she
             # made herself, which she picked to learn, whatever its kind.
             .filter(or_(Entity.kind.in_([EntityKind.definition, EntityKind.property]), Entity.made_by_user.is_(True)))
@@ -84,7 +84,7 @@ def due_cards(
         entities = (
             db.query(Entity)
             .join(ReviewCard, ReviewCard.entity_id == Entity.id)
-            .filter(ReviewCard.bookmarked.is_(True))
+            .filter(ReviewCard.bookmarked.is_(True), Entity.deleted_at.is_(None))
             .order_by(Entity.topic_order, Entity.source_page.asc().nulls_first(), Entity.id)
             .all()
         )
@@ -93,6 +93,7 @@ def due_cards(
     rows = (
         db.query(ReviewCard, Entity)
         .join(Entity, Entity.id == ReviewCard.entity_id)
+        .filter(Entity.deleted_at.is_(None))
         .filter(ReviewCard.due_at <= now)
         .filter((ReviewCard.snoozed_until.is_(None)) | (ReviewCard.snoozed_until <= now))
         .order_by(ReviewCard.due_at)
@@ -111,12 +112,20 @@ def _deck(deck: str) -> str:
     return deck
 
 
+def _deleted(db: Session) -> set[str]:
+    """Slugs of the cards she deleted. A deck's passed cards are shown
+    without them -- a deleted card is in no deck -- but they stay in the
+    stored list: a card brought back is still passed in its round."""
+    return {s for (s,) in db.query(Entity.slug).filter(Entity.deleted_at.isnot(None)).all()}
+
+
 @router.get("/decks", response_model=dict[str, list[str]])
 def deck_progress(db: Session = Depends(get_db)) -> dict[str, list[str]]:
     """For every fixed deck that has been started: the cards already passed
     in its current round. Stored here, not in the browser, so that every
     device continues from the same card."""
-    return {row.deck: list(row.passed or []) for row in db.query(DeckProgress).all()}
+    gone = _deleted(db)
+    return {row.deck: [s for s in row.passed or [] if s not in gone] for row in db.query(DeckProgress).all()}
 
 
 @router.post("/decks/{deck}/passed", response_model=list[str])
@@ -125,7 +134,7 @@ def deck_passed(deck: str, body: DeckPassedIn, db: Session = Depends(get_db)) ->
     open on another device knows an older state, and an answer given there
     must not wipe out what was passed since."""
     deck = _deck(deck)
-    known = {s for (s,) in db.query(Entity.slug).filter(Entity.slug.in_(body.slugs[:1000])).all()}
+    known = {s for (s,) in db.query(Entity.slug).filter(Entity.slug.in_(body.slugs[:1000]), Entity.deleted_at.is_(None)).all()}
     row = db.get(DeckProgress, deck)
     if row is None:
         row = DeckProgress(deck=deck, passed=[])
@@ -137,7 +146,8 @@ def deck_passed(deck: str, body: DeckPassedIn, db: Session = Depends(get_db)) ->
     row.passed = passed  # a new list: an in-place append would not be seen as a change
     row.updated_at = datetime.utcnow()
     db.commit()
-    return passed
+    gone = _deleted(db)
+    return [s for s in passed if s not in gone]
 
 
 @router.delete("/decks/{deck}", response_model=list[str])
@@ -156,7 +166,7 @@ def bookmarks(db: Session = Depends(get_db)) -> list[str]:
     rows = (
         db.query(Entity.slug)
         .join(ReviewCard, ReviewCard.entity_id == Entity.id)
-        .filter(ReviewCard.bookmarked.is_(True))
+        .filter(ReviewCard.bookmarked.is_(True), Entity.deleted_at.is_(None))
         .order_by(Entity.topic_order, Entity.title_ru)
         .all()
     )

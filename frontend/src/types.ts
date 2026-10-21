@@ -12,7 +12,7 @@ export interface EntitySummary {
   source_citation: string | null;
   source_page: number | null;
   episode_code: string | null;
-  /** A card she made herself in a course on claude.ai (can be deleted). */
+  /** A card she made herself in a course on claude.ai. */
   made_by_user?: boolean;
 }
 
@@ -44,8 +44,11 @@ export interface EntityDetail {
   /** In the owner's own study set (the violet bookmark). Absent on the
    *  synthetic "brief" card, which is not an entity. */
   bookmarked?: boolean;
-  /** A card she made herself in a course on claude.ai (can be deleted). */
+  /** A card she made herself in a course on claude.ai. */
   made_by_user?: boolean;
+  /** She deleted it: hidden everywhere, and can be brought back
+   *  (api.undeleteEntity). Absent on the synthetic "brief" card. */
+  deleted?: boolean;
   /** Fields of a card from the content JSON she rewrote on the site: their
    *  original can be restored. Absent on the synthetic "brief" card. */
   edited?: EditableField[];
@@ -59,6 +62,17 @@ export interface EntityDetail {
   };
   uses: LinkRef[];
   used_by: LinkRef[];
+}
+
+/** A card she deleted, as the trainer's list "Удалённые" shows it. */
+export interface DeletedCard {
+  slug: string;
+  kind: Kind;
+  title_ru: string | null;
+  /** The deck it was in (a paper, a theme of hers, "Мой набор"); null for a general notion. */
+  deck: string | null;
+  /** ISO date-time, UTC. */
+  deleted_at: string;
 }
 
 /** The card text she can change on the site (CardEditor). */

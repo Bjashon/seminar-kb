@@ -52,8 +52,11 @@ class EntityDetailOut(BaseModel):
     links: list[ExternalLinkOut] = []
     # In the owner's own study set ("Мой набор"): the violet bookmark.
     bookmarked: bool = False
-    # She made it herself (see Entity.made_by_user): it can be deleted.
+    # She made it herself (see Entity.made_by_user).
     made_by_user: bool = False
+    # She deleted it (see Entity.deleted_at): it is hidden everywhere and
+    # can be brought back (POST /entities/<slug>/undelete).
+    deleted: bool = False
     # Fields of a card from the JSON she rewrote on the site (title_ru, ...,
     # proof_en): their original can be restored. Empty for her own cards.
     edited: list[str] = []
@@ -61,6 +64,17 @@ class EntityDetailOut(BaseModel):
     source: SourceOut
     uses: list[LinkOut]
     used_by: list[LinkOut]
+
+
+class DeletedCardOut(BaseModel):
+    # A card she deleted, in the trainer's list "Удалённые".
+    slug: str
+    kind: str
+    title_ru: str | None
+    # The deck it belongs to, as the trainer names it (a paper, a theme of
+    # hers, "Мой набор"), or None for a general notion in no deck.
+    deck: str | None
+    deleted_at: datetime
 
 
 class EntityEditIn(BaseModel):

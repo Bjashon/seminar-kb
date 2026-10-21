@@ -82,8 +82,8 @@ class Entity(Base):
     is_foundational: Mapped[bool] = mapped_column(default=False)
     # A card the owner made herself -- picked in a course on claude.ai and
     # written there by Claude -- not one extracted into extracted/*.json:
-    # load_entities never touches it, the trainer drills it whatever its kind,
-    # and it can be deleted from the trainer.
+    # load_entities never touches it, and the trainer drills it whatever its
+    # kind.
     made_by_user: Mapped[bool] = mapped_column(default=False, server_default=sql_false())
     # Her own wording of a card from extracted/*.json: each field she changed
     # on the site (one of EDITABLE_FIELDS) mapped to the text the JSON has
@@ -91,6 +91,15 @@ class Entity(Base):
     # her text, and she can restore the original. None for a card she never
     # edited, and for her own cards (load_entities doesn't touch them).
     edited_fields: Mapped[dict | None] = mapped_column(JSON(none_as_null=True), nullable=True)
+    # When she deleted the card on the site (DELETE /entities/<slug>); None
+    # for a card that is shown. Deleting only hides the card -- from every
+    # list, search, board and trainer deck -- and keeps the row, its review
+    # state and its links, so that it can be brought back ("Удалённые" in the
+    # trainer). load_entities never clears it: a card from extracted/*.json
+    # stays deleted after a deploy. To drop a card from the content for good,
+    # take it out of the JSON. Every query that lists cards filters on
+    # deleted_at IS NULL.
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     talk: Mapped["Talk"] = relationship(back_populates="entities")
 

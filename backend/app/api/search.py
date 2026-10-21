@@ -15,7 +15,7 @@ def search(q: str = Query(..., min_length=1), db: Session = Depends(get_db)) -> 
     # while working fine on Postgres. Python's str.lower() is Unicode-aware
     # and the corpus is small, so this stays correct on both engines.
     needle = q.strip().lower()
-    all_entities = db.query(Entity).order_by(Entity.topic_order, Entity.title_ru).all()
+    all_entities = db.query(Entity).filter(Entity.deleted_at.is_(None)).order_by(Entity.topic_order, Entity.title_ru).all()
 
     def matches(e: Entity) -> bool:
         haystacks = [e.title_ru, e.title_en, e.statement_ru, e.statement_en]
@@ -27,7 +27,12 @@ def search(q: str = Query(..., min_length=1), db: Session = Depends(get_db)) -> 
     db.commit()
 
     return [
+        # All the fields GET /entities gives: without them every search
+        # that found something failed (500).
         EntitySummaryOut(slug=e.slug, kind=e.kind.value, title_ru=e.title_ru, title_en=e.title_en,
-                          topic=e.topic, topic_order=e.topic_order)
+                          topic=e.topic, topic_order=e.topic_order,
+                          source_citation=e.source_citation, source_page=e.source_page,
+                          episode_code=e.talk.episode_code if e.talk else None,
+                          made_by_user=e.made_by_user)
         for e in results
     ]

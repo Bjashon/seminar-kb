@@ -15,7 +15,8 @@ regardless of file order:
 Text the owner changed on the site (Entity.edited_fields) stays hers: for
 those fields the JSON's version only refreshes edited_fields, so that she can
 still restore the original. Cards she made herself aren't in the JSON and
-are never touched.
+are never touched. A card she deleted on the site (Entity.deleted_at) is
+updated like any other but stays deleted: nothing here clears deleted_at.
 """
 
 import json
@@ -60,6 +61,7 @@ def main() -> None:
 
         created, updated = 0, 0
         kept_hers: list[str] = []  # slugs
+        kept_deleted: list[str] = []  # slugs
         depends_on_map: dict[str, list[str]] = {}  # slug -> [depended-on names]
 
         for path, payload in all_payloads:
@@ -124,6 +126,8 @@ def main() -> None:
                 entity.edited_fields = edited or None
                 if edited:
                     kept_hers.append(slug)
+                if entity.deleted_at is not None:
+                    kept_deleted.append(slug)
                 entity.aliases = item.get("aliases", [])
                 entity.links = item.get("links", [])
                 entity.topic = item.get("topic")
@@ -189,6 +193,10 @@ def main() -> None:
             # A fix to these cards in the JSON won't show on the site for the
             # fields she rewrote (it waits in edited_fields until she restores).
             print(f"Kept the owner's own text (edited on the site) on {len(kept_hers)} entities: {', '.join(kept_hers)}")
+        if kept_deleted:
+            # Hidden on the site until she brings them back ("Удалённые" in
+            # the trainer); to drop one for good, delete it from the JSON.
+            print(f"Kept deleted (deleted on the site, still hidden) {len(kept_deleted)} entities: {', '.join(kept_deleted)}")
         if unresolved:
             print(f"Unresolved dependencies ({len(unresolved)}):")
             for slug, name in unresolved:

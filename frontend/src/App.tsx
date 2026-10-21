@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Board, CanvasEdge, CanvasNode, EntityDetail, EntitySummary, Lang } from "./types";
 import { api } from "./api";
 import { Canvas, type FocusRequest } from "./Canvas";
 import { partLabel } from "./dates";
 import { IndexPage } from "./IndexPage";
-import { Trainer } from "./Trainer";
+import { Trainer, type Deletion } from "./Trainer";
 import { ProjectsPage } from "./ProjectsPage";
 import { ImportCards } from "./ImportCards";
 import { SourcePanel } from "./SourcePanel";
@@ -182,9 +182,34 @@ export default function App() {
     apply(on);
     api.bookmark(slug, on).then((card) => apply(card.bookmarked)).catch(() => apply(!on));
   }, []);
-  // A card she made herself was deleted (from the trainer): forget it everywhere.
-  const forgetEntity = useCallback(
-    (slug: string) => {
+  // Deleting a card (any card, from the board or the trainer) only hides it
+  // on the server. The last one deleted can be brought back from the note at
+  // the bottom for a few seconds -- to the board too, if it was open there --
+  // and any one later from the trainer's "Удалённые". The trainer hears of
+  // every deletion and return (`deletion`): it takes the card out of the deck
+  // on screen and puts it back.
+  const [deletion, setDeletion] = useState<Deletion | null>(null);
+  const [undo, setUndo] = useState<{ slug: string; node?: CanvasNode; edges: CanvasEdge[] } | null>(null);
+  const nodesRef = useRef(nodes);
+  nodesRef.current = nodes;
+  const edgesRef = useRef(edges);
+  edgesRef.current = edges;
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
+  const deleteCard = useCallback(
+    async (slug: string, title: string) => {
+      if (!window.confirm(`Удалить карточку «${title}»? Её можно будет вернуть.`)) return;
+      try {
+        await api.deleteEntity(slug);
+      } catch {
+        window.alert("Не получилось удалить карточку: нет связи с сервером. Попробуй ещё раз.");
+        return;
+      }
+      setUndo({
+        slug,
+        node: nodesRef.current.find((n) => n.slug === slug),
+        edges: edgesRef.current.filter((e) => e.from === slug || e.to === slug),
+      });
       setEntities((prev) => prev.filter((e) => e.slug !== slug));
       setDetails((prev) => {
         const rest = { ...prev };
@@ -192,9 +217,42 @@ export default function App() {
         return rest;
       });
       closeNode(slug);
+      setDeletion({ slug, deleted: true, seq: Date.now() });
     },
     [closeNode]
   );
+  // Brought back (from the note, or from "Удалённые"): in the lists again,
+  // and its terms are links again in the other cards' texts. A note still
+  // offering to bring it back has nothing left to do.
+  const restored = useCallback(
+    (d: EntityDetail) => {
+      setUndo((u) => (u?.slug === d.slug ? null : u));
+      setDetails((prev) => ({ ...prev, [d.slug]: d }));
+      reloadEntities();
+      setDeletion({ slug: d.slug, deleted: false, seq: Date.now() });
+    },
+    [reloadEntities]
+  );
+  const undoDelete = useCallback(() => {
+    if (!undo) return;
+    const { slug, node, edges: nodeEdges } = undo;
+    setUndo(null);
+    api
+      .undeleteEntity(slug)
+      .then((d) => {
+        restored(d);
+        if (!node) return;
+        setNodes((prev) => (prev.some((n) => n.slug === slug) ? prev : [...prev, node]));
+        setEdges((prev) => [...prev, ...nodeEdges.filter((e) => !prev.some((p) => p.from === e.from && p.to === e.to))]);
+        if (modeRef.current === "reader") setFocus({ slug, n: Date.now() });
+      })
+      .catch(() => window.alert("Не получилось вернуть карточку. Она есть в тренажёре, в списке «Удалённые»."));
+  }, [undo, restored]);
+  useEffect(() => {
+    if (!undo) return;
+    const t = setTimeout(() => setUndo(null), 8000);
+    return () => clearTimeout(t);
+  }, [undo]);
   // She rewrote a card on the site (or brought its original back): the new
   // text everywhere at once, and the titles anew -- texts link the terms
   // they mention by the cards' titles.
@@ -274,6 +332,7 @@ export default function App() {
               onGoto={gotoFromCard}
               onOpenSource={openSource}
               onEdited={applyEdit}
+              onDelete={deleteCard}
             />
           </div>
           <div className="main-pane" hidden={mode !== "index"}>
@@ -290,7 +349,9 @@ export default function App() {
                 onSetBookmark={setBookmark}
                 request={trainerRequest}
                 active={mode === "trainer"}
-                onDeleted={forgetEntity}
+                onDelete={deleteCard}
+                onRestored={restored}
+                deletion={deletion}
                 onEdited={applyEdit}
               />
             </div>
@@ -309,6 +370,12 @@ export default function App() {
       </div>
       {importing && (
         <ImportCards code={importing.code} entities={entities} onClose={() => setImporting(null)} onAdded={onImported} />
+      )}
+      {undo && (
+        <div className="undo-toast" role="status">
+          Карточка удалена ·{" "}
+          <button onClick={undoDelete}>Вернуть</button>
+        </div>
       )}
     </>
   );

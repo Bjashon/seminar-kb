@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
-from app.db.models import Talk
+from app.db.models import Entity, Talk
 from app.db.session import get_db
 from app.schemas import ProjectFileGroupOut, ProjectFileOut, ProjectOut, ProjectSummaryOut
 
@@ -125,8 +125,11 @@ def get_project(slug: str, db: Session = Depends(get_db)) -> ProjectOut:
     title, body = _read(d)
     # A project's own cards (its definitions and results, drilled and laid
     # out like a paper's) hang off a pseudo-talk with the code proj_<slug>,
-    # see docs/adding-talks.md ("Проекты").
+    # see docs/adding-talks.md ("Проекты"). Once she has deleted all of
+    # them, there is no trainer or board to offer.
     talk = db.query(Talk).filter(Talk.episode_code == f"proj_{slug}").first()
+    if talk is not None and not db.query(Entity.id).filter(Entity.talk_id == talk.id, Entity.deleted_at.is_(None)).first():
+        talk = None
     # The project's course is not shown on the site: it lives on claude.ai,
     # with the lecturer, and the page only links to it. lecture.json gives
     # the link ("claude_url") and what it says ("label").

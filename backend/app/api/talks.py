@@ -28,16 +28,22 @@ def _display_title(raw: str, strip_part: bool) -> str:
     return t.strip() or raw
 
 
+def deck_name(talk: Talk, all_talks: list[Talk]) -> str:
+    """The talk's deck as the trainer's list names it (see list_talks)."""
+    return _display_title(talk.title, strip_part=len(paper_group(talk, all_talks)) > 1)
+
+
 @router.get("", response_model=list[TalkSummaryOut])
 def list_talks(db: Session = Depends(get_db)) -> list[TalkSummaryOut]:
     """Talks with at least one definition/property entity (or a card she made
     herself, of any kind) -- the pool the per-article trainer mode can offer,
-    since that's all it drills."""
+    since that's all it drills. Deleted cards don't count."""
     rows = (
         db.query(Talk, Season.number, func.count(Entity.id))
         .join(Entity, Entity.talk_id == Talk.id)
         .outerjoin(Season, Season.id == Talk.season_id)
         .filter(Talk.episode_code.isnot(None))
+        .filter(Entity.deleted_at.is_(None))
         .filter(or_(Entity.kind.in_([EntityKind.definition, EntityKind.property]), Entity.made_by_user.is_(True)))
         .group_by(Talk.id, Season.number)
         .order_by(Talk.episode_code, Talk.date)
@@ -68,7 +74,7 @@ def list_talks(db: Session = Depends(get_db)) -> list[TalkSummaryOut]:
 @router.get("/{talk_id}/board", response_model=BoardOut)
 def talk_board(talk_id: int, db: Session = Depends(get_db)) -> BoardOut:
     """Every entity of one paper (all kinds, not just what the trainer
-    drills) plus the "uses" links among them, for laying the whole paper out
+    drills; none she deleted) plus the "uses" links among them, for laying the whole paper out
     on the canvas at once. Slugs come back in dependency order."""
     talk = db.get(Talk, talk_id)
     if talk is None:
@@ -78,7 +84,7 @@ def talk_board(talk_id: int, db: Session = Depends(get_db)) -> BoardOut:
     group_ids = [t.id for t in group]
     entities = (
         db.query(Entity)
-        .filter(Entity.talk_id.in_(group_ids))
+        .filter(Entity.talk_id.in_(group_ids), Entity.deleted_at.is_(None))
         # Page-less entities are textbook background -- they go first. Said
         # explicitly: SQLite sorts NULL first by default, Postgres last, so
         # the local board and the deployed one used to come out different.

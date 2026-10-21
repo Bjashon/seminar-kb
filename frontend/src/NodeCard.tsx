@@ -29,14 +29,24 @@ interface Props {
   onOpenSource: (detail: EntityDetail) => void;
   /** She saved her own wording of the card (or brought the original back). */
   onEdited: (detail: EntityDetail) => void;
+  /** Delete the card (App asks first, closes it, offers to bring it back). */
+  onDelete: (slug: string, title: string) => void;
 }
 
 // An open editor is wider than a card, and shown at 100% like an enlarged one.
 const EDIT_WIDTH = 760;
 
+function TrashIcon() {
+  return (
+    <svg className="trash-icon" viewBox="0 0 14 16" width="12" height="14" aria-hidden="true">
+      <path d="M1 3.5h12M5 3.5V1.5h4v2M2.5 3.5l.8 11h7.4l.8-11M5.6 6.5v5.5M8.4 6.5v5.5" />
+    </svg>
+  );
+}
+
 export const NodeCard = memo(function NodeCard({
   node, detail, allEntities, zoom, boundsW, boundsH, isTop, enlarged, onToggleEnlarge, onRaise, onMove, onResize, onClose,
-  onSetLang, onToggleProof, onSetBookmark, onGoto, onOpenSource, onEdited,
+  onSetLang, onToggleProof, onSetBookmark, onGoto, onOpenSource, onEdited, onDelete,
 }: Props) {
   const [dragging, setDragging] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -197,6 +207,9 @@ export const NodeCard = memo(function NodeCard({
           {!!detail.edited?.length && (
             <span className="level-tag" title="Текст изменён на сайте; исходный можно вернуть в редакторе (✎)">· изменено</span>
           )}
+          {detail.deleted && (
+            <span className="level-tag" title="Карточка удалена; вернуть её можно в тренажёре, «Удалённые»">· удалена</span>
+          )}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {(zoom < 0.95 || enlarged) && !editing && (
@@ -220,6 +233,16 @@ export const NodeCard = memo(function NodeCard({
               }}
             >
               ✎
+            </button>
+          )}
+          {detail.kind !== "brief" && !editing && (
+            <button
+              className="node-delete"
+              aria-label="Удалить карточку"
+              title="Удалить карточку"
+              onClick={() => onDelete(node.slug, detail.title_ru ?? detail.title_en ?? node.slug)}
+            >
+              <TrashIcon />
             </button>
           )}
           {detail.kind !== "brief" && (

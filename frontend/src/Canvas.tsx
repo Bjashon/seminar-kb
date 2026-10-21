@@ -28,6 +28,7 @@ interface Props {
   onGoto: (fromSlug: string, toSlug: string) => void;
   onOpenSource: (detail: EntityDetail) => void;
   onEdited: (detail: EntityDetail) => void;
+  onDelete: (slug: string, title: string) => void;
 }
 
 interface Rect { x: number; y: number; w: number; h: number }
@@ -90,6 +91,7 @@ function edgePointTowards(rect: Rect, tx: number, ty: number): [number, number] 
 export function Canvas({
   nodes, edges, details, allEntities, pendingLayout, focus,
   onMove, onResize, onPlaceMany, onLayoutDone, onClose, onSetLang, onToggleProof, onSetBookmark, onGoto, onOpenSource, onEdited,
+  onDelete,
 }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -312,6 +314,7 @@ export function Canvas({
               onGoto={onGoto}
               onOpenSource={onOpenSource}
               onEdited={onEdited}
+              onDelete={onDelete}
             />
           );
         })}

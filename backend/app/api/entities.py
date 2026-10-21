@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 
-from app.db.models import EDITABLE_FIELDS, Entity, EntityLink, ReviewCard
+from app.api.talks import deck_name
+from app.db.models import EDITABLE_FIELDS, Entity, EntityLink, ReviewCard, Talk
 from app.db.session import get_db
-from app.schemas import EntityDetailOut, EntityEditIn, EntitySummaryOut, LinkOut, SourceOut
+from app.schemas import DeletedCardOut, EntityDetailOut, EntityEditIn, EntitySummaryOut, LinkOut, SourceOut
 
 router = APIRouter(prefix="/entities", tags=["entities"])
 
@@ -17,6 +20,7 @@ def list_entities(db: Session = Depends(get_db)) -> list[EntitySummaryOut]:
     entities = (
         db.query(Entity)
         .options(joinedload(Entity.talk))
+        .filter(Entity.deleted_at.is_(None))
         .order_by(Entity.topic_order, Entity.title_ru)
         .all()
     )
@@ -44,13 +48,13 @@ def _detail_out(entity: Entity, db: Session) -> EntityDetailOut:
     uses = (
         db.query(Entity)
         .join(EntityLink, EntityLink.to_entity_id == Entity.id)
-        .filter(EntityLink.from_entity_id == entity.id)
+        .filter(EntityLink.from_entity_id == entity.id, Entity.deleted_at.is_(None))
         .all()
     )
     used_by = (
         db.query(Entity)
         .join(EntityLink, EntityLink.from_entity_id == Entity.id)
-        .filter(EntityLink.to_entity_id == entity.id)
+        .filter(EntityLink.to_entity_id == entity.id, Entity.deleted_at.is_(None))
         .all()
     )
     card = db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).one_or_none()
@@ -62,6 +66,7 @@ def _detail_out(entity: Entity, db: Session) -> EntityDetailOut:
         proof_ru=entity.proof_ru, proof_en=entity.proof_en,
         aliases=entity.aliases or [], links=entity.links or [], bookmarked=bool(card and card.bookmarked),
         made_by_user=entity.made_by_user, edited=[f for f in EDITABLE_FIELDS if f in edited], topic=entity.topic,
+        deleted=entity.deleted_at is not None,
         source=SourceOut(
             label=entity.source_label, document=entity.source_document, page=entity.source_page,
             episode_code=entity.talk.episode_code if entity.talk else None,
@@ -72,11 +77,34 @@ def _detail_out(entity: Entity, db: Session) -> EntityDetailOut:
     )
 
 
+@router.get("/deleted", response_model=list[DeletedCardOut])
+def deleted_entities(db: Session = Depends(get_db)) -> list[DeletedCardOut]:
+    """The cards she deleted, the latest first: the trainer's "Удалённые",
+    where each can be brought back."""
+    entities = (
+        db.query(Entity)
+        .filter(Entity.deleted_at.isnot(None))
+        .order_by(Entity.deleted_at.desc(), Entity.id.desc())
+        .all()
+    )
+    all_talks = db.query(Talk).all() if entities else []
+    return [
+        DeletedCardOut(
+            slug=e.slug, kind=e.kind.value, title_ru=e.title_ru, deleted_at=e.deleted_at,
+            # A card of hers in no deck is in "Мой набор" (it came there bookmarked).
+            deck=deck_name(e.talk, all_talks) if e.talk else ("Мой набор" if e.made_by_user else None),
+        )
+        for e in entities
+    ]
+
+
 @router.get("/{slug}", response_model=EntityDetailOut)
 def get_entity(slug: str, db: Session = Depends(get_db)) -> EntityDetailOut:
+    """A deleted card too (with deleted: true): a card open on the page, or
+    one just brought back, must still be found."""
     entity = _entity(slug, db)
     # Opening a card puts it into the trainer's "history" queue.
-    if db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).one_or_none() is None:
+    if entity.deleted_at is None and db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).one_or_none() is None:
         db.add(ReviewCard(entity_id=entity.id))
         db.commit()
     return _detail_out(entity, db)
@@ -126,12 +154,22 @@ def restore_entity(slug: str, db: Session = Depends(get_db)) -> EntityDetailOut:
 
 @router.delete("/{slug}", status_code=204)
 def delete_entity(slug: str, db: Session = Depends(get_db)) -> None:
-    """Only a card she made herself (in a course on claude.ai) can go: the
-    others come back from extracted/*.json on every deploy anyway."""
+    """Any card, hers or one from extracted/*.json, the same way: hidden,
+    not removed (see Entity.deleted_at). A row really deleted would come
+    back from the JSON on the next deploy; this way it stays deleted, and
+    keeps its review state and links for /undelete. Deleting it twice keeps
+    the first date."""
     entity = _entity(slug, db)
-    if not entity.made_by_user:
-        raise HTTPException(status_code=403, detail="Only a card made in a course can be deleted")
-    db.query(ReviewCard).filter(ReviewCard.entity_id == entity.id).delete()
-    db.query(EntityLink).filter((EntityLink.from_entity_id == entity.id) | (EntityLink.to_entity_id == entity.id)).delete()
-    db.delete(entity)
+    if entity.deleted_at is None:
+        entity.deleted_at = datetime.utcnow()
+        db.commit()
+
+
+@router.post("/{slug}/undelete", response_model=EntityDetailOut)
+def undelete_entity(slug: str, db: Session = Depends(get_db)) -> EntityDetailOut:
+    """A deleted card back where it was: its deck, its place in the trainer,
+    its links."""
+    entity = _entity(slug, db)
+    entity.deleted_at = None
     db.commit()
+    return _detail_out(entity, db)

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import type { EntityDetail, EntitySummary, Lang, ReviewCardOut, TalkSummary } from "./types";
+import type { DeletedCard, EntityDetail, EntitySummary, Lang, ReviewCardOut, TalkSummary } from "./types";
 import { KIND_LABEL_RU } from "./types";
 import { api } from "./api";
 import { clozeStatement, clozeTerm, keepMathWithNeighbours, mdBody, plainTerm, sameTerm } from "./markdown";
 import { useTypesetHtml } from "./useTypesetHtml";
-import { partLabel, todayIso } from "./dates";
+import { localDate, partLabel, todayIso } from "./dates";
 import { BookmarkButton, BookmarkIcon } from "./BookmarkButton";
 import { CardEditor } from "./CardEditor";
 
@@ -22,8 +22,12 @@ interface Props {
   request: { talkId: number | null; seq: number } | null;
   /** The trainer's tab is the one on screen. */
   active: boolean;
-  /** A card she made herself was deleted here. */
-  onDeleted: (slug: string) => void;
+  /** Delete a card: App asks first, and tells back through `deletion`. */
+  onDelete: (slug: string, title: string) => void;
+  /** A card was brought back here, from "Удалённые". */
+  onRestored: (detail: EntityDetail) => void;
+  /** The latest card deleted or brought back anywhere on the site. */
+  deletion: Deletion | null;
   /** She saved her own wording of a card here (or brought its original back). */
   onEdited: (detail: EntityDetail) => void;
 }
@@ -37,7 +41,18 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-type TrainerMode = "history" | "foundational" | "article" | "bookmarked";
+/** A card deleted, or brought back, anywhere on the site; `seq` tells two
+ *  in a row apart. */
+export interface Deletion {
+  slug: string;
+  deleted: boolean;
+  seq: number;
+}
+
+type DeckMode = "history" | "foundational" | "article" | "bookmarked";
+// "deleted" is not a deck: it is the list of the cards she deleted, each of
+// which can be brought back from there.
+type TrainerMode = DeckMode | "deleted";
 
 // Where you are in a deck is kept per deck, on the server (the site has one
 // user, and her phone and desktop must continue from the same card): the
@@ -47,7 +62,7 @@ type TrainerMode = "history" | "foundational" | "article" | "bookmarked";
 // so a deck that gained a card still resumes at the right place. "History"
 // needs none of this: a graded card leaves that queue by itself.
 const deckKey = (m: TrainerMode, talkId?: number | null): string | null =>
-  m === "history" ? null : m === "article" ? (talkId == null ? null : `article:${talkId}`) : m;
+  m === "history" || m === "deleted" ? null : m === "article" ? (talkId == null ? null : `article:${talkId}`) : m;
 
 // For a day the position lived in the browser; hand over what is there, once.
 const OLD_PREFIX = "trainer-passed-v1:";
@@ -87,7 +102,9 @@ function firstOpen(queue: ReviewCardOut[], passed: Set<string>, from: number): n
   return i;
 }
 
-export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request, active, onDeleted, onEdited }: Props) {
+export function Trainer({
+  allEntities, details, ensureDetail, onOpenCard, onOpenBoard, onSetBookmark, request, active, onDelete, onRestored, deletion, onEdited,
+}: Props) {
   const [mode, setMode] = useState<TrainerMode>("history");
   // A talk asked for from outside while the mode is still switching to
   // "article" -- the mode effect below would otherwise clear the selection
@@ -116,8 +133,17 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   // not let a slow answer for the previous one land on top of the new one.
   const loadSeq = useRef(0);
   const handedOver = useRef<Promise<void> | null>(null);
+  // The cards she deleted ("Удалённые"; the entry shows only when there are
+  // some), and those taken out of the deck on screen with where they stood:
+  // one brought back returns to its place -- to the screen, if it was the
+  // card shown when deleted (the note's "Вернуть" right after deleting).
+  const [deletedCards, setDeletedCards] = useState<DeletedCard[] | null>(null);
+  const removed = useRef(new Map<string, { card: ReviewCardOut; pos: number; wasCurrent: boolean; seq: number }>());
+  const loadDeleted = () => {
+    api.deletedEntities().then(setDeletedCards).catch(() => {});
+  };
 
-  function load(m: TrainerMode, talkId?: number, restart = false) {
+  function load(m: DeckMode, talkId?: number, restart = false) {
     const seq = ++loadSeq.current;
     const key = deckKey(m, talkId);
     handedOver.current ??= handOverBrowserProgress();
@@ -144,6 +170,10 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
     });
   }
   useEffect(() => {
+    if (mode === "deleted") {
+      loadDeleted();
+      return;
+    }
     if (mode === "article") {
       if (!talks) api.listTalks().then(setTalks);
       if (pendingTalk.current !== null) {
@@ -183,6 +213,51 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
     load("article", talkId);
   }
 
+  // How many were deleted is shown on the deck switch: asked anew whenever
+  // the tab comes up (another device may have deleted some).
+  useEffect(() => {
+    if (active) loadDeleted();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
+
+  // A card deleted or brought back (here or on the board): out of the deck
+  // on screen, or back into it; the counts on the deck switch and in the
+  // list of articles follow.
+  useEffect(() => {
+    if (!deletion) return;
+    loadDeleted();
+    if (talks) api.listTalks().then(setTalks).catch(() => {});
+    api.deckProgress().then(setDecks).catch(() => {});
+    if (!queue) return;
+    const { slug } = deletion;
+    if (deletion.deleted) {
+      const pos = queue.findIndex((c) => c.slug === slug);
+      if (pos < 0) return;
+      const q = queue.filter((c) => c.slug !== slug);
+      removed.current.set(slug, { card: queue[pos], pos, wasCurrent: pos === index, seq: loadSeq.current });
+      setQueue(q);
+      setIndex(firstOpen(q, passed, pos < index ? index - 1 : index));
+      if (pos === index) {
+        setRevealed(false);
+        setClozeResult(null);
+      }
+      return;
+    }
+    const back = removed.current.get(slug);
+    removed.current.delete(slug);
+    if (!back || back.seq !== loadSeq.current || queue.some((c) => c.slug === slug)) return;
+    const at = Math.min(back.wasCurrent ? index : back.pos, queue.length);
+    setQueue([...queue.slice(0, at), back.card, ...queue.slice(at)]);
+    if (back.wasCurrent) {
+      setIndex(at);
+      setRevealed(false);
+      setClozeResult(null);
+    } else if (at <= index) {
+      setIndex(index + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deletion]);
+
   const current = queue?.[index];
   useEffect(() => {
     if (current) ensureDetail(current.slug);
@@ -207,7 +282,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   const rootRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const placed = useRef<unknown>(null);
-  const spot: unknown = current && detail ? current : `${mode}|${selectedTalk}|${queue?.length}`;
+  const spot: unknown = mode === "deleted" ? mode : current && detail ? current : `${mode}|${selectedTalk}|${queue?.length}`;
   useEffect(() => {
     const pane = rootRef.current?.closest<HTMLElement>(".main-pane");
     if (!active || !pane || placed.current === spot || !window.matchMedia("(max-width: 700px)").matches) return;
@@ -245,7 +320,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   }
 
   function restart() {
-    load(mode, selectedTalk ?? undefined, true);
+    if (mode !== "deleted") load(mode, selectedTalk ?? undefined, true);
   }
 
   function grade(g: "again" | "good" | "easy") {
@@ -254,14 +329,22 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
     api.grade(slug, g).finally(() => next(slug));
   }
 
-  /** Only a card she made herself (in a course on claude.ai). */
-  function removeMine() {
-    if (!current || !window.confirm("Удалить эту карточку? Её можно будет снова прислать из курса.")) return;
-    const slug = current.slug;
-    api.deleteEntity(slug).then(() => {
-      next(slug);
-      onDeleted(slug);
-    }).catch(() => window.alert("Не получилось удалить карточку."));
+  /** Any card. App asks first; the card then leaves the deck (see the
+   *  `deletion` effect above) and the next one comes. Not "passed": brought
+   *  back, it is still to be learned. */
+  function remove() {
+    if (!current) return;
+    onDelete(current.slug, detail?.title_ru ?? current.title_ru ?? current.slug);
+  }
+
+  function restoreDeleted(slug: string) {
+    api
+      .undeleteEntity(slug)
+      .then((d) => {
+        setDeletedCards((list) => list?.filter((c) => c.slug !== slug) ?? null);
+        onRestored(d);
+      })
+      .catch(() => window.alert("Не получилось вернуть карточку: нет связи с сервером. Попробуй ещё раз."));
   }
 
   function snooze() {
@@ -279,6 +362,11 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
         <BookmarkIcon />
         Мой набор
       </button>
+      {(mode === "deleted" || !!deletedCards?.length) && (
+        <button className="deleted-deck" aria-selected={mode === "deleted"} onClick={() => setMode("deleted")}>
+          Удалённые ({deletedCards?.length ?? 0})
+        </button>
+      )}
     </div>
   );
   const bookmark = current && detail && (
@@ -298,7 +386,38 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
   const edited = !!detail?.edited?.length && (
     <span className="level-tag" title="Текст изменён на сайте; исходный можно вернуть в редакторе">· изменено</span>
   );
+  const removeButton = current && (
+    <button className="snooze-btn" onClick={remove}>Удалить</button>
+  );
   const editDetail = editing ? details[editing] : undefined;
+
+  if (mode === "deleted") {
+    return (
+      <div className="trainer" ref={rootRef}>
+        {modeSwitch}
+        <div className="article-picker">
+          {deletedCards === null && <p>Загрузка…</p>}
+          {deletedCards !== null && deletedCards.length === 0 && <p>Удалённых карточек нет.</p>}
+          {!!deletedCards?.length && (
+            <div className="article-group">Их не видно ни на досках, ни в указателе, ни в тренажёре. «Вернуть» ставит карточку на прежнее место.</div>
+          )}
+          {deletedCards?.map((c) => (
+            <div key={c.slug} className="article-row">
+              <div className="article-main">
+                <div className="article-codes">
+                  {c.deck ? `${c.deck} · ` : ""}удалена {localDate(c.deleted_at)}
+                </div>
+                <div className="article-title">{c.title_ru ?? c.slug}</div>
+              </div>
+              <div className="article-actions">
+                <button onClick={() => restoreDeleted(c.slug)}>Вернуть</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (mode === "article" && selectedTalk === null) {
     // The next talk on the calendar, today's included: whichever part of
@@ -438,7 +557,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
               </div>
               <button className="snooze-btn" onClick={snooze}>Отложить</button>
               {editButton}
-              {detail.made_by_user && <button className="snooze-btn" onClick={removeMine}>Удалить мою карточку</button>}
+              {removeButton}
             </>
           )}
         </div>
@@ -470,6 +589,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
               </button>
               <button className="snooze-btn" onClick={snooze}>Отложить</button>
               {editButton}
+              {removeButton}
             </>
           )}
           {clozeResult && (
@@ -483,6 +603,7 @@ export function Trainer({ allEntities, details, ensureDetail, onOpenCard, onOpen
                 <button className="grade-btn" onClick={() => grade("easy")}>Легко</button>
               </div>
               {editButton}
+              {removeButton}
             </>
           )}
         </div>

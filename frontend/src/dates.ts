@@ -22,3 +22,10 @@ export function formatDate(iso: string): string {
   const [y, m, d] = iso.split("-");
   return `${d}/${m}/${y}`;
 }
+
+/** A moment the server gives in UTC without a zone ("2026-10-21T09:30:00")
+ *  as a date in the viewer's own calendar: "21/10/2026". */
+export function localDate(utc: string): string {
+  const d = new Date(/(Z|[+-]\d\d:?\d\d)$/i.test(utc) ? utc : `${utc}Z`);
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+}

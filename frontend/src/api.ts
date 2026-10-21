@@ -1,4 +1,4 @@
-import type { Board, EditableField, EntityDetail, EntitySummary, Project, ProjectSummary, ReviewCardOut, TalkSummary, UserCard, CardTarget } from "./types";
+import type { Board, DeletedCard, EditableField, EntityDetail, EntitySummary, Project, ProjectSummary, ReviewCardOut, TalkSummary, UserCard, CardTarget } from "./types";
 
 // In prod the backend serves the built frontend from the same origin, so
 // relative paths just work. In dev, Vite serves the frontend on :5173 while
@@ -40,10 +40,15 @@ export const api = {
     }).then((r) => json<EntityDetail>(r)),
   restoreEntity: (slug: string) =>
     fetch(`${API_BASE}/entities/${encodeURIComponent(slug)}/restore`, { method: "POST" }).then((r) => json<EntityDetail>(r)),
+  // Deleting only hides a card (any card, hers or from the content); it
+  // can be brought back from the trainer's "Удалённые".
   deleteEntity: (slug: string) =>
     fetch(`${API_BASE}/entities/${encodeURIComponent(slug)}`, { method: "DELETE" }).then((r) => {
       if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
     }),
+  undeleteEntity: (slug: string) =>
+    fetch(`${API_BASE}/entities/${encodeURIComponent(slug)}/undelete`, { method: "POST" }).then((r) => json<EntityDetail>(r)),
+  deletedEntities: () => fetch(`${API_BASE}/entities/deleted`).then((r) => json<DeletedCard[]>(r)),
   grade: (slug: string, grade: "again" | "good" | "easy") =>
     fetch(`${API_BASE}/review/${slug}/grade`, {
       method: "POST",
