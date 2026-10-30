@@ -317,6 +317,17 @@ body.drawer-open .resume-toast { left: calc((100vw - min(var(--drawer-w), 100vw)
 .chip.muted { opacity: .6; }
 .lab > .err, .main > .err { color: var(--bad); font: 15px var(--f-ui); }
 
+/* ---------- references («определение 7.1», «п. 5.1», «(3)») and the way back ---------- */
+a.xref { color: inherit; text-decoration: underline dotted color-mix(in srgb, var(--accent) 75%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+a.xref:hover { color: var(--accent); text-decoration-style: solid; }
+.xref-fade { transition: background-color .9s ease, box-shadow .9s ease; }
+.xref-hit { background-color: var(--marker); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 40%, transparent), var(--shadow); border-radius: 4px; }
+.xref-back { position: fixed; left: 18px; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 42; display: flex; align-items: center; max-width: calc(100vw - 36px);
+  background: var(--card); border: 1.5px solid var(--accent); border-radius: 999px; box-shadow: var(--shadow); font: 14.5px/1.2 var(--f-ui); }
+.xref-back .xb-go { border: 0; background: none; color: var(--accent); font-weight: 700; padding: 10px 4px 10px 16px; white-space: nowrap; }
+.xref-back .xb-where { font-weight: 400; color: var(--ink-soft); }
+.xref-back .x { font-size: 20px; padding: 4px 12px 4px 8px; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -370,6 +381,7 @@ body.drawer-open .resume-toast { left: calc((100vw - min(var(--drawer-w), 100vw)
 REHEARSAL@@-->
 
 <button class="btn solid ask-fab" id="ask-fab" hidden>Спросить лектора</button>
+<div class="xref-back" id="xref-back" hidden><button type="button" class="xb-go" id="xb-go">↩ Назад <span class="xb-where" id="xb-where"></span></button><button type="button" class="x" id="xb-x" aria-label="Не возвращаться">×</button></div>
 
 <aside class="drawer" id="drawer" hidden aria-label="Спросить лектора">
   <div class="drawer-grip" id="drawer-grip" role="separator" aria-orientation="vertical" aria-label="Ширина панели" title="Потяни, чтобы сделать панель шире или уже. Двойной щелчок — широкая / обычная"></div>
@@ -771,7 +783,7 @@ function save(patch) {
 function typeset(el) {
   const MJ = window.MathJax;
   if (MJ && MJ.startup && MJ.startup.promise && MJ.typesetPromise) {
-    MJ.startup.promise = MJ.startup.promise.then(() => MJ.typesetPromise([el])).catch(e => console.warn(e));
+    MJ.startup.promise = MJ.startup.promise.then(() => MJ.typesetPromise([el])).then(() => XREF.link(el)).catch(e => console.warn(e));
   }
 }
 function setMath(el, html) {
@@ -1467,6 +1479,179 @@ if (window.claude && typeof window.claude.use === "function") {
     showEl("#ask-fab", true); showEl("#rehearse-btn", true); showEl("#rehearse-na", false);
   }).catch(() => { /* unavailable: the page works without it */ });
 }
+
+// ---------- references: «определение 7.1», «п. 5.1», «модуль 6», «(3)» lead to their place ----------
+// The places are read from the text: box labels («Определение 7.1 · …», «Леммы 7 и 8»),
+// «Задачка 6.1.», numbered headings («5.1. …»), module headings («Модуль 6») and the numbered
+// formulas of a box labelled «Определение…» or «Формулы…» («&(3)\quad», «&&(3)», «<b>(7)</b>»;
+// in other boxes «&&(5')» names the rule of a step). The formulas are read here, before MathJax
+// turns them into pictures; the references are linked after it, here and in the lecturer's answers.
+// Of several places with one number: the one in the same module, then the nearest above, then the
+// first below. A reference to a place the text does not have stays plain (XREF.missed lists them).
+// In the old part II «модуль N» is the old numbering, so module references there stay plain.
+// Each jump keeps the way back: «↩ Назад» returns to the reference and lights it up.
+const XREF = (function () {
+  const main = $(".main");
+  const NUM = String.raw`\d+(?:\.\d+)?`;
+  const LIST = String.raw`${NUM}(?:(?:\s*,\s*|\s+и\s+|\s*[–—-]\s*)${NUM})*`;
+  // No lookbehind (older Safari): the character before a reference is matched as group 1.
+  const REF = new RegExp(String.raw`(^|[^\p{L}\d])(?:(\p{L}+\.?)\s+(${LIST})(?![\p{L}\d]|\.\d)|\((\d{1,2}['′’]?)\)(?![\p{L}\d]))`, "gu");
+  const LABEL = new RegExp(String.raw`^(\p{L}+)\s+(${LIST})`, "u");
+  // The word in any case and number («примере», «теоремы», «п.»), not words that only begin like it («примерно», «фактор»).
+  const KINDS = [[/^определени(?:е|я|ю|ем|и|й|ям|ями|ях)$/i, "определение"], [/^пример(?:|ы|а|у|ом|е|ов|ам|ами|ах)$/i, "пример"],
+    [/^утверждени(?:е|я|ю|ем|и|й|ям|ями|ях)$/i, "утверждение"], [/^теорем(?:|а|ы|е|у|ой|ам|ами|ах)$/i, "теорема"],
+    [/^лемм(?:|а|ы|е|у|ой|ам|ами|ах)$/i, "лемма"], [/^следстви(?:е|я|ю|ем|и|й|ям|ями|ях)$/i, "следствие"],
+    [/^факт(?:|а|у|ом|е|ы|ов|ам|ами|ах)$/i, "факт"], [/^замечани(?:е|я|ю|ем|и|й|ям|ями|ях)$/i, "замечание"],
+    [/^задачк(?:а|и|е|у|ой|ам|ами|ах)$/i, "задачка"], [/^(?:пункт(?:|а|у|ом|е|ы|ов|ам|ами|ах)|пп?\.)$/i, "пункт"],
+    [/^модул(?:ь|я|ю|ем|е|и|ей|ям|ями|ях)$/i, "модуль"]];
+  const kindOf = w => (KINDS.find(([re]) => re.test(w)) || [])[1];
+  const places = new Map();  // "kind|number" (formulas: "(|3") -> [{ el, hit }]
+  const add = (key, el, hit) => { if (!places.has(key)) places.set(key, []); places.get(key).push({ el, hit: hit || el }); };
+  $$(".box > .lbl", main).forEach(l => {
+    const box = l.parentElement, t = l.textContent.trim(), m = t.match(LABEL), k = m && kindOf(m[1]);
+    if (k) m[2].match(/\d+(?:\.\d+)?/g).forEach(n => add(k + "|" + n, box));
+    // «Утверждение 6.5 · замечание 2 статьи»: the paper's number of the same statement.
+    for (const s of t.matchAll(/·\s*(\p{L}+)\s+(\d+)\s+статьи/gu)) { const ks = kindOf(s[1]); if (ks) add(ks + "|" + s[2], box); }
+    if (!/^(?:определени|формул)/i.test(t)) return;
+    for (const f of box.textContent.matchAll(/&\s*\((\d{1,2}'?)\)\s*\\quad|&&\s*\((\d{1,2}'?)\)/g)) add("(|" + (f[1] || f[2]), box);
+    $$("b", box).forEach(b => { const f = b.textContent.trim().match(/^\((\d{1,2}'?)\)$/); if (f) add("(|" + f[1], b.closest("p") || box); });
+  });
+  // Run-in heads: «<p><b>Следствие 1: …</b>», «<p><b>Теорема 11.</b>».
+  $$("p > b:first-child", main).forEach(b => {
+    const p = b.parentElement, t = b.textContent.trim(), m = t.match(LABEL), k = m && kindOf(m[1]);
+    if (k && !["пункт", "модуль", "задачка"].includes(k) && p.textContent.trim().startsWith(t)) m[2].match(/\d+(?:\.\d+)?/g).forEach(n => add(k + "|" + n, p));
+  });
+  $$("details.think > summary", main).forEach(s => { const m = s.textContent.trim().match(/^Задачка\s+(\d+(?:\.\d+)?)/); if (m) add("задачка|" + m[1], s.parentElement); });
+  $$("h3", main).forEach(h => { const m = h.textContent.trim().match(/^(\d+\.\d+)\.\s/); if (m) add("пункт|" + m[1], h); });
+  const old = new Set();
+  MODULES.forEach(mo => {
+    const t = ($(".mod-head .eyebrow", mo.el) || {}).textContent || "", m = t.match(/Модуль\s+(\d+)/);
+    if (m) add("модуль|" + m[1], mo.el, $(".mod-head", mo.el) || mo.el);
+    if (/старая версия/i.test(t)) old.add(mo.el);
+  });
+  const before = (a, b) => !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);  // a comes before b
+  places.forEach(list => list.sort((p, q) => before(p.el, q.el) ? -1 : 1));
+
+  // `at`: the element with the reference; for the lecturer's answers, the place she is reading.
+  // A number without a dot is the paper's («теорема 12», «лемма 4»): from another module it leads
+  // to the first place, where the statement is, not to the later proof. Formulas («(3)»): the
+  // nearest definition above — the course defines (3) in module 6, again in 10, the paper in part II.
+  // A reference inside its own place («Номера (3), (4)…» in definition 6.4, «модуль 6» in module 6) stays plain.
+  function resolve(key, at) {
+    const list = places.get(key) || [];
+    if (!list.length || list.some(p => p.el.contains(at))) return null;
+    const sec = at.closest("section.module"), same = sec ? list.filter(p => sec.contains(p.el)) : [];
+    const pool = same.length ? same : list, above = pool.filter(p => before(p.el, at));
+    if (!same.length && !key.startsWith("(|") && !key.includes(".")) return pool[0];
+    return above.length ? above[above.length - 1] : pool[0];
+  }
+  const SKIP = "a, button, input, textarea, select, code, mjx-container, h1, h2, h3, h4, .lbl, .eyebrow, .toc, .hero, .lab, .card-q, .xref-back";
+  const target = new WeakMap(), missed = [];
+  let ids = 0;
+  function link(root) {
+    if (!root || !root.isConnected || root.closest(SKIP)) return;
+    const ctx = main.contains(root) ? null : ((readingPlace() || {}).el || currentModule.el);
+    const nodes = [], w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let t = w.nextNode(); t; t = w.nextNode()) if (/\d/.test(t.data) && !t.parentElement.closest(SKIP)) nodes.push(t);
+    nodes.forEach(t => {
+      const at = ctx || t.parentElement, cuts = [];  // [start, end, place]
+      for (const m of t.data.matchAll(REF)) {
+        const start = m.index + m[1].length;
+        if (m[4]) {
+          const p = resolve("(|" + m[4].replace(/[′’]/, "'"), at);
+          if (p) cuts.push([start, start + m[0].length - m[1].length, p]); else if (!places.has("(|" + m[4].replace(/[′’]/, "'"))) missed.push(m[0].slice(m[1].length));
+          continue;
+        }
+        const k = kindOf(m[2]);
+        if (!k || (k === "модуль" && !ctx && old.has(at.closest("section.module")))) continue;
+        const base = m.index + m[0].length - m[3].length;
+        let first = true;
+        for (const num of m[3].matchAll(/\d+(?:\.\d+)?/g)) {
+          const s = base + num.index, p = resolve(k + "|" + num[0], at);
+          if (p) cuts.push([first ? start : s, s + num[0].length, p]); else if (!places.has(k + "|" + num[0])) missed.push(m[2] + " " + num[0]);
+          first = false;
+        }
+      }
+      if (!cuts.length) return;
+      const frag = document.createDocumentFragment();
+      let i = 0;
+      cuts.forEach(([s, e, p]) => {
+        frag.append(t.data.slice(i, s));
+        const a = document.createElement("a");
+        if (!p.el.id) p.el.id = "xref-" + (++ids);
+        a.href = "#" + p.el.id; a.className = "xref"; a.textContent = t.data.slice(s, e);
+        target.set(a, p); frag.append(a); i = e;
+      });
+      frag.append(t.data.slice(i));
+      t.replaceWith(frag);
+    });
+  }
+
+  // ----- the jump and the way back -----
+  const back = $("#xref-back"), where = $("#xb-where"), stack = [], timers = new WeakMap();
+  const smooth = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
+  function toTop(el, y) { window.scrollTo({ top: Math.max(0, window.scrollY + el.getBoundingClientRect().top - y), behavior: smooth() }); }
+  function flash(el) {  // after the scroll comes to rest
+    let lit = false;
+    const go = () => {
+      if (lit) return;
+      lit = true; clearTimeout(timers.get(el));
+      el.classList.add("xref-fade", "xref-hit");
+      timers.set(el, setTimeout(() => { el.classList.remove("xref-hit"); timers.set(el, setTimeout(() => el.classList.remove("xref-fade"), 1000)); }, 2400));
+    };
+    if ("onscrollend" in window) window.addEventListener("scrollend", go, { once: true });
+    setTimeout(go, "onscrollend" in window ? 1200 : 450);
+  }
+  function whereOf(a, fromChat) {
+    if (fromChat) return "к лектору";
+    const sec = a.closest("section.module"); if (!sec) return "";
+    const hs = $$("h3", sec).filter(h => before(h, a)), m = hs.length && hs[hs.length - 1].textContent.trim().match(/^(\d+\.\d+)\./);
+    if (m) return "к п. " + m[1];
+    const e = (($(".mod-head .eyebrow", sec) || {}).textContent || "").match(/Модуль\s+(\d+)/);
+    return e ? "к модулю " + e[1] : "";
+  }
+  function paint() {
+    back.hidden = !stack.length;
+    if (stack.length) where.textContent = stack[stack.length - 1].where;
+  }
+  function jump(a, p) {
+    const fromChat = msgs.contains(a);
+    stack.push({ a, fromChat, top: a.getBoundingClientRect().top, read: readingPlace(), chat: msgs.scrollTop, where: whereOf(a, fromChat) });
+    if (stack.length > 30) stack.shift();
+    if (fromChat && window.innerWidth < 900) setDrawer(false);  // there the panel covers the text
+    for (let d = p.el.parentElement && p.el.parentElement.closest("details"); d; d = d.parentElement && d.parentElement.closest("details")) d.open = true;
+    const h = p.el.getBoundingClientRect().height;
+    toTop(p.el, h < window.innerHeight * 0.55 ? Math.max(70, (window.innerHeight - h) / 3) : 70);
+    flash(p.hit);
+    paint();
+  }
+  function goBack() {
+    const s = stack.pop(); paint();
+    if (!s) return;
+    if (s.fromChat) {
+      if (drawer.hidden) setDrawer(true);
+      if (s.read && s.read.el.isConnected) toTop(s.read.el, s.read.top);
+      msgs.scrollTop = s.chat;
+      if (s.a.isConnected) flash(s.a);
+    } else if (s.a.isConnected) { toTop(s.a, s.top); flash(s.a); }
+    else if (s.read && s.read.el.isConnected) toTop(s.read.el, s.read.top);
+  }
+  // Every link inside the text (references, the proof map, «Перейти к калькулятору») and in the
+  // lecturer's answers; not the contents and the «Продолжить» button.
+  document.addEventListener("click", e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a || !(msgs.contains(a) || (main.contains(a) && !a.closest(".hero, .toc")))) return;
+    let p = target.get(a);
+    if (!p) { const el = document.getElementById(decodeURIComponent(a.hash.slice(1))); if (!el || !main.contains(el)) return; p = { el, hit: el }; }
+    e.preventDefault();
+    jump(a, p);
+  });
+  $("#xb-go").addEventListener("click", goBack);
+  $("#xb-x").addEventListener("click", () => { stack.length = 0; paint(); });
+  afterMath(() => link(main));
+  return { link, missed };
+})();
 
 // ---------- progress on claude.ai: the same on every device ----------
 let userMoved = false, lastPlace = "", placeTimer = 0, placeReady = false;
