@@ -317,6 +317,18 @@ body.drawer-open .resume-toast { left: calc((100vw - min(var(--drawer-w), 100vw)
 .chip.muted { opacity: .6; }
 .lab > .err, .main > .err { color: var(--bad); font: 15px var(--f-ui); }
 
+/* ---------- the talk's slides in the text (part III) ---------- */
+figure.slide { margin: 22px 0 0; }
+figure.slide img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; box-shadow: var(--shadow); background: #fff; }
+figure.slide figcaption { font: 13px/1.4 var(--f-ui); color: var(--ink-soft); margin-top: 6px; }
+figure.slide figcaption b { color: var(--ink); }
+.say { margin: 8px 0 28px; padding: 10px 14px 2px; border-left: 3px solid var(--accent); background: var(--card-2); border-radius: 0 6px 6px 0; }
+.say > .lbl { display: block; font: 700 11.5px/1.2 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.say p { margin: 0 0 10px; }
+.say ul, .say ol { margin: 0 0 10px; }
+.say .ask { font: 14px/1.45 var(--f-ui); color: var(--ink-soft); }
+.say .ask b { color: var(--margin); }
+
 /* ---------- references («определение 7.1», «п. 5.1», «(3)») and the way back ---------- */
 a.xref { color: inherit; text-decoration: underline dotted color-mix(in srgb, var(--accent) 75%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 a.xref:hover { color: var(--accent); text-decoration-style: solid; }
@@ -1488,7 +1500,6 @@ if (window.claude && typeof window.claude.use === "function") {
 // turns them into pictures; the references are linked after it, here and in the lecturer's answers.
 // Of several places with one number: the one in the same module, then the nearest above, then the
 // first below. A reference to a place the text does not have stays plain (XREF.missed lists them).
-// In the old part II «модуль N» is the old numbering, so module references there stay plain.
 // Each jump keeps the way back: «↩ Назад» returns to the reference and lights it up.
 const XREF = (function () {
   const main = $(".main");
@@ -1523,11 +1534,9 @@ const XREF = (function () {
   });
   $$("details.think > summary", main).forEach(s => { const m = s.textContent.trim().match(/^Задачка\s+(\d+(?:\.\d+)?)/); if (m) add("задачка|" + m[1], s.parentElement); });
   $$("h3", main).forEach(h => { const m = h.textContent.trim().match(/^(\d+\.\d+)\.\s/); if (m) add("пункт|" + m[1], h); });
-  const old = new Set();
   MODULES.forEach(mo => {
     const t = ($(".mod-head .eyebrow", mo.el) || {}).textContent || "", m = t.match(/Модуль\s+(\d+)/);
     if (m) add("модуль|" + m[1], mo.el, $(".mod-head", mo.el) || mo.el);
-    if (/старая версия/i.test(t)) old.add(mo.el);
   });
   const before = (a, b) => !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);  // a comes before b
   places.forEach(list => list.sort((p, q) => before(p.el, q.el) ? -1 : 1));
@@ -1563,7 +1572,7 @@ const XREF = (function () {
           continue;
         }
         const k = kindOf(m[2]);
-        if (!k || (k === "модуль" && !ctx && old.has(at.closest("section.module")))) continue;
+        if (!k) continue;
         const base = m.index + m[0].length - m[3].length;
         let first = true;
         for (const num of m[3].matchAll(/\d+(?:\.\d+)?/g)) {

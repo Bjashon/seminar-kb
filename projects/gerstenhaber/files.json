@@ -14,8 +14,8 @@
     {
       "title": "Доклад",
       "files": [
-        {"path": "Gerstenhaber_doklad.pdf", "note": "Презентация для доклада на семинаре: около 40 минут, формат 16:9"},
-        {"path": "Gerstenhaber_doklad.tex", "note": "Её исходник (Beamer; собирается XeLaTeX или tectonic)"}
+        {"path": "Gerstenhaber_doklad.pdf", "note": "Презентация для доклада на семинаре: около часа, 41 страница, формат 16:9. Все слайды с заметками, что говорить, — в части III курса на claude.ai"},
+        {"path": "Gerstenhaber_doklad.tex", "note": "Её исходник (Beamer, XeLaTeX; собирается в облаке через Documents/latex/tools/compile.mjs)"}
       ]
     },
     {
