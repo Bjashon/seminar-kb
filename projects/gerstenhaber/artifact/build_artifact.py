@@ -28,6 +28,7 @@ a module without an entry gets two generic ones.
 The copy lives at https://claude.ai/artifact/53CxBbBCZ4sJsSLirKm51T: publish the output to that
 url (its capabilities sample, db, user stay as they are).
 """
+import base64
 import html as htmllib
 import json
 import os
@@ -207,6 +208,23 @@ else:
     body = body[:at] + rehearsal + "\n\n" + body[at:]
     where = "в конце последнего модуля"
 
+# ---- the talk's slides: the pictures go into the page itself, so the copy stays one file
+slides_dir = proj / "artifact" / "slides"
+n_slides = 0
+
+
+def inline_slide(m):
+    global n_slides
+    f = slides_dir / m.group(1)
+    if not f.is_file():
+        warn(f"слайда {m.group(1)} нет в artifact/slides — картинка останется пустой")
+        return m.group(0)
+    n_slides += 1
+    return 'src="data:image/png;base64,' + base64.b64encode(f.read_bytes()).decode() + '"'
+
+
+body = re.sub(r'src="slides/([0-9]+\.png)"', inline_slide, body)
+
 # ---------------------------------------------------------------- the data
 data = json.loads(lecture_json.read_text(encoding="utf-8"))
 data.pop("claude_url", None)  # the copy does not link to itself
@@ -261,7 +279,7 @@ print(f"{out}: {len(page.encode('utf-8')) / 1024:.0f} KB")
 print(f"  «{title}»; модулей {len(ids)}: {', '.join(ids)}")
 print(f"  тестов {len(quizzes)} (вопросов {sum(len(v) for v in quizzes.values())}), карточек {len(data.get('flashcards') or [])}, "
       f"глоссарий {len(data.get('glossary') or [])}, примеров калькулятора {len(data.get('presets') or [])}")
-print(f"  подсказки лектору: свои у {len(ids) - n_generic} модулей, общие у {n_generic}; репетиция — {where}")
+print(f"  подсказки лектору: свои у {len(ids) - n_generic} модулей, общие у {n_generic}; репетиция — {where}; слайдов вставлено {n_slides}")
 print(f"  убрано только для сайта: ссылок на карточки {n_cards}, data-only=\"site\" {n_site_only}; старых правок текста {legacy_used}")
 for w in warnings:
     print("  ВНИМАНИЕ:", w)
