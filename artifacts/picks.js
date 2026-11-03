@@ -181,7 +181,27 @@
         out = res + out.slice(i);
       }
     }
-    return out.replace(/\\class\{[^{}]*\}\{((?:[^{}]|\{[^{}]*\})*)\}/g, "$1");
+    return unwrap(unwrap(out, /\\class\{[^{}]*\}/g), /\\bbox\[[^\]]*\]/g);
+  }
+  /** `\class{x}{…}` and `\bbox[…]{…}` (colours and highlighter pens of the course text) written out as
+   *  their content, however deep the braces inside go; `\{` and `\}` are TeX braces, not groups. */
+  function unwrap(s, head) {
+    let out = s, m;
+    head.lastIndex = 0;
+    while ((m = head.exec(out))) {
+      let j = m.index + m[0].length;
+      while (out[j] === " ") j++;
+      if (out[j] !== "{") continue;
+      let k = j + 1, depth = 1;
+      for (; k < out.length && depth; k++) {
+        if (out[k] === "\\") { k++; continue; }
+        if (out[k] === "{") depth++; else if (out[k] === "}") depth--;
+      }
+      if (depth) break;
+      out = out.slice(0, m.index) + out.slice(j + 1, k - 1) + out.slice(k);
+      head.lastIndex = m.index;
+    }
+    return out;
   }
   function mathMap(el) {
     const m = new Map();

@@ -36,6 +36,7 @@ the calculators, progress in the artifact's db -- is the copy's own and is edite
   --even: #2458c9;
   --odd: #b8630a;
   --marker: #fff1b8;
+  --hl-a: #fff1b8; --hl-b: #d6e4ff; --hl-c: #ffd9e2;   /* highlighter pens in formulas: \hl, \hlb, \hlc */
   --shadow: 0 1px 2px rgba(20, 30, 60, .06), 0 10px 26px -14px rgba(20, 30, 60, .28);
 
   --f-display: "Old Standard TT", "Times New Roman", Times, serif;
@@ -49,6 +50,7 @@ the calculators, progress in the artifact's db -- is the copy's own and is edite
     --rule: #334239; --card: #1e2b26; --card-2: #22312b; --accent: #93b7ff; --accent-ink: #0e1916;
     --margin: #ff8f88; --good: #86d7a1; --bad: #ff8f88; --even: #93b7ff; --odd: #ffc56d;
     --marker: #3b3a20; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 26px -14px rgba(0, 0, 0, .6);
+    --hl-a: #5d5522; --hl-b: #2c4571; --hl-c: #6d3142;
     color-scheme: dark;
   }
 }
@@ -57,6 +59,7 @@ the calculators, progress in the artifact's db -- is the copy's own and is edite
   --rule: #334239; --card: #1e2b26; --card-2: #22312b; --accent: #93b7ff; --accent-ink: #0e1916;
   --margin: #ff8f88; --good: #86d7a1; --bad: #ff8f88; --even: #93b7ff; --odd: #ffc56d;
   --marker: #3b3a20; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 26px -14px rgba(0, 0, 0, .6);
+  --hl-a: #5d5522; --hl-b: #2c4571; --hl-c: #6d3142;
   color-scheme: dark;
 }
 
@@ -165,6 +168,20 @@ td.num { font-variant-numeric: tabular-nums; text-align: right; }
 
 .ev { color: var(--even); }
 .od { color: var(--odd); }
+/* highlighter in formulas: \hl{…} (yellow), \hlb{…} (blue), \hlc{…} (rose) = \class{hl}{\bbox[…]{…}};
+   MathJax draws the background as a <rect data-bgcolor> inside the group, so the colour is set here, per theme */
+g.hl > rect[data-bgcolor] { fill: var(--hl-a); rx: 2px; }
+g.hlb > rect[data-bgcolor] { fill: var(--hl-b); rx: 2px; }
+g.hlc > rect[data-bgcolor] { fill: var(--hl-c); rx: 2px; }
+mark.a, mark.b, mark.c { color: inherit; padding: 0 3px; border-radius: 2px; }
+mark.a { background: var(--hl-a); }
+mark.b { background: var(--hl-b); }
+mark.c { background: var(--hl-c); }
+/* «Куда смотреть» — the note under a highlighted formula, keyed to the pens */
+.look { margin: -4px 0 18px; padding: 8px 14px 9px; font: 15px/1.5 var(--f-ui); color: var(--ink);
+  background: color-mix(in srgb, var(--card) 70%, transparent); border-left: 3px solid var(--odd); border-radius: 0 4px 4px 0; }
+.look > b:first-child { font: 700 11.5px/1 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--odd); margin-right: 8px; }
+.look mjx-container { font-size: 100%; }
 mjx-container { max-width: 100%; }
 mjx-assistive-mml { max-width: 100% !important; }  /* the hidden copy for screen readers must not widen the page on a phone */
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-block: 2px; margin: 12px 0 !important; }
@@ -434,14 +451,16 @@ REHEARSAL@@-->
 
 <script>
 window.MathJax = {
-  loader: { load: ["[tex]/html"] },
+  loader: { load: ["[tex]/html", "[tex]/bbox"] },
   tex: {
     inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]],
-    packages: { "[+]": ["html"] },
+    packages: { "[+]": ["html", "bbox"] },
     macros: {
       D: "\\mathfrak{D}", G: "\\mathfrak{G}", LL: "\\mathfrak{L}", Sm: "\\mathcal{S}", Lh: "\\widehat{\\mathfrak{L}}",
       F: "\\mathbb{F}", Z: "\\mathbb{Z}", rp: ["\\|#1\\|", 1], spn: "\\operatorname{span}",
-      ev: ["\\class{ev}{#1}", 1], od: ["\\class{od}{#1}", 1]
+      ev: ["\\class{ev}{#1}", 1], od: ["\\class{od}{#1}", 1],
+      // highlighter pens (colours per theme in the stylesheet, g.hl … rect); the card set strips them
+      hl: ["\\class{hl}{\\bbox[1.5pt,##fff1b8]{#1}}", 1], hlb: ["\\class{hlb}{\\bbox[1.5pt,##d6e4ff]{#1}}", 1], hlc: ["\\class{hlc}{\\bbox[1.5pt,##ffd9e2]{#1}}", 1]
     }
   },
   svg: { fontCache: "global" }
