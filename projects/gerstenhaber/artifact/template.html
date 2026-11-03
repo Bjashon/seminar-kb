@@ -1613,6 +1613,8 @@ const XREF = (function () {
     if (k) m[2].match(/\d+(?:\.\d+)?/g).forEach(n => add(k + "|" + n, box));
     // «Утверждение 6.5 · замечание 2 статьи»: the paper's number of the same statement.
     for (const s of t.matchAll(/·\s*(\p{L}+)\s+(\d+)\s+статьи/gu)) { const ks = kindOf(s[1]); if (ks) add(ks + "|" + s[2], box); }
+    // «\tag{6}» numbers a formula of any box, the way the paper numbers it.
+    for (const f of box.textContent.matchAll(/\\tag\{(\d{1,2}'?)\}/g)) add("(|" + f[1], box);
     if (!/^(?:определени|формул)/i.test(t)) return;
     for (const f of box.textContent.matchAll(/&\s*\((\d{1,2}'?)\)\s*\\quad|&&\s*\((\d{1,2}'?)\)/g)) add("(|" + (f[1] || f[2]), box);
     $$("b", box).forEach(b => { const f = b.textContent.trim().match(/^\((\d{1,2}'?)\)$/); if (f) add("(|" + f[1], b.closest("p") || box); });
@@ -1666,6 +1668,7 @@ const XREF = (function () {
         const base = m.index + m[0].length - m[3].length;
         let first = true;
         for (const num of m[3].matchAll(/\d+(?:\.\d+)?/g)) {
+          if (k === "пункт" && !num[0].includes(".")) continue;  // «пункт 2» of a lemma is an item, not a section
           const s = base + num.index, p = resolve(k + "|" + num[0], at);
           if (p) cuts.push([first ? start : s, s + num[0].length, p]); else if (!places.has(k + "|" + num[0])) missed.push(m[2] + " " + num[0]);
           first = false;
