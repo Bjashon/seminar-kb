@@ -193,6 +193,7 @@ select.inp { font-family: var(--f-ui); font-size: 15px; width: auto; }
 .q .fb, .card-q, .msg .body, .box { overflow-x: auto; }
 .out .res { margin: 6px 0; }
 .out .err { color: var(--bad); font: 15px var(--f-ui); }
+.out tr.mute td { color: var(--ink-soft); opacity: .55; }
 .ok-mark { color: var(--good); font: 700 14px var(--f-ui); }
 .bad-mark { color: var(--bad); font: 700 14px var(--f-ui); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -545,6 +546,73 @@ function bracket(f, g, mode) {
   let r = P();
   for (const pf of [0, 1]) { const fp = parityPart(f, pf); if (!isZero(fp)) r = padd(r, hom(fp, g, pf)); }
   return r;
+}
+
+// ===== The bracket written out: the formula, the operator {a,·} and every term =====
+// The lab shows these under each answer, so the bracket is seen working as a differential
+// operator; the rows repeat buttinHom/kHom term by term, and their sum is the answer.
+const DXT = i => `\\partial_{x_${i + 1}}`, DOT = i => `\\partial_{\\xi_${i + 1}}`, DTT = "\\partial_\\tau ";
+function facTeX(p) { const t = toTeX(p); return p.size > 1 || t[0] === "-" ? `\\bigl(${t}\\bigr)` : t; }
+// c_1 op_1 + c_2 op_2 + …: polynomial coefficients in front of operators; zero coefficients are dropped.
+function opTeX(parts) {
+  let out = "", n = 0;
+  for (const { c, op } of parts) {
+    if (isZero(c)) continue;
+    let t = toTeX(c), neg = false;
+    if (c.size > 1) t = `\\bigl(${t}\\bigr)`;
+    else { if (t[0] === "-") { neg = true; t = t.slice(1); } if (t === "1") t = ""; }
+    out += (out ? (neg ? " - " : " + ") : (neg ? "-" : "")) + t + (t ? "\\," : "") + op;
+    n++;
+  }
+  return { tex: out || "0", n };
+}
+function stepsHTML(a, b, nA, nB, mode) {
+  const K = mode === "K";
+  const Em2 = h => padd(euler(h), pscale(h, -2));
+  const formula = `\\{${nA},${nB}\\}=\\sum_{i=1}^{3}\\Bigl(\\partial_{x_i}${nA}\\,\\partial_{\\xi_i}${nB}+(-1)^{|${nA}|}\\,\\partial_{\\xi_i}${nA}\\,\\partial_{x_i}${nB}\\Bigr)` +
+    (K ? `+(E-2)(${nA})\\,\\partial_\\tau ${nB}+(-1)^{|${nA}|}\\,\\partial_\\tau ${nA}\\,(E-2)(${nB})` : "");
+  let html = `<p class="small" style="margin-top:12px"><b>Формула</b> — ${K ? "скобка Кантарини–Каца (модуль 11), $E=\\sum_i(x_i\\partial_{x_i}+\\xi_i\\partial_{\\xi_i})$" : "скобка Баттина (определение 10.3)"}; производные — определение 4.4:</p>$$${formula}$$`;
+  const parts = [0, 1].map(p => parityPart(a, p)).filter(p => !isZero(p));
+  if (!parts.length) return html + `<p class="small">$${nA}=0$, поэтому все слагаемые нулевые.</p>`;
+  if (parts.length > 1) html += `<p class="small">$${nA}$ неоднороден. Знак $(-1)^{|${nA}|}$ зависит от чётности, поэтому считаем отдельно чётную часть $${nA}_0=${toTeX(parts[0])}$ и нечётную $${nA}_1=${toTeX(parts[1])}$, а потом складываем: $\\{${nA},${nB}\\}=\\{${nA}_0,${nB}\\}+\\{${nA}_1,${nB}\\}$.</p>`;
+  let grand = P();
+  for (const ap of parts) {
+    const p = homParity(ap), s = p ? -1 : 1;
+    const nm = parts.length > 1 ? `${nA}_${p}` : nA;
+    // the operator {a,·}
+    const ops = [];
+    for (let i = 0; i < NX; i++) { ops.push({ c: dX(ap, i), op: DOT(i) }); ops.push({ c: pscale(dO(ap, i), s), op: DXT(i) }); }
+    if (K) { ops.push({ c: Em2(ap), op: DTT }); ops.push({ c: pscale(dO(ap, TAU), s), op: "(E-2)" }); }
+    const o = opTeX(ops);
+    const a1 = bracket(ap, pconst(1), mode);
+    html += `<p class="small"><b>Оператор</b> $\\{${nm},\\cdot\\}$ при $|${nm}|=${p}$: подставляем в формулу $${nm}$, а второй аргумент $g$ оставляем свободным.</p>` +
+      `$$\\{${nm},g\\}=${o.n > 1 ? `\\Bigl(${o.tex}\\Bigr)` : o.tex}\\,g$$` +
+      `<p class="small">${o.tex === "0" ? `Все коэффициенты нулевые: $\\{${nm},g\\}=0$ для любого $g$.` :
+        K ? (isZero(a1) ? `$E-2=E-2\\,\\mathrm{id}$, но здесь $\\partial_\\tau ${nm}=0$, так что умножения на число нет: $\\{${nm},\\cdot\\}$ — супердифференцирование чётности $\\|${nm}\\|=${(p + 1) % 2}$, и $\\{${nm},1\\}=0$.` :
+          `Множитель $E-2=E-2\\,\\mathrm{id}$ содержит умножение на число, поэтому $\\{${nm},\\cdot\\}$ — не дифференцирование, а дифференцирование плюс умножение на $\\{${nm},1\\}=${toTeX(a1)}$ (замечание 3(b) статьи: дифференцированием является $g\\mapsto\\{${nm},g\\}-\\{${nm},1\\}g$).`) :
+          `Каждое слагаемое — производная, умноженная слева на суперполином, то есть супердифференцирование; их сумма — супердифференцирование чётности $\\|${nm}\\|=${(p + 1) % 2}$ (утверждение 10.6). Поэтому $\\{${nm},1\\}=0$.`}</p>`;
+    // every term
+    let rows = "", total = P();
+    const row = (label, factors, val) => { total = padd(total, val); rows += `<tr${isZero(val) ? ' class="mute"' : ""}><td>$${label}$</td><td>$${factors}$</td><td>$${toTeX(val)}$</td></tr>`; };
+    for (let i = 0; i < NX; i++) {
+      const u1 = dX(ap, i), v1 = dO(b, i);
+      row(`${DXT(i)}${nm}\\,${DOT(i)}${nB}`, `${facTeX(u1)}\\cdot ${facTeX(v1)}`, pmul(u1, v1));
+      const u2 = dO(ap, i), v2 = dX(b, i);
+      row(`(-1)^{|${nm}|}\\,${DOT(i)}${nm}\\,${DXT(i)}${nB}`, `${s < 0 ? "-\\," : ""}${facTeX(u2)}\\cdot ${facTeX(v2)}`, pscale(pmul(u2, v2), s));
+    }
+    if (K) {
+      const e1 = Em2(ap), t1 = dO(b, TAU);
+      row(`(E-2)(${nm})\\,${DTT}${nB}`, `${facTeX(e1)}\\cdot ${facTeX(t1)}`, pmul(e1, t1));
+      const t2 = dO(ap, TAU), e2 = Em2(b);
+      row(`(-1)^{|${nm}|}\\,${DTT}${nm}\\,(E-2)(${nB})`, `${s < 0 ? "-\\," : ""}${facTeX(t2)}\\cdot ${facTeX(e2)}`, pscale(pmul(t2, e2), s));
+    }
+    grand = padd(grand, total);
+    html += `<p class="small"><b>По слагаемым</b> — каждое слагаемое формулы при $${nm}=${toTeX(ap)}$, $${nB}=${toTeX(b)}$ (серые строки равны нулю):</p>` +
+      `<div class="table-wrap" style="margin:6px 0 10px"><table><thead><tr><th>слагаемое</th><th>множители</th><th>значение</th></tr></thead><tbody>${rows}` +
+      `<tr><td colspan="2"><b>сумма</b> $=\\{${nm},${nB}\\}$</td><td><b>$${toTeX(total)}$</b></td></tr></tbody></table></div>`;
+  }
+  if (parts.length > 1) html += `<p>Итого $\\{${nA},${nB}\\}=${toTeX(grand)}$.</p>`;
+  return html;
 }
 
 // ---- parser: integers, x1..x3, ξ1..ξ3 (also xi1, s1), τ (also tau, t), + - * ^ ( ), implicit product
@@ -1036,13 +1104,16 @@ lab("lab-po", ["#po-out", "#po-mode", "#po-preset", "#po-a", "#po-b", "#po-c", "
         const b = get(B, "b");
         html = what === "ab" ? `$$\\{a,b\\}=${T(br(a, b))}$$` : `$$\\{b,a\\}=${T(br(b, a))}$$`;
         html += `<p class="small">$a=${T(a)}$ — ${parTxt(a)}; $b=${T(b)}$ — ${parTxt(b)}.</p>`;
+        html += what === "ab" ? stepsHTML(a, b, "a", "b", mode()) : stepsHTML(b, a, "b", "a", mode());
       } else if (what === "aa") {
         const r = br(a, a);
         html = `$$\\{a,a\\}=${T(r)}$$<p class="small">$a=${T(a)}$ — ${parTxt(a)}. ` +
           (homParity(a) === 1 ? "Для нечётного $a$ всегда $\\{a,a\\}=0$ (кососимметричность)." :
             isZero(r) ? "Квадрат нулевой — для бивектора это условие Пуассона." : "Квадрат ненулевой — для бивектора это значит, что производная скобка не удовлетворяет тождеству Якоби.") + "</p>";
+        html += stepsHTML(a, a, "a", "a", mode());
       } else if (what === "D") {
         html = `$$\\D(a)=\\{1,a\\}=${T(br(pconst(1), a))}$$<p class="small">${mode() === "H" ? "В $PO(3,3)$ всегда $\\D=0$: это алгебра Герстенхабера." : "В $PO(3,4)$ $\\D=-2\\,\\partial/\\partial\\tau$."}</p>`;
+        html += stepsHTML(pconst(1), a, "1", "a", mode());
       } else if (what === "check") {
         const b = get(B, "b"), c = get(Cc, "c");
         const pa = homParity(a), pb = homParity(b), pc = homParity(c);
@@ -1225,7 +1296,7 @@ lab("lab-basis", ["#gb-n", "#gb-out"], function basisLab() {
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(e.words.map(wordHTML).join(" · "));
     });
-    let html = `<p class="stat">Всего <b>${els.length}</b> элементов, $n\\cdot n!=${n}\\cdot${fact(n)}=${n * fact(n)}$.</p>`;
+    let html = `<p class="stat">Всего <b>${els.length}</b> элементов, $n\\cdot n!=${n}\\cdot ${fact(n)}=${n * fact(n)}$.</p>`;
     groups.forEach((list, key) => {
       html += `<div class="deg-row"><div class="d">${key}</div><div class="chips">${list.map(t => `<span class="chip word">${t}</span>`).join("")}</div></div>`;
     });
