@@ -36,7 +36,13 @@ interface Rect { x: number; y: number; w: number; h: number }
 // No scrolling/panning (deliberately -- a huge canvas was hard to find your
 // way around): the canvas is always exactly the viewport, and zoom is the
 // only way to fit more on it.
-const MIN_ZOOM = 0.15;
+// Since the canvas can't scroll, "Вместить всё" must really fit every card:
+// at 15% a board of ~50 cards in a 1280x720 window left 20 of them below the
+// edge with no way to reach them. A card too small to read is opened at 100%
+// on its own (enlargedSlug). The phone keeps its old floor -- its dashboard
+// is to stay as it is.
+const MIN_ZOOM = 0.03;
+const MIN_ZOOM_PHONE = 0.15;
 const MAX_ZOOM = 2;
 const ZOOM_STEP = 1.2;
 const FIT_MARGIN = 40;
@@ -44,7 +50,9 @@ const FIT_MARGIN = 40;
 const LAYOUT_ORIGIN = 40;
 const LAYOUT_GAP_X = 40;
 const LAYOUT_GAP_Y = 40;
-const MAX_COLUMNS = 12;
+// Up to this many cards per row when a board is laid out: a wide screen fits
+// a big board larger with more, shorter columns (12 left a third of it empty).
+const MAX_COLUMNS = 30;
 
 interface Size { w: number; h: number }
 
@@ -68,7 +76,8 @@ function flowLayout(order: string[], sizes: Map<string, Size>, columns: number) 
 }
 
 function clampZoom(z: number): number {
-  return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, z));
+  const min = window.matchMedia("(max-width: 700px)").matches ? MIN_ZOOM_PHONE : MIN_ZOOM;
+  return Math.max(min, Math.min(MAX_ZOOM, z));
 }
 
 function sameLines(a: number[][], b: number[][]): boolean {
