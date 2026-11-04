@@ -168,8 +168,8 @@
 \def\sromnw{2.7em}
 \newcommand{\sromn}[2]{\noindent\makebox[\sromnw][l]{\go{\fnt{#1}}{\bfseries(#1)}}%
   \scalebox{0.84}{$\begin{aligned}[t]#2\end{aligned}$}\par\vskip5pt}
-\newcommand{\sdef}[2]{\noindent\makebox[1.75em][l]{\color{deepgreen}\bfseries#1}%
-  \scalebox{0.84}{$\begin{aligned}[t]#2\end{aligned}$}\par\vskip5pt}
+\newcommand{\sdef}[3][]{\noindent\makebox[1.75em][l]{\ifx\relax#1\relax\color{deepgreen}\bfseries#2\else\go{#1}{\bfseries#2}\fi}%
+  \scalebox{0.84}{$\begin{aligned}[t]#3\end{aligned}$}\par\vskip5pt}   % \sdef[метка]{обозначение}{…}: обозначение ведёт на слайд, где оно определено
 % колонки слайда с формулами слева
 \newenvironment{sidecols}{\begin{columns}[T,onlytextwidth]}{\end{columns}}
 \newcommand{\sidecol}[1][0.27]{\column{#1\textwidth}}   % \sidecol[0.17] — уже, по ширине формул колонки
@@ -755,19 +755,20 @@ $M$ — базис свободной \ftip[-5.2cm]{oddlie}{нечётной с�
 \begin{sidecols}
 \sidecol[0.19]
 \begin{sidebox}{formulas3}
-\sdef{$M$}{&\{u,\ \{v,v\}\mid\\&\;u,v\ \text{хорошие},\ |v|=0\}}
+\sdef[setM]{$M$}{&\{u,\ \{v,v\}\mid\\&\;u,v\ \text{хорошие},\ |v|=0\}}
 \end{sidebox}
 \maincol[0.79]
-$\G$ — свободная унитальная обобщённая алгебра Герстенхабера, порождённая $X$. Ищем её базис.
+Ищем базис свободной унитальной обобщённой алгебры Герстенхабера $\G$ на $X$.
 \begin{defboxn}
 \hlt{Множество $U$} — суперкоммутативные одночлены от элементов $M\setminus\{1\}$: множители по возрастанию, нечётные — в степени $1$,
 \[ U=\bigl\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\ \bigm|\ 1<i_1<\dots<i_r,\ \ k_j\ge1,\ \ k_j=1\ \text{при}\ |e_{i_j}|=1\,\bigr\}, \]
 $r\ge0$; при $r=0$ одночлен равен $1$.
 \end{defboxn}
-$U$ — базис алгебры \go{superpoly}{суперполиномов} $\Sm$ от переменных $M\setminus\{1\}$.
+$U$ — базис алгебры \go{superpoly}{суперполиномов} от переменных $M\setminus\{1\}$:
+\[ \Sm=S(\LL'),\qquad \LL'=\spn(M\setminus\{1\}). \]
 \only<2->{\begin{thmbox}{Теорема 12}
 $U$ — базис $\G$.\par
-Более того, на $\Sm$ есть структура обобщённой алгебры Герстенхабера (скобка задана явной \go{formula8}{формулой}), и гомоморфизм $\varphi\colon\G\to\Sm$, тождественный на $X$, — изоморфизм.
+Более того, на $\Sm$ есть структура обобщённой алгебры Герстенхабера (скобка — явная \go{formula8}{формула}), и гомоморфизм $\varphi\colon\G\to\Sm$, тождественный на $X$, — изоморфизм.
 \end{thmbox}}
 \end{sidecols}
 \end{frame}
@@ -776,7 +777,7 @@ $U$ — базис $\G$.\par
 \begin{sidecols}
 \sidecol
 \begin{sidebox}{formulas3}
-\sdef{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
+\sdef[setM]{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
 \sfthree
 \sffive
 \end{sidebox}
@@ -824,15 +825,15 @@ $U$ — базис $\G$.\par
 \begin{columns}[T,onlytextwidth]
 \column{0.34\textwidth}
 \only<1| handout:1>{\begin{sidebox}{formulas3}
-\sdef{$\G$}{&\text{свободная алгебра нашего класса}\\&\quad\text{на}\ X=\{1<x_1<x_2<\cdots\}}
-\sdef{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
-\sdef{$U$}{&\text{одночлены}\ e_{i_1}^{k_1}\cdots e_{i_r}^{k_r},\ \ 1<i_1<\dots<i_r}
+\sdef[thm12]{$\G$}{&\text{свободная алгебра нашего класса}\\&\quad\text{на}\ X=\{1<x_1<x_2<\cdots\}}
+\sdef[setM]{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
+\sdef[thm12]{$U$}{&\text{одночлены}\ e_{i_1}^{k_1}\cdots e_{i_r}^{k_r},\ \ 1<i_1<\dots<i_r}
 \sffive
 \end{sidebox}}
 \only<2| handout:2>{\begin{sidebox}{formulas3}
-\sdef{$\LL'$}{&\spn(M\setminus\{1\})}
-\sdef{$\Sm$}{&S(\LL')\ \text{— суперполиномы от}\ \LL'}
-\sdef{$U$}{&\text{одночлены от}\ M\setminus\{1\}:\ \text{базис}\ \Sm}
+\sdef[thm12]{$\LL'$}{&\spn(M\setminus\{1\})}
+\sdef[thm12]{$\Sm$}{&S(\LL')\ \text{— суперполиномы от}\ \LL'}
+\sdef[thm12]{$U$}{&\text{одночлены от}\ M\setminus\{1\}:\ \text{базис}\ \Sm}
 \end{sidebox}}
 \only<3| handout:3>{\begin{sidebox}{formulas2}
 \sfthree
@@ -840,8 +841,8 @@ $U$ — базис $\G$.\par
 \sform{5}{&\{a,bc\}=\{a,b\}c\\&\quad+(-1)^{\rp a|b|}b\{a,c\}\\&\qquad+(-1)^{\rp a}\D(a)\,bc}
 \end{sidebox}}
 \only<4| handout:4>{\begin{sidebox}{formulas3}
-\sdef{$\G$}{&\text{свободная алгебра нашего класса}}
-\sdef{$\Sm$}{&S(\LL'),\ \ \text{базис — одночлены}\ U}
+\sdef[thm12]{$\G$}{&\text{свободная алгебра нашего класса}}
+\sdef[thm12]{$\Sm$}{&S(\LL'),\ \ \text{базис — одночлены}\ U}
 \end{sidebox}}
 \column{0.63\textwidth}
 \small
@@ -866,26 +867,25 @@ $U$ — базис $\G$.\par
 \begin{frame}[label=lemma5]{\ft{Порождение: $U$ порождает $\G$}{Порождение}}
 \framesubtitle{\planbar{1}}
 \begin{sidecols}
-\sidecol
+\sidecol[0.23]
 \begin{sidebox}{formulas2}
 \sfthree
 \sffour
 \only<2->{\sffive}
 \end{sidebox}
-\maincol
-  \bul Скобки элементов $M$ лежат в оболочке $M$: в $\G$ верны (3) и (4), а $M$ — базис $\LL$.
+\maincol[0.75]\vspace*{-6pt}
+\begin{defboxn}
+\hlt{$e$-степень} $u=e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\in U$ — число множителей из $M\setminus\{1\}$:
+\[ \deg_e u=k_1+\dots+k_r,\qquad \deg_e1=0. \]
+\end{defboxn}
+  \bul Скобки элементов $M$ — в $\spn M$: в $\G$ верны (3), (4), а $M$ — базис $\LL$.
 \onslide<2->
-  \bul Скобку с произведением раскладываем по (5):
+  \bul Скобку $u\in U$ с $v=v_1v_2$ ($\deg_e v_1,\deg_e v_2<\deg_e v$) раскладываем по (5):
 \[ \{u,v_1v_2\}=\{u,v_1\}v_2+(-1)^{\rp u|v_1|}v_1\{u,v_2\}+(-1)^{\rp u}\{1,u\}\,v_1v_2 . \]
-\onslide<3->
-  \bul Индукция по сумме \ftip[-3cm]{edeg}{$e$-степеней}{e-степень одночлена из U — число его множителей из M без 1; у единицы она 0}{$e$-степень одночлена из $U$ — число его множителей из $M\setminus\{1\}$:
-\[ \begin{aligned}
-\deg_e\bigl(e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\bigr)&=k_1+\dots+k_r\\
-\deg_e1&=0
-\end{aligned} \]}: справа у каждой скобки она меньше.
+\only<3->{\bul Индукция по $\deg_e u+\deg_e v$: у пар $(u,v_1)$, $(u,v_2)$, $(1,u)$ она меньше. Значит, $\spn U$ замкнуто относительно скобки, и $\spn U=\G$.\par}
 \only<4->{\begin{exbox}{Почему индукция не по числу букв}
 \[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} \]
-Слева три буквы, в отмеченном члене четыре. Сумма $e$-степеней падает: 3 слева, 2, 2 и 1 справа.
+Букв: 3 слева, 4 в отмеченном; сумма $e$-степеней: 3 слева, 2, 2, 1 справа.
 \end{exbox}}
 \end{sidecols}
 \end{frame}
@@ -894,8 +894,9 @@ $U$ — базис $\G$.\par
 \begin{sidecols}
 \sidecol
 \begin{sidebox}{formulas3}
-\sdef{$\LL'$}{&\spn(M\setminus\{1\})}
-\sdef{$\Sm$}{&S(\LL')\ \text{— суперполиномы}}
+\sdef[setM]{$\LL$}{&\text{свободная нечётная}\\&\text{супералгебра Ли на}\ X}
+\sdef[thm12]{$\LL'$}{&\spn(M\setminus\{1\})}
+\sdef[thm12]{$\Sm$}{&S(\LL')\ \text{— суперполиномы}}
 \only<3->{\sffive}
 \end{sidebox}
 \maincol
@@ -903,18 +904,15 @@ $U$ — базис $\G$.\par
 \[ \Lh=\F1\oplus\LL'\cong\LL . \]
 \onslide<2->
 \textbf{1.} \hlt{Как у Шестакова}: скобки всех пар множителей,
-\[ \begin{aligned}
-\{a_1\cdots a_m,\;b_1\cdots b_n\}&=\sum_{i,j}\pm\,a_{\hat\imath}\,\{a_i,b_j\}\,b_{\hat\jmath}\\
-a_{\hat\imath}&=\textstyle\prod_{k\neq i}a_k
-\end{aligned} \]
+\[ \{a_1\cdots a_m,\;b_1\cdots b_n\}=\sum_{i,j}\pm\,a_{\hat\imath}\,\{a_i,b_j\}\,b_{\hat\jmath},\qquad a_{\hat\imath}=\textstyle\prod_{k\neq i}a_k \]
 \onslide<3->
-\textbf{2.} \hlt{Каждое применение (5) добавляет поправку}; для $a\in\Lh$ и трёх множителей их две:
-\only<3->{\[ \begin{aligned}
-\{a,b_1b_2b_3\}={}&\{a,b_1\}b_2b_3\pm b_1\{a,b_2\}b_3\pm b_1b_2\{a,b_3\}\\
-&\mkb{-\,2\,\{a,1\}\,b_1b_2b_3}.
-\end{aligned} \]}
+\textbf{2.} \hlt{Каждое применение (5) добавляет поправку} $(-1)^{\rp a}\D(a)\,bc=-\{a,1\}\,bc$. Для $a\in\Lh$ и $n$ множителей их $n-1$.\par
+\only<3->{$n=3$:
+\[ \{a,b_1b_2b_3\}=\{a,b_1\}b_2b_3\pm b_1\{a,b_2\}b_3\pm b_1b_2\{a,b_3\}\;\mkb{-\,2\,\{a,1\}\,b_1b_2b_3} \]
+общий случай:
+\[ \{a,b_1\cdots b_n\}=\textstyle\sum_{j=1}^{n}\pm\,b_1\cdots\{a,b_j\}\cdots b_n\;\mkb{-\,(n-1)\,\{a,1\}\,b_1\cdots b_n} \]}
 \onslide<4->
-\textbf{3.} \hlt{Произведения в обоих аргументах}: поправки по каждому аргументу и \hlt{поправка второго порядка} с $\D(1)=\{1,1\}$.
+\textbf{3.} \hlt{Произведения в обоих аргументах}: поправки по каждому аргументу и \hlt{поправка второго порядка} с $\D(1)=\{1,1\}$. Общая формула — на \go{formula8}{следующем слайде}.
 \end{sidecols}
 \end{frame}
 
@@ -922,7 +920,8 @@ a_{\hat\imath}&=\textstyle\prod_{k\neq i}a_k
 \begin{sidecols}
 \sidecol
 \begin{sidebox}{formulas3}
-\sdef{$\Lh$}{&\F1\oplus\LL'\cong\LL}
+\sdef[setM]{$\LL$}{&\text{свободная нечётная}\\&\text{супералгебра Ли на}\ X}
+\sdef[model]{$\Lh$}{&\F1\oplus\LL'\cong\LL}
 \only<4->{\sffive}
 \end{sidebox}
 \maincol
@@ -961,8 +960,8 @@ a_{\hat\imath}&=\textstyle\prod_{k\neq i}a_k
 $J$ суперкососимметричен, и
 \[ J(a,b,xy)=J(a,b,x)\,y\pm x\,J(a,b,y)\;\mkc{-\,J(a,b,1)\,xy} . \]
 \end{thmbox}}
-\onslide<4->
-  \bul $J=0$ на $\Sm$, как только $J=0$ на $\Lh$. Итог (\go{finish}{теоремы 11, 12}): $U$ — базис $\G$. \hfill$\square$
+\only<3>{{\small Выделенный член — поправка того же вида, что последний член (5), $(-1)^{\rp a}\D(a)\,bc=-\{a,1\}\,bc$: без неё $J$ был бы дифференцированием по третьему аргументу.\par}}
+\only<4->{\bul По лемме 9 и кососимметричности $J$ на произведениях выражается через $J$ на множителях из $\Lh$, включая $J(a,b,1)$. Значит, $J=0$ на $\Sm$, если $J=0$ на $\Lh$; итог (\go{finish}{теоремы 11, 12}): $U$ — базис $\G$.\hfill$\square$\par}
 \end{sidecols}
 \end{frame}
 
