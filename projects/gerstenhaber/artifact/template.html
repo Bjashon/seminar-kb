@@ -1683,6 +1683,8 @@ const XREF = (function () {
         }
         const k = kindOf(m[2]);
         if (!k) continue;
+        // «по модулю 2» — арифметика, а не ссылка на модуль 2 курса.
+        if (k === "модуль" && /по\s*$/i.test(t.data.slice(0, start))) continue;
         const base = m.index + m[0].length - m[3].length;
         let first = true;
         for (const num of m[3].matchAll(/\d+(?:\.\d+)?/g)) {
