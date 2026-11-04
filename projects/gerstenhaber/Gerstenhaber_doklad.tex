@@ -43,6 +43,10 @@
 \newcommand{\mkb}[1]{{\setlength{\fboxsep}{1.5pt}\colorbox{hlB}{$\displaystyle#1$}}}
 \newcommand{\mkc}[1]{{\setlength{\fboxsep}{1.5pt}\colorbox{hlC}{$\displaystyle#1$}}}
 \newcommand{\leg}[2]{{\setlength{\fboxsep}{1.5pt}\colorbox{#1}{#2}}}   % подпись цвета в тексте
+\newcommand{\lit}[1]{\footnote[frame]{#1}}   % литература — сноской на том слайде, где работа упомянута
+\setlength{\skip\footins}{4pt plus 1pt}\setbeamerfont{footnote}{size=\tiny}\setbeamercolor{footnote}{fg=mute}\setbeamercolor{footnote mark}{fg=deepgreen}
+\newcommand{\look}[1]{\par\smallskip{\footnotesize\textbf{Куда смотреть.} #1\par}}   % подпись под выкладкой, как в курсе
+\newcommand{\backto}[2]{\par\vfill\hfill{\scriptsize\go{#1}{$\hookleftarrow$\ #2}}}  % запасной слайд: ссылка обратно в доклад
 
 % ---------------------------------------------------------------- обозначения статьи
 \newcommand{\F}{\mathbb F}
@@ -102,7 +106,7 @@
 \makeatletter\setbeamertemplate{frametitle}{%
   \nointerlineskip\vskip0.22cm
   \begin{beamercolorbox}[wd=\paperwidth,leftskip=0.78cm,rightskip=0.55cm plus 1fil]{frametitle}
-    \usebeamerfont{frametitle}\color{ink}\insertframetitle\vrule height0pt depth0.25em width0pt\par\nointerlineskip
+    \setcounter{footnote}{0}\usebeamerfont{frametitle}\color{ink}\insertframetitle\vrule height0pt depth0.25em width0pt\par\nointerlineskip
     \vskip0.35cm\ifx\insertframesubtitle\@empty{\color{applegreen}\rule{2.2cm}{2.2pt}}\else{\usebeamerfont{normal text}\normalfont\insertframesubtitle}\fi
   \end{beamercolorbox}\vskip-0.3cm}\makeatother
 
@@ -189,7 +193,7 @@
   \node[anchor=base west, inner sep=0pt, font=\small\bfseries, text=deepgreen] (lab) at (0,0) {План};
   \node[pst, signal from=nowhere, p1, anchor=west] (b1) at ([xshift=6pt]lab.east) {\pbt{lemma5}{$U$ порождает $\G$}};
   \node[pst, p2, anchor=west] (b2) at ([xshift=1.5pt]b1.east) {\pbt{model}{строим модель}};
-  \node[pst, p3, anchor=west] (b3) at ([xshift=1.5pt]b2.east) {\pbt{props}{проверяем аксиомы}};
+  \node[pst, p3, anchor=west] (b3) at ([xshift=1.5pt]b2.east) {\pbt{lemma6pf}{проверяем аксиомы}};
   \node[pst, p4, anchor=west] (b4) at ([xshift=1.5pt]b3.east) {\pbt{finishm}{$U$ — базис $\G$}};
 \end{tikzpicture}}
 % частые формулы колонки
@@ -239,10 +243,10 @@
 \vskip0.2cm
 \begin{enumerate}\setlength{\itemsep}{0.62em}
   \item \go{poisson}{\textbf{Откуда эти алгебры.}} От Пуассона к поправке в правиле Лейбница \mins{11}
-  \item \go{freealg}{\textbf{Задача.}} Базисы свободных алгебр: Холл, Штерн, Шестаков \mins{9}
+  \item \go{freealg}{\textbf{Задача.}} Базисы свободных алгебр: Холл, Штерн, Шестаков \mins{8}
   \item \go{setM}{\textbf{Ответ.}} Базис $U$ и элемент $\{1,1\}\neq0$ \mins{8}
   \item \go{proofplan}{\textbf{Доказательство.}} Порождение и модель \mins{13}
-  \item \go{multi}{\textbf{Размерность}} мультилинейной части \mins{4}
+  \item \go{multi}{\textbf{Размерность}} мультилинейной части \mins{5}
   \item \go{summary}{\textbf{Итоги}} и открытые вопросы \mins{2}
 \end{enumerate}
 \vskip0.35cm
@@ -424,7 +428,7 @@ $\displaystyle\begin{aligned}[t]
 \end{sidebox}
 \column{0.773\textwidth}\small\vspace*{-6pt}
 \begin{defboxn}
-\hlt{Алгебра Герстенхабера} — суперкоммутативная \fn{1.4} ассоциативная супералгебра $V$ с единицей и билинейной скобкой $\{a,b\}$, такая что для всех $a,b,c$, где $\rp a=|a|+1$ — \hlt{обращённая чётность},
+\hlt{Алгебра Герстенхабера}\lit{M.~Gerstenhaber, \emph{The cohomology structure of an associative ring}, Ann. Math. \textbf{78} (1963), 267--288.} — суперкоммутативная \fn{1.4} ассоциативная супералгебра $V$ с единицей и билинейной скобкой $\{a,b\}$, такая что для всех $a,b,c$, где $\rp a=|a|+1$ — \hlt{обращённая чётность},
 \[ \begin{alignedat}{3}
 &&|\{a,b\}|&=|a|+|b|+1 &\quad&\nm{скобка нечётна}\\
 &\text{\color{deepgreen}\bfseries(1.8)}\enspace&\{a,b\}&=-(-1)^{\rp a\rp b}\{b,a\} &&\nm{\fn{1.6} с $\rp a$}\\
@@ -480,7 +484,7 @@ $\displaystyle\begin{aligned}[t]
 \end{aligned} \]
 \end{exbox}}
 \onslide<4->
-\vspace{-6pt}{\small\color{mute}Кантарини и Кац (2007) классифицировали простые линейно компактные обобщённые супералгебры Пуассона. Откуда поправка — \go{kantor}{двойник Кантора}.}
+\vspace{-6pt}{\small\color{mute}Кантарини и Кац (2007)\lit{N.~Cantarini, V.~Kac, \emph{Classification of linearly compact simple Jordan and generalized Poisson superalgebras}, J. Algebra \textbf{313} (2007), 100--124.} классифицировали простые линейно компактные обобщённые супералгебры Пуассона. Откуда поправка — \go{kantor}{двойник Кантора}.}
 \end{sidecols}
 \end{frame}
 
@@ -500,7 +504,7 @@ $\displaystyle\begin{aligned}[t]
 \onslide<2->
   \bul Поправка та же, что у обобщённых алгебр Пуассона: по (3) $(-1)^{\rp a}\D(a)=-\{a,1\}$, то есть в (5) стоит $-\{a,1\}\,bc$. При $\D=0$ — алгебры Герстенхабера.
 \onslide<3->
-  \bul Кантарини и Кац (2010), «odd generalized Poisson superalgebras»: простые линейно компактные алгебры класса — \go{po}{$PO(n,n)$ и $PO(n,n+1)$} с точностью до калибровочной эквивалентности.
+  \bul Кантарини и Кац (2010)\lit{N.~Cantarini, V.~Kac, \emph{Classification of linearly compact simple rigid superalgebras}, IMRN (2010), 3341--3393.}, «odd generalized Poisson superalgebras»: простые линейно компактные алгебры класса — \go{po}{$PO(n,n)$ и $PO(n,n+1)$} с точностью до калибровочной эквивалентности.
 \end{frame}
 
 \begin{frame}[label=ex1]{\ft{Новое явление: элемент $\{1,1\}$}{Новое явление: элемент {1,1}}}
@@ -581,13 +585,12 @@ $\displaystyle\begin{aligned}[t]
 \end{defboxn}
 \only<2->{\begin{exbox}{Пример: $x_1<x_2<x_3$, каждая буква по разу}
 \[ \begin{aligned}
-&[x_2,x_1]<[x_3,x_1]<[x_3,x_2] &&\nm{степень 2}\\
-&[[x_2,x_1],x_3],\ \ [[x_3,x_1],x_2] &&\nm{хорошие степени 3}\\
+&[x_2,x_1]<[x_3,x_1]<[x_3,x_2];\qquad [[x_2,x_1],x_3],\ \ [[x_3,x_1],x_2] &&\nm{хорошие слова степеней 2 и 3}\\
 &[[x_3,x_2],x_1]=[[x_3,x_1],x_2]-[[x_2,x_1],x_3] &&\nm{не хорошее: $x_2>x_1$; по Якоби}
 \end{aligned} \]
 \end{exbox}}
 \onslide<3->
-\textbf{Теорема М.~Холла (1950).} Хорошие слова — базис свободной алгебры Ли; мультилинейных на $k$ буквах — $(k-1)!$.
+\textbf{Теорема М.~Холла}\lit{M.~Hall, \emph{A basis for free Lie rings and higher commutators in free groups}, Proc. AMS \textbf{1} (1950), 575--581.}\textbf{.} Хорошие слова — базис свободной алгебры Ли; мультилинейных на $k$ буквах $(k-1)!$.
 \end{frame}
 
 \begin{frame}[label=superlie]{Супералгебры Ли: квадраты нечётных}
@@ -599,12 +602,9 @@ $\displaystyle\begin{aligned}[t]
 \end{exbox}}
 \onslide<3->
 По тождеству Якоби скобки, содержащие квадрат, выражаются через скобки без него; поэтому квадраты входят в базис только сами по себе:
-\[ \begin{aligned}
-{}[v,[v,v]]&=0\\
-{}[[v,v],w]&=2\,[v,[v,w]]
-\end{aligned} \]
+\[ [v,[v,v]]=0,\qquad\qquad [[v,v],w]=2\,[v,[v,w]]. \]
 \only<4->{\begin{thmbox}{Теорема (А.\,С.~Штерн, 1986)}
-Базис свободной супералгебры Ли: хорошие слова и \hlt{квадраты $[v,v]$ нечётных хороших слов $v$}.
+Базис свободной супералгебры Ли — хорошие слова и \hlt{квадраты $[v,v]$ нечётных хороших $v$}.\lit{A.~Shtern, \emph{Free Lie superalgebras}, Sib. Math. J. \textbf{27} (1986), 136--140.}
 \end{thmbox}}
 \end{frame}
 
@@ -620,7 +620,7 @@ $\displaystyle\begin{aligned}[t]
 \end{sidebox}
 \maincol[0.78]\vspace*{-9pt}
 \begin{thmbox}{Теорема (И.\,П.~Шестаков, 1993)}
-Свободная алгебра Пуассона $P(X)\cong S(\mathrm{Lie}(X))$; базис — \hlt{одночлены от хороших слов}.
+Свободная алгебра Пуассона $P(X)\cong S(\mathrm{Lie}(X))$; базис — \hlt{одночлены от хороших слов}.\lit{I.~Shestakov, \emph{Quantization of Poisson superalgebras and speciality of Jordan Poisson superalgebras}, Algebra and Logic \textbf{32} (1993), 309--317.}
 \end{thmbox}
 \only<2->{\begin{exbox}{Пример: мультилинейные от $x_1<x_2<x_3$: \ $1+3+2=6$}
 \[ \begin{gathered}
@@ -635,21 +635,6 @@ x_1x_2x_3;\qquad \{x_2,x_1\}x_3,\ \ \{x_3,x_1\}x_2,\ \ \{x_3,x_2\}x_1;\\
 \item \hlt{Независимость:} гомоморфизм $\varphi\colon P(X)\to S(\mathrm{Lie}(X))$, тождественный на $X$, переводит хорошее слово в него же, а одночлен — в тот же одночлен; это базис $S(\mathrm{Lie}(X))$, так как хорошие слова — базис $\mathrm{Lie}(X)$.
 \end{itemize}
 \end{sidecols}
-\end{frame}
-
-\begin{frame}[label=shestakovn]{\ft{Алгебры Пуассона: почему $n!$}{Алгебры Пуассона: почему n!}}
-\small
-$P_n$ — мультилинейная часть свободной алгебры Пуассона: $x_1,\dots,x_n$ входят по одному разу.
-
-Базис $P_n$ — одночлены $u_1\cdots u_r$ от хороших слов (\go{shestakov}{Шестаков}). $B_j$ — множество букв слова $u_j$; $\{B_1,\dots,B_r\}$ — разбиение множества $\{x_1,\dots,x_n\}$.
-\[ \begin{aligned}
-\dim P_n&=\sum_{\{B_1,\dots,B_r\}}\ \prod_{j=1}^{r}\#\{\text{хорошие слова на буквах}\ B_j\} &&\nm{\go{shestakov}{базис Шестакова}}\\
-&=\sum_{\{B_1,\dots,B_r\}}\ \prod_{j=1}^{r}\bigl(|B_j|-1\bigr)! &&\nm{\go{good}{теорема Холла}}\\
-&=|S_n|=n! &&\nm{$B_j$ — циклы $\sigma$; циклов на $B$ — $(|B|-1)!$}
-\end{aligned} \]
-\only<2->{\begin{exbox}{Пример: $n=3$ — шесть элементов с предыдущего слайда}
-\[ \underbrace{(3-1)!}_{\{x_1,x_2,x_3\}}+\underbrace{3\cdot1!\cdot0!}_{\{x_i,x_j\}\sqcup\{x_k\}}+\underbrace{0!\cdot0!\cdot0!}_{\{x_1\}\sqcup\{x_2\}\sqcup\{x_3\}}=2+3+1=6=3! \]
-\end{exbox}}
 \end{frame}
 
 \begin{frame}[label=letter1]{\ft{Когда $\{a,1\}\neq0$, единица — буква}{Когда {a,1} не нуль, единица — буква}}
@@ -673,7 +658,7 @@ X&=\{1<x_1<x_2<\cdots\} &&\nm{алфавит}\\
 &\phantom{{}={}}\{x_1,1\},\ \ \{\{x_1,1\},1\},\ \ \{1,1\},\ \dots &&\nm{новые элементы}
 \end{aligned} \]
 \onslide<3->
-Чётный случай (Кайгородов 2017): базис — одночлены от базиса свободной супералгебры Ли на $X$, без множителя $1$; мультилинейная часть по $1,x_1,\dots,x_n$ имеет размерность $n\cdot n!$.
+Чётный случай (Кайгородов 2017)\lit{I.~Kaygorodov, \emph{Algebras of Jordan brackets and generalized Poisson algebras}, Linear Multilinear Algebra \textbf{65} (2017), 1142--1157.}: базис — одночлены от базиса свободной супералгебры Ли на $X$, без множителя $1$; мультилинейная часть по $1,x_1,\dots,x_n$ имеет размерность $n\cdot n!$.
 \end{sidecols}
 \end{frame}
 
@@ -862,7 +847,7 @@ $U$ — базис $\G$.\par
 \end{columns}
 \end{frame}
 
-\begin{frame}[label=lemma5]{\ft{Порождение: $U$ порождает $\G$}{Порождение}}
+\begin{frame}[label=lemma5]{\ft{Порождение: лемма 5}{Порождение: лемма 5}}
 \framesubtitle{\planbar{1}}
 \begin{sidecols}
 \sidecol[0.23]
@@ -872,6 +857,9 @@ $U$ — базис $\G$.\par
 \only<2->{\sffive}
 \end{sidebox}
 \maincol[0.75]\vspace*{-6pt}
+\begin{thmbox}{Лемма 5}
+$U$ порождает $\G$ как в.п.: каждый элемент $\G$ — линейная комбинация одночленов из $U$.
+\end{thmbox}
 \begin{defboxn}
 \hlt{$e$-степень} $u=e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\in U$ — число множителей из $M\setminus\{1\}$:
 \[ \deg_e u=k_1+\dots+k_r,\qquad \deg_e1=0. \]
@@ -880,11 +868,7 @@ $U$ — базис $\G$.\par
 \onslide<2->
   \bul Скобку $u\in U$ с $v=v_1v_2$ ($\deg_e v_1,\deg_e v_2<\deg_e v$) раскладываем по (5):
 \[ \{u,v_1v_2\}=\{u,v_1\}v_2+(-1)^{\rp u|v_1|}v_1\{u,v_2\}+(-1)^{\rp u}\{1,u\}\,v_1v_2 . \]
-\only<3->{\bul Индукция по $\deg_e u+\deg_e v$: у пар $(u,v_1)$, $(u,v_2)$, $(1,u)$ она меньше. Значит, $\spn U$ замкнуто относительно скобки, и $\spn U=\G$.\par}
-\only<4->{\begin{exbox}{Почему индукция не по числу букв}
-\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mkb{-\,x_2x_3\{x_1,1\}} \]
-Букв: 3 слева, 4 в отмеченном; сумма $e$-степеней: 3 слева, 2, 2, 1 справа.
-\end{exbox}}
+\only<3->{\bul Индукция по $\deg_e u+\deg_e v$: у пар $(u,v_1)$, $(u,v_2)$, $(1,u)$ она меньше. Значит, $\spn U$ замкнуто относительно скобки, и $\spn U=\G$ (\go{lemma5pf}{подробно}).\par}
 \end{sidecols}
 \end{frame}
 
@@ -950,17 +934,17 @@ $U$ — базис $\G$.\par
 \sffive
 \end{sidebox}
 \maincol
-  \bul \go{props}{Леммы 6--8}: для скобки (8) правила (3) и (5) проверяются прямо.
+  \bul Леммы \go{lemma6pf}{6}, \go{lemma7pf}{7}, \go{lemma8pf}{8}: (8) корректна, (3) и (5) проверяются прямо.
 \onslide<2->
   \bul Трудное — тождество Якоби. \tip{Якобиатор}{J = 0 на всех тройках ⇔ выполнено тождество Якоби} — мера его нарушения:
 \[ J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\} \]
 \only<3->{\begin{thmbox}{Лемма 9 (без тождества Якоби)}
-$J$ суперкососимметричен, то есть меняет знак при перестановке соседних аргументов (с поправкой Кошуля):
+$J$ суперкососимметричен, то есть меняет знак при перестановке соседних аргументов:
 \[ J(a,b,c)=-(-1)^{\rp a\rp b}J(b,a,c)=-(-1)^{\rp b\rp c}J(a,c,b), \]
 и для произведения в третьем аргументе
 \[ J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}x\,J(a,b,y)\;\mkb{-\,J(a,b,1)\,xy} . \]
 \end{thmbox}}
-\only<3>{{\small Выделенный член — поправка того же вида, что выделенный член (5), $(-1)^{\rp a}\D(a)\,bc=-\{a,1\}\,bc$: без неё $J$ был бы дифференцированием по третьему аргументу.\par}}
+\only<3>{{\small Выделенный член — поправка того же вида, что выделенный член (5): без неё $J$ был бы дифференцированием по третьему аргументу. \go{lemma9pf}{Доказательство леммы 9}.\par}}
 \end{sidecols}
 \end{frame}
 
@@ -978,8 +962,8 @@ $J$ суперкососимметричен, то есть меняет зна�
 \begin{thmbox}{Предложение 10}
 $J=0$ на $\Sm$, то есть в $\Sm$ выполнено тождество Якоби (4).
 \end{thmbox}
-\textbf{Доказательство.} $J$ трилинеен, поэтому достаточно одночленов — произведений элементов $\Lh$. Индукция по числу множителей.
-  \bul \hlt{$u,v,w\in\Lh$.} На $\Lh$ скобка $\{\,,\}^*$ — скобка $\LL$ (\go{props}{лемма 6}), в $\LL$ верно (4): $J(u,v,w)=0$.
+\textbf{Доказательство} (\go{prop10pf}{подробно}). $J$ трилинеен, поэтому достаточно одночленов — произведений элементов $\Lh$. Индукция по числу множителей.
+  \bul \hlt{$u,v,w\in\Lh$.} На $\Lh$ скобка $\{\,,\}^*$ — скобка $\LL$ (\go{lemma6ipf}{лемма 6}), в $\LL$ верно (4): $J(u,v,w)=0$.
 \onslide<2->
   \bul \hlt{$u,v\in\Lh$, третий аргумент $xy$}; у $x$, $y$ меньше множителей. По \go{axioms\fnov{3}}{лемме 9}:
 \only<2->{\[ J(u,v,xy)=\underbrace{J(u,v,x)}_{0\ \text{по индукции}}\,y+(-1)^{(|u|+|v|)|x|}x\,\underbrace{J(u,v,y)}_{0\ \text{по индукции}}\;\mkb{-\,\underbrace{J(u,v,1)}_{0,\ 1\in\Lh}\,xy}=0. \]}
@@ -1003,8 +987,8 @@ $J=0$ на $\Sm$, то есть в $\Sm$ выполнено тождество �
 $(\Sm,\cdot,\{\,,\}^*)$ — унитальная обобщённая алгебра Герстенхабера, порождённая $X$.
 \end{thmbox}
 \textbf{Доказательство:} аксиомы \go{def1}{определения 1} — по очереди.
-  \bul \ax{1}, \ax{2}: $\Sm$ — суперполиномы, и $|\{a,b\}^*|=|a|+|b|+1$ (\go{props}{лемма 6}).
-  \bul \ax{3} — \go{props}{лемма 7}; \ax{5} — \go{props}{лемма 8}.
+  \bul \ax{1}, \ax{2}: $\Sm$ — суперполиномы, и $|\{a,b\}^*|=|a|+|b|+1$ (\go{lemma6ipf}{лемма 6}).
+  \bul \ax{3} — \go{lemma7pf}{лемма 7}; \ax{5} — \go{lemma8pf}{лемма 8}.
   \bul \ax{4} — \go{jacobim}{предложение 10}.
   \bul $\Sm$ порождена $X$: элементы $M$ — слова от букв, а $\Sm$ — суперполиномы от $M\setminus\{1\}$. \hfill$\square$
 \end{sidecols}
@@ -1058,7 +1042,22 @@ $n$ & 1 & 2 & 3 & 4\\
 \end{tabular}
 \vskip0.25cm
 \raggedright
-{\small Почему $n\cdot n!$, и пример $n=2$ — на \go{perm}{следующем слайде}.}
+{\small Сначала — тот же подсчёт для алгебр Пуассона (\go{shestakovn}{$n!$}), затем \go{perm}{доказательство} с примером $n=2$.}
+\end{frame}
+
+\begin{frame}[label=shestakovn]{\ft{Алгебры Пуассона: почему $n!$}{Алгебры Пуассона: почему n!}}
+\small
+$P_n$ — мультилинейная часть свободной алгебры Пуассона: $x_1,\dots,x_n$ входят по одному разу.
+
+Базис $P_n$ — одночлены $u_1\cdots u_r$ от хороших слов (\go{shestakov}{Шестаков}). $B_j$ — множество букв слова $u_j$; $\{B_1,\dots,B_r\}$ — разбиение множества $\{x_1,\dots,x_n\}$.
+\[ \begin{aligned}
+\dim P_n&=\sum_{\{B_1,\dots,B_r\}}\ \prod_{j=1}^{r}\#\{\text{хорошие слова на буквах}\ B_j\} &&\nm{\go{shestakov}{базис Шестакова}}\\
+&=\sum_{\{B_1,\dots,B_r\}}\ \prod_{j=1}^{r}\bigl(|B_j|-1\bigr)! &&\nm{\go{good}{теорема Холла}}\\
+&=|S_n|=n! &&\nm{$B_j$ — циклы $\sigma$; циклов на $B$ — $(|B|-1)!$}
+\end{aligned} \]
+\only<2->{\begin{exbox}{Пример: $n=3$ — шесть элементов из \go{shestakov}{примера к теореме Шестакова}}
+\[ \underbrace{(3-1)!}_{\{x_1,x_2,x_3\}}+\underbrace{3\cdot1!\cdot0!}_{\{x_i,x_j\}\sqcup\{x_k\}}+\underbrace{0!\cdot0!\cdot0!}_{\{x_1\}\sqcup\{x_2\}\sqcup\{x_3\}}=2+3+1=6=3! \]
+\end{exbox}}
 \end{frame}
 
 \begin{frame}[label=perm]{Доказательство теоремы 14}
@@ -1125,12 +1124,12 @@ $A$ — суперкоммутативная супералгебра со ск�
 $$a\ast b=ab,\qquad a\ast bx=(ab)x,\qquad ax\ast b=(-1)^{|b|}(ab)x,\qquad ax\ast bx=(-1)^{|b|}\{a,b\}.$$
 \end{defbox}
 \begin{itemize}\small\setlength{\itemsep}{0.35em}
-  \item Кантор (1990): для скобки Пуассона $K(A)$ — \ftip[-4.4cm]{jordan}{йорданова супералгебра}{суперкоммутативная алгебра с тождеством Йордана (x²y)x = x²(yx), с суперзнаками}{Суперкоммутативная супералгебра с тождеством Йордана; для чётных $x,y$
+  \item Кантор (1990)\lit{I.~Kantor, \emph{Jordan and Lie superalgebras determined by a Poisson algebra}, Amer. Math. Soc. Transl. \textbf{151} (1992), 55--80.}: для скобки Пуассона $K(A)$ — \ftip[-4.4cm]{jordan}{йорданова супералгебра}{суперкоммутативная алгебра с тождеством Йордана (x²y)x = x²(yx), с суперзнаками}{Суперкоммутативная супералгебра с тождеством Йордана; для чётных $x,y$
 \[ (x^2y)\,x=x^2\,(yx), \]
 для остальных — со знаками по правилу знаков.}.
-  \item Кинг--МакКриммон (1992): $K(A)$ йорданова $\iff$ $\{\,,\}$ — \hlt{йорданова скобка}: Лейбниц и Якоби выполнены с поправками через $\{a,1\}$.
+  \item Кинг--МакКриммон (1992)\lit{D.~King, K.~McCrimmon, \emph{The Kantor construction of Jordan superalgebras}, Comm. Algebra \textbf{20} (1992), 109--126.}: $K(A)$ йорданова $\iff$ $\{\,,\}$ — \hlt{йорданова скобка}: Лейбниц и Якоби выполнены с поправками через $\{a,1\}$.
   \item Замена $\{a,b\}\mapsto\{a,b\}+\tfrac12\bigl(a\{b,1\}-\{a,1\}b\bigr)$ делает йорданову скобку обобщённой пуассоновой: Якоби точное, поправка только в Лейбнице.
-  \item Нечётный вариант — \hlt{обобщённые алгебры Герстенхабера} (Кантарини--Кац 2010).
+  \item Нечётный вариант — \hlt{обобщённые алгебры Герстенхабера} (Кантарини--Кац 2010\lit{N.~Cantarini, V.~Kac, \emph{Classification of linearly compact simple rigid superalgebras}, IMRN (2010), 3341--3393.}).
 \end{itemize}
 \end{frame}
 
@@ -1149,31 +1148,288 @@ E=\sum_{i=1}^n\Bigl(x_i\frac{\partial}{\partial x_i}+\xi_i\frac{\partial}{\parti
 \end{thmbox}
 \end{frame}
 
-\begin{frame}[label=props]{\ft{Свойства скобки $\{\,,\}^*$}{Свойства модельной скобки}}
+\begin{frame}[label=lemma5pf]{\ft{Лемма 5: подробно}{Лемма 5: подробно}}
+\small
+\begin{thmbox}{Лемма 5}
+$U$ порождает $\G$ как в.п.
+\end{thmbox}
+\textbf{Доказательство.} Гомоморфизм нечётных супералгебр Ли $\psi\colon\LL\to\G$, тождественный на $X$, переводит элементы $M$ в те же элементы $\G$; по \go{setM}{лемме 4} $\psi(\LL)$ натянуто на $M\subset U$.\par\smallskip
+Индукцией по $N=\deg_e u+\deg_e v$ докажем, что $\{u,v\}\in\spn U$ для $u,v\in U$.
+\bul $u,v\in M$: $\{u,v\}=\psi(\{u,v\})\in\psi(\LL)\subset\spn U$.
+\bul $\deg_e v\ge2$: $v=v_1v_2$, $v_1,v_2\in U\setminus\{1\}$, $\deg_e v_1,\deg_e v_2<\deg_e v$. По (5)
+\[ \{u,v_1v_2\}=\mka{\{u,v_1\}}\,v_2+(-1)^{\rp u|v_1|}v_1\,\mka{\{u,v_2\}}+(-1)^{\rp u}\mkb{\{1,u\}}\,v_1v_2 ; \]
+у пар $(u,v_1)$, $(u,v_2)$, $(1,u)$ сумма $e$-степеней меньше $N$, а $\spn U$ замкнуто относительно умножения.
+\bul $\deg_e v\le1$, $\deg_e u\ge2$: $\{u,v\}=-(-1)^{\rp u\rp v}\{v,u\}$ по (3) — предыдущий случай.\par\smallskip
+Итак, $\spn U$ — подалгебра $\G$, содержащая $X$, то есть $\spn U=\G$. \hfill$\square$
+\look{\leg{hlA}{Жёлтые} скобки — по предположению индукции; \leg{hlB}{голубая} — поправка из (5), её $e$-степень меньше (\go{lemma5bpf}{пример}).}
+\backto{lemma5}{к слайду «Порождение: лемма 5»}
+\end{frame}
+
+\begin{frame}[label=lemma5bpf]{\ft{Лемма 5: почему индукция по $e$-степени}{Лемма 5: почему по e-степени}}
+\small
+Число букв для индукции не годится: поправка в (5) его увеличивает.
+\begin{exbox}{Пример: $\{x_1,x_2x_3\}$, буквы чётные}
+\[ \begin{aligned}
+\{x_1,x_2x_3\}&=\{x_1,x_2\}x_3+x_2\{x_1,x_3\}-\{1,x_1\}x_2x_3 &&\nm{по (5), $\rp{x_1}=1$}\\
+&=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mkb{-\,x_2x_3\{x_1,1\}} &&\nm{по (3) и (2)}
+\end{aligned} \]
+\end{exbox}
+\[ \begin{aligned}
+&\text{букв:} && 3\ \text{слева}, && 3,\ 3,\ \mkb{4}\ \text{справа}\\
+&\text{сумма $e$-степеней пары:} && 1+2=3\ \text{слева}, && 2,\ 2,\ \mkb{1}\ \text{справа}
+\end{aligned} \]
+\look{\leg{hlB}{Голубым} — член с буквой $1$: букв в нём больше, а сумма $e$-степеней пары $(1,x_1)$ меньше. Поэтому индукция в лемме 5 идёт по $e$-степени.}
+\backto{lemma5}{к слайду «Порождение: лемма 5»}
+\end{frame}
+
+\begin{frame}[label=lemma6pf]{\ft{Лемма 6: формулы (7), (8) корректны}{Лемма 6: корректность}}
+\small
 \begin{thmbox}{Лемма 6}
-\go{formula8}{(7), (8)} не зависят от разложения на множители из $\Lh$, и
-\begin{enumerate}\small
-  \item[(i)] $\{u,v\}^*=\{u,v\}$, \ $\D(u)=\{1,u\}$ при $u,v\in\Lh$;\qquad
-  (ii) $\{1,a\}^*=\D(a)$;
-  \item[(iii)] $\D(bc)=\D(b)c+(-1)^{|b|}b\D(c)-\D(1)bc$;\qquad
-  (iv) $|\{a,b\}^*|=|a|+|b|+1$.
-\end{enumerate}
+Правые части \go{formula8}{(7), (8)} не зависят от разложений $a=a_1\cdots a_m$, $b=b_1\cdots b_n$ на множители $a_i,b_j\in\Lh$. Свойства (i)--(iv) — на \go{lemma6ipf}{отдельных слайдах}.
 \end{thmbox}
-\vskip0.1cm
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
+\textbf{Доказательство.} Правая часть (7) — полилинейная функция $R_m(a_1,\dots,a_m)$, правая часть (8) — $R_{m,n}(a_1,\dots,a_m;\,b_1,\dots,b_n)$. У них два свойства (для $R_{m,n}$ — по каждой группе аргументов):
+\[ \begin{aligned}
+&\text{(a)}\quad R(\dots,a_{k+1},a_k,\dots)=\mka{(-1)^{|a_k||a_{k+1}|}}\,R(\dots,a_k,a_{k+1},\dots) &&\nm{суперсимметричность, \go{lemma6apf}{проверка}}\\
+&\text{(b)}\quad R_m(a_1,\dots,a_{m-1},1)=R_{m-1}(a_1,\dots,a_{m-1}) &&\nm{единица убирается, \go{lemma6bpf}{проверка}}
+\end{aligned} \]
+Возьмём любое разложение на множители из $\Lh$; по полилинейности можно считать, что множители — из базиса $M$. По (a) они переставляются в порядке базиса, и обе части меняют знак одинаково; если нечётный базисный элемент встретился дважды, обе части равны $0$. По (b) единицы убираются. Остаётся разложение, по которому (7), (8) заданы на $U$.
+\look{\leg{hlA}{Жёлтым} — тот же знак, что даёт (2) при перестановке $a_k$ и $a_{k+1}$ в произведении: поэтому $R$ согласуется с умножением в $\Sm$.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma6apf]{\ft{Лемма 6: суперсимметричность (a)}{Лемма 6: суперсимметричность}}
+\small
+\textbf{Формула (7).} После перестановки $a_k\leftrightarrow a_{k+1}$ член с $\{1,a_k\}$ стоит на месте $k+1$; перед ним $a_{<k}a_{k+1}$:
+\[ \begin{aligned}
+&(-1)^{|a_{<k}|+|a_{k+1}|}\,a_{<k}a_{k+1}\{1,a_k\}a_{>k+1}\\
+&\qquad=(-1)^{|a_{<k}|+|a_{k+1}|+|a_{k+1}|(|a_k|+1)}\,a_{<k}\{1,a_k\}a_{k+1}a_{>k+1} &&\nm{(2), $|\{1,a_k\}|=|a_k|+1$}\\
+&\qquad=\mka{(-1)^{|a_k||a_{k+1}|}}\,(-1)^{|a_{<k}|}\,a_{<k}\{1,a_k\}a_{k+1}a_{>k+1} &&\nm{член $i=k$ до перестановки}
+\end{aligned} \]
+Члены с $i\neq k,k+1$ и последний член (7) умножаются на тот же множитель: так меняется произведение, а чётность $a_{<i}$ та же.\par\smallskip
+\textbf{Формула (8).} Произведения $a$, $a\D(b)$, $a\D(1)b$, $\D(a)b$ умножаются на $(-1)^{|a_k||a_{k+1}|}$; члены двойной суммы с $i\neq k,k+1$ — тоже. Член $i=k$ до перестановки и член $i=k+1$ после:
+\[ \begin{aligned}
+&(-1)^{|a_k|(|a_{k+1}|+|a_{>k+1}|)}\,a_{<k}a_{k+1}a_{>k+1}\{a_k,b_j\}b_{\hat\jmath},\\
+&(-1)^{|a_k||a_{>k+1}|}\,a_{<k}a_{k+1}a_{>k+1}\{a_k,b_j\}b_{\hat\jmath}
+\end{aligned} \]
+отличаются множителем $\mka{(-1)^{|a_k||a_{k+1}|}}$.
+\look{\leg{hlA}{Жёлтым} — множитель из (a): знак $(-1)^{|a_{k+1}|}$ от удлинения $a_{<i}$ и знак переноса $\{1,a_k\}$ через $a_{k+1}$ вместе дают ровно его.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma6bpf]{\ft{Лемма 6: единица убирается}{Лемма 6: единица убирается}}
+\small
+Пусть $a_m=1$ и $a'=a_1\cdots a_{m-1}$; тогда $a=a'$ как элемент $\Sm$. Проверяем (b).\par\smallskip
+\textbf{Формула (7).} Член с $i=m$ и последний член:
+\[ \begin{aligned}
+(-1)^{|a'|}\,a'\{1,1\}&=\mkc{\{1,1\}\,a'} &&\nm{$\{1,1\}$ нечётен}\\
+-(m-1)\{1,1\}\,a&=-(m-2)\{1,1\}\,a'\;\mkc{-\,\{1,1\}\,a'} &&\nm{$a=a'$}
+\end{aligned} \]
+Розовые члены сокращаются; остальное — ровно $R_{m-1}(a')$.\par\smallskip
+\textbf{Формула (8).} Члены двойной суммы с $i=m$ (здесь $a_{\hat m}=a'$):
+\[ \begin{aligned}
+\sum_j(-1)^{|b_j||b_{<j}|}\,a'\{1,b_j\}b_{\hat\jmath}&=a'\sum_j(-1)^{|b_{<j}|}\,b_{<j}\{1,b_j\}b_{>j} &&\nm{(2), $|\{1,b_j\}|=|b_j|+1$}\\
+&=\mkb{a'\D(b)}+\mkc{(n-1)\,a'\D(1)\,b} &&\nm{по (7)}
+\end{aligned} \]
+В поправках (8) для $a$ вместо $a'$ коэффициент $m-1$ вместо $m-2$, а $\D(a)=\D(a')$ по уже доказанному, поэтому
+\[ \bigl(\text{поправки для }a\bigr)-\bigl(\text{поправки для }a'\bigr)=\mkb{-\,a'\D(b)}\;\mkc{-\,(n-1)\,a'\D(1)\,b}. \]
+\look{\leg{hlB}{Голубые} и \leg{hlC}{розовые} члены сокращаются попарно. Случай $b_n=1$ проверяется так же.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma6ipf]{\ft{Лемма 6: свойства (i), (ii), (iv)}{Лемма 6: свойства}}
+\small
+\begin{thmbox}{Лемма 6, продолжение}
+(i) $\{u,v\}^*=\{u,v\}$, $\D(u)=\{1,u\}$ при $u,v\in\Lh$;\qquad (ii) $\{1,a\}^*=\D(a)$;\\
+(iv) $|\{a,b\}^*|=|a|+|b|+1$, \ $|\D(a)|=\rp a$; \ (iii) — на \go{lemma6iiipf}{отдельном слайде}.
+\end{thmbox}
+\bul \textbf{(i)}: (7) и (8) при $m=n=1$ — сумма из одного члена, поправок нет.\par\smallskip
+\bul \textbf{(ii)}: (8) при $m=1$, $a_1=1$, где $\rp1=1$:
+\[ \begin{aligned}
+\{1,b\}^*&=\textstyle\sum_j(-1)^{|b_j||b_{<j}|}\{1,b_j\}b_{\hat\jmath}+(n-1)(-1)^{\rp1}\D(1)\,b\\
+&=\textstyle\sum_j(-1)^{|b_{<j}|}\,b_{<j}\{1,b_j\}b_{>j}\;\mkc{-\,(n-1)\,\{1,1\}\,b} &&\nm{(2), $|\{1,b_j\}|=|b_j|+1$}\\
+&=\D(b) &&\nm{по (7)}
+\end{aligned} \]
+\bul \textbf{(iv)}: у членов (8) чётность $(|a|-|a_i|)+(|a_i|+|b_j|+1)+(|b|-|b_j|)=|a|+|b|+1$, у поправок — тоже.
+\look{\leg{hlC}{Розовым} — поправка с $\D(1)=\{1,1\}$ из (8): ровно она превращает сумму в $\D(b)$.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma6iiipf]{\ft{Лемма 6: свойство (iii)}{Лемма 6: свойство (iii)}}
+\small
+\begin{thmbox}{Лемма 6 (iii)}
+$\D(bc)=\D(b)c+(-1)^{|b|}b\D(c)-\D(1)bc$ для всех $b,c\in\Sm$.
+\end{thmbox}
+\textbf{Доказательство.} Применяем (7) к разложению $bc=b_1\cdots b_nc_1\cdots c_p$. Члены с множителями $b$ дают $\bigl(\D(b)+(n-1)\D(1)b\bigr)c$, члены с множителями $c$ — $(-1)^{|b|}b\bigl(\D(c)+(p-1)\D(1)c\bigr)$, последний член — $-(n+p-1)\D(1)bc$:
+\[ \begin{aligned}
+\D(bc)&=\bigl(\D(b)+(n-1)\D(1)b\bigr)c+(-1)^{|b|}b\bigl(\D(c)+(p-1)\D(1)c\bigr)-(n+p-1)\D(1)bc\\
+&=\D(b)c+(-1)^{|b|}b\D(c)+\mkc{\bigl((n-1)+(p-1)-(n+p-1)\bigr)\D(1)bc} &&\nm{$\D(1)$ нечётен}\\
+&=\D(b)c+(-1)^{|b|}b\D(c)\;\mkc{-\,\D(1)bc}.\qquad\square
+\end{aligned} \]
+\look{\leg{hlC}{Розовым} — член с $\D(1)=\{1,1\}$: из-за него $\D$ не дифференцирование (\go{cor13}{следствие 13}).}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma7pf]{\ft{Лемма 7: кососимметричность $\{\,,\}^*$}{Лемма 7}}
+\small
 \begin{thmbox}{Лемма 7}
-$\{a,b\}^*=-(-1)^{\rp a\rp b}\{b,a\}^*$
+$\{a,b\}^*=-(-1)^{\rp a\rp b}\{b,a\}^*$ для всех $a,b\in\Sm$.
 \end{thmbox}
-\end{column}
-\begin{column}{0.48\textwidth}
+\textbf{Доказательство.} $a=a_1\cdots a_m$, $b=b_1\cdots b_n$; $\{a,b\}_0$ — двойная сумма в (8). Член $(j,i)$ суммы $\{b,a\}_0$:
+\[ \begin{aligned}
+&(-1)^{|b_j||b_{>j}|+|a_i||a_{<i}|}\,b_{\hat\jmath}\{b_j,a_i\}a_{\hat\imath}\\
+&\qquad=-(-1)^{\rp{a_i}\rp{b_j}+|b_j||b_{>j}|+|a_i||a_{<i}|}\,b_{\hat\jmath}\{a_i,b_j\}a_{\hat\imath} &&\nm{(3) в $\Lh$}\\
+&\qquad=-(-1)^{\rp a\rp b}\,\mka{(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}\,a_{\hat\imath}\{a_i,b_j\}b_{\hat\jmath}} &&\nm{(2), $|\{a_i,b_j\}|=\rp{a_i}+|b_j|$}
+\end{aligned} \]
+В последнем шаге сравниваются показатели: $\rp a=|a_{\hat\imath}|+\rp{a_i}$, $\rp b=|b_{\hat\jmath}|+\rp{b_j}$, $|a_i|+\rp{a_i}=1$. Значит, $\{b,a\}_0=-(-1)^{\rp a\rp b}\{a,b\}_0$; поправки — на \go{lemma7bpf}{следующем слайде}.
+\look{\leg{hlA}{Жёлтым} — член $(i,j)$ суммы $\{a,b\}_0$: члены двух сумм совпадают с точностью до общего знака.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma7bpf]{\ft{Лемма 7: поправки}{Лемма 7: поправки}}
+\small
+По (2), так как $|\D(a)|=\rp a$ и $|\D(1)|=1$,
+\[ b\D(a)=(-1)^{|b|\rp a}\D(a)b,\qquad \D(b)a=(-1)^{\rp b|a|}a\D(b),\qquad b\D(1)a=-(-1)^{\rp a\rp b}a\D(1)b. \]
+Поэтому поправки $\{b,a\}^*$ равны поправкам $\{a,b\}^*$, умноженным на $-(-1)^{\rp a\rp b}$:
+\[ \begin{aligned}
+&\mkb{-(n-1)\,b\D(a)+(m-1)(-1)^{\rp b}\D(b)\,a}\;\mkc{-(n-1)(m-1)\,b\D(1)a}\\
+&\qquad=-(-1)^{\rp a\rp b}\bigl(\mkb{-(m-1)\,a\D(b)+(n-1)(-1)^{\rp a}\D(a)\,b}\;\mkc{-(m-1)(n-1)\,a\D(1)b}\bigr),
+\end{aligned} \]
+так как $(-1)^{\rp b(|a|+1)}=(-1)^{\rp a\rp b}$ и $(-1)^{|b|\rp a}=(-1)^{\rp a\rp b+\rp a}$. Вместе с двойной суммой это и есть лемма 7. \hfill$\square$
+\look{\leg{hlB}{Голубые} и \leg{hlC}{розовые} поправки $\{b,a\}^*$ переходят в поправки $\{a,b\}^*$ того же цвета.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma8pf]{\ft{Лемма 8: правило (5) для $\{\,,\}^*$}{Лемма 8}}
+\small
 \begin{thmbox}{Лемма 8}
-Правило \ax{5} для $\{\,,\}^*$
+$\{a,bc\}^*=\{a,b\}^*c+(-1)^{\rp a|b|}b\{a,c\}^*+(-1)^{\rp a}\D(a)bc$ для всех $a,b,c\in\Sm$.
 \end{thmbox}
-\end{column}
-\end{columns}
-\vskip0.1cm
-{\small Проверки прямые: формула (8) — замкнутая, без рекурсии. Корректность (лемма 6) нужна, потому что множители можно переставлять и вставлять лишние единицы: $1\in\Lh$.}
+\textbf{Доказательство.} $a=a_1\cdots a_m$, $b=b_1\cdots b_n$, $c=c_1\cdots c_p$; применяем (8) к разложению $bc=b_1\cdots b_nc_1\cdots c_p$.\par\smallskip
+\textbf{Двойная сумма.} Члены с множителями $b_j$ дают $\{a,b\}_0\,c$. Член с множителем $c_k$:
+\[ (-1)^{|a_i||a_{>i}|+|c_k|(|b|+|c_{<k}|)}\,a_{\hat\imath}\{a_i,c_k\}\,b\,c_{\hat k}=(-1)^{\rp a|b|}\,(-1)^{|a_i||a_{>i}|+|c_k||c_{<k}|}\,b\,a_{\hat\imath}\{a_i,c_k\}c_{\hat k}, \]
+так как $|a_{\hat\imath}\{a_i,c_k\}|=\rp a+|c_k|$ и $b$ переносится через него по (2). Итак,
+\[ \mka{\{a,bc\}_0=\{a,b\}_0\,c+(-1)^{\rp a|b|}\,b\,\{a,c\}_0}. \]
+\look{\leg{hlA}{Жёлтым} — правило (5) без поправки: для двойной суммы оно верно точно, как у Шестакова. Поправки — на \go{lemma8bpf}{следующем слайде}.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma8bpf]{\ft{Лемма 8: поправки}{Лемма 8: поправки}}
+\small
+Члены (8) с $\D$; у $bc$ всего $n+p$ множителей. В левой части:
+\[ -(m-1)\,a\D(bc)\;\mkb{+(n+p-1)(-1)^{\rp a}\D(a)bc}\;\mkc{-(m-1)(n+p-1)\,a\D(1)bc}. \]
+В правой части:
+\[ \begin{aligned}
+&\bigl(-(m-1)\,a\D(b)+(n-1)(-1)^{\rp a}\D(a)b-(m-1)(n-1)\,a\D(1)b\bigr)c\\
+&+(-1)^{\rp a|b|}b\bigl(-(m-1)\,a\D(c)+(p-1)(-1)^{\rp a}\D(a)c-(m-1)(p-1)\,a\D(1)c\bigr)+(-1)^{\rp a}\D(a)bc.
+\end{aligned} \]
+По (2), так как $|\D(a)|=\rp a$ и $|\D(1)|=1$,
+\[ (-1)^{\rp a|b|}ba\D(c)=(-1)^{|b|}ab\D(c),\qquad (-1)^{\rp a|b|}b\D(a)c=\D(a)bc,\qquad (-1)^{\rp a|b|}ba\D(1)c=a\D(1)bc, \]
+и правая часть равна
+\[ -(m-1)\,a\bigl(\D(b)c+(-1)^{|b|}b\D(c)\bigr)\;\mkb{+(n+p-1)(-1)^{\rp a}\D(a)bc}\;\mkc{-(m-1)(n+p-2)\,a\D(1)bc}. \]
+По \go{lemma6ipf}{лемме 6 (iii)} $\D(bc)=\D(b)c+(-1)^{|b|}b\D(c)\mkc{-\D(1)bc}$, поэтому левая часть равна правой.
+\look{\leg{hlB}{Голубые} члены совпадают сразу; \leg{hlC}{розовые} — после леммы 6 (iii): $-(m-1)(n+p-1)+(m-1)=-(m-1)(n+p-2)$.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma9pf]{\ft{Лемма 9: якобиатор, (i)}{Лемма 9 (i)}}
+\small
+\begin{thmbox}{Лемма 9}
+Пусть $V$ — супералгебра с единицей, в которой выполнены \ax{1}, \ax{2}, \ax{3}, \ax{5}, и $J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\}$. Тогда\\
+(i) $J(a,b,c)=-(-1)^{\rp a\rp b}J(b,a,c)=-(-1)^{\rp b\rp c}J(a,c,b)$;\\
+(ii) $J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}x\,J(a,b,y)-J(a,b,1)\,xy$.
+\end{thmbox}
+\textbf{(i), первое равенство.} По (3) $\{\{b,a\},c\}=-(-1)^{\rp a\rp b}\{\{a,b\},c\}$, поэтому
+\[ -(-1)^{\rp a\rp b}J(b,a,c)=-(-1)^{\rp a\rp b}\{b,\{a,c\}\}\;\mka{-\,\{\{a,b\},c\}}+\{a,\{b,c\}\}=J(a,b,c). \]
+\textbf{Второе равенство.} По (3), так как $\rp{\{a,c\}}=\rp a+\rp c$ и $\rp{\{a,b\}}=\rp a+\rp b$:
+\[ \begin{aligned}
+J(a,c,b)&=\{a,\{c,b\}\}-\{\{a,c\},b\}-(-1)^{\rp a\rp c}\{c,\{a,b\}\}\\
+&=-(-1)^{\rp b\rp c}\{a,\{b,c\}\}+(-1)^{\rp b(\rp a+\rp c)}\{b,\{a,c\}\}+(-1)^{\rp a\rp c+\rp c(\rp a+\rp b)}\{\{a,b\},c\}\\
+&=\mka{-(-1)^{\rp b\rp c}}\bigl(\{a,\{b,c\}\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\}-\{\{a,b\},c\}\bigr)=-(-1)^{\rp b\rp c}J(a,b,c).
+\end{aligned} \]
+\look{\leg{hlA}{Жёлтым} — что даёт перестановка аргументов. Доказательство (ii) — \go{lemma9bpf}{далее}.}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma9bpf]{\ft{Лемма 9 (ii): раскрываем по (5)}{Лемма 9 (ii): раскрытие}}
+\footnotesize
+Раскрываем три члена $J(a,b,xy)$ по (5), используя $|\{b,x\}|=\rp b+|x|$, $|\D(b)|=\rp b$, $\rp{\{a,b\}}=\rp a+\rp b$:
+\[ \begin{aligned}
+\{a,\{b,xy\}\}={}&\mka{\{a,\{b,x\}\}y}+(-1)^{\rp a(|x|+\rp b)}\{b,x\}\{a,y\}+(-1)^{\rp a}\D(a)\{b,x\}y\\
+&+(-1)^{\rp b|x|}\bigl(\{a,x\}\{b,y\}+\mka{(-1)^{\rp a|x|}x\{a,\{b,y\}\}}+(-1)^{\rp a}\D(a)x\{b,y\}\bigr)\\
+&+(-1)^{\rp b}\bigl(\mkb{\{a,\D(b)\}xy}+(-1)^{\rp a\rp b}\D(b)\{a,xy\}+(-1)^{\rp a}\D(a)\D(b)xy\bigr),\\
+\{\{a,b\},xy\}={}&\mka{\{\{a,b\},x\}y}+\mka{(-1)^{(|a|+|b|)|x|}x\{\{a,b\},y\}}+\mkb{(-1)^{\rp a+\rp b}\D(\{a,b\})xy},\\
+\{b,\{a,xy\}\}={}&\mka{\{b,\{a,x\}\}y}+(-1)^{\rp b(|x|+\rp a)}\{a,x\}\{b,y\}+(-1)^{\rp b}\D(b)\{a,x\}y\\
+&+(-1)^{\rp a|x|}\bigl(\{b,x\}\{a,y\}+\mka{(-1)^{\rp b|x|}x\{b,\{a,y\}\}}+(-1)^{\rp b}\D(b)x\{a,y\}\bigr)\\
+&+(-1)^{\rp a}\bigl(\mkb{\{b,\D(a)\}xy}+(-1)^{\rp a\rp b}\D(a)\{b,xy\}+(-1)^{\rp b}\D(b)\D(a)xy\bigr);
+\end{aligned} \]
+ещё $\{a,xy\}$ и $\{b,xy\}$ раскрываются по (5). Всё подставляется в
+\[ J(a,b,xy)=\{a,\{b,xy\}\}-\{\{a,b\},xy\}-(-1)^{\rp a\rp b}\{b,\{a,xy\}\}. \]
+\look{\leg{hlA}{Жёлтые} члены собираются в $J(a,b,x)\,y$ и $x\,J(a,b,y)$, \leg{hlB}{голубые} — в $-J(a,b,1)\,xy$, остальные сокращаются попарно (\go{lemma9cpf}{следующий слайд}).}
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma9cpf]{\ft{Лемма 9 (ii): жёлтые и голубые члены}{Лемма 9 (ii): сборка}}
+\small
+\bul \leg{hlA}{Жёлтые} члены собираются в якобиаторы:
+\[ \begin{aligned}
+\{a,\{b,x\}\}y-\{\{a,b\},x\}y-(-1)^{\rp a\rp b}\{b,\{a,x\}\}y&=\mka{J(a,b,x)\,y},\\
+(-1)^{(|a|+|b|)|x|}\,x\bigl(\{a,\{b,y\}\}-\{\{a,b\},y\}-(-1)^{\rp a\rp b}\{b,\{a,y\}\}\bigr)&=\mka{(-1)^{(|a|+|b|)|x|}\,x\,J(a,b,y)}.
+\end{aligned} \]
+\bul \leg{hlB}{Голубые} члены. По (3)
+\[ \{b,1\}=-(-1)^{\rp b}\D(b),\qquad \{a,1\}=-(-1)^{\rp a}\D(a),\qquad \{\{a,b\},1\}=-(-1)^{\rp a+\rp b}\D(\{a,b\}), \]
+поэтому
+\[ J(a,b,1)=-(-1)^{\rp b}\{a,\D(b)\}+(-1)^{\rp a+\rp b}\D(\{a,b\})+(-1)^{\rp a\rp b+\rp a}\{b,\D(a)\}, \]
+и голубые члены $J(a,b,xy)$ в сумме дают $\mkb{-\,J(a,b,1)\,xy}$.\par\smallskip
+Остальные шестнадцать членов сокращаются попарно — \go{lemma9dpf}{следующий слайд}.
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=lemma9dpf]{\ft{Лемма 9 (ii): остальные члены сокращаются}{Лемма 9 (ii): сокращение}}
+\small
+После раскрытия $\{a,xy\}$ и $\{b,xy\}$ по (5) остальные шестнадцать членов $J(a,b,xy)$ собираются в восемь пар:
+\[ \begin{aligned}
+&\bigl((-1)^{\rp a(|x|+\rp b)}-(-1)^{\rp a\rp b+\rp a|x|}\bigr)\,\{b,x\}\{a,y\}\\
+&\bigl((-1)^{\rp b|x|}-(-1)^{\rp a\rp b+\rp b(|x|+\rp a)}\bigr)\,\{a,x\}\{b,y\}\\
+&\bigl((-1)^{\rp a}-(-1)^{\rp a}\bigr)\,\D(a)\{b,x\}y\\
+&\bigl((-1)^{\rp b|x|+\rp a}-(-1)^{\rp a+\rp b|x|}\bigr)\,\D(a)x\{b,y\}\\
+&\bigl((-1)^{\rp b+\rp a\rp b}-(-1)^{\rp a\rp b+\rp b}\bigr)\,\D(b)\{a,x\}y\\
+&\bigl((-1)^{\rp b+\rp a\rp b+\rp a|x|}-(-1)^{\rp a\rp b+\rp a|x|+\rp b}\bigr)\,\D(b)x\{a,y\}\\
+&\bigl((-1)^{\rp b+\rp a}-(-1)^{\rp a+\rp b}\bigr)\,\D(a)\D(b)xy\\
+&\bigl((-1)^{\rp b+\rp a\rp b+\rp a}-(-1)^{\rp a\rp b+\rp a+\rp b}\bigr)\,\D(b)\D(a)xy
+\end{aligned} \]
+В каждой паре показатели равны по модулю $2$, так что все восемь коэффициентов — нули. Итак,
+\[ J(a,b,xy)=\mka{J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}x\,J(a,b,y)}\;\mkb{-\,J(a,b,1)\,xy}. \qquad\square \]
+\backto{axioms\fnov{3}}{к слайду «Аксиомы в модели»}
+\end{frame}
+
+\begin{frame}[label=prop10pf]{\ft{Предложение 10: подробно}{Предложение 10: подробно}}
+\small
+\begin{thmbox}{Предложение 10}
+$J=0$ на $\Sm$, то есть в $\Sm$ выполнено тождество Якоби (4).
+\end{thmbox}
+По \go{lemma6pf}{леммам 6}--\go{lemma8pf}{8} к $\Sm$ применима \go{lemma9pf}{лемма 9}.\par\smallskip
+\textbf{Шаг 1.} Фиксируем $a,b\in\Sm$. Если $J(a,b,u)=0$ при всех $u\in\Lh$, то $J(a,b,c)=0$ при всех $c\in\Sm$. Действительно, $\Sm$ натянуто на произведения $c_1\cdots c_m$, $c_k\in\Lh$, и по лемме 9 (ii)
+\[ \begin{aligned}
+J(a,b,c_1\cdots c_m)={}&\mka{J(a,b,c_1\cdots c_{m-1})}\,c_m+(-1)^{(|a|+|b|)|c_1\cdots c_{m-1}|}\,c_1\cdots c_{m-1}\,\mka{J(a,b,c_m)}\\
+&\mkb{-\,J(a,b,1)}\,c_1\cdots c_m;
+\end{aligned} \]
+индукция по $m$, так как $1,c_m\in\Lh$.
+\look{\leg{hlA}{Жёлтые} — нули по предположению индукции, \leg{hlB}{голубой} — нуль, так как $1\in\Lh$. Шаги 2--4 — \go{prop10bpf}{на следующем слайде}.}
+\backto{jacobim}{к слайду «Тождество Якоби в модели»}
+\end{frame}
+
+\begin{frame}[label=prop10bpf]{\ft{Предложение 10: подробно, шаги 2--4}{Предложение 10: шаги 2--4}}
+\small
+\textbf{Шаг 2.} $u,v,w\in\Lh$: $J(u,v,w)=0$, так как по \go{lemma6ipf}{лемме 6 (i)} это якобиатор $\LL$. По шагу 1 (с $a=u$, $b=v$)
+\[ J(u,v,c)=0\qquad\text{для всех}\ c\in\Sm. \]
+\textbf{Шаг 3.} По лемме 9 (i) и шагу 2
+\[ J(u,c,v)=-(-1)^{\rp c\rp v}J(u,v,c)=0\qquad(u,v\in\Lh,\ c\in\Sm), \]
+и по шагу 1 (с $a=u$, $b=c$) $J(u,b,c)=0$ для всех $u\in\Lh$, $b,c\in\Sm$.\par\smallskip
+\textbf{Шаг 4.} По лемме 9 (i) и шагу 3
+\[ J(a,b,u)=-(-1)^{\rp b\rp u}J(a,u,b)=(-1)^{\rp b\rp u+\rp a\rp u}\,\mka{J(u,a,b)}=0\qquad(a,b\in\Sm,\ u\in\Lh), \]
+и по шагу 1 $J(a,b,c)=0$ для всех $a,b,c\in\Sm$. \hfill$\square$
+\look{\leg{hlA}{Жёлтым} — якобиатор с первым аргументом из $\Lh$: он нуль по шагу 3.}
+\backto{jacobim}{к слайду «Тождество Якоби в модели»}
 \end{frame}
 
 \begin{frame}[label=classes]{Четыре класса рядом}
@@ -1220,25 +1476,6 @@ $P(X)$ и $\mathfrak g=\mathrm{Lie}(X)$ — \go{freealg}{свободные} а�
 Хорошие слова — базис $\mathfrak g$ (\go{good}{Холл}), а одночлены от базиса $\mathfrak g$ — базис $S(\mathfrak g)$. Поэтому $\varphi$ переводит одночлены от хороших слов в попарно различные элементы базиса $S(\mathfrak g)$, и в $P(X)$ они линейно независимы.
 \end{sidecols}
 \end{frame}
-
-\begin{frame}[label=lit]{Литература}
-\scriptsize\raggedright
-\begin{multicols}{2}
-\begin{itemize}\setlength{\itemsep}{0.1em}
-  \item M.~Hall, \emph{A basis for free Lie rings and higher commutators in free groups}, Proc. AMS \textbf{1} (1950), 575--581.
-  \item A.~Shtern, \emph{Free Lie superalgebras}, Sib. Math. J. \textbf{27} (1986), 136--140.
-  \item Yu.~Bahturin, A.~Mikhalev, V.~Petrogradsky, M.~Zaicev, \emph{Infinite dimensional Lie superalgebras}, de Gruyter, 1992.
-  \item I.~Shestakov, \emph{Quantization of Poisson superalgebras and speciality of Jordan Poisson superalgebras}, Algebra and Logic \textbf{32} (1993), 309--317.
-  \item M.~Gerstenhaber, \emph{The cohomology structure of an associative ring}, Ann. Math. \textbf{78} (1963), 267--288.
-  \item I.~Kantor, \emph{Jordan and Lie superalgebras determined by a Poisson algebra}, Amer. Math. Soc. Transl. \textbf{151} (1992), 55--80.
-  \item D.~King, K.~McCrimmon, \emph{The Kantor construction of Jordan superalgebras}, Comm. Algebra \textbf{20} (1992), 109--126.
-  \item N.~Cantarini, V.~Kac, \emph{Classification of linearly compact simple Jordan and generalized Poisson superalgebras}, J. Algebra \textbf{313} (2007), 100--124.
-  \item N.~Cantarini, V.~Kac, \emph{Classification of linearly compact simple rigid superalgebras}, IMRN (2010), 3341--3393.
-  \item I.~Kaygorodov, \emph{Algebras of Jordan brackets and generalized Poisson algebras}, Linear Multilinear Algebra \textbf{65} (2017), 1142--1157.
-\end{itemize}
-\end{multicols}
-\end{frame}
-
 
 % ---------------------------------------------------------------- формулы доклада: все нужные формулы по порядку
 \end{document}
