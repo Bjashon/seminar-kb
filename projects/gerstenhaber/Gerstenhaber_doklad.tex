@@ -102,7 +102,7 @@
 \makeatletter\setbeamertemplate{frametitle}{%
   \nointerlineskip\vskip0.22cm
   \begin{beamercolorbox}[wd=\paperwidth,leftskip=0.78cm,rightskip=0.55cm plus 1fil]{frametitle}
-    \usebeamerfont{frametitle}\color{ink}\insertframetitle\par\nointerlineskip
+    \usebeamerfont{frametitle}\color{ink}\insertframetitle\vrule height0pt depth0.25em width0pt\par\nointerlineskip
     \vskip0.35cm\ifx\insertframesubtitle\@empty{\color{applegreen}\rule{2.2cm}{2.2pt}}\else{\usebeamerfont{normal text}\normalfont\insertframesubtitle}\fi
   \end{beamercolorbox}\vskip-0.3cm}\makeatother
 
@@ -186,19 +186,20 @@
   ptodo/.style={fill=black!6, text=mute}}
 \newcommand{\pstate}[2]{\ifnum#1<#2\relax\tikzset{p#1/.style={pdone}}\else
   \ifnum#1=#2\relax\tikzset{p#1/.style={pcur}}\else\tikzset{p#1/.style={ptodo}}\fi\fi}
+\newcommand{\pbt}[2]{\hyperlink{#1}{\makebox[2.4cm]{\rule[-1.4ex]{0pt}{3.6ex}\raisebox{1.3pt}{#2}}}}   % стрелка плана: подпись поднята к середине и ведёт на развёрнутое рассуждение этапа
 \newcommand{\planbar}[1]{\pstate{1}{#1}\pstate{2}{#1}\pstate{3}{#1}\pstate{4}{#1}%
 \begin{tikzpicture}[baseline=(lab.base)]
   \node[anchor=base west, inner sep=0pt, font=\small\bfseries, text=deepgreen] (lab) at (0,0) {План};
-  \node[pst, signal from=nowhere, p1, anchor=west] (b1) at ([xshift=6pt]lab.east) {$U$ порождает $\G$};
-  \node[pst, p2, anchor=west] (b2) at ([xshift=1.5pt]b1.east) {строим модель};
-  \node[pst, p3, anchor=west] (b3) at ([xshift=1.5pt]b2.east) {проверяем аксиомы};
-  \node[pst, p4, anchor=west] (b4) at ([xshift=1.5pt]b3.east) {$U$ — базис $\G$};
+  \node[pst, signal from=nowhere, p1, anchor=west] (b1) at ([xshift=6pt]lab.east) {\pbt{lemma5}{$U$ порождает $\G$}};
+  \node[pst, p2, anchor=west] (b2) at ([xshift=1.5pt]b1.east) {\pbt{model}{строим модель}};
+  \node[pst, p3, anchor=west] (b3) at ([xshift=1.5pt]b2.east) {\pbt{props}{проверяем аксиомы}};
+  \node[pst, p4, anchor=west] (b4) at ([xshift=1.5pt]b3.east) {\pbt{finishm}{$U$ — базис $\G$}};
 \end{tikzpicture}}
 % частые формулы колонки
 \newcommand{\sfthree}{\sform{3}{&\{a,b\}=-(-1)^{\rp a\rp b}\{b,a\}}}
 \newcommand{\sffour}{\sform{4}{&\{a,\{b,c\}\}=\{\{a,b\},c\}\\&\quad+(-1)^{\rp a\rp b}\{b,\{a,c\}\}}}
-\newcommand{\sffive}{\sform{5}{&\{a,bc\}=\{a,b\}c\\&\quad+(-1)^{\rp a|b|}b\{a,c\}\\&\qquad\mka{+(-1)^{\rp a}\D(a)\,bc}}}
-\newcommand{\sfeight}{\sform{8}{&\{a,b\}^*=\mka{\textstyle\sum_{i,j}\pm a_{\hat\imath}\{a_i,b_j\}b_{\hat\jmath}}\\
+\newcommand{\sffive}{\sform{5}{&\{a,bc\}=\{a,b\}c\\&\quad+(-1)^{\rp a|b|}b\{a,c\}\\&\qquad\mkb{+(-1)^{\rp a}\D(a)\,bc}}}
+\newcommand{\sfeight}{\sform{8}{&\{a,b\}^*=\\&\quad\mka{\textstyle\sum_{i,j}(-1)^{\varepsilon_{ij}}a_{\hat\imath}\{a_i,b_j\}b_{\hat\jmath}}\\&\quad\varepsilon_{ij}=|a_i||a_{>i}|+|b_j||b_{<j}|\\
   &\quad\mkb{-(m-1)\,a\D(b)}\\&\qquad\mkb{+(n-1)(-1)^{\rp a}\D(a)\,b}\\&\qquad\quad\mkc{-(m-1)(n-1)\,a\D(1)\,b}}}
 
 % выключные формулы стоят плотнее (на слайдах каждая формула — отдельной строкой, обычные отступы съедали место)
@@ -243,7 +244,7 @@
   \item \go{poisson}{\textbf{Откуда эти алгебры.}} От Пуассона к поправке в правиле Лейбница \mins{11}
   \item \go{freealg}{\textbf{Задача.}} Базисы свободных алгебр: Холл, Штерн, Шестаков \mins{9}
   \item \go{setM}{\textbf{Ответ.}} Базис $U$ и элемент $\{1,1\}\neq0$ \mins{8}
-  \item \go{proofplan}{\textbf{Доказательство.}} Порождение и модель \mins{10}
+  \item \go{proofplan}{\textbf{Доказательство.}} Порождение и модель \mins{12}
   \item \go{multi}{\textbf{Размерность}} мультилинейной части \mins{4}
   \item \go{summary}{\textbf{Итоги}} и открытые вопросы \mins{2}
 \end{enumerate}
@@ -472,7 +473,7 @@ $\displaystyle\begin{aligned}[t]
 В алгебре Пуассона $\{a,1\}=0$. Откажемся от этого условия.
 \only<2->{\begin{defbox}{Обобщённая алгебра Пуассона}
 В.п. $V$ с единицей, умножением и скобкой, удовлетворяющими \fn{1.1} и \fn{1.2}, такими что для всех $a,b,c$
-\[ \ano{1.11}\{a,bc\}=\{a,b\}c+b\{a,c\}\;\mka{-\,\{a,1\}\,bc}\qquad\nm{\fn{1.3} с поправкой} \]
+\[ \ano{1.11}\{a,bc\}=\{a,b\}c+b\{a,c\}\;\mkb{-\,\{a,1\}\,bc}\qquad\nm{\fn{1.3} с поправкой} \]
 \end{defbox}}
 \only<3->{\begin{exbox}{Пример: $\F[x]$, скобка векторных полей $f\,\tfrac{d}{dx}$}
 \[ \begin{aligned}
@@ -496,7 +497,7 @@ $\displaystyle\begin{aligned}[t]
 &\ano{2} & (ab)c&=a(bc),\qquad ab=(-1)^{|a||b|}ba,\qquad 1a=a\\
 &\ano{3} & \{a,b\}&=-(-1)^{\rp a\rp b}\{b,a\}\\
 &\ano{4} & \{a,\{b,c\}\}&=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\}\\
-&\ano{5} & \{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}\mka{+(-1)^{\rp a}\D(a)\,bc}
+&\ano{5} & \{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}\mkb{+(-1)^{\rp a}\D(a)\,bc}
 \end{alignedat} \]
 \end{defbox}
 \onslide<2->
@@ -520,7 +521,7 @@ $\displaystyle\begin{aligned}[t]
 \[ \{1,1\}=-(-1)^{1\cdot1}\{1,1\}=\{1,1\}. \]
 \onslide<3->
 Аксиома (5) при $a=1$; $\D$ — дифференцирование $\iff\{1,1\}=0$:
-\only<3->{\[ \D(bc)=\D(b)\,c+(-1)^{|b|}b\,\D(c)\;\mka{-\,\D(1)\,bc}. \]}
+\only<3->{\[ \D(bc)=\D(b)\,c+(-1)^{|b|}b\,\D(c)\;\mkc{-\,\D(1)\,bc}. \]}
 \only<4->{\begin{exbox}{Пример 1: \ $V=\F1\oplus\F\varepsilon$, \ $|\varepsilon|=1$, \ $\varepsilon^2=0$; \ $\{1,1\}=\varepsilon$, остальные скобки — нули}
 Аксиомы проверяются прямо, а $\D$ — не дифференцирование:
 \[ \D(1\cdot1)=\varepsilon\ \neq\ 2\varepsilon=\D(1)\,1+1\,\D(1). \]
@@ -664,7 +665,7 @@ $P_n$ — мультилинейная часть свободной алгеб�
 \begin{exbox}{Пример: $\{x_1,x_2x_3\}$ по (5); буквы чётные, $\rp{x_i}=1$}
 \[ \begin{aligned}
 \{x_1,x_2x_3\}&=\{x_1,x_2\}x_3+x_2\{x_1,x_3\}-\{1,x_1\}x_2x_3\\
-&=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} .
+&=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mkb{-\,x_2x_3\{x_1,1\}} .
 \end{aligned} \]
 Слева буквы $1$ нет, а в ответе появилось слово $\{x_1,1\}$.
 \end{exbox}
@@ -807,7 +808,7 @@ $U$ — базис $\G$.\par
 \[ \begin{aligned}
 \D(x_1x_2)&=\{1,x_1x_2\} &&\nm{$\D(a)=\{1,a\}$}\\
 &=\{1,x_1\}x_2+x_1\{1,x_2\}-\{1,1\}x_1x_2 &&\nm{по (5), $\rp1=1$}\\
-&=\D(x_1)\,x_2+x_1\D(x_2)\;\mka{-\,x_1x_2\{1,1\}}
+&=\D(x_1)\,x_2+x_1\D(x_2)\;\mkc{-\,x_1x_2\{1,1\}}
 \end{aligned} \]
 Выделенный одночлен — элемент $U$, он $\neq0$: правило Лейбница для $\D$ нарушено.
 \end{exbox}}
@@ -849,7 +850,7 @@ $U$ — базис $\G$.\par
 \only<1| handout:1>{\textbf{Цель:} \ $U$ — базис $\G$, то есть $U$ порождает $\G$ и линейно независимо.\par\vskip0.3cm}
 \only<1| handout:1>{{\large\bfseries $U$ порождает $\G$\par}\vskip0.2cm\raggedright
 Каждый элемент $\G$ — линейная комбинация одночленов $U$. Скобку с произведением раскладываем по (5), пока не останутся одночлены. Например,
-\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} . \]
+\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mkb{-\,x_2x_3\{x_1,1\}} . \]
 Это первая половина того, что $U$ — базис.}
 \only<2| handout:2>{{\large\bfseries Строим модель\par}\vskip0.2cm\raggedright
 Для независимости нужна алгебра нашего класса, где $U$ — базис по построению. Берём суперполиномы $\Sm$ из главной теоремы: в них одночлены $U$ независимы.\par\medskip
@@ -884,7 +885,7 @@ $U$ — базис $\G$.\par
 \[ \{u,v_1v_2\}=\{u,v_1\}v_2+(-1)^{\rp u|v_1|}v_1\{u,v_2\}+(-1)^{\rp u}\{1,u\}\,v_1v_2 . \]
 \only<3->{\bul Индукция по $\deg_e u+\deg_e v$: у пар $(u,v_1)$, $(u,v_2)$, $(1,u)$ она меньше. Значит, $\spn U$ замкнуто относительно скобки, и $\spn U=\G$.\par}
 \only<4->{\begin{exbox}{Почему индукция не по числу букв}
-\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} \]
+\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mkb{-\,x_2x_3\{x_1,1\}} \]
 Букв: 3 слева, 4 в отмеченном; сумма $e$-степеней: 3 слева, 2, 2, 1 справа.
 \end{exbox}}
 \end{sidecols}
@@ -892,27 +893,28 @@ $U$ — базис $\G$.\par
 
 \begin{frame}[label=model]{\ft{Модель: скобка на $\Sm$ шаг за шагом}{Модель: скобка на S шаг за шагом}}
 \begin{sidecols}
-\sidecol
+\sidecol[0.21]
 \begin{sidebox}{formulas3}
 \sdef[setM]{$\LL$}{&\text{свободная нечётная}\\&\text{супералгебра Ли на}\ X}
 \sdef[thm12]{$\LL'$}{&\spn(M\setminus\{1\})}
 \sdef[thm12]{$\Sm$}{&S(\LL')\ \text{— суперполиномы}}
 \only<3->{\sffive}
 \end{sidebox}
-\maincol
-Буква $1$ из $\LL$ становится единицей $\Sm$; нужна скобка на $\Sm$, продолжающая скобку
-\[ \Lh=\F1\oplus\LL'\cong\LL . \]
+\maincol[0.77]\vspace*{-6pt}
+Буква $1$ из $\LL$ становится единицей $\Sm$; нужна скобка на $\Sm$, продолжающая скобку на $\Lh=\F1\oplus\LL'\cong\LL$. Знаки — по правилу Кошуля; $a_{<i}$, $a_{>i}$ — множители до и после $a_i$, так же $b_{<j}$, $b_{>j}$.\par
 \onslide<2->
-\textbf{1.} \hlt{Как у Шестакова}: скобки всех пар множителей,
-\[ \{a_1\cdots a_m,\;b_1\cdots b_n\}=\sum_{i,j}\pm\,a_{\hat\imath}\,\{a_i,b_j\}\,b_{\hat\jmath},\qquad a_{\hat\imath}=\textstyle\prod_{k\neq i}a_k \]
+\textbf{1.} \hlt{Как у Шестакова}: скобки всех пар множителей, $a_{\hat\imath}=a_{<i}a_{>i}$:
+\[ \{a_1\cdots a_m,\;b_1\cdots b_n\}=\sum_{i,j}(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}\,a_{\hat\imath}\,\{a_i,b_j\}\,b_{\hat\jmath} \]
 \onslide<3->
-\textbf{2.} \hlt{Каждое применение (5) добавляет поправку} $(-1)^{\rp a}\D(a)\,bc=-\{a,1\}\,bc$. Для $a\in\Lh$ и $n$ множителей их $n-1$.\par
-\only<3->{$n=3$:
-\[ \{a,b_1b_2b_3\}=\{a,b_1\}b_2b_3\pm b_1\{a,b_2\}b_3\pm b_1b_2\{a,b_3\}\;\mkb{-\,2\,\{a,1\}\,b_1b_2b_3} \]
+\textbf{2.} \hlt{Каждое применение (5) добавляет поправку} $-\{a,1\}\,bc$; для $a\in\Lh$ и $n$ множителей их $n-1$:
+\only<3->{\[ n=3:\quad\begin{aligned}[t]
+\{a,b_1b_2b_3\}={}&\{a,b_1\}b_2b_3+(-1)^{\rp a|b_1|}b_1\{a,b_2\}b_3\\
+&+(-1)^{\rp a(|b_1|+|b_2|)}b_1b_2\{a,b_3\}\;\mkb{-\,2\,\{a,1\}\,b_1b_2b_3}
+\end{aligned} \]
 общий случай:
-\[ \{a,b_1\cdots b_n\}=\textstyle\sum_{j=1}^{n}\pm\,b_1\cdots\{a,b_j\}\cdots b_n\;\mkb{-\,(n-1)\,\{a,1\}\,b_1\cdots b_n} \]}
+\[ \{a,b_1\cdots b_n\}=\textstyle\sum_{j=1}^{n}(-1)^{\rp a|b_{<j}|}\,b_{<j}\{a,b_j\}b_{>j}\;\mkb{-\,(n-1)\,\{a,1\}\,b_1\cdots b_n} \]}
 \onslide<4->
-\textbf{3.} \hlt{Произведения в обоих аргументах}: поправки по каждому аргументу и \hlt{поправка второго порядка} с $\D(1)=\{1,1\}$. Общая формула — на \go{formula8}{следующем слайде}.
+\textbf{3.} \hlt{Произведения в обоих аргументах}: поправки по каждому аргументу и \hlt{поправка второго порядка} с $\D(1)=\{1,1\}$; общая формула — на \go{formula8}{следующем слайде}.
 \end{sidecols}
 \end{frame}
 
@@ -942,14 +944,13 @@ $U$ — базис $\G$.\par
 \end{frame}
 
 \begin{frame}[label=axioms]{Аксиомы в модели: якобиатор}
-\framesubtitle<1-3>{\planbar{3}}
-\framesubtitle<4>{\planbar{4}}
+\framesubtitle{\planbar{3}}
 \begin{sidecols}
 \sidecol
 \begin{sidebox}{formulas4}
 \sfeight
 \sfthree
-\sform{5}{&\{a,bc\}=\{a,b\}c\\&\quad+(-1)^{\rp a|b|}b\{a,c\}\\&\qquad+(-1)^{\rp a}\D(a)\,bc}
+\sffive
 \end{sidebox}
 \maincol
   \bul \go{props}{Леммы 6--8}: для скобки (8) правила (3) и (5) проверяются прямо.
@@ -958,11 +959,47 @@ $U$ — базис $\G$.\par
 \[ J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\} \]
 \only<3->{\begin{thmbox}{Лемма 9 (без тождества Якоби)}
 $J$ суперкососимметричен, и
-\[ J(a,b,xy)=J(a,b,x)\,y\pm x\,J(a,b,y)\;\mkc{-\,J(a,b,1)\,xy} . \]
+\[ J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}x\,J(a,b,y)\;\mkb{-\,J(a,b,1)\,xy} . \]
 \end{thmbox}}
-\only<3>{{\small Выделенный член — поправка того же вида, что последний член (5), $(-1)^{\rp a}\D(a)\,bc=-\{a,1\}\,bc$: без неё $J$ был бы дифференцированием по третьему аргументу.\par}}
-\only<4->{\bul По лемме 9 и кососимметричности $J$ на произведениях выражается через $J$ на множителях из $\Lh$, включая $J(a,b,1)$. Значит, $J=0$ на $\Sm$, если $J=0$ на $\Lh$; итог (\go{finish}{теоремы 11, 12}): $U$ — базис $\G$.\hfill$\square$\par}
+\only<3>{{\small Выделенный член — поправка того же вида, что выделенный член (5), $(-1)^{\rp a}\D(a)\,bc=-\{a,1\}\,bc$: без неё $J$ был бы дифференцированием по третьему аргументу.\par}}
 \end{sidecols}
+\end{frame}
+
+\begin{frame}[label=jacobim]{Тождество Якоби в модели}
+\framesubtitle{\planbar{3}}
+\begin{sidecols}
+\sidecol[0.3]
+\begin{sidebox}{formulas4}
+\sdef[axioms]{$J$}{&J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}\\&\quad-(-1)^{\rp a\rp b}\{b,\{a,c\}\}}
+\sffour
+\end{sidebox}
+\maincol[0.68]\vspace*{-6pt}
+\begin{thmbox}{Предложение 10}
+$J=0$ на $\Sm$, то есть в $\Sm$ выполнено тождество Якоби (4).
+\end{thmbox}
+\textbf{Доказательство.}
+  \bul \hlt{Все аргументы из $\Lh$.} На $\Lh$ скобка $\{\,,\}^*$ совпадает со скобкой $\LL$ (\go{props}{лемма 6}), а в $\LL$ верно (4).
+\onslide<2->
+  \bul \hlt{Третий аргумент — произведение.} Индукция по числу множителей; по \go{axioms}{лемме 9}
+\only<2->{\[ J(u,v,xy)=J(u,v,x)\,y+(-1)^{(|u|+|v|)|x|}x\,J(u,v,y)\;\mkb{-\,J(u,v,1)\,xy}, \]}
+все три члена равны нулю по предположению индукции ($1\in\Lh$), значит, $J(u,v,xy)=0$.
+\onslide<3->
+  \bul \hlt{Любые аргументы.} $J$ суперкососимметричен (лемма 9): произведение в первом или втором аргументе переставляется на третье место, и индукция повторяется. \hfill$\square$
+\end{sidecols}
+\end{frame}
+
+\begin{frame}[label=finishm]{\ft{Итог: $U$ — базис $\G$}{Итог: U — базис G}}
+\framesubtitle{\planbar{4}}
+\begin{thmbox}{Теорема 11}
+$(\Sm,\cdot,\{\,,\}^*)$ — унитальная обобщённая алгебра Герстенхабера, порождённая $X$.
+\end{thmbox}
+Аксиомы \ax{1}, \ax{2}: $\Sm$ — суперполиномы и $|\{a,b\}^*|=|a|+|b|+1$ (\go{props}{лемма 6}); \ax{3}, \ax{5} — \go{props}{леммы 7, 8}; \ax{4} — \go{jacobim}{предложение 10}.\par
+\onslide<2->
+\medskip
+\textbf{Доказательство \go{thm12}{теоремы 12}.}\par
+  \bul По теореме 11 и \go{freealg}{определению свободной алгебры} есть гомоморфизм $\varphi\colon\G\to\Sm$, тождественный на $X$; он сюръективен, так как $\Sm$ порождена $X$.
+  \bul $\varphi$ сохраняет скобку, а на $\Lh$ скобка $\{\,,\}^*$ — скобка $\LL$; поэтому $\varphi(e)=e$ для $e\in M$ и $\varphi(u)=u$ для $u\in U$.
+  \bul $U$ — базис $\Sm$, значит, $U$ линейно независимо в $\G$, а по \go{lemma5}{лемме 5} порождает $\G$. Итак, $U$ — базис $\G$, и $\varphi$ — изоморфизм. \hfill$\square$
 \end{frame}
 
 % ================================================================ 5. размерность
@@ -1107,37 +1144,6 @@ $\{a,b\}^*=-(-1)^{\rp a\rp b}\{b,a\}^*$
 {\small Проверки прямые: формула (8) — замкнутая, без рекурсии. Корректность (лемма 6) нужна, потому что множители можно переставлять и вставлять лишние единицы: $1\in\Lh$.}
 \end{frame}
 
-\begin{frame}[label=jacobi]{Якобиатор}
-\begin{thmbox}{Лемма 9}
-Пусть выполнены \ax{1}, \ax{2}, \ax{3}, \ax{5} (без тождества Якоби), и
-$$J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\}.$$
-Тогда
-\begin{enumerate}
-  \item[(i)] $J(a,b,c)=-(-1)^{\rp a\rp b}J(b,a,c)=-(-1)^{\rp b\rp c}J(a,c,b)$;
-  \item[(ii)] $J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}\,x\,J(a,b,y)\;{\color{deepgreen}-\,J(a,b,1)\,xy}$.
-\end{enumerate}
-\end{thmbox}
-\begin{itemize}\small
-  \item \tip{Якобиатор}{мера нарушения тождества Якоби: J = 0 на всех тройках ⇔ тождество Якоби выполнено} — «дифференцирование с поправкой»; без поправки это классический факт для алгебр Пуассона.
-  \item Доказательство: раскрыть три члена по \ax{5}, лишние члены сокращаются попарно.
-  \item Общая формула, может быть полезна сама по себе.
-\end{itemize}
-\end{frame}
-
-\begin{frame}[label=finish]{Тождество Якоби и завершение}
-\begin{enumerate}\setlength{\itemsep}{0.5em}
-  \item \textbf{Предложение 10.} $J=0$ на $\Sm$:
-  \begin{itemize}\small
-    \item $J(u,v,w)=0$ при $u,v,w\in\Lh$ — это Якоби в $\LL$;
-    \item по (ii) и индукции по числу множителей — для любого третьего аргумента;
-    \item по (i) — для всех аргументов.
-  \end{itemize}
-  \item \textbf{Теорема 11.} $(\Sm,\cdot,\{\,,\}^*)$ — унитальная обобщённая алгебра Герстенхабера, порождённая $X$.
-  \item \textbf{Теорема 12.} $\varphi\colon\G\to\Sm$ сюръективен, $\varphi(u)=u$ для $u\in U$, а $U$ — базис $\Sm$;
-  вместе с \go{lemma5}{леммой 5}: $U$ — базис $\G$ и $\varphi$ — изоморфизм. \hfill$\square$
-\end{enumerate}
-\end{frame}
-
 \begin{frame}[label=classes]{Четыре класса рядом}
 \scriptsize\renewcommand{\arraystretch}{1.3}\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}L{2.3cm}L{1.8cm}L{2.0cm}L{2.6cm}L{2.9cm}@{}}
@@ -1240,7 +1246,7 @@ d(V_i)&\subseteq V_{(i+p)\bmod 2}\hspace{1.3cm}|d(a)|=|a|+p\\
 &\ano{1.10}&\{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}
 \end{alignedat} \]
 \fe{Поправка в правиле Лейбница}{\go{genpoisson}{слайд «Правило Лейбница с поправкой»}}{Скобка чётная.}
-\[ \ano{1.11}\{a,bc\}=\{a,b\}c+b\{a,c\}\;\mka{-\,\{a,1\}\,bc} \]
+\[ \ano{1.11}\{a,bc\}=\{a,b\}c+b\{a,c\}\;\mkb{-\,\{a,1\}\,bc} \]
 \end{frame}
 
 \begin{frame}[label=formulas2]{Формулы доклада: определение 1}
@@ -1255,10 +1261,10 @@ d(V_i)&\subseteq V_{(i+p)\bmod 2}\hspace{1.3cm}|d(a)|=|a|+p\\
 && 1a&=a\\
 &\ano{3} & \{a,b\}&=-(-1)^{\rp a\rp b}\{b,a\}\\
 &\ano{4} & \{a,\{b,c\}\}&=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\}\\
-&\ano{5} & \{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}\;\mka{+(-1)^{\rp a}\D(a)\,bc}
+&\ano{5} & \{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}\;\mkb{+(-1)^{\rp a}\D(a)\,bc}
 \end{aligned} \]
 \fe{Единица в (5)}{\go{ex1}{слайд «Новое явление»}}{$\D$ — дифференцирование ровно тогда, когда $\{1,1\}=0$.}
-\[ \D(bc)=\D(b)\,c+(-1)^{|b|}b\,\D(c)\;\mka{-\,\D(1)\,bc} \]
+\[ \D(bc)=\D(b)\,c+(-1)^{|b|}b\,\D(c)\;\mkc{-\,\D(1)\,bc} \]
 \end{frame}
 
 \begin{frame}[label=formulas3a]{Формулы доклада: задача}
@@ -1275,7 +1281,7 @@ u,v&\ \text{— хорошие}\\
 {}[[v,v],w]&=2\,[v,[v,w]]
 \end{aligned} \]
 \fe{Единица становится буквой}{\go{letter1}{слайд «Единица — буква»}}{Буквы чётные; в последнем члене появилась буква $1$.}
-\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} \]
+\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mkb{-\,x_2x_3\{x_1,1\}} \]
 \end{frame}
 
 \begin{frame}[label=formulas3]{Формулы доклада: ответ}
@@ -1311,7 +1317,7 @@ U&=\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\mid 1<i_1<\dots<i_r,\ \ k_j=1\ \text{п
 \fe{Якобиатор}{\go{axioms}{слайд «Аксиомы в модели»}}{Мера нарушения тождества Якоби.}
 \[ J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\} \]
 \fe{Лемма 9}{\go{axioms}{слайд «Аксиомы в модели»}}{Якобиатор — дифференцирование с поправкой по каждому аргументу.}
-\[ J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}x\,J(a,b,y)\;\mkc{-\,J(a,b,1)\,xy} \]
+\[ J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}x\,J(a,b,y)\;\mkb{-\,J(a,b,1)\,xy} \]
 \fe{Теорема 14}{\go{perm}{слайд «Доказательство теоремы 14»}}{Мультилинейные элементы — перестановки, в которых единица не на месте.}
 \[ \dim\mathrm{GenGer}(n)=(n+1)!-n!=n\cdot n! \]
 \end{frame}
