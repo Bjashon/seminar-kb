@@ -1,6 +1,6 @@
 % !TEX program = xelatex
 % Доклад по статье «Базис свободных обобщённых алгебр Герстенхабера» (И. Кайгородов, К. Вяткина).
-% 40 минут для алгебраистов, не знакомых с конструкцией: откуда алгебры (9), задача (8), ответ (7),
+% 44 минуты для алгебраистов, не знакомых с конструкцией: откуда алгебры (11), задача (9), ответ (8),
 % доказательство (10), размерность (4), итоги (2). На каждом шаге — пример, досчитанный до конца.
 % После «Спасибо» — запасные слайды для вопросов (\appendix; счётчик у них свой, в общий не входят).
 % Слайды раскрываются по шагам (\onslide, \only). Слева — зелёная колонка с формулами, уже определёнными раньше;
@@ -79,8 +79,8 @@
 \newcommand{\fnov}[1]{<#1>}   % шаг слайда; в handout у слайда один шаг
 \mode<handout>{\renewcommand{\fnov}[1]{}}
 \newcommand{\deffn}[3]{\expandafter\def\csname fnt@#1\endcsname{#2\fnov{#3}}}
-\deffn{1.1}{poisson}{1}\deffn{1.2}{super}{2}\deffn{1.3}{superder}{1}
-\deffn{1.4}{superder}{3}\deffn{1.5}{superder}{3}\deffn{1.6}{genpoisson}{2}
+\deffn{1.1}{poisson}{1}\deffn{1.2}{supercomm}{1}\deffn{1.3}{superder}{1}
+\deffn{1.4}{superliedef}{1}\deffn{1.5}{superliedef}{1}\deffn{1.6}{genpoisson}{2}
 \newcommand{\fnt}[1]{\csname fnt@#1\endcsname}
 \newcommand{\fn}[1]{\go{\fnt{#1}}{(#1)}}
 % подсказка с формулами: \ftip[сдвиг рамки]{id}{термин}{текст при наведении}{рамка с формулами}.
@@ -158,10 +158,9 @@
 % ---------------------------------------------------------------- формулы «под рукой» и план доказательства
 % Зелёная колонка слева: формулы, на которые опирается слайд, мельче основного текста; прижата к полосе у края.
 % \begin{sidebox}{метка} ... \end{sidebox}: серая стрелка в углу ведёт на эту метку в «Формулах доклада».
+% Аргумент (метка страницы «Формулы доклада») остался от стрелки в углу; стрелку убрали, номера формул сами ведут на их слайды.
 \newtcolorbox{sidebox}[1]{enhanced, colback=softgreen, colframe=softgreen, boxrule=0pt, arc=1pt, sharp corners=west,
-  grow to left by=0.56cm, left=4pt, right=3pt, top=4pt, bottom=8pt, before skip=0pt, fontupper=\scriptsize,
-  overlay={\node[anchor=south east, inner sep=3pt] at (frame.south east)
-    {\hyperlink{#1}{\color{mute!80}\scriptsize$\blacktriangleright$}};}}
+  grow to left by=0.56cm, left=4pt, right=3pt, top=4pt, bottom=3pt, before skip=0pt, fontupper=\scriptsize}
 % формула: номер в скобках зелёным, формула на той же строке; перенос — каскадом (каждая строка правее)
 % номер — ссылка: (1)–(5) ведут на определение 1, (7) и (8) — на слайд «Формулы (7) и (8)»
 \newcommand{\sform}[2]{\noindent\makebox[1.75em][l]{\hyperlink{\ifnum#1<6 def1\else formula8\fnov{2}\fi}{\color{deepgreen}\bfseries(#1)}}%
@@ -174,8 +173,8 @@
   \scalebox{0.84}{$\begin{aligned}[t]#2\end{aligned}$}\par\vskip5pt}
 % колонки слайда с формулами слева
 \newenvironment{sidecols}{\begin{columns}[T,onlytextwidth]}{\end{columns}}
-\newcommand{\sidecol}{\column{0.27\textwidth}}
-\newcommand{\maincol}{\column{0.71\textwidth}\small}
+\newcommand{\sidecol}[1][0.27]{\column{#1\textwidth}}   % \sidecol[0.17] — уже, по ширине формул колонки
+\newcommand{\maincol}[1][0.71]{\column{#1\textwidth}\small}
 % строка в списке «Формулы доклада»: название, ссылка на слайд, одна фраза
 \newcommand{\fe}[3]{\par\medskip\noindent\textbf{#1}\enspace{\color{mute}#2.}\enspace#3}
 
@@ -242,9 +241,9 @@
 \begin{frame}[label=plan]{План доклада}
 \vskip0.2cm
 \begin{enumerate}\setlength{\itemsep}{0.62em}
-  \item \go{poisson}{\textbf{Откуда эти алгебры.}} От Пуассона к поправке в правиле Лейбница \mins{9}
-  \item \go{freealg}{\textbf{Задача.}} Базисы свободных алгебр: Холл, Штерн, Шестаков \mins{8}
-  \item \go{setM}{\textbf{Ответ.}} Базис $U$ и элемент $\{1,1\}\neq0$ \mins{7}
+  \item \go{poisson}{\textbf{Откуда эти алгебры.}} От Пуассона к поправке в правиле Лейбница \mins{11}
+  \item \go{freealg}{\textbf{Задача.}} Базисы свободных алгебр: Холл, Штерн, Шестаков \mins{9}
+  \item \go{setM}{\textbf{Ответ.}} Базис $U$ и элемент $\{1,1\}\neq0$ \mins{8}
   \item \go{proofplan}{\textbf{Доказательство.}} Порождение и модель \mins{10}
   \item \go{multi}{\textbf{Размерность}} мультилинейной части \mins{4}
   \item \go{summary}{\textbf{Итоги}} и открытые вопросы \mins{2}
@@ -258,7 +257,8 @@
 
 \begin{frame}[label=poisson]{Алгебры Пуассона}
 \small
-\begin{defbox}{Алгебра Пуассона: пространство $V$ над $\F$, билинейные умножение $ab$ и скобка $\{a,b\}$}
+\begin{defbox}{Алгебра Пуассона}
+\hlt{Алгебра Пуассона} — векторное пространство $V$ над $\F$ с единицей $1$ и билинейными умножением $ab$ и скобкой $\{a,b\}$, такими что для всех $a,b,c\in V$
 \[ \renewcommand{\arraystretch}{1.3}\begin{array}{@{}l@{\hspace{1.4cm}}l@{}}
 \begin{aligned}
 ab&=ba\\
@@ -269,7 +269,7 @@ ab&=ba\\
 \begin{aligned}
 \{a,b\}&=-\{b,a\}\\
 \{a,\{b,c\}\}&=\{\{a,b\},c\}+\{b,\{a,c\}\}
-\end{aligned}\quad\nm{скобка Ли}\\[16pt]
+\end{aligned}\quad\nm{скобка Ли}\\[4pt]
 \multicolumn{2}{c}{\phantom{\nm{правило Лейбница}\qquad}\ano{1.1}\{a,bc\}=\{a,b\}\,c+b\,\{a,c\}\qquad\nm{правило Лейбница}}
 \end{array} \]
 \end{defbox}
@@ -307,62 +307,93 @@ S(\mathfrak g)&=\F[e_1,\dots,e_n]\\
 
 \begin{frame}[label=super]{Супералгебры}
 \small
-\begin{defbox}{Супералгебра над $\F$, \ $\operatorname{char}\F=0$: \ пространство $V$ с билинейным умножением $ab$}
-\[ \begin{aligned}
-V&=V_0\oplus V_1\hspace{1.3cm}V_iV_j\subseteq V_{(i+j)\bmod 2}\ \ \nm{$\Z_2$-градуировка}\\
-|a|&=i\ \ \text{при}\ a\in V_i\ \ \nm{чётность: $0$ — чётный, $1$ — нечётный; есть только у однородных $a\in V_0\cup V_1$}
-\end{aligned} \]
+\begin{defbox}{Супералгебра}
+Пусть $\F$ — поле, $\operatorname{char}\F=0$. \hlt{Супералгебра} — векторное пространство $V$ над $\F$ с билинейным умножением $V\times V\to V$, \ $(a,b)\mapsto ab$, и \hlt{$\Z_2$-градуировкой} — разложением в прямую сумму подпространств, согласованным с умножением:
+\[ V=V_0\oplus V_1,\qquad V_iV_j\subseteq V_{(i+j)\bmod 2}\quad (i,j\in\{0,1\}). \]
+Элементы $V_0$ — \hlt{чётные}, элементы $V_1$ — \hlt{нечётные}, те и другие — \hlt{однородные}. \hlt{Чётность} однородного элемента $a\in V_i$ — число $|a|=i$. Каждый $a\in V$ единственным образом записывается как $a=a_0+a_1$, \ $a_i\in V_i$.
 \end{defbox}
-\only<2->{\begin{defbox}{Суперкоммутативная супералгебра}
-\[ \ano{1.2}ab=(-1)^{|a||b|}\,ba\qquad\nm{$a,b$ однородные; на остальные — по билинейности} \]
-\hlt{Правило знаков Кошуля}: переставили однородные $a$ и $b$ — множитель $(-1)^{|a||b|}$.
-\end{defbox}}
-\only<3->{\begin{exbox}{Пример: матрицы $2\times2$; \ $V_0$ — диагональные, \ $V_1$ — внедиагональные}
+\only<2->{\begin{exbox}{Пример: матрицы $2\times2$; \ $V_0$ — диагональные, \ $V_1$ — внедиагональные}
 \[ \begin{aligned}
-E_{12}E_{21}&=E_{11}\in V_0 &&\nm{$E_{ij}$ — матричные единицы; \ $1+1=0$ по модулю 2}\\
--E_{21}E_{12}&=-E_{22}\neq E_{12}E_{21} &&\nm{супералгебра, но не суперкоммутативная}
+E_{11}E_{12}&=E_{12}\in V_1 &&\nm{$E_{ij}$ — матричные единицы; \ $0+1=1$}\\
+E_{12}E_{21}&=E_{11}\in V_0 &&\nm{$1+1=0$ по модулю 2}
+\end{aligned} \]
+\end{exbox}}
+\end{frame}
+
+\begin{frame}[label=supercomm]{Суперкоммутативные супералгебры}
+\small
+\begin{defbox}{Суперкоммутативная супералгебра}
+Супералгебра $V$ \hlt{суперкоммутативна}, если для всех однородных $a,b\in V$
+\[ \ano{1.2}ab=(-1)^{|a||b|}\,ba\qquad\nm{правило Кошуля} \]
+\hlt{Правило знаков Кошуля}: однородные $a$ и $b$ поменялись местами — множитель $(-1)^{|a||b|}$. Значит, чётный элемент коммутирует со всеми, а нечётные антикоммутируют; в частности, при $|a|=1$ по (1.2) $a^2=-a^2$, то есть $a^2=0$.
+\end{defbox}
+\only<2->{\begin{exbox}{Пример: матрицы $2\times2$ — супералгебра, но не суперкоммутативная}
+\[ \begin{aligned}
+E_{12}E_{21}&=E_{11} &&\nm{$E_{12}$, $E_{21}$ нечётные}\\
+-E_{21}E_{12}&=-E_{22}\neq E_{11} &&\nm{(1.2) не выполнено}
 \end{aligned} \]
 \end{exbox}}
 \end{frame}
 
 \begin{frame}[label=superpoly]{Суперполиномы}
-\small
-\begin{defbox}{Суперполиномы $S(V)$ от $V=V_0\oplus V_1$ с однородным базисом $e_1,e_2,\dots$}
+\begin{sidecols}
+\sidecol[0.165]
+\begin{sidebox}{formulas1}
+\sromn{1.2}{&ab=(-1)^{|a||b|}ba}
+\end{sidebox}
+\maincol[0.815]\vspace*{-6pt}
+\begin{defbox}{Суперполиномы}
+Пусть $V=V_0\oplus V_1$ с однородным базисом $e_1,e_2,\dots$. \hlt{Суперполиномы} $S(V)$ — ассоциативная алгебра с $1$ с образующими $e_i$ и соотношениями
+\[ e_ie_j=(-1)^{|e_i||e_j|}e_je_i,\qquad\text{то есть}\qquad S(V)=\F[e_i\in V_0]\otimes\Lambda(e_i\in V_1): \]
+многочлены от чётных $e_i$, умноженные на \ftip[-4.6cm]{grass}{алгебру Грассмана}{Алгебра Грассмана (внешняя алгебра) Λ(e₁, e₂, …): ассоциативная алгебра с 1, порождённая e₁, e₂, … с соотношениями eᵢeⱼ = −eⱼeᵢ; в частности, eᵢ² = 0. Базис — произведения eᵢ₁eᵢ₂⋯eᵢₖ с i₁ < i₂ < … < iₖ. Пример: у Λ(e₁, e₂) базис 1, e₁, e₂, e₁e₂.}{Алгебра Грассмана (внешняя алгебра) — ассоциативная алгебра с $1$, порождённая $e_1,e_2,\dots$ с соотношениями
 \[ \begin{aligned}
-S(V)&=\F[e_i\in V_0]\otimes\Lambda(e_i\in V_1) &&\nm{многочлены $\otimes$ алгебра Грассмана}\\
-&e_{i_1}^{k_1}\cdots e_{i_r}^{k_r},\ \ i_1<\dots<i_r,\ \ k_j=1\ \text{при}\ |e_{i_j}|=1 &&\nm{базис: нечётные в степени $\le1$}\\
-|e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}|&=\bigl(k_1|e_{i_1}|+\dots+k_r|e_{i_r}|\bigr)\bmod 2 &&\nm{чётность одночлена}
+e_ie_j&=-e_je_i\\
+e_i^2&=0 &&\nm{при $i=j$}\\
+\text{базис:}\ \ &e_{i_1}e_{i_2}\cdots e_{i_k},\ \ i_1<i_2<\dots<i_k
 \end{aligned} \]
-Суперкоммутативная \fn{1.2} ассоциативная супералгебра с $1$. \ $\F[x_1,\dots,x_m\mid\xi_1,\dots,\xi_n]$ — это $S(V)$ с чётным базисом $x_i$ и нечётным $\xi_j$.
-\[ V_1=0:\ \ S(V)=\F[e_1,\dots]\ \ \nm{как $S(\mathfrak g)$}\hspace{1cm}V_0=0:\ \ S(V)=\Lambda(e_1,\dots)\ \ \nm{алгебра Грассмана} \]
+Пример: у $\Lambda(e_1,e_2)$ базис $1,\ e_1,\ e_2,\ e_1e_2$.} от нечётных. Это суперкоммутативная \fn{1.2} супералгебра; её базис — одночлены
+\[ e_{i_1}^{k_1}\cdots e_{i_r}^{k_r},\qquad i_1<\dots<i_r,\qquad k_j=1\ \text{при}\ |e_{i_j}|=1, \]
+чётность одночлена — число нечётных множителей по модулю 2. Обозначение: \mbox{$\F[x_1,\dots,x_m\mid\xi_1,\dots,\xi_n]$}, где $x_i$ чётные, $\xi_j$ нечётные.
 \end{defbox}
 \only<2->{\begin{exbox}{Пример: $\F[x\mid\xi_1,\xi_2]$; \ $x$ чётная, \ $\xi_1,\xi_2$ нечётные}
+\[ V_0=\spn\{x^k,\ x^k\xi_1\xi_2\}\hspace{1.3cm}V_1=\spn\{x^k\xi_1,\ x^k\xi_2\} \]
+\end{exbox}}
+\end{sidecols}
+\end{frame}
+
+\begin{frame}[label=superder]{Супердифференцирования}
+\small
+\begin{defbox}{Супердифференцирование}
+Пусть $V$ — супералгебра, $p\in\{0,1\}$. \hlt{Супердифференцирование чётности $p$} — линейное отображение $d\colon V\to V$, которое сдвигает чётность на $p$:
+\[ d(V_i)\subseteq V_{(i+p)\bmod 2},\qquad\text{то есть}\qquad |d(a)|=(|a|+p)\bmod 2, \]
+и для всех однородных $a$ и всех $b\in V$ удовлетворяет правилу Лейбница со знаком
+\[ \ano{1.3}d(ab)=d(a)\,b+(-1)^{p|a|}\,a\,d(b)\qquad\nm{правило Кошуля: $d\,a\to(-1)^{p|a|}\,a\,d$} \]
+При $p=0$ это обычное дифференцирование.
+\end{defbox}
+\only<2->{\begin{exbox}{Пример: на $\F[x\mid\xi_1,\xi_2]$ производная $d=\partial_{\xi_1}$, \ $p=1$}
 \[ \begin{aligned}
-V_0&=\spn\{x^k,\ x^k\xi_1\xi_2\} &\qquad \xi_2\xi_1&=-\xi_1\xi_2 &&\nm{по \fn{1.2}}\\
-V_1&=\spn\{x^k\xi_1,\ x^k\xi_2\} & \xi_1^2&=0
+\partial_{\xi_1}(\xi_1\xi_2)&=\xi_2\\
+\partial_{\xi_1}(\xi_2\xi_1)&=(\partial_{\xi_1}\xi_2)\,\xi_1+(-1)^{1\cdot1}\,\xi_2\,\partial_{\xi_1}\xi_1=-\xi_2 &&\nm{по \fn{1.3}}
 \end{aligned} \]
 \end{exbox}}
 \end{frame}
 
-\begin{frame}[label=superder]{Супердифференцирования и супералгебры Ли}
+\begin{frame}[label=superliedef]{Супералгебры Ли}
 \small
-\begin{defbox}{Супердифференцирование супералгебры $V$, чётности $p\in\Z_2$: линейное $d\colon V\to V$}
-\[ \begin{aligned}
-d(V_i)&\subseteq V_{(i+p)\bmod 2}\hspace{0.9cm}|d(a)|=|a|+p\\
-\ano{1.3}d(ab)&=d(a)\,b+(-1)^{p|a|}\,a\,d(b) &&\nm{правило Кошуля: переставили $d$ и $a$ — $(-1)^{p|a|}$}
-\end{aligned} \]
-\end{defbox}
-\only<2->{\begin{exbox}{Пример: $d=\partial_{\xi_1}$ на $\F[x\mid\xi_1,\xi_2]$, \ $p=1$}
-\[ \begin{aligned}
-\partial_{\xi_1}(\xi_1\xi_2)&=\xi_2 &\qquad \partial_{\xi_1}(\xi_2\xi_1)&=(\partial_{\xi_1}\xi_2)\,\xi_1+(-1)^{1\cdot1}\,\xi_2\,\partial_{\xi_1}\xi_1=-\xi_2 &&\nm{по \fn{1.3}}
-\end{aligned} \]
-\end{exbox}}
-\only<3->{\begin{defbox}{Супералгебра Ли: супералгебра $V=V_0\oplus V_1$ с умножением $[a,b]$; \ $[V_i,V_j]\subseteq V_{(i+j)\bmod 2}$}
+\begin{defbox}{Супералгебра Ли}
+\hlt{Супералгебра Ли} — супералгебра $V=V_0\oplus V_1$, умножение в которой обозначается $[a,b]$ (так что $[V_i,V_j]\subseteq V_{(i+j)\bmod 2}$) и для всех однородных $a,b,c$ удовлетворяет
 \[ \begin{alignedat}{3}
 &\ano{1.4}&{}[a,b]&=-(-1)^{|a||b|}\,[b,a] &\qquad&\nm{суперкососимметричность}\\
 &\ano{1.5}&{}[a,[b,c]]&=[[a,b],c]+(-1)^{|a||b|}\,[b,[a,c]] &&\nm{тождество Якоби}
 \end{alignedat} \]
-\end{defbox}}
+Знаки — по правилу Кошуля. Тождество (1.5) говорит, что $[a,\cdot]$ — супердифференцирование \fn{1.3} чётности $|a|$.
+\end{defbox}
+\only<2->{\begin{exbox}{Пример: $\mathfrak{gl}(1|1)$ — матрицы $2\times2$ с суперкоммутатором $[a,b]=ab-(-1)^{|a||b|}ba$}
+\[ \begin{aligned}
+{}[E_{11},E_{12}]&=E_{11}E_{12}-E_{12}E_{11}=E_{12} &&\nm{$E_{11}$ чётная}\\
+{}[E_{12},E_{21}]&=E_{12}E_{21}+E_{21}E_{12}=E_{11}+E_{22}=1 &&\nm{$E_{12}$, $E_{21}$ нечётные}
+\end{aligned} \]
+\end{exbox}}
 \end{frame}
 
 \begin{frame}[label=gerst]{Алгебры Герстенхабера: нечётная скобка}
@@ -375,76 +406,77 @@ d(V_i)&\subseteq V_{(i+p)\bmod 2}\hspace{0.9cm}|d(a)|=|a|+p\\
 \sromn{1.5}{&[a,[b,c]]=[[a,b],c]\\&\quad+(-1)^{|a||b|}[b,[a,c]]}
 \end{sidebox}
 \column{0.745\textwidth}\small\vspace*{-6pt}
-\begin{defbox}{Алгебра Герстенхабера: ассоциативная суперкоммутативная \fn{1.2} супералгебра с $1$ и нечётной скобкой $\{a,b\}$}
+\begin{defbox}{Алгебра Герстенхабера}
+\hlt{Алгебра Герстенхабера} — суперкоммутативная \fn{1.2} ассоциативная супералгебра $V$ с единицей и билинейной скобкой $\{a,b\}$, такая что для всех однородных $a,b,c\in V$
 \[ \begin{aligned}
 |\{a,b\}|&=|a|+|b|+1\hspace{1cm}\rp a=|a|+1 &&\nm{обращённая чётность}\\
 \{a,b\}&=-(-1)^{\rp a\rp b}\{b,a\} &&\nm{\fn{1.4} с $\rp a$}\\
 \{a,\{b,c\}\}&=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\} &&\nm{\fn{1.5} с $\rp a$}\\
 \{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\} &&\nm{\fn{1.3} с $p=\rp a$}
 \end{aligned} \]
+Скобка задаёт супералгебру Ли относительно обращённой чётности, а $\{a,\cdot\}$ — супердифференцирование умножения чётности~$\rp a$.
 \end{defbox}
-\only<2->{\begin{exbox}{Пример: $\Lambda(\mathfrak{sl}_2)$, скобка Схоутена: \ $\{x,y\}=[x,y]$ при $x,y\in\mathfrak{sl}_2$}
-\[ \begin{aligned}
-\{ef,e\}&=-\{e,ef\}=-e[e,f]=-eh &&\nm{$[e,f]=h$}\\
-\{ef,f\}&=-\{f,ef\}=-[f,e]f=hf\\
-\{ef,ef\}&=\{ef,e\}f-e\{ef,f\}=-2\,ehf\neq0 &&\nm{$ef$ чётный}
-\end{aligned} \]
-\end{exbox}}
-\onslide<3->
-\vspace{-5pt}\textbf{Отличие от Пуассона:} скобка чётных \hlt{симметрична}, бывает $\{a,a\}\neq0$.
 \end{columns}
 \end{frame}
 
-\begin{frame}[label=genpoisson]{Правило Лейбница с поправкой}
+\begin{frame}[label=gerstex]{Алгебры Герстенхабера: пример}
 \small
-В алгебре Пуассона скобка с единицей равна нулю. Что будет, если это разрешить?
-\only<2->{\begin{defbox}{Обобщённая алгебра Пуассона (скобка чётная; Кантарини--Кац 2007)}
-Скобка Ли и правило Лейбница с поправкой; $\{a,\cdot\}$ — дифференцирование плюс умножение на элемент:
-\[ \ano{1.6}\{a,bc\}=\{a,b\}c+b\{a,c\}\;\mka{-\,\{a,1\}\,bc}\qquad\nm{правило Лейбница \fn{1.1} с поправкой} \]
+\begin{exbox}{Пример: $\Lambda(\mathfrak{sl}_2)$ — алгебра Грассмана от базиса $e,h,f$ алгебры $\mathfrak{sl}_2$ ($e,h,f$ нечётны) со скобкой Схоутена: на $\mathfrak{sl}_2$ она равна скобке Ли, $\{x,y\}=[x,y]$; на произведения продолжается по правилу Лейбница}
+\[ \begin{aligned}
+\{e,ef\}&=\{e,e\}f+e\{e,f\}=[e,e]f+e[e,f]=eh &&\nm{правило Лейбница; $[e,f]=h$}\\
+\{ef,e\}&=-\{e,ef\}=-eh &&\nm{кососимметричность: $\rp{ef}\rp e=1\cdot0$}\\
+\{f,ef\}&=\{f,e\}f+e\{f,f\}=[f,e]f=-hf &&\nm{правило Лейбница}\\
+\{ef,f\}&=-\{f,ef\}=hf &&\nm{кососимметричность}\\
+\{ef,ef\}&=\{ef,e\}f-e\{ef,f\}=-ehf-ehf=-2\,ehf\neq0 &&\nm{правило Лейбница, $\rp{ef}=1$}
+\end{aligned} \]
+\end{exbox}
+\onslide<2->
+\textbf{Отличие от Пуассона:} для чётных $a,b$ имеем $\rp a\rp b=1$, и кососимметричность принимает вид
+\[ \{a,b\}=\{b,a\}: \]
+скобка чётных элементов \hlt{симметрична}, и бывает $\{a,a\}\neq0$ — как $\{ef,ef\}$ выше. Единица чётна.
+\end{frame}
+
+\begin{frame}[label=genpoisson]{Правило Лейбница с поправкой}
+\begin{sidecols}
+\sidecol[0.2]
+\only<2->{\begin{sidebox}{formulas1}
+\sromn{1.1}{&\{a,bc\}=\{a,b\}\,c\\&\quad+b\,\{a,c\}}
+\end{sidebox}}
+\maincol[0.78]\vspace*{-6pt}
+В алгебре Пуассона $\{a,1\}=0$. Что будет, если это разрешить?
+\only<2->{\begin{defbox}{Обобщённая алгебра Пуассона}
+Пространство $V$ с ассоциативным коммутативным умножением с $1$ и скобкой Ли, такими что для всех $a,b,c\in V$
+\[ \ano{1.6}\{a,bc\}=\{a,b\}c+b\{a,c\}\;\mka{-\,\{a,1\}\,bc}\qquad\nm{\fn{1.1} с поправкой} \]
 \end{defbox}}
 \only<3->{\begin{exbox}{Пример: $\F[x]$, скобка векторных полей $f\,\tfrac{d}{dx}$}
 \[ \begin{aligned}
-\{f,g\}&=fg'-f'g\\
-\{f,1\}&=-f'\neq0\\
+\{f,g\}&=fg'-f'g\hspace{1.3cm}\{f,1\}=-f'\neq0\\
 \{x,x^2\}&=x\cdot2x-1\cdot x^2=x^2\\
 &=\{x,x\}\,x+x\,\{x,x\}-\{x,1\}\,x^2 &&\nm{$\{x,x\}=0$, \ $\{x,1\}=-1$}
 \end{aligned} \]
 \end{exbox}}
 \onslide<4->
-{\small\color{mute}Откуда поправка: йордановы скобки и \go{kantor}{двойник Кантора}.}
+\vspace{-6pt}{\small\color{mute}Кантарини и Кац (2007) классифицировали простые линейно компактные обобщённые супералгебры Пуассона. Откуда поправка — \go{kantor}{двойник Кантора}.}
+\end{sidecols}
 \end{frame}
 
 \begin{frame}[label=def1]{Обобщённые алгебры Герстенхабера}
 \small
 \begin{defbox}{Определение 1}
-\ftip[-2.7cm]{z2}{$\Z_2$-градуированное}{V = V₀ ⊕ V₁; |a| — чётность однородного a; ‖a‖ = |a| + 1}{$\displaystyle\begin{aligned}
-V&=V_0\oplus V_1\\
-|a|&=i\quad\text{при}\ a\in V_i &&\nm{чётность}\\
-\rp a&=|a|+1 &&\nm{обращённая чётность}
-\end{aligned}$} пространство $V$ с $1\in V_0$ и операциями $ab$, $\{a,b\}$; \ $\D(a)=\{1,a\}$.\par\smallskip
-\noindent\begin{minipage}[t]{0.36\linewidth}
-$\displaystyle\begin{alignedat}[t]{2}
-&\ano{1} & |ab|&=|a|+|b|\\
-&& |\{a,b\}|&=|a|+|b|+1\\
-&\ano{2} & (ab)c&=a(bc)\\
-&& ab&=(-1)^{|a||b|}ba\\
-&& 1a&=a
-\end{alignedat}$
-\end{minipage}\hfill
-\begin{minipage}[t]{0.62\linewidth}
-$\displaystyle\begin{alignedat}[t]{2}
+\hlt{Обобщённая алгебра Герстенхабера} — супералгебра $V=V_0\oplus V_1$ с умножением $ab$, единицей $1\in V_0$ и билинейной скобкой $\{a,b\}$, такая что для всех однородных $a,b,c\in V$ выполнены (1)--(5); здесь $\rp a=|a|+1$ — обращённая чётность, $\D(a)=\{1,a\}$.
+\setlength{\jot}{1pt}
+\[ \begin{alignedat}{2}
+&\ano{1} & |ab|&=|a|+|b|,\qquad |\{a,b\}|=|a|+|b|+1\\
+&\ano{2} & (ab)c&=a(bc),\qquad ab=(-1)^{|a||b|}ba,\qquad 1a=a\\
 &\ano{3} & \{a,b\}&=-(-1)^{\rp a\rp b}\{b,a\}\\
 &\ano{4} & \{a,\{b,c\}\}&=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\}\\
-&\ano{5} & \{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}\\
-&& &\quad\mka{+(-1)^{\rp a}\D(a)\,bc}
-\end{alignedat}$
-\end{minipage}
+&\ano{5} & \{a,bc\}&=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}\mka{+(-1)^{\rp a}\D(a)\,bc}
+\end{alignedat} \]
 \end{defbox}
 \onslide<2->
-  \bul Поправка та же, что в чётном случае; при $\D=0$ получаются алгебры Герстенхабера:
-\[ (-1)^{\rp a}\D(a)=-\{a,1\}\qquad\nm{по (3)} \]
+  \bul Поправка та же, что в чётном случае: по (3) $(-1)^{\rp a}\D(a)=-\{a,1\}$. При $\D=0$ — алгебры Герстенхабера.
 \onslide<3->
-  \bul Odd generalized Poisson superalgebras Кантарини--Каца (2010); простые — \go{po}{$PO(n,n)$ и $PO(n,n+1)$}.
+  \bul Кантарини и Кац (2010), «odd generalized Poisson superalgebras»: простые линейно компактные алгебры класса — \go{po}{$PO(n,n)$ и $PO(n,n+1)$} с точностью до калибровочной эквивалентности.
 \end{frame}
 
 \begin{frame}[label=ex1]{\ft{Новое явление: элемент $\{1,1\}$}{Новое явление: элемент {1,1}}}
@@ -477,12 +509,20 @@ $\displaystyle\begin{alignedat}[t]{2}
 
 \begin{frame}[label=freealg]{Свободная алгебра и её базис}
 \small
-\begin{itemize}\setlength{\itemsep}{0.3em}
-  \item<1-> \hlt{Свободная алгебра} класса на буквах $X$: выражения от букв, отождествлённые только по тождествам класса. Любое отображение букв в алгебру класса продолжается до гомоморфизма.
-  \item<2-> \hlt{Базис} свободной алгебры — нормальная форма: равенство элементов проверяется сравнением записей.
-  \item<3-> \hlt{Мультилинейная часть}: элементы, где каждая из букв $x_1,\dots,x_n$ входит ровно один раз. Её размерность — числовой «паспорт» класса.
-\end{itemize}
-\onslide<4->
+\begin{defbox}{Свободная алгебра}
+Пусть $\mathcal K$ — класс алгебр, заданный тождествами (например, алгебры Ли), $X$ — множество (для супералгебр — с чётностями элементов). \hlt{Свободная алгебра} класса $\mathcal K$ на $X$ — алгебра $F(X)\in\mathcal K$, порождённая $X$, такая что для любой алгебры $A\in\mathcal K$ любое отображение $\varphi\colon X\to A$, сохраняющее чётность, продолжается до гомоморфизма $\Phi\colon F(X)\to A$; такой $\Phi$ единствен. Её элементы — выражения от букв $X$, и два выражения равны, только когда это следует из тождеств класса.
+\end{defbox}
+\only<2->{\begin{exbox}{Пример: многочлены $\F[x_1,\dots,x_n]$ — свободная ассоциативная коммутативная алгебра с $1$}
+\[ \Phi(f)=f\bigl(\varphi(x_1),\dots,\varphi(x_n)\bigr)\qquad\nm{$\Phi$ — подстановка} \]
+\end{exbox}}
+\end{frame}
+
+\begin{frame}[label=freealgtab]{Базис и мультилинейная часть}
+\small
+\begin{defbox}{Базис и мультилинейная часть}
+\hlt{Базис} свободной алгебры — базис $F(X)$ как векторного пространства, описанный явно. Это нормальная форма: равенство двух элементов проверяется сравнением коэффициентов. \hlt{Мультилинейная часть} — линейная оболочка элементов $F(x_1,\dots,x_n)$, в которые каждая из букв $x_1,\dots,x_n$ входит ровно один раз; её размерность — числовой «паспорт» класса.
+\end{defbox}
+\onslide<2->
 \vskip0.1cm
 {\small\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{@{}L{3.4cm}L{7.6cm}cc@{}}
@@ -499,22 +539,28 @@ $\displaystyle\begin{alignedat}[t]{2}
 
 \begin{frame}[label=good]{Алгебры Ли: хорошие слова Холла}
 \small
-\begin{defbox}{Хорошие слова: буквы и слова $w=[u,v]$, где $u,v$ — хорошие и}
-\[ \begin{aligned}
-u&>v &&\nm{порядок: по длине, затем лексикографически}\\
-u_2&\le v\quad\text{при}\ u=[u_1,u_2]
-\end{aligned} \]
+\begin{defbox}{Хорошие слова}
+Пусть $X$ — линейно упорядоченное множество букв. \hlt{Слова} над $X$ — буквы и выражения $[u,v]$, где $u,v$ — слова; \hlt{степень} слова — число букв в нём. Хорошие слова и их порядок определяются индукцией по степени.\par\smallskip
+\hlt{Степень 1}: хорошие слова — буквы, порядок — как в $X$.\par
+\hlt{Степень $n\ge2$}: слово $w=[u,v]$ \hlt{хорошее}, если $u$ и $v$ — хорошие слова и
+\[ u>v,\qquad u_2\le v\ \ \text{при}\ u=[u_1,u_2]. \]
+\hlt{Порядок}: слово большей степени больше; слова одной степени сравниваются лексикографически: $[u,v]>[u',v']$, если $u>u'$, или $u=u'$ и $v>v'$.
 \end{defbox}
-\only<2->{\begin{exbox}{Пример: $x_1<x_2<x_3$, каждая буква по разу}
+\end{frame}
+
+\begin{frame}[label=goodex]{Хорошие слова: пример и теорема Холла}
+\small
+\begin{exbox}{Пример: $x_1<x_2<x_3$, каждая буква по разу}
 \[ \begin{aligned}
 &[x_2,x_1]<[x_3,x_1]<[x_3,x_2] &&\nm{длина 2}\\
 &[[x_2,x_1],x_3],\ \ [[x_3,x_1],x_2] &&\nm{хорошие длины 3}\\
-&[[x_3,x_2],x_1]=[[x_3,x_1],x_2]-[[x_2,x_1],x_3] &&\nm{по Якоби}
+&[[x_3,x_2],x_1]=[[x_3,x_1],x_2]-[[x_2,x_1],x_3] &&\nm{не хорошее: $x_2>x_1$; по Якоби}
 \end{aligned} \]
-\end{exbox}}
-\only<3->{\begin{thmbox}{Теорема (М.~Холл, 1950)}
-Хорошие слова — базис свободной алгебры Ли; мультилинейных на $k$ буквах — $(k-1)!$.
-\end{thmbox}}
+\end{exbox}
+\onslide<2->
+\begin{thmbox}{Теорема (М.~Холл, 1950)}
+Хорошие слова образуют базис свободной алгебры Ли на $X$; мультилинейных хороших слов на $k$ буквах — $(k-1)!$.
+\end{thmbox}
 \end{frame}
 
 \begin{frame}[label=superlie]{Супералгебры Ли: квадраты нечётных}
@@ -602,17 +648,12 @@ X&=\{1<x_1<x_2<\cdots\} &&\nm{алфавит}\\
 \partslide{03}{Ответ}
 
 \begin{frame}[label=setM]{\ft{Скобочная часть: множество $M$}{Скобочная часть: множество M}}
-\begin{sidecols}
-\sidecol
-\only<3->{\begin{sidebox}{formulas2}
-\sfthree
-\sffour
-\end{sidebox}}
-\maincol
-\[ \begin{aligned}
-M&=\bigl\{\,u,\ \{v,v\}\ \bigm|\ u,v\ \text{— хорошие слова над}\ X,\ |v|=0\,\bigr\}\\
-e_1&=1<e_2<e_3<\cdots
-\end{aligned} \]
+\small
+\begin{defbox}{Множество $M$}
+Пусть $X=\{1<x_1<x_2<\cdots\}$ — буквы с заданными чётностями, $|1|=0$. Слова над $X$ строятся нечётной скобкой $\{\,,\}$, их чётность $|\{u,v\}|=|u|+|v|+1$; хорошие слова и их порядок — как у Холла. \hlt{Множество $M$} состоит из хороших слов и квадратов $\{v,v\}$ хороших слов чётности $0$:
+\[ M=\bigl\{\,u,\ \{v,v\}\ \bigm|\ u,v\ \text{— хорошие слова над}\ X,\ |v|=0\,\bigr\}. \]
+Квадраты сравниваются с остальными элементами так же, как слова; элементы $M$ занумерованы по возрастанию: $e_1=1<e_2<e_3<\cdots$
+\end{defbox}
 \only<2->{\begin{thmbox}{Лемма 4}
 $M$ — базис свободной \ftip[-5.2cm]{oddlie}{нечётной супералгебры Ли}{кососимметричность (3) и Якоби (4): супералгебра Ли относительно чётности ‖a‖ = |a| + 1}{Супералгебра Ли относительно обращённой чётности $\rp a=|a|+1$:
 \[ \begin{aligned}
@@ -620,40 +661,63 @@ $M$ — базис свободной \ftip[-5.2cm]{oddlie}{нечётной с�
 \{a,\{b,c\}\}&=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\} &&\nm{4}
 \end{aligned} \]} $\LL$ на $X$. Квадраты — у \hlt{чётных} слов (теорема Штерна), так что $\{1,1\}\in M$.
 \end{thmbox}}
-\only<3->{\begin{exbox}{Пример: $X=\{1<x_1\}$, $x_1$ чётная}
+\end{frame}
+
+\begin{frame}[label=setMex]{\ft{Множество $M$: пример}{Множество M: пример}}
+\begin{sidecols}
+\sidecol
+\begin{sidebox}{formulas2}
+\sfthree
+\sffour
+\end{sidebox}
+\maincol
+\begin{exbox}{Пример: $X=\{1<x_1\}$, $x_1$ чётная}
 \[ \begin{aligned}
 &1,\ x_1 &&\nm{степень 1}\\
 &\{1,1\}<\{x_1,1\}<\{x_1,x_1\} &&\nm{степень 2}\\
 &\{\{x_1,1\},1\},\ \ \{\{x_1,1\},x_1\} &&\nm{степень 3}
 \end{aligned} \]
+Остальные слова через них выражаются:
 \[ \begin{aligned}
 \{1,x_1\}&=\{x_1,1\} &&\nm{по (3)}\\
 \{\{1,1\},x_1\}&=2\{1,\{1,x_1\}\}=-2\{\{x_1,1\},1\} &&\nm{по (4), (3)}
 \end{aligned} \]
-\end{exbox}}
+\end{exbox}
 \end{sidecols}
 \end{frame}
 
 \begin{frame}[label=thm12]{Главная теорема}
 \begin{sidecols}
 \sidecol
-\only<3->{\begin{sidebox}{formulas3}
+\begin{sidebox}{formulas3}
 \sdef{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
-\sffive
-\end{sidebox}}
+\end{sidebox}
 \maincol
-Одночлены от $M\setminus\{1\}$, нечётные множители — в первой степени:
-\[ U=\bigl\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\ \bigm|\ 1<i_1<\dots<i_r\,\bigr\}. \]
+\begin{defbox}{Одночлены $U$}
+$U$ — одночлены от элементов $M\setminus\{1\}$, записанные по возрастанию номеров, в которых нечётные множители входят не выше чем в первой степени:
+\[ U=\bigl\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\ \bigm|\ 1<i_1<\dots<i_r,\ \ k_j=1\ \text{при}\ |e_{i_j}|=1\,\bigr\}, \]
+$k_j\ge1$; при $r=0$ это $1$. Иначе говоря, $U$ — базис суперполиномов $S(\LL')$, где $\LL'=\spn(M\setminus\{1\})$.
+\end{defbox}
 \only<2->{\begin{thmbox}{Теорема 12}
-$U$ — базис свободной унитальной обобщённой алгебры Герстенхабера $\G$ на $X$. Более того, $\G$ изоморфна суперполиномам с явно заданной скобкой:
-\[ \begin{aligned}
-\G&\cong\Sm=S(\LL')\\
-\LL'&=\spn(M\setminus\{1\})
-\end{aligned} \]
+$U$ — базис свободной унитальной обобщённой алгебры Герстенхабера $\G$ на $X$. Более того, $\G$ изоморфна суперполиномам $\Sm=S(\LL')$ с явно заданной скобкой.
 \end{thmbox}}
-\only<3->{\begin{exbox}{Пример: $X=\{1<x_1\}$, \ $x_1$ чётная}
-\[ \begin{aligned} \{x_1,x_1^2\}&=\{x_1,x_1\}x_1+x_1\{x_1,x_1\}-\{1,x_1\}x_1^2 &&\nm{по (5)}\\ &=2x_1\{x_1,x_1\}-x_1^2\{x_1,1\} \end{aligned} \]
-\end{exbox}}
+\end{sidecols}
+\end{frame}
+
+\begin{frame}[label=thm12ex]{Главная теорема: пример}
+\begin{sidecols}
+\sidecol
+\begin{sidebox}{formulas3}
+\sdef{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
+\sfthree
+\sffive
+\end{sidebox}
+\maincol
+\begin{exbox}{Пример: $X=\{1<x_1\}$, \ $x_1$ чётная}
+Скобка с произведением раскладывается по (5) в комбинацию одночленов из $U$:
+\[ \begin{aligned} \{x_1,x_1^2\}&=\{x_1,x_1\}x_1+x_1\{x_1,x_1\}-\{1,x_1\}x_1^2 &&\nm{по (5)}\\ &=2x_1\{x_1,x_1\}-x_1^2\{x_1,1\} &&\nm{по (3)} \end{aligned} \]
+Оба одночлена справа лежат в $U$: множители $x_1$, $\{x_1,x_1\}$, $\{x_1,1\}$ — элементы $M\setminus\{1\}$.
+\end{exbox}
 \end{sidecols}
 \end{frame}
 
@@ -832,7 +896,9 @@ $J$ суперкососимметричен, и
 
 \begin{frame}[label=multi]{\ft{Мультилинейная часть: $n\cdot n!$}{Мультилинейная часть: n·n!}}
 \small
-$\mathrm{GenGer}(n)$ — оболочка тех элементов $U$, где каждая из букв $1,x_1,\dots,x_n$ входит ровно один раз. \hlt{Буква $1$ тоже считается.}
+\begin{defbox}{Мультилинейная часть $\mathrm{GenGer}(n)$}
+Пусть $X=\{1,x_1,\dots,x_n\}$. $\mathrm{GenGer}(n)$ — линейная оболочка тех элементов $U$, в которые каждая из букв $1,x_1,\dots,x_n$ входит ровно один раз; \hlt{буква $1$ тоже считается}.
+\end{defbox}
 \only<2->{\begin{thmbox}{Теорема 14}
 \centering\Large $\dim\mathrm{GenGer}(n)=n\cdot n!$
 \end{thmbox}}
@@ -1060,7 +1126,7 @@ d(V_i)&\subseteq V_{(i+p)\bmod 2}\hspace{1.3cm}|d(a)|=|a|+p\\
 
 \begin{frame}[label=formulas1b]{Формулы доклада: алгебры Герстенхабера}
 \small
-\fe{Супералгебра Ли}{\go{superder}{слайд «Супералгебры Ли»}}{Скобка складывает чётности.}
+\fe{Супералгебра Ли}{\go{superliedef}{слайд «Супералгебры Ли»}}{Скобка складывает чётности.}
 \[ \begin{alignedat}{2}
 &&{}[V_i,V_j]&\subseteq V_{(i+j)\bmod 2}\\
 &\ano{1.4}&{}[a,b]&=-(-1)^{|a||b|}\,[b,a]\\
