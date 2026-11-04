@@ -45,7 +45,7 @@
 \newcommand{\leg}[2]{{\setlength{\fboxsep}{1.5pt}\colorbox{#1}{#2}}}   % подпись цвета в тексте
 \newcommand{\lit}[1]{\footnote[frame]{#1}}   % литература — сноской на том слайде, где работа упомянута
 \setlength{\skip\footins}{4pt plus 1pt}\setbeamerfont{footnote}{size=\tiny}\setbeamercolor{footnote}{fg=mute}\setbeamercolor{footnote mark}{fg=deepgreen}
-\newcommand{\look}[1]{\par\smallskip{\footnotesize\textbf{Куда смотреть.} #1\par}}   % подпись под выкладкой, как в курсе
+\newcommand{\look}[1]{\par\smallskip{\footnotesize #1\par}}   % подпись под выкладкой: что выделено цветом (без слов «Куда смотреть»)
 \newcommand{\backto}[2]{\par\vfill\hfill{\scriptsize\go{#1}{$\hookleftarrow$\ #2}}}  % запасной слайд: ссылка обратно в доклад
 
 % ---------------------------------------------------------------- обозначения статьи
