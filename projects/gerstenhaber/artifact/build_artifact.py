@@ -22,8 +22,7 @@ What happens to lecture.html on the way:
   otherwise after the flashcards (#fc-list), otherwise at the end of the last module;
 - module ids and their number are taken from the text as they are; the calculators find their
   blocks by the ids inside them, in whatever module they stand.
-Suggested questions in the panel: "suggest" in lecture.json, {module id: [question, ...]};
-a module without an entry gets two generic ones.
+The lecturer's panel has no suggested questions (she asked to remove them, 04/11/2026).
 
 The copy lives at https://claude.ai/artifact/53CxBbBCZ4sJsSLirKm51T: publish the output to that
 url (its capabilities sample, db, user stay as they are).
@@ -228,17 +227,6 @@ body = re.sub(r'src="slides/([0-9]+\.png)"', inline_slide, body)
 # ---------------------------------------------------------------- the data
 data = json.loads(lecture_json.read_text(encoding="utf-8"))
 data.pop("claude_url", None)  # the copy does not link to itself
-given = data.pop("suggest", None) or {}
-assert isinstance(given, dict), "suggest в lecture.json: {id модуля: [вопрос, ...]}"
-GENERIC = ["Объясни этот модуль подробнее, со всеми выкладками", "Разбери пример из этого модуля по шагам"]
-suggest = {}
-for mid in ids:
-    q = given.get(mid)
-    assert q is None or (isinstance(q, list) and all(isinstance(s, str) for s in q)), f"suggest[{mid}]: нужен список строк"
-    suggest[mid] = q or GENERIC
-for mid in sorted(set(given) - set(ids)):
-    warn(f"suggest: модуля «{mid}» в тексте нет — его вопросы не показываются")
-n_generic = sum(1 for mid in ids if not given.get(mid))
 
 quizzes = data.get("quizzes") or {}
 in_text = re.findall(r'\bdata-quiz="([^"]*)"', body)
@@ -266,7 +254,6 @@ page = fill(page, "@@TITLE@@", htmllib.escape(title, quote=False))
 page = fill(page, "<!--@@HERO@@-->", hero)
 page = fill(page, "<!--@@MODULES@@-->", body)
 page = fill(page, "/*@@LECTURE_DATA@@*/{}", js_value(data))
-page = fill(page, "/*@@SUGGEST@@*/{}", js_value(suggest))
 page = fill(page, '/*@@TITLE_JS@@*/""', js_value(title))
 page = fill(page, '/*@@SITE_JS@@*/""', js_value(SITE))
 page = fill(page, "/*@@PICKS_JS@@*/", PICKS.rstrip("\n"))
@@ -279,7 +266,7 @@ print(f"{out}: {len(page.encode('utf-8')) / 1024:.0f} KB")
 print(f"  «{title}»; модулей {len(ids)}: {', '.join(ids)}")
 print(f"  тестов {len(quizzes)} (вопросов {sum(len(v) for v in quizzes.values())}), карточек {len(data.get('flashcards') or [])}, "
       f"глоссарий {len(data.get('glossary') or [])}, примеров калькулятора {len(data.get('presets') or [])}")
-print(f"  подсказки лектору: свои у {len(ids) - n_generic} модулей, общие у {n_generic}; репетиция — {where}; слайдов вставлено {n_slides}")
+print(f"  репетиция — {where}; слайдов вставлено {n_slides}")
 print(f"  убрано только для сайта: ссылок на карточки {n_cards}, data-only=\"site\" {n_site_only}; старых правок текста {legacy_used}")
 for w in warnings:
     print("  ВНИМАНИЕ:", w)

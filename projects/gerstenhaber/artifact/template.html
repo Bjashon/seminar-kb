@@ -7,7 +7,6 @@ dropped. Placeholders (@@...@@; in HTML they sit in comments, in JavaScript in /
   @@MODULES@@               all <section class="module"> of lecture.html and its footer
   @@REHEARSAL ... REHEARSAL@@  the block "Репетиция с «залом»"; the build puts it into the text
   @@LECTURE_DATA@@          lecture.json without claude_url (quizzes, flashcards, glossary, presets)
-  @@SUGGEST@@               suggested questions per module id ("suggest" in lecture.json)
   @@SITE_JS@@               the site's address, from SEMINAR_SITE_URL (never in the repo)
   @@PICKS_JS@@              artifacts/picks.js
 Everything else -- styles, the lecturer's panel and its texts (REFERENCE, RULES_ASK, RULES_HALL),
@@ -185,6 +184,7 @@ mark.c { background: var(--hl-c); }
 mjx-container { max-width: 100%; }
 mjx-assistive-mml { max-width: 100% !important; }  /* the hidden copy for screen readers must not widen the page on a phone */
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-block: 2px; margin: 12px 0 !important; }
+mjx-container[display="true"] { min-width: 0 !important; }  /* a numbered formula gets an inline min-width from MathJax; without this it widens the page on a phone instead of scrolling */
 .mono { font-family: var(--f-mono); }
 .tag { display: inline-block; font: 700 11.5px/1 var(--f-ui); letter-spacing: .05em; padding: 4px 6px; border-radius: 3px; background: var(--card-2); color: var(--ink-soft); vertical-align: 2px; }
 
@@ -864,8 +864,7 @@ const RULES_ASK = String.raw`Ты — лектор-алгебраист на к�
 
 const RULES_HALL = String.raw`Ты играешь слушателя научного семинара по неассоциативным алгебрам. Докладчица рассказывает статью И. Кайгородова и К. Вяткиной «A basis of free generalized Gerstenhaber algebras» (справка ниже). Задавай по одному вопросу за раз — такие, какие реально задают на докладе: об определениях и их мотивировке, примерах, логике доказательства, сравнении с работами Кайгородова 2017 и Кантарини–Каца, о возможных обобщениях. Чередуй простые и трудные вопросы, не повторяйся. Когда докладчица ответит: 1) коротко оцени ответ (что верно, что неточно или упущено); 2) дай образцовый ответ в 2–4 предложениях; 3) задай следующий вопрос отдельной строкой, начиная её со слов «Вопрос:». Пиши по-русски, формулы — в LaTeX между $...$. Опирайся на справку; не выдумывай фактов. Без эмодзи.`;
 
-// Suggested questions in the panel, per module id ("suggest" in lecture.json; two generic ones otherwise).
-const SUGGEST = /*@@SUGGEST@@*/{};
+// No suggested questions in the lecturer's panel: she removed them (04/11/2026). The only chip left starts the rehearsal with the «hall».
 
 // ===================== page logic =====================
 const $ = (s, r = document) => r.querySelector(s);
@@ -1512,7 +1511,7 @@ function renderChat() {
 }
 function renderSuggest() {
   const box = $("#suggest"); if (!box) return;
-  const list = chatMode === "hall" ? (chatHistory.hall.length ? [] : ["Задай первый вопрос"]) : (SUGGEST[currentModule.id] || []);
+  const list = chatMode === "hall" && !chatHistory.hall.length ? ["Задай первый вопрос"] : [];
   box.innerHTML = list.map(s => `<button type="button">${esc(s)}</button>`).join("");
 }
 $("#suggest").addEventListener("click", e => { const b = e.target.closest("button"); if (b) send(b.textContent); });

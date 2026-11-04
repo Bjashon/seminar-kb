@@ -103,19 +103,7 @@ REFERENCE = r"""СПРАВКА (состояние на 12.10.2026)
 
 МАРШРУТЫ. J — всё следует из Якоби (J1 и J2). T — тонкие алгебры: найти явное семейство с двумерными весами и доказать, что по $\mathrm{Inv}([\alpha,\beta])$ восстанавливается пара $\{\alpha,\beta\}$; сейчас главный кандидат. U — однозначность разложения напрямую, по образцу умножения многообразий. S — «позвоночник» и порядок сомножителей. R — представления $S_n$ (проверить J1 при $n=9$–$11$). C — искать контрпример."""
 
-SUGGEST = {
-    "m0": ["Объясни гипотезу на примере n = 4", "Почему буквальная формулировка из тетради неверна?", "Что уже доказано, а что только посчитано?"],
-    "m1": ["Какие формы бывают при шести листьях?", "Что такое гребёнка и что такое вишня?"],
-    "m2": ["Почему из нильпотентности следует метабелевость, а обратно нет?", "Что значит, что тождества равносильны?"],
-    "m3": ["Почему оболочка значений одночлена — идеал?", "Как из однозначности разложения следует гипотеза?"],
-    "m4": ["Почему большее подпространство даёт более сильное тождество?", "Разбери доказательство теоремы о сведении"],
-    "m5": ["Как устроен сертификат из тонких алгебр?", "Покажи, как алгебра Витта различает две формы с пятью листьями", "Что такое шаг Якоби?"],
-    "m6": ["Как по идеалу прочитать число Стралера?", "Почему высота — инвариант?", "На каком примере все инварианты молчат?"],
-    "m7": ["Какой маршрут сейчас самый перспективный и почему?", "Почему одной алгебры Витта не хватает?", "Чем коммутатор многообразий труднее умножения?"],
-    "m8": ["С чего начать на этой неделе?", "Что отдать Аристотелю в первую очередь?"],
-    "m9": ["Проверь меня: задай три вопроса по курсу", "Что прочитано в литературе и чего там нет?"],
-}
-assert set(SUGGEST) == {m for m, _ in modules}
+# No suggested questions in the lecturer's panel: she removed them (04/11/2026).
 for text in (RULES, REFERENCE):
     assert text.count("$") % 2 == 0
 
@@ -198,9 +186,6 @@ SHELL_CSS = r"""
 .msg .body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
 .msg .body .small { font: 13px/1.45 var(--f-ui); color: var(--ink-soft); }
 .msg.pending .body { color: var(--ink-soft); }
-.suggest { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 8px; }
-.suggest button { border: 1px solid var(--border); background: var(--bg-soft); border-radius: 999px; padding: 6px 11px; font: 13px/1.25 var(--f-ui); color: var(--ink); text-align: left; cursor: pointer; }
-.suggest button:hover { border-color: var(--accent); }
 .composer { border-top: 1px solid var(--border); padding: 10px 16px 14px; display: grid; gap: 8px; }
 .composer textarea { width: 100%; min-height: 72px; max-height: 40vh; resize: vertical; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 9px 11px; font: 15.5px/1.45 var(--f-text); }
 .composer textarea:focus { border-color: var(--accent); outline: none; }
@@ -248,7 +233,6 @@ __LECTURE__
   </div>
   <div class="drawer-note">Отвечает Claude по тексту курса и по модулю, который ты сейчас читаешь. Гипотеза открыта: ответ лектора — подсказка, а не доказательство; выкладки проверяй.</div>
   <div class="msgs" id="msgs" aria-live="polite"></div>
-  <div class="suggest" id="suggest"></div>
   <form class="composer" id="composer">
     <textarea id="chat-in" placeholder="Например: почему из J1 и J2 следует гипотеза?" aria-label="Сообщение"></textarea>
     <div class="row"><span class="chat-err" id="chat-err" aria-live="polite"></span>
@@ -297,17 +281,11 @@ PAGE_JS = r"""
     msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
     return b;
   }
-  function renderSuggest() {
-    const list = history.length ? [] : (SUGGEST[currentModule().id] || []);
-    $("#suggest").innerHTML = list.map((s) => '<button type="button">' + esc(s) + "</button>").join("");
-  }
   function renderChat() {
     msgs.innerHTML = "";
     if (!history.length) addMsg("Лектор", "Спрашивай по курсу и по задаче: определения, шаги доказательств, «а что если». Я вижу, какой модуль у тебя открыт. Гипотеза в общем виде открыта — если попросишь её доказать, я так и скажу и предложу, с чего начать.");
     history.forEach((m) => addMsg(m.role === "user" ? "Ты" : "Лектор", m.shown || m.content, m.role === "user" ? "me" : ""));
-    renderSuggest();
   }
-  $("#suggest").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) send(b.textContent); });
   // On a wide screen the panel takes its own column and the text moves left (body.pk-push, see
   // artifacts/picks.js); the block being read stays where it was.
   function setDrawer(open) {
@@ -358,7 +336,6 @@ PAGE_JS = r"""
     const shown = q ? text + "\n> " + q.text : text;
     history.push({ role: "user", content: full, shown });
     addMsg("Ты", shown, "me");
-    $("#suggest").innerHTML = "";
     const b = addMsg("Лектор", "", "pending");
     b.textContent = "Думаю…";
     const mod = currentModule();
@@ -387,7 +364,7 @@ PAGE_JS = r"""
     } finally {
       busy = false; ctl = null;
       $("#chat-send").disabled = false; $("#chat-stop").hidden = true;
-      msgs.scrollTop = msgs.scrollHeight; renderSuggest();
+      msgs.scrollTop = msgs.scrollHeight;
     }
   }
   if (window.claude && typeof window.claude.use === "function") {
@@ -422,7 +399,7 @@ plain_by_id = {}
 for sec in sections[1:]:
     mid = re.match(r'<section class="module" id="(m\d+)"', sec).group(1)
     plain_by_id[mid] = plain(sec)[:7000]
-assert set(plain_by_id) == set(SUGGEST)
+assert set(plain_by_id) == {m for m, _ in modules}
 for mid, text in plain_by_id.items():
     marker = f'<section class="module" id="{mid}" '
     assert html.count(marker) == 1
@@ -438,7 +415,7 @@ page = "".join([
     "<script>\nwindow.MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] }, svg: { fontCache: 'global' },\n"
     "  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] } };\n",
     "window.LECTURE_DATA = ", js_value(data), ";\n",
-    "const RULES = ", js_value(RULES), ";\nconst REFERENCE = ", js_value(REFERENCE), ";\nconst SUGGEST = ", js_value(SUGGEST), ";\n",
+    "const RULES = ", js_value(RULES), ";\nconst REFERENCE = ", js_value(REFERENCE), ";\n",
     "</script>\n<script>\n", js, "\n</script>\n<script>", PAGE_JS, "</script>\n",
     '<script async id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>\n',
     # Picking words, formulas, statements into cards for the site's trainer (shared with the other courses).
