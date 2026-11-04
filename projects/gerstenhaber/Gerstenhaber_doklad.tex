@@ -82,16 +82,54 @@
 \deffn{2.1}{good}{1}\deffn{2.2}{good}{1}
 \newcommand{\fnt}[1]{\csname fnt@#1\endcsname}
 \newcommand{\fn}[1]{\go{\fnt{#1}}{(#1)}}
-% подсказка с формулами: \ftip[не используется]{id}{термин}{текст (не показывается)}{формулы}.
-% Треугольник после термина — ссылка на запасной слайд «Подсказка: …» в конце (\tipframe), где формулы раскрыты;
-% на нём «↩» ведёт обратно. Всплывающих рамок (слоёв PDF) больше нет: она попросила слайды вместо них (04/11/2026).
-\newcommand{\ftip}[5][]{#3\expandafter\gdef\csname tipbody@#2\endcsname{#5}%
-  \hyperlink{tip-#2}{\textsuperscript{\color{deepgreen}\tiny$\blacktriangledown$}}}
-% \tipframe{id}{заголовок}{метка слайда, куда вернуться}{название этого слайда}
-\newcommand{\tipframe}[4]{\begin{frame}[label=tip-#1]{#2}
-  \small\csname tipbody@#1\endcsname
-  \backto{#3}{к слайду «#4»}
-\end{frame}}
+% подсказка с формулами: \ftip[сдвиг рамки]{id}{термин}{текст (не показывается)}{формулы}; \ftipd — рамка под термином.
+% Всплывающие слои PDF открываются не во всех просмотрщиках, поэтому подсказка «открывается» переходом: треугольник
+% после термина ведёт на копию той же страницы с открытой рамкой (\tipcopy в конце файла, \againframe), а треугольник
+% и сама рамка на копии ведут обратно на страницу с закрытой подсказкой (04/11/2026). Рамка должна помещаться в слайд.
+\def\opentip{}\def\tipback{}
+\newcommand{\tiplink}[2]{\hyperlink{#1}{#2}}
+\mode<handout>{\renewcommand{\tiplink}[2]{#2}}
+\makeatletter
+\def\tip@draw{}
+\newcommand{\ftip}[5][-2cm]{\ftip@{#1}{#2}{#3}{#5}{south west}{1.1em}}
+\newcommand{\ftipd}[5][-2cm]{\ftip@{#1}{#2}{#3}{#5}{north west}{-0.5em}}
+% tipt: рамка рисуется прямо у термина (термин в заголовке рамки примера: запомненная точка там съезжает)
+\newcommand{\ftipt}[5][-2cm]{\def\tip@here{}\ftip@{#1}{#2}{#3}{#5}{south west}{1.1em}\let\tip@here\undefined}
+% на копии: точка у конца термина запоминается, а рамка рисуется из нижней строки — поверх всего слайда
+\def\ftip@#1#2#3#4#5#6{#3\def\tip@id{#2}%
+  \ifx\tip@id\opentip
+    \hypertarget{tipopen-#2}{}%
+    \ifdefined\tip@here\tikz[overlay]\node[anchor=#5, inner sep=5pt, fill=white, draw=applegreen,
+      line width=0.8pt, rounded corners=1.5pt, text=ink, font=\normalfont\footnotesize, align=left]
+      at (#1,#6) {\tiplink{\tipback}{\parbox{7cm}{\raggedright #4}}};\else
+    \tikz[remember picture,overlay]\coordinate (tip@anchor);%
+    \gdef\tip@draw{\tikz[remember picture,overlay]\node[anchor=#5, inner sep=5pt, fill=white, draw=applegreen,
+      line width=0.8pt, rounded corners=1.5pt, text=ink, font=\normalfont\footnotesize, align=left]
+      at ([xshift=#1,yshift=#6]tip@anchor) {\tiplink{\tipback}{\parbox{7cm}{\raggedright #4}}};}%
+    \fi
+    \tiplink{\tipback}{\textsuperscript{\color{deepgreen}\tiny$\blacktriangle$}}%
+  \else
+    \tiplink{tipopen-#2}{\textsuperscript{\color{deepgreen}\tiny$\blacktriangledown$}}%
+  \fi}
+% нижняя строка копии — как у исходной страницы: тот же номер, в основной части — из общего числа слайдов
+\newcommand{\tipfoot@main}[1]{\tip@draw
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=0.78cm,rightskip=0.55cm]{footline}
+    \usebeamerfont{footline}\color{mute}\hyperlink{plan}{\insertshorttitle}\hfill
+    \hyperlink{\tipback}{$\blacktriangleleft$}\ \ {\color{deepgreen}\ref{#1}}\,/\,\ref{summary}\ \ \hyperlink{\tipback}{$\blacktriangleright$}
+  \end{beamercolorbox}}
+\newcommand{\tipfoot@app}[1]{\tip@draw
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=0.78cm,rightskip=0.55cm]{footline}
+    \usebeamerfont{footline}\color{mute}\hyperlink{plan}{Запасные слайды}\hfill
+    \hyperlink{\tipback}{$\blacktriangleleft$}\ \ {\color{deepgreen}A\ref{#1}}\ \ \hyperlink{\tipback}{$\blacktriangleright$}
+  \end{beamercolorbox}}
+% метки слайда у копии не повторяются: \label (в beamer — с необязательным <шагом>) ничего не делает
+\def\tip@nolabel{\@ifnextchar<{\tip@nolabel@}{\@gobble}}
+\def\tip@nolabel@<#1>#2{}
+% \tipcopy[main|app]{id}{метка слайда}{шаг}: копия этого шага слайда с открытой подсказкой id
+\newcommand{\tipcopy}[4][main]{{\def\opentip{#2}\def\tipback{#3<#4>}\let\label\tip@nolabel
+  \setbeamertemplate{footline}{\csname tipfoot@#1\endcsname{#3}}\againframe<#4>{#3}\gdef\tip@draw{}}}
+\makeatother
+\mode<handout>{\renewcommand{\tipcopy}[4][]{}}
 
 % ---------------------------------------------------------------- оформление
 \setbeamertemplate{navigation symbols}{}
@@ -114,11 +152,12 @@
     \vskip0.35cm\ifx\insertframesubtitle\@empty{\color{applegreen}\rule{2.2cm}{2.2pt}}\else{\usebeamerfont{normal text}\normalfont\insertframesubtitle}\fi
   \end{beamercolorbox}\vskip-0.3cm}\makeatother
 
-\setbeamertemplate{footline}{%
+\newcommand{\mainfootline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=0.78cm,rightskip=0.55cm]{footline}
     \usebeamerfont{footline}\color{mute}\hyperlink{plan}{\insertshorttitle}\hfill
     \hyperlinkslideprev{$\blacktriangleleft$}\ \ {\color{deepgreen}\insertframenumber}\,/\,\inserttotalframenumber\ \ \hyperlinkslidenext{$\blacktriangleright$}
   \end{beamercolorbox}}
+\setbeamertemplate{footline}{\mainfootline}
 
 \setbeamertemplate{itemize item}{\color{applegreen}\raisebox{0.18ex}{\rule{0.42em}{0.42em}}}
 \setbeamertemplate{itemize subitem}{\color{applegreen}\textbullet}
@@ -278,7 +317,7 @@ ab&=ba\\
 \end{defboxn}
 \begin{columns}[T,onlytextwidth]
 \column{0.5\textwidth}
-\only<2->{\begin{exbox}{Пример: $\F[p,q]$, \ \ftip[-6.3cm]{pq}{$\{f,g\}=\partial_pf\,\partial_qg-\partial_qf\,\partial_pg$}{Это скобка Пуассона: кососимметрична (f и g меняются местами); правило Лейбница — потому что ∂p и ∂q дифференцирования, ∂(gh) = ∂g·h + g·∂h; тождество Якоби — прямой счёт.}{Почему это скобка Пуассона:
+\only<2->{\begin{exbox}{Пример: $\F[p,q]$, \ \ftipt[-6.3cm]{pq}{$\{f,g\}=\partial_pf\,\partial_qg-\partial_qf\,\partial_pg$}{Это скобка Пуассона: кососимметрична (f и g меняются местами); правило Лейбница — потому что ∂p и ∂q дифференцирования, ∂(gh) = ∂g·h + g·∂h; тождество Якоби — прямой счёт.}{Почему это скобка Пуассона:
 \[ \begin{aligned}
 \{g,f\}&=-\{f,g\}\\
 \partial(gh)&=\partial g\,h+g\,\partial h &&\nm{$\partial=\partial_p,\ \partial_q$}\\
@@ -348,7 +387,7 @@ E_{12}E_{21}&=E_{11} &&\nm{$E_{12}$, $E_{21}$ нечётные}\\
 \begin{defboxn}
 Для $W=W_0\oplus W_1$ с однородным базисом $e_1,e_2,\dots$ \hlt{суперполиномы} $S(W)$ — ассоциативная алгебра с $1$, образующими $e_i$ и соотношениями
 \[ e_ie_j=(-1)^{|e_i||e_j|}e_je_i,\qquad\text{то есть}\qquad S(W)=\F[e_i\in W_0]\otimes\Lambda(e_i\in W_1) \]
-— многочлены от чётных $e_i$ с коэффициентами из \ftip{grass}{алгебры Грассмана}{Алгебра Грассмана (внешняя алгебра) Λ(e₁, e₂, …): ассоциативная алгебра с 1, порождённая e₁, e₂, … с соотношениями eᵢeⱼ = −eⱼeᵢ; в частности, eᵢ² = 0.}{Алгебра Грассмана (внешняя алгебра) — ассоциативная алгебра с $1$, порождённая $e_1,e_2,\dots$ с соотношениями
+— многочлены от чётных $e_i$ с коэффициентами из \ftipd[-6.6cm]{grass}{алгебры Грассмана}{Алгебра Грассмана (внешняя алгебра) Λ(e₁, e₂, …): ассоциативная алгебра с 1, порождённая e₁, e₂, … с соотношениями eᵢeⱼ = −eⱼeᵢ; в частности, eᵢ² = 0.}{Алгебра Грассмана (внешняя алгебра) — ассоциативная алгебра с $1$, порождённая $e_1,e_2,\dots$ с соотношениями
 \[ \begin{aligned}
 e_ie_j&=-e_je_i\\
 e_i^2&=0 &&\nm{при $i=j$}\\
@@ -1483,11 +1522,12 @@ $P(X)$ и $\mathfrak g=\mathrm{Lie}(X)$ — \go{freealg}{свободные} а�
 \end{itemize}
 \end{frame}
 
-% ---------------------------------------------------------------- подсказки: раскрытые формулы, ссылки с треугольников
-\tipframe{pq}{\ft{Подсказка: скобка на $\F[p,q]$}{Подсказка: скобка на F[p,q]}}{poisson\fnov{2}}{Алгебры Пуассона}
-\tipframe{sg}{\ft{Подсказка: $S(\mathfrak g)$ и скобка Ли--Пуассона}{Подсказка: S(g) и скобка Ли–Пуассона}}{poisson\fnov{4}}{Алгебры Пуассона}
-\tipframe{grass}{Подсказка: алгебра Грассмана}{superpoly}{Суперполиномы}
-\tipframe{oddlie}{Подсказка: нечётная супералгебра Ли}{setM\fnov{2}}{Скобочная часть: множество M}
-\tipframe{jordan}{Подсказка: йорданова супералгебра}{kantor}{Откуда поправка}
+% ---------------------------------------------------------------- подсказки: копии страниц с открытой рамкой
+% (переход сюда — по треугольнику после термина; обратно — по треугольнику или по рамке)
+\tipcopy{pq}{poisson}{4}
+\tipcopy{sg}{poisson}{4}
+\tipcopy{grass}{superpoly}{2}
+\tipcopy{oddlie}{setM}{3}
+\tipcopy[app]{jordan}{kantor}{1}
 
 \end{document}
