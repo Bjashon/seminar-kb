@@ -61,7 +61,7 @@
 \newcommand{\hlt}[1]{{\color{deepgreen}\textbf{#1}}}   % выделение
 \newcommand{\nohyph}{\hyphenpenalty=10000\exhyphenpenalty=10000\relax}
 \newcommand{\ft}[2]{\texorpdfstring{#1}{#2}}   % заголовок кадра с формулой: в закладки PDF идёт текст
-\newcommand{\pg}[1]{\hfill{\color{mute}\small с.~\ref{#1}}}   % в плане: номер слайда, с которого начинается часть
+\newcommand{\pg}[1]{{\color{mute}\ \dotfill\ \ref{#1}}}   % в плане: отточие и номер слайда, с которого начинается часть
 \newcommand{\go}[2]{\hyperlink{#1}{\textcolor{deepgreen}{#2}}}   % ссылка на слайд с меткой #1 (зелёный текст)
 \newcommand{\ax}[1]{\go{def1}{(#1)}}                             % ссылка на аксиому определения 1
 % \tip{термин}{текст}: была текстовая подсказка при наведении (чёрная плашка без формул); убрана по её
