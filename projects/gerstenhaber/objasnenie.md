@@ -81,14 +81,14 @@ $$\{a,b\}^*=\sum_{i,j}(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}a_{\hat\imath}\{a_i,b_j\
 
 ## 7. Как собрать PDF
 
-До 03/11/2026 PDF собирался локальным tectonic 0.17 (движок XeTeX). С 04/11/2026 — в облаке, как доклад: копии файлов лежат в `Documents/latex/files/gerstenhaber-statya-en/` и `.../gerstenhaber-statya-ru/` с первой строкой `% !TEX program = xelatex` (в репозитории этой строки нет), сборка из `Documents/latex`:
+До 03/11/2026 PDF собирался локальным tectonic 0.17 (движок XeTeX). Теперь — в облаке, прямо в папке проекта, из корня репозитория:
 
 ```
-node tools/compile.mjs files/gerstenhaber-statya-en/Gerstenhaber.tex
-node tools/compile.mjs files/gerstenhaber-statya-ru/Gerstenhaber_ru.tex
+node tools/texbuild.mjs projects/gerstenhaber/Gerstenhaber.tex --engine xelatex
+node tools/texbuild.mjs projects/gerstenhaber/Gerstenhaber_ru.tex
 ```
 
-Готовый PDF копируется в проект, английский — ещё и в `data/sources/proj_gerstenhaber/`. В логе остаются те же несколько underfull/overfull, что и при сборке tectonic; на текст они не влияют.
+Английский PDF после сборки копируется ещё и в `data/sources/proj_gerstenhaber/`. В логе остаются те же несколько underfull/overfull, что и при сборке tectonic; на текст они не влияют.
 
 Обычный `pdflatex Gerstenhaber.tex` (дважды, из-за ссылок) тоже подходит — никаких нестандартных пакетов нет: `amsart`, `amsmath`, `amssymb`, `amsthm`, `geometry`, `hyperref`.
 

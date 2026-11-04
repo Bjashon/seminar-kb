@@ -19,3 +19,6 @@ projects/gerstenhaber/papers/
 projects/monomial-identities/papers/
 projects/monomial-identities/scratch/
 data/sources/2.3 Problem/
+
+# the Gerstenhaber project: mock-ups and drafts that are not part of the project
+projects/gerstenhaber/scratch/
