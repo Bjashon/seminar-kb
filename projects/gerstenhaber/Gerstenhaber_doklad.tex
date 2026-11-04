@@ -789,21 +789,28 @@ $U$ — базис $\G$.\par
 \end{sidecols}
 \end{frame}
 
-\begin{frame}[label=cor13]{\ft{Следствия: $\{1,1\}\neq0$ и первые размерности}{Следствия}}
-\small
+\begin{frame}[label=cor13]{\ft{Следствие 13: $\{1,1\}\neq0$}{Следствие 13}}
+\begin{sidecols}
+\sidecol[0.22]
+\only<3->{\begin{sidebox}{formulas2}
+\sffive
+\end{sidebox}}
+\maincol[0.76]\vspace*{-9pt}
 \begin{thmbox}{Следствие 13}
 В $\G$ элемент $\{1,1\}$ ненулевой, и $\D$ — не дифференцирование. Более того, линейно независимы
 \[ \{1,1\},\qquad \{1,1\}\,x_i,\qquad \{1,x_i\}. \]
 \end{thmbox}
 \onslide<2->
 {\small\color{mute}Можно и без теоремы 12: гомоморфизм $\G\to V$ в \go{ex1}{пример 1}, $1\mapsto1$, $x_i\mapsto0$, переводит $\{1,1\}$ в $\varepsilon\neq0$.}
-\only<3->{\begin{exbox}{Пример 2: элементы $U$, где каждая из букв $1,x_1,\dots,x_n$ входит ровно раз}
+\only<3->{\begin{exbox}{Пример: $\D(x_1x_2)$, буквы $x_1,x_2$ чётные}
 \[ \begin{aligned}
-n=1:&\quad \{x_1,1\} && 1=1\cdot1!\\
-n=2:&\quad \{x_1,1\}\,x_2,\quad \{x_2,1\}\,x_1,\quad \{\{x_1,1\},x_2\},\quad \{\{x_2,1\},x_1\} && 4=2\cdot2!
+\D(x_1x_2)&=\{1,x_1x_2\} &&\nm{$\D(a)=\{1,a\}$}\\
+&=\{1,x_1\}x_2+x_1\{1,x_2\}-\{1,1\}x_1x_2 &&\nm{по (5), $\rp1=1$}\\
+&=\D(x_1)\,x_2+x_1\D(x_2)\;\mka{-\,x_1x_2\{1,1\}}
 \end{aligned} \]
-{\small\color{mute}Не считаются: $\{1,1\}$ — буква $1$ дважды; $x_1x_2$ и $\{x_2,x_1\}$ — буквы $1$ нет.}
+Выделенный одночлен — элемент $U$, он $\neq0$: правило Лейбница для $\D$ нарушено.
 \end{exbox}}
+\end{sidecols}
 \end{frame}
 
 % ================================================================ 4. доказательство
@@ -983,16 +990,18 @@ $n$ & 1 & 2 & 3 & 4\\
 \end{tabular}
 \vskip0.25cm
 \raggedright
-{\small При $n=2$ — четыре элемента \go{cor13}{примера 2}. Почему $n\cdot n!$ — на следующем слайде.}
+{\small Почему $n\cdot n!$, и пример $n=2$ — на \go{perm}{следующем слайде}.}
 \end{frame}
 
 \begin{frame}[label=perm]{Доказательство теоремы 14}
 \small
+Элемент $U$, где каждая из букв $1,x_1,\dots,x_n$ входит один раз, — одночлен $u_1\cdots u_r$ от хороших слов: в квадрат $\{v,v\}$ буквы $v$ входят дважды.
+
+$B_j$ — множество букв слова $u_j$; $\{B_1,\dots,B_r\}$ — разбиение множества $\{1,x_1,\dots,x_n\}$, и ${\color{deepgreen}B_j\neq\{1\}}$: множителя $1$ в $U$ нет.
 \[ \begin{aligned}
-u_1\cdots u_r\ &\longleftrightarrow\ \{1,x_1,\dots,x_n\}=B_1\sqcup\dots\sqcup B_r,\ \ {\color{deepgreen}B_j\neq\{1\}} &&\nm{множителя $1$ в $U$ нет}\\
-&\phantom{\longleftrightarrow}\ u_j\ \text{— хорошее слово на}\ B_j &&\nm{квадраты не мультилинейны}\\
-\dim\mathrm{GenGer}(n)&=\#\{\sigma\in S_{n+1}\mid\sigma(1)\neq1\} &&\nm{блок $\{1\}$ — неподвижная $1$}\\
-&=(n+1)!-n!=n\cdot n! &&\nm{\go{shestakovn}{как для $n!$}}
+\dim\mathrm{GenGer}(n)&=\sum_{\{B_1,\dots,B_r\},\ B_j\neq\{1\}}\ \prod_{j=1}^{r}\bigl(|B_j|-1\bigr)! &&\nm{\go{good}{теорема Холла}}\\
+&=\#\{\sigma\in S_{n+1}\mid\sigma(1)\neq1\} &&\nm{$B_j$ — циклы $\sigma$, \go{shestakovn}{как для $n!$}}\\
+&=(n+1)!-n!=n\cdot n!
 \end{aligned} \]
 \only<2->{\begin{exbox}{Пример: $n=2$, буквы $1,x_1,x_2$, \ $3!=6$ перестановок}
 \small\renewcommand{\arraystretch}{1.15}
