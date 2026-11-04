@@ -1,7 +1,7 @@
 """Builds the claude.ai copy of the Gerstenhaber course: one self-contained HTML page.
 
-The copy has its own look (a squared notebook; a chalkboard in the dark theme) and what the
-site's course lacks: the panel «Спросить лектора» and the rehearsal «Вопросы из зала» (Claude
+The copy has its own look (the talk's slides: white paper, a green stripe, the slides' boxes,
+Computer Modern from artifact/fonts, one light theme) and what the site's course lacks: the panel «Спросить лектора» and the rehearsal «Вопросы из зала» (Claude
 through the `sample` capability), the card set of artifacts/picks.js, progress kept in the
 artifact's `db`. All of that is template.html next to this script. The course itself -- the
 header, the modules, the tests, flashcards, glossary and calculator presets -- comes from the
@@ -249,7 +249,18 @@ PICKS = (root / "artifacts" / "picks.js").read_text(encoding="utf-8")
 assert "</script" not in PICKS.lower()
 SITE = os.environ.get("SEMINAR_SITE_URL", "").strip()
 
+# The talk's font, CMU Serif (SIL OFL, artifact/fonts/OFL.txt), goes into the page as data: URIs:
+# an artifact may load fonts only from Google Fonts, and Computer Modern is not there.
+FONT_FACES = [("cmu-serif-500-roman", 400, "normal"), ("cmu-serif-700-roman", 700, "normal"),
+              ("cmu-serif-500-italic", 400, "italic"), ("cmu-serif-700-italic", 700, "italic")]
+FONTS = "\n".join(
+    '@font-face { font-family: "CMU Serif"; font-weight: %d; font-style: %s; font-display: swap; '
+    'src: url(data:font/woff2;base64,%s) format("woff2"); }'
+    % (weight, style, base64.b64encode((here / "fonts" / f"{name}.woff2").read_bytes()).decode())
+    for name, weight, style in FONT_FACES)
+
 page = template
+page = fill(page, "/*@@FONTS@@*/", FONTS)
 page = fill(page, "@@TITLE@@", htmllib.escape(title, quote=False))
 page = fill(page, "<!--@@HERO@@-->", hero)
 page = fill(page, "<!--@@MODULES@@-->", body)
