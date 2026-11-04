@@ -25,7 +25,8 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,calc,shapes.symbols}
 \usepackage[most]{tcolorbox}
-\usepackage{ocgx2}             % слои PDF: подсказки с формулами \ftip (щелчок по серому треугольнику)
+% (слои PDF, пакет ocgx2, больше не нужны: подсказки — запасными слайдами)
+%\usepackage{ocgx2}             % слои PDF: подсказки с формулами \ftip (щелчок по серому треугольнику)
 
 % ---------------------------------------------------------------- цвета
 \definecolor{applegreen}{rgb}{0.55,0.71,0.0}   % #8DB600
@@ -46,7 +47,7 @@
 \newcommand{\lit}[1]{\footnote[frame]{#1}}   % литература — сноской на том слайде, где работа упомянута
 \setlength{\skip\footins}{4pt plus 1pt}\setbeamerfont{footnote}{size=\tiny}\setbeamercolor{footnote}{fg=mute}\setbeamercolor{footnote mark}{fg=deepgreen}
 \newcommand{\look}[1]{\par\smallskip{\footnotesize #1\par}}   % подпись под выкладкой: что выделено цветом (без слов «Куда смотреть»)
-\newcommand{\backto}[2]{\par\vfill\hfill{\scriptsize\go{#1}{$\hookleftarrow$\ #2}}}  % запасной слайд: ссылка обратно в доклад
+\newcommand{\backto}[2]{\par\vskip0pt plus 1filll\hfill{\scriptsize\go{#1}{$\hookleftarrow$\ #2}}}  % запасной слайд: ссылка обратно в доклад
 
 % ---------------------------------------------------------------- обозначения статьи
 \newcommand{\F}{\mathbb F}
@@ -81,13 +82,16 @@
 \deffn{2.1}{good}{1}\deffn{2.2}{good}{1}
 \newcommand{\fnt}[1]{\csname fnt@#1\endcsname}
 \newcommand{\fn}[1]{\go{\fnt{#1}}{(#1)}}
-% подсказка с формулами: \ftip[сдвиг рамки]{id}{термин}{текст (не показывается, см. \tip)}{рамка с формулами}.
-% Щелчок по серому треугольнику после термина показывает рамку над термином (слой PDF), второй щелчок прячет.
-% Слои понимают Acrobat, Foxit, PDF-XChange; встроенные просмотрщики браузеров — не всегда.
-\newcommand{\ftip}[5][-2cm]{\tip{#3}{#4}\begin{ocg}[printocg=never,listintoolbar=never]{tip #2}{tip#2}{0}%
-  \tikz[overlay]\node[anchor=south west, inner sep=5pt, fill=white, draw=applegreen, line width=0.8pt, rounded corners=1.5pt,
-    text width=7cm, text=ink, font=\normalfont\footnotesize, align=left] at (#1,1.1em) {#5};%
-  \end{ocg}\switchocg{tip#2}{\textsuperscript{\color{mute!80}\tiny$\blacktriangledown$}}}
+% подсказка с формулами: \ftip[не используется]{id}{термин}{текст (не показывается)}{формулы}.
+% Треугольник после термина — ссылка на запасной слайд «Подсказка: …» в конце (\tipframe), где формулы раскрыты;
+% на нём «↩» ведёт обратно. Всплывающих рамок (слоёв PDF) больше нет: она попросила слайды вместо них (04/11/2026).
+\newcommand{\ftip}[5][]{#3\expandafter\gdef\csname tipbody@#2\endcsname{#5}%
+  \hyperlink{tip-#2}{\textsuperscript{\color{deepgreen}\tiny$\blacktriangledown$}}}
+% \tipframe{id}{заголовок}{метка слайда, куда вернуться}{название этого слайда}
+\newcommand{\tipframe}[4]{\begin{frame}[label=tip-#1]{#2}
+  \small\csname tipbody@#1\endcsname
+  \backto{#3}{к слайду «#4»}
+\end{frame}}
 
 % ---------------------------------------------------------------- оформление
 \setbeamertemplate{navigation symbols}{}
@@ -294,7 +298,7 @@ ab&=ba\\
 \{a,1\}&=0
 \end{aligned} \]
 \onslide<4->
-\bul Скобка однозначно задаётся значениями на образующих; так на \ftip[-2.6cm]{sg}{$S(\mathfrak g)$}{S(g) — многочлены от базиса e₁, …, eₙ алгебры Ли g. Скобка Ли–Пуассона на базисе — скобка g: {eᵢ, eⱼ} = Σ cᵢⱼᵏ eₖ, где cᵢⱼᵏ — структурные константы g; на произведениях — по правилу Лейбница. Отсюда явная формула: {f, g} = Σ cᵢⱼᵏ eₖ · ∂f/∂eᵢ · ∂g/∂eⱼ.}{Многочлены от базиса алгебры Ли $\mathfrak g$; на базисе скобка та же, что в $\mathfrak g$ ($c_{ij}^k$ — структурные константы $\mathfrak g$), на произведениях — по правилу Лейбница:
+\bul Скобка однозначно задаётся значениями на образующих; так на \ftip[-4.5cm]{sg}{$S(\mathfrak g)$}{S(g) — многочлены от базиса e₁, …, eₙ алгебры Ли g. Скобка Ли–Пуассона на базисе — скобка g: {eᵢ, eⱼ} = Σ cᵢⱼᵏ eₖ, где cᵢⱼᵏ — структурные константы g; на произведениях — по правилу Лейбница. Отсюда явная формула: {f, g} = Σ cᵢⱼᵏ eₖ · ∂f/∂eᵢ · ∂g/∂eⱼ.}{Многочлены от базиса алгебры Ли $\mathfrak g$; на базисе скобка та же, что в $\mathfrak g$ ($c_{ij}^k$ — структурные константы $\mathfrak g$), на произведениях — по правилу Лейбница:
 \[ \begin{aligned}
 S(\mathfrak g)&=\F[e_1,\dots,e_n]\\
 \{e_i,e_j\}&=\textstyle\sum_k c_{ij}^k\,e_k\\
@@ -345,7 +349,7 @@ E_{12}E_{21}&=E_{11} &&\nm{$E_{12}$, $E_{21}$ нечётные}\\
 \begin{defboxn}
 Для $W=W_0\oplus W_1$ с однородным базисом $e_1,e_2,\dots$ \hlt{суперполиномы} $S(W)$ — ассоциативная алгебра с $1$, образующими $e_i$ и соотношениями
 \[ e_ie_j=(-1)^{|e_i||e_j|}e_je_i,\qquad\text{то есть}\qquad S(W)=\F[e_i\in W_0]\otimes\Lambda(e_i\in W_1) \]
-— многочлены от чётных $e_i$ с коэффициентами из \ftip[-4.6cm]{grass}{алгебры Грассмана}{Алгебра Грассмана (внешняя алгебра) Λ(e₁, e₂, …): ассоциативная алгебра с 1, порождённая e₁, e₂, … с соотношениями eᵢeⱼ = −eⱼeᵢ; в частности, eᵢ² = 0.}{Алгебра Грассмана (внешняя алгебра) — ассоциативная алгебра с $1$, порождённая $e_1,e_2,\dots$ с соотношениями
+— многочлены от чётных $e_i$ с коэффициентами из \ftip{grass}{алгебры Грассмана}{Алгебра Грассмана (внешняя алгебра) Λ(e₁, e₂, …): ассоциативная алгебра с 1, порождённая e₁, e₂, … с соотношениями eᵢeⱼ = −eⱼeᵢ; в частности, eᵢ² = 0.}{Алгебра Грассмана (внешняя алгебра) — ассоциативная алгебра с $1$, порождённая $e_1,e_2,\dots$ с соотношениями
 \[ \begin{aligned}
 e_ie_j&=-e_je_i\\
 e_i^2&=0 &&\nm{при $i=j$}\\
@@ -1479,5 +1483,12 @@ $P(X)$ и $\mathfrak g=\mathrm{Lie}(X)$ — \go{freealg}{свободные} а�
   \item Ненулевая характеристика.
 \end{itemize}
 \end{frame}
+
+% ---------------------------------------------------------------- подсказки: раскрытые формулы, ссылки с треугольников
+\tipframe{pq}{\ft{Подсказка: скобка на $\F[p,q]$}{Подсказка: скобка на F[p,q]}}{poisson\fnov{2}}{Алгебры Пуассона}
+\tipframe{sg}{\ft{Подсказка: $S(\mathfrak g)$ и скобка Ли--Пуассона}{Подсказка: S(g) и скобка Ли–Пуассона}}{poisson\fnov{4}}{Алгебры Пуассона}
+\tipframe{grass}{Подсказка: алгебра Грассмана}{superpoly}{Суперполиномы}
+\tipframe{oddlie}{Подсказка: нечётная супералгебра Ли}{setM\fnov{2}}{Скобочная часть: множество M}
+\tipframe{jordan}{Подсказка: йорданова супералгебра}{kantor}{Откуда поправка}
 
 \end{document}
