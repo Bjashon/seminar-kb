@@ -78,7 +78,7 @@
 % Слои понимают Acrobat, Foxit, PDF-XChange; встроенные просмотрщики браузеров — не всегда.
 \newcommand{\ftip}[5][-2cm]{\tip{#3}{#4}\begin{ocg}[printocg=never,listintoolbar=never]{tip #2}{tip#2}{0}%
   \tikz[overlay]\node[anchor=south west, inner sep=5pt, fill=white, draw=applegreen, line width=0.8pt, rounded corners=1.5pt,
-    text width=7cm, font=\footnotesize, align=left] at (#1,1.1em) {#5};%
+    text width=7cm, text=ink, font=\normalfont\footnotesize, align=left] at (#1,1.1em) {#5};%
   \end{ocg}\switchocg{tip#2}{\textsuperscript{\color{mute!80}\tiny$\blacktriangledown$}}}
 
 % ---------------------------------------------------------------- оформление
@@ -256,15 +256,21 @@ ab&=ba\\
 \{a,b\}&=-\{b,a\}\\
 \{a,\{b,c\}\}&=\{\{a,b\},c\}+\{b,\{a,c\}\}
 \end{aligned}\quad\nm{скобка Ли}\\[16pt]
-\multicolumn{2}{@{}l}{\{a,bc\}=\{a,b\}\,c+b\,\{a,c\}\qquad\nm{правило Лейбница}}
+\multicolumn{2}{c}{\phantom{\nm{правило Лейбница}\qquad}\{a,bc\}=\{a,b\}\,c+b\,\{a,c\}\qquad\nm{правило Лейбница}}
 \end{array} \]
 \end{defbox}
 \begin{columns}[T,onlytextwidth]
 \column{0.5\textwidth}
-\only<2->{\begin{exbox}{Пример: $\F[p,q]$, \ $\{p,q\}=1$}
+\only<2->{\begin{exbox}{Пример: $\F[p,q]$, \ \ftip[-6.3cm]{pq}{$\{f,g\}=\partial_pf\,\partial_qg-\partial_qf\,\partial_pg$}{Это скобка Пуассона: кососимметрична (f и g меняются местами); правило Лейбница — потому что ∂p и ∂q дифференцирования, ∂(gh) = ∂g·h + g·∂h; тождество Якоби — прямой счёт.}{Почему это скобка Пуассона:
 \[ \begin{aligned}
-\{f,g\}&=\partial_pf\,\partial_qg-\partial_qf\,\partial_pg\\
-\{p,q^2\}&=2q=\{p,q\}\,q+q\,\{p,q\}
+\{g,f\}&=-\{f,g\}\\
+\partial(gh)&=\partial g\,h+g\,\partial h &&\nm{$\partial=\partial_p,\ \partial_q$}\\
+\{f,gh\}&=\{f,g\}\,h+g\,\{f,h\}
+\end{aligned} \]
+Тождество Якоби — прямой счёт: члены со вторыми производными сокращаются.}}
+\[ \begin{aligned}
+\{p,q\}&=\partial_pp\,\partial_qq-\partial_qp\,\partial_pq=1\cdot1-0\cdot0=1\\
+\{p,q^2\}&=\{p,q\}\,q+q\,\{p,q\}=2q
 \end{aligned} \]
 \end{exbox}}
 \column{0.46\textwidth}
@@ -275,10 +281,10 @@ ab&=ba\\
 \{a,1\}&=0
 \end{aligned} \]
 \onslide<4->
-\bul Скобку достаточно знать на образующих: так на \ftip[-2.6cm]{sg}{$S(\mathfrak g)$}{S(g) — многочлены от базиса e₁, …, eₙ алгебры Ли g. Скобка Ли–Пуассона: {x, y} = [x, y] при x, y ∈ g, на произведениях — по правилу Лейбница.}{Многочлены от базиса алгебры Ли $\mathfrak g$; скобка задана на $\mathfrak g$ и продолжена по правилу Лейбница:
+\bul Скобку достаточно знать на образующих: так на \ftip[-2.6cm]{sg}{$S(\mathfrak g)$}{S(g) — многочлены от базиса e₁, …, eₙ алгебры Ли g. Скобка Ли–Пуассона на базисе — скобка g: {eᵢ, eⱼ} = Σ cᵢⱼᵏ eₖ, где cᵢⱼᵏ — структурные константы g; на произведениях — по правилу Лейбница.}{Многочлены от базиса алгебры Ли $\mathfrak g$; на базисе скобка та же, что в $\mathfrak g$ ($c_{ij}^k$ — структурные константы $\mathfrak g$), на произведениях — по правилу Лейбница:
 \[ \begin{aligned}
 S(\mathfrak g)&=\F[e_1,\dots,e_n]\\
-\{x,y\}&=[x,y],\quad x,y\in\mathfrak g\\
+\{e_i,e_j\}&=\textstyle\sum_k c_{ij}^k\,e_k\\
 \{x,yz\}&=\{x,y\}\,z+y\,\{x,z\}
 \end{aligned} \]} строится \hlt{скобка Ли--Пуассона}.
 \end{columns}
@@ -303,7 +309,7 @@ V_1&=\spn\{x^k\xi_1,\ x^k\xi_2\} & \xi_1^2&=0
 \small
 \begin{defbox}{Супердифференцирование чётности $p\in\Z_2$: линейное $d\colon V\to V$}
 \[ \begin{aligned}
-d(V_i)&\subseteq V_{i+p}\\
+d(V_i)&\subseteq V_{i+p}\hspace{1.3cm}|d(a)|=|a|+p\\
 d(ab)&=d(a)\,b+(-1)^{p|a|}\,a\,d(b) &&\nm{знак: $d$ проходит мимо $a$}
 \end{aligned} \]
 \end{defbox}
@@ -997,7 +1003,7 @@ ab&=(-1)^{|a||b|}\,ba &&\nm{суперкоммутативность}
 \end{aligned} \]
 \fe{Супердифференцирование}{\go{superder}{слайд «Супердифференцирования»}}{Линейное $d\colon V\to V$ чётности $p$.}
 \[ \begin{aligned}
-d(V_i)&\subseteq V_{i+p}\\
+d(V_i)&\subseteq V_{i+p}\hspace{1.3cm}|d(a)|=|a|+p\\
 d(ab)&=d(a)\,b+(-1)^{p|a|}\,a\,d(b)
 \end{aligned} \]
 \end{frame}
