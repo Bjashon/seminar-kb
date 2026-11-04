@@ -3,9 +3,12 @@
 % 40 минут для алгебраистов, не знакомых с конструкцией: откуда алгебры (9), задача (8), ответ (7),
 % доказательство (10), размерность (4), итоги (2). На каждом шаге — пример, досчитанный до конца.
 % После «Спасибо» — запасные слайды для вопросов (\appendix; счётчик у них свой, в общий не входят).
+% Слайды раскрываются по шагам (\onslide, \only). Слева — зелёная колонка с формулами, уже определёнными раньше;
+% стрелка в её углу ведёт на страницы «Формулы доклада» в конце. Полоса «План» — на слайдах доказательства.
+% Картинки для курса — из версии handout (по одной на слайд), её собирает projects/gerstenhaber/artifact/handout.
 % Собирается XeLaTeX. У владельца LaTeX не установлен: копия файла лежит в Documents/latex/files/gerstenhaber-doklad/
 % и собирается в облаке — node tools/compile.mjs files/gerstenhaber-doklad/Gerstenhaber_doklad.tex (из Documents/latex).
-\documentclass[aspectratio=169,10pt,xcolor=table]{beamer}
+\documentclass[aspectratio=169,10pt,xcolor=table,t]{beamer}
 
 \usepackage{lmodern}            % математика Latin Modern (= Computer Modern), все кегли
 \usefonttheme{professionalfonts}
@@ -20,7 +23,7 @@
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash\hyphenpenalty=10000}p{#1}}
 \usepackage{appendixnumberbeamer}   % запасные слайды не входят в общий счёт
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta,calc}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.symbols}
 \usepackage[most]{tcolorbox}
 % pdfcomment тянет устаревшую заглушку soulutf8 (она только печатает предупреждение) и ещё раз
 % передаёт hyperref опцию xetex; новый soul сам понимает UTF-8, hyperref уже настроен beamer'ом.
@@ -69,7 +72,7 @@
 
 % ---------------------------------------------------------------- оформление
 \setbeamertemplate{navigation symbols}{}
-\setbeamersize{text margin left=1.25cm, text margin right=1.25cm}
+\setbeamersize{text margin left=0.78cm, text margin right=0.55cm}
 \setbeamercolor{normal text}{fg=ink,bg=white}
 \setbeamercolor{structure}{fg=deepgreen}
 \setbeamercolor{alerted text}{fg=deepgreen}
@@ -81,15 +84,15 @@
     \fill[applegreen] (current page.north west) rectangle ([xshift=0.22cm]current page.south west);
   \end{tikzpicture}}
 
-\setbeamertemplate{frametitle}{%
-  \nointerlineskip\vskip0.4cm
-  \begin{beamercolorbox}[wd=\paperwidth,leftskip=1.25cm,rightskip=1.25cm plus 1fil]{frametitle}
+\makeatletter\setbeamertemplate{frametitle}{%
+  \nointerlineskip\vskip0.22cm
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=0.78cm,rightskip=0.55cm plus 1fil]{frametitle}
     \usebeamerfont{frametitle}\color{ink}\insertframetitle\par
-    \vskip0.16cm{\color{applegreen}\rule{2.2cm}{2.2pt}}
-  \end{beamercolorbox}\vskip0.02cm}
+    \vskip0.16cm\ifx\insertframesubtitle\@empty{\color{applegreen}\rule{2.2cm}{2.2pt}}\else{\usebeamerfont{normal text}\normalfont\insertframesubtitle}\fi
+  \end{beamercolorbox}\vskip-0.3cm}\makeatother
 
 \setbeamertemplate{footline}{%
-  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=1.25cm,rightskip=0.9cm]{footline}
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=0.78cm,rightskip=0.55cm]{footline}
     \usebeamerfont{footline}\color{mute}\hyperlink{plan}{\insertshorttitle}\hfill
     \hyperlinkslideprev{$\blacktriangleleft$}\ \ {\color{deepgreen}\insertframenumber}\,/\,\inserttotalframenumber\ \ \hyperlinkslidenext{$\blacktriangleright$}
   \end{beamercolorbox}}
@@ -130,6 +133,64 @@
 \author{\texorpdfstring{И.\,Кайгородов, К.\,Вяткина}{И. Кайгородов, К. Вяткина}}
 \date{}
 
+
+% ---------------------------------------------------------------- формулы «под рукой» и план доказательства
+% Зелёная колонка слева: формулы, на которые опирается слайд, мельче основного текста; прижата к полосе у края.
+% \begin{sidebox}{метка} ... \end{sidebox}: серая стрелка в углу ведёт на эту метку в «Формулах доклада».
+\newtcolorbox{sidebox}[1]{enhanced, colback=softgreen, colframe=softgreen, boxrule=0pt, arc=1pt, sharp corners=west,
+  grow to left by=0.56cm, left=4pt, right=3pt, top=4pt, bottom=8pt, before skip=0pt, fontupper=\scriptsize,
+  overlay={\node[anchor=south east, inner sep=3pt] at (frame.south east)
+    {\hyperlink{#1}{\color{mute!80}\scriptsize$\blacktriangleright$}};}}
+% формула: номер в скобках зелёным, формула на той же строке; перенос — каскадом (каждая строка правее)
+\newcommand{\sform}[2]{\noindent\makebox[1.75em][l]{\color{deepgreen}\bfseries(#1)}%
+  \scalebox{0.84}{$\begin{aligned}[t]#2\end{aligned}$}\par\vskip5pt}
+% определение: обозначение зелёным, определение на той же строке
+\newcommand{\sdef}[2]{\noindent\makebox[1.75em][l]{\color{deepgreen}\bfseries#1}%
+  \scalebox{0.84}{$\begin{aligned}[t]#2\end{aligned}$}\par\vskip5pt}
+% колонки слайда с формулами слева
+\newenvironment{sidecols}{\begin{columns}[T,onlytextwidth]}{\end{columns}}
+\newcommand{\sidecol}{\column{0.27\textwidth}}
+\newcommand{\maincol}{\column{0.71\textwidth}\small}
+% строка в списке «Формулы доклада»: название, ссылка на слайд, одна фраза
+\newcommand{\fe}[3]{\par\medskip\noindent\textbf{#1}\enspace{\color{mute}#2.}\enspace#3}
+
+% План доказательства: полоса из четырёх этапов вместо зелёной черты под заголовком (\framesubtitle{\planbar{k}}).
+\tikzset{
+  pst/.style={signal, signal to=east, signal from=west, minimum height=0.46cm, minimum width=3.15cm,
+    inner sep=1.5pt, font=\scriptsize, text height=1.5ex, text depth=0.35ex},
+  pdone/.style={fill=applegreen!30, text=deepgreen},
+  pcur/.style={fill=applegreen, text=white, font=\scriptsize\bfseries},
+  ptodo/.style={fill=black!6, text=mute}}
+\newcommand{\pstate}[2]{\ifnum#1<#2\relax\tikzset{p#1/.style={pdone}}\else
+  \ifnum#1=#2\relax\tikzset{p#1/.style={pcur}}\else\tikzset{p#1/.style={ptodo}}\fi\fi}
+\newcommand{\planbar}[1]{\pstate{1}{#1}\pstate{2}{#1}\pstate{3}{#1}\pstate{4}{#1}%
+\begin{tikzpicture}[baseline=(lab.base)]
+  \node[anchor=base west, inner sep=0pt, font=\small\bfseries, text=deepgreen] (lab) at (0,0) {План};
+  \node[pst, signal from=nowhere, p1, anchor=west] (b1) at ([xshift=6pt]lab.east) {$U$ порождает $\G$};
+  \node[pst, p2, anchor=west] (b2) at ([xshift=1.5pt]b1.east) {строим модель};
+  \node[pst, p3, anchor=west] (b3) at ([xshift=1.5pt]b2.east) {проверяем аксиомы};
+  \node[pst, p4, anchor=west] (b4) at ([xshift=1.5pt]b3.east) {$U$ — базис $\G$};
+\end{tikzpicture}}
+% частые формулы колонки
+\newcommand{\sfthree}{\sform{3}{&\{a,b\}=-(-1)^{\rp a\rp b}\{b,a\}}}
+\newcommand{\sffour}{\sform{4}{&\{a,\{b,c\}\}=\{\{a,b\},c\}\\&\quad+(-1)^{\rp a\rp b}\{b,\{a,c\}\}}}
+\newcommand{\sffive}{\sform{5}{&\{a,bc\}=\{a,b\}c\\&\quad+(-1)^{\rp a|b|}b\{a,c\}\\&\qquad\mka{+(-1)^{\rp a}\D(a)\,bc}}}
+\newcommand{\sfeight}{\sform{8}{&\{a,b\}^*=\mka{\textstyle\sum_{i,j}\pm a_{\hat\imath}\{a_i,b_j\}b_{\hat\jmath}}\\
+  &\quad\mkb{-(m-1)\,a\D(b)}\\&\qquad\mkb{+(n-1)(-1)^{\rp a}\D(a)\,b}\\&\qquad\quad\mkc{-(m-1)(n-1)\,a\D(1)\,b}}}
+
+% выключные формулы стоят плотнее (на слайдах каждая формула — отдельной строкой, обычные отступы съедали место)
+\makeatletter
+\newcommand{\tightdisplays}{\abovedisplayskip=4pt plus 2pt minus 1pt\belowdisplayskip=4pt plus 2pt minus 1pt%
+  \abovedisplayshortskip=1pt plus 1pt\belowdisplayshortskip=3pt plus 1pt}
+\g@addto@macro\normalsize{\tightdisplays}
+\g@addto@macro\small{\tightdisplays}
+\g@addto@macro\footnotesize{\tightdisplays}
+\g@addto@macro\scriptsize{\tightdisplays}
+\makeatother
+
+% пункт без списка: зелёный квадрат; формула под ним — обычной выключной строкой во всю ширину
+\newcommand{\bul}{\par\vskip2pt\noindent\makebox[1.3em][l]{\color{applegreen}\raisebox{0.18ex}{\rule{0.42em}{0.42em}}}\ignorespaces}
+
 \begin{document}
 
 % ================================================================ титул
@@ -154,121 +215,153 @@
 
 % ================================================================ план
 \begin{frame}[label=plan]{План доклада}
-\vskip0.1cm
+\vskip0.2cm
 \begin{enumerate}\setlength{\itemsep}{0.62em}
-  \item \go{poisson}{\textbf{Откуда эти алгебры.}} Пуассон $\to$ Герстенхабер $\to$ правило Лейбница с~поправкой \mins{9}
+  \item \go{poisson}{\textbf{Откуда эти алгебры.}} От Пуассона к поправке в правиле Лейбница \mins{9}
   \item \go{freealg}{\textbf{Задача.}} Базисы свободных алгебр: Холл, Штерн, Шестаков \mins{8}
   \item \go{setM}{\textbf{Ответ.}} Базис $U$ и элемент $\{1,1\}\neq0$ \mins{7}
-  \item \go{scheme}{\textbf{Доказательство.}} Порождение и модель на $S(\LL')$ \mins{10}
-  \item \go{multi}{\textbf{Размерность}} мультилинейной части: $n\cdot n!$ \mins{4}
+  \item \go{proofplan}{\textbf{Доказательство.}} Порождение и модель \mins{10}
+  \item \go{multi}{\textbf{Размерность}} мультилинейной части \mins{4}
   \item \go{summary}{\textbf{Итоги}} и открытые вопросы \mins{2}
 \end{enumerate}
 \vskip0.35cm
-{\small\color{mute}Все определения — по ходу. На каждом шаге — пример, досчитанный до конца.}
+{\small\color{mute}Все определения — по ходу. На каждом шаге — пример, досчитанный до конца. Формулы, которые уже были, — слева, в зелёной колонке; все вместе — в запасных слайдах.}
 \end{frame}
 
 % ================================================================ 1. откуда эти алгебры
 \partslide{01}{Откуда эти алгебры}
 
 \begin{frame}[label=poisson]{Алгебры Пуассона}
+\small
 \begin{defbox}{Алгебра Пуассона}
-Коммутативная ассоциативная алгебра $A$ с $1$ и скобкой Ли $\{\,,\}$, связанные \hlt{правилом Лейбница}
-$\{a,bc\}=\{a,b\}\,c+b\,\{a,c\}$: при каждом $a$ отображение $\{a,\cdot\}$ — дифференцирование $A$.
+Коммутативная ассоциативная алгебра $A$ с $1$ и скобкой Ли $\{\,,\}$, связанные \hlt{правилом Лейбница}: при каждом $a$ отображение $\{a,\cdot\}$ — дифференцирование $A$,
+\[ \{a,bc\}=\{a,b\}\,c+b\,\{a,c\}. \]
 \end{defbox}
-\begin{exbox}{Пример: $\F[p,q]$ (механика), \ $\{f,g\}=\frac{\partial f}{\partial p}\frac{\partial g}{\partial q}-\frac{\partial f}{\partial q}\frac{\partial g}{\partial p}$, \ $\{p,q\}=1$}
-$$\{p,q^2\}=1\cdot2q-0\cdot0=2q,\qquad \{p,q\}\,q+q\,\{p,q\}=q+q=2q .$$
-\end{exbox}
-\begin{itemize}\setlength{\itemsep}{0.25em}
-  \item \hlt{Единицу скобка не видит:} \ $\{a,1\}=\{a,1\cdot1\}=2\{a,1\}$, \ значит $\{a,1\}=0$.
-  \item Скобку достаточно знать на образующих. На $S(\mathfrak g)$ так получается \hlt{скобка Ли--Пуассона}.
-\end{itemize}
+\only<2->{\begin{exbox}{Пример: $\F[p,q]$, механика}
+\[ \begin{gathered}
+\{f,g\}=\tfrac{\partial f}{\partial p}\tfrac{\partial g}{\partial q}-\tfrac{\partial f}{\partial q}\tfrac{\partial g}{\partial p},\qquad \{p,q\}=1,\\
+\{p,q^2\}=1\cdot2q-0\cdot0=2q=\{p,q\}\,q+q\,\{p,q\}.
+\end{gathered} \]
+\end{exbox}}
+\onslide<3->
+  \bul \hlt{Единицу скобка не видит:}
+\[ \{a,1\}=\{a,1\cdot1\}=2\{a,1\}\quad\Longrightarrow\quad\{a,1\}=0 . \]
+\onslide<4->
+  \bul Скобку достаточно знать на образующих: так строится \hlt{скобка Ли--Пуассона} на $S(\mathfrak g)$.
 \end{frame}
 
 \begin{frame}[label=super]{Супералгебры: правило знаков}
-\begin{itemize}\setlength{\itemsep}{0.3em}
-  \item $\F$ — поле характеристики $0$. Пространства $\Z_2$-градуированы: $V=V_0\oplus V_1$, \ $|a|\in\Z_2$ — \tip{чётность}{0 — чётный элемент, 1 — нечётный} однородного $a$.
-  \item \hlt{Правило знаков:} переставили два нечётных соседа — множитель $-1$. Суперкоммутативность $ab=(-1)^{|a||b|}ba$; для нечётного $a$: \ $a^2=0$.
-  \item \hlt{Супердифференцирование} чётности $p$: \ $d(ab)=d(a)\,b+(-1)^{p|a|}\,a\,d(b)$.
-\end{itemize}
-\begin{exbox}{Пример: суперполиномы $\F[x\mid\xi_1,\xi_2]$, \ $x$ чётная, \ $\xi_1,\xi_2$ нечётные}
-Базис: $x^k,\ x^k\xi_1,\ x^k\xi_2,\ x^k\xi_1\xi_2$ — так как $\xi_2\xi_1=-\xi_1\xi_2$ и $\xi_i^2=0$. Производная $\partial/\partial\xi_1$ нечётна:
-$$\frac{\partial}{\partial\xi_1}(\xi_2\xi_1)=-\frac{\partial}{\partial\xi_1}(\xi_1\xi_2)=-\xi_2 .$$
-\end{exbox}
-{\small Супералгебра Ли: \ $[a,b]=-(-1)^{|a||b|}[b,a]$, \quad $[a,[b,c]]=[[a,b],c]+(-1)^{|a||b|}[b,[a,c]]$.}
+\small
+  \bul $\F$ — поле характеристики $0$. Пространства $\Z_2$-градуированы, $|a|\in\Z_2$ — \tip{чётность}{0 — чётный элемент, 1 — нечётный} однородного $a$:
+\[ V=V_0\oplus V_1 . \]
+\onslide<2->
+  \bul \hlt{Правило знаков:} переставили два нечётных соседа — множитель $-1$:
+\[ ab=(-1)^{|a||b|}\,ba,\qquad a^2=0\ \ \text{для нечётного}\ a . \]
+\onslide<3->
+  \bul \hlt{Супердифференцирование} чётности $p$ и супералгебра Ли:
+\[ \begin{gathered}
+d(ab)=d(a)\,b+(-1)^{p|a|}\,a\,d(b),\\
+[a,b]=-(-1)^{|a||b|}[b,a],\qquad [a,[b,c]]=[[a,b],c]+(-1)^{|a||b|}[b,[a,c]].
+\end{gathered} \]
+\only<4->{\begin{exbox}{Пример: суперполиномы $\F[x\mid\xi_1,\xi_2]$; \ $x$ чётная, \ $\xi_1,\xi_2$ нечётные}
+Базис — $x^k$, $x^k\xi_1$, $x^k\xi_2$, $x^k\xi_1\xi_2$; производная по $\xi_1$ нечётна:
+\[ \partial_{\xi_1}(\xi_2\xi_1)=-\partial_{\xi_1}(\xi_1\xi_2)=-\xi_2 . \]
+\end{exbox}}
 \end{frame}
 
 \begin{frame}[label=gerst]{Алгебры Герстенхабера: нечётная скобка}
-Скобка \hlt{нечётна}: $|\{a,b\}|=|a|+|b|+1$. \ \hlt{Обращённая чётность}: $\rp a=|a|+1$.
-\begin{defbox}{Алгебра Герстенхабера}
-\small Суперкоммутативная ассоциативная супералгебра с $1$ и нечётной скобкой, которая — \tip{супералгебра Ли}{то же пространство с чётностью ‖a‖ = |a| + 1: скобка в нём чётная} относительно чётности $\rp{\cdot}$:
-$$\begin{gathered}
+\small
+  \bul Скобка \hlt{нечётна}; знаки пишут через \hlt{обращённую чётность}:
+\[ |\{a,b\}|=|a|+|b|+1,\qquad \rp a=|a|+1 . \]
+\only<2->{\begin{defbox}{Алгебра Герстенхабера}
+Суперкоммутативная ассоциативная супералгебра с $1$ и нечётной скобкой — \tip{супералгебра Ли}{то же пространство с чётностью ‖a‖ = |a| + 1: скобка в нём чётная} относительно $\rp{\cdot}$, а $\{a,\cdot\}$ — супердифференцирование:
+\[ \begin{gathered}
 \{a,b\}=-(-1)^{\rp a\rp b}\{b,a\},\qquad \{a,\{b,c\}\}=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\},\\
 \{a,bc\}=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}.
-\end{gathered}$$
-\end{defbox}
-\begin{exbox}{Пример: $\Lambda(\mathfrak g)$, скобка Схоутена; \ $\mathfrak g=\langle h,e\rangle$, $[h,e]=2e$; элементы $\mathfrak g$ нечётны}
-\small $\{h,he\}=\{h,h\}e+h\{h,e\}=0+2he$, \qquad $\{e,he\}=\{e,h\}e+h\{e,e\}=-2e^2+0=0$.
-\end{exbox}
-{\small\textbf{Отличие от Пуассона:} для чётных $a,b$ скобка \hlt{симметрична}, и $\{a,a\}$ может быть $\neq0$.}
+\end{gathered} \]
+\end{defbox}}
+\only<3->{\begin{exbox}{Пример: $\Lambda(\mathfrak g)$, скобка Схоутена; \ $\mathfrak g=\langle h,e\rangle$, $[h,e]=2e$; элементы $\mathfrak g$ нечётны}
+\[ \{h,he\}=\{h,h\}e+h\{h,e\}=2he,\qquad \{e,he\}=\{e,h\}e+h\{e,e\}=-2e^2=0 . \]
+\end{exbox}}
+\onslide<4->
+\textbf{Отличие от Пуассона:} для чётных $a,b$ скобка \hlt{симметрична}, поэтому квадрат $\{a,a\}$ чётного элемента может быть ненулевым.
 \end{frame}
 
 \begin{frame}[label=genpoisson]{Правило Лейбница с поправкой}
-В алгебре Пуассона $\{a,1\}=0$. Что будет, если разрешить $\{a,1\}\neq0$?
-\begin{defbox}{Обобщённая алгебра Пуассона (скобка чётная; Кантарини--Кац 2007)}
-Скобка Ли и
-$$\{a,bc\}=\{a,b\}c+b\{a,c\}\;\mka{-\,\{a,1\}\,bc}\,:$$
-$\{a,\cdot\}$ — дифференцирование плюс умножение на элемент.
-\end{defbox}
-\begin{exbox}{Пример: $\F[x]$, \ $\{f,g\}=fg'-f'g$ — скобка векторных полей $f\,\tfrac{d}{dx}$}
-$\{f,1\}=-f'\neq0$. Проверим правило на $\{x,x^2\}$:
-$$\{x,x^2\}=x\cdot2x-1\cdot x^2=x^2,\qquad \{x,x\}\,x+x\,\{x,x\}-\{x,1\}\,x^2=0+0+x^2 .$$
-\end{exbox}
+\small
+В алгебре Пуассона скобка с единицей равна нулю. Что будет, если это разрешить?
+\only<2->{\begin{defbox}{Обобщённая алгебра Пуассона (скобка чётная; Кантарини--Кац 2007)}
+Скобка Ли и правило Лейбница с поправкой; $\{a,\cdot\}$ — дифференцирование плюс умножение на элемент:
+\[ \{a,bc\}=\{a,b\}c+b\{a,c\}\;\mka{-\,\{a,1\}\,bc}. \]
+\end{defbox}}
+\only<3->{\begin{exbox}{Пример: $\F[x]$, скобка векторных полей $f\,\tfrac{d}{dx}$}
+\[ \begin{gathered}
+\{f,g\}=fg'-f'g,\qquad \{f,1\}=-f'\neq0,\\
+\{x,x^2\}=x\cdot2x-1\cdot x^2=x^2=\{x,x\}\,x+x\,\{x,x\}-\{x,1\}\,x^2 .
+\end{gathered} \]
+\end{exbox}}
+\onslide<4->
 {\small\color{mute}Откуда поправка: йордановы скобки и \go{kantor}{двойник Кантора}.}
 \end{frame}
 
 \begin{frame}[label=def1]{Обобщённые алгебры Герстенхабера}
+\small
 \begin{defbox}{Определение 1}
 \tip{$\Z_2$-градуированное}{V = V₀ ⊕ V₁; |a| — чётность однородного a; ‖a‖ = |a| + 1} пространство $V$ с $1\in V_0$ и операциями $ab$, $\{a,b\}$:
-$$\begin{aligned}
+\[ \begin{aligned}
 &(1)\quad |ab|=|a|+|b|,\qquad |\{a,b\}|=|a|+|b|+1;\\
 &(2)\quad (ab)c=a(bc),\qquad ab=(-1)^{|a||b|}ba,\qquad 1a=a;\\
 &(3)\quad \{a,b\}=-(-1)^{\rp a\rp b}\{b,a\};\\
 &(4)\quad \{a,\{b,c\}\}=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\};\\
 &(5)\quad \{a,bc\}=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}+\mka{(-1)^{\rp a}\D(a)\,bc},\qquad \D(a)=\{1,a\}.
-\end{aligned}$$
+\end{aligned} \]
 \end{defbox}
-\vskip-0.1cm
-\begin{itemize}\small\setlength{\itemsep}{0em}
-  \item Поправка та же, что в чётном случае: по (3) $(-1)^{\rp a}\D(a)=-\{a,1\}$. При $\D=0$ — алгебры Герстенхабера.
-  \item Odd generalized Poisson superalgebras Кантарини--Каца (2010); простые — \go{po}{$PO(n,n)$, $PO(n,n+1)$}.
-\end{itemize}
+\onslide<2->
+  \bul Поправка та же, что в чётном случае; при $\D=0$ получаются алгебры Герстенхабера:
+\[ (-1)^{\rp a}\D(a)=-\{a,1\}\qquad\text{по (3)}. \]
+\onslide<3->
+  \bul Odd generalized Poisson superalgebras Кантарини--Каца (2010); простые — \go{po}{$PO(n,n)$ и $PO(n,n+1)$}.
 \end{frame}
 
 \begin{frame}[label=ex1]{\ft{Новое явление: элемент $\{1,1\}$}{Новое явление: элемент {1,1}}}
-\begin{itemize}\setlength{\itemsep}{0.3em}
-  \item \textbf{Чётная скобка:} $\{1,1\}=-\{1,1\}$, значит $\{1,1\}=0$.
-  \item \textbf{Нечётная:} $\rp1=1$, и \ax{3} при $a=b=1$ даёт $\{1,1\}=-(-1)^{1\cdot1}\{1,1\}=\{1,1\}$ — условия \hlt{нет}.
-  \item \ax{5} при $a=1$: \ $\D(bc)=\D(b)\,c+(-1)^{|b|}b\,\D(c)\;\mka{-\,\D(1)\,bc}$. \ $\D$ — дифференцирование $\iff$ $\{1,1\}=0$.
-\end{itemize}
-\begin{exbox}{Пример 1: \ $V=\F1\oplus\F\varepsilon$, \ $|\varepsilon|=1$, \ $\varepsilon^2=0$; \ $\{1,1\}=\varepsilon$, остальные скобки — нули}
-\ax{3}, \ax{4}: все скобки лежат в $\F\varepsilon$, а $\{\varepsilon,V\}=0$. \quad \ax{5} при $a=b=c=1$: \ $\varepsilon=\varepsilon+\varepsilon-\varepsilon$.
-$$\D(1\cdot1)=\varepsilon\ \neq\ 2\varepsilon=\D(1)\,1+1\,\D(1).$$
-\end{exbox}
-\textbf{Аксиомы не заставляют $\{1,1\}=0$.} В свободной алгебре $\{1,1\}\neq0$ — это \go{cor13}{следствие 13}.
+\begin{sidecols}
+\sidecol
+\only<2->{\begin{sidebox}{formulas2}
+\sfthree
+\only<3->{\sffive}
+\end{sidebox}}
+\maincol
+\textbf{Чётная скобка:}
+\[ \{1,1\}=-\{1,1\}\quad\Longrightarrow\quad\{1,1\}=0 . \]
+\onslide<2->
+\textbf{Нечётная:} $\rp1=1$, и правило (3) при $a=b=1$ ничего не требует:
+\[ \{1,1\}=-(-1)^{1\cdot1}\{1,1\}=\{1,1\}. \]
+\onslide<3->
+Правило (5) при $a=1$; значит, $\D$ — дифференцирование ровно при $\{1,1\}=0$:
+\only<3->{\[ \D(bc)=\D(b)\,c+(-1)^{|b|}b\,\D(c)\;\mka{-\,\D(1)\,bc}. \]}
+\only<4->{\begin{exbox}{Пример 1: \ $V=\F1\oplus\F\varepsilon$, \ $|\varepsilon|=1$, \ $\varepsilon^2=0$; \ $\{1,1\}=\varepsilon$, остальные скобки — нули}
+Аксиомы проверяются прямо, а $\D$ — не дифференцирование:
+\[ \D(1\cdot1)=\varepsilon\ \neq\ 2\varepsilon=\D(1)\,1+1\,\D(1). \]
+\end{exbox}}
+\onslide<5->
+\textbf{Аксиомы не заставляют $\{1,1\}=0$.} В свободной алгебре $\{1,1\}\neq0$ — \go{cor13}{следствие 13}.
+\end{sidecols}
 \end{frame}
 
 % ================================================================ 2. задача
 \partslide{02}{Задача: базис\\ свободной алгебры}
 
 \begin{frame}[label=freealg]{Свободная алгебра и её базис}
+\small
 \begin{itemize}\setlength{\itemsep}{0.3em}
-  \item \hlt{Свободная алгебра} класса на буквах $X$: выражения от букв, отождествлённые только по тождествам класса. Любое отображение букв в алгебру класса продолжается до гомоморфизма.
-  \item \hlt{Базис} свободной алгебры — нормальная форма: равенство элементов проверяется сравнением записей.
-  \item \hlt{Мультилинейная часть}: элементы, где каждая из букв $x_1,\dots,x_n$ входит ровно один раз. Её размерность — числовой «паспорт» класса.
+  \item<1-> \hlt{Свободная алгебра} класса на буквах $X$: выражения от букв, отождествлённые только по тождествам класса. Любое отображение букв в алгебру класса продолжается до гомоморфизма.
+  \item<2-> \hlt{Базис} свободной алгебры — нормальная форма: равенство элементов проверяется сравнением записей.
+  \item<3-> \hlt{Мультилинейная часть}: элементы, где каждая из букв $x_1,\dots,x_n$ входит ровно один раз. Её размерность — числовой «паспорт» класса.
 \end{itemize}
-\vskip0.05cm
+\onslide<4->
+\vskip0.1cm
 {\small\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{}L{3.2cm}L{6.8cm}cc@{}}
+\begin{tabular}{@{}L{3.4cm}L{7.6cm}cc@{}}
 \toprule
 \textbf{Класс} & \textbf{мультилинейные элементы от $x_1,x_2,x_3$} & \textbf{$n=3$} & \textbf{любое $n$}\\
 \midrule
@@ -281,67 +374,79 @@ $$\D(1\cdot1)=\varepsilon\ \neq\ 2\varepsilon=\D(1)\,1+1\,\D(1).$$
 \end{frame}
 
 \begin{frame}[label=good]{Алгебры Ли: хорошие слова Холла}
-\begin{defbox}{Хорошие слова (алфавит линейно упорядочен)}
-\small Буквы — хорошие слова. Слово длины $>1$ \hlt{хорошее}, если оно равно $[u,v]$, где $u,v$ хорошие, $u>v$, и при $u=[u_1,u_2]$ выполнено $u_2\le v$.
-Порядок: длиннее — больше; при равной длине — лексикографически по паре $(u,v)$.
-\end{defbox}
-\begin{exbox}{Пример: $x_1<x_2<x_3$, каждая буква по разу}
 \small
-Длина 2: \ $[x_2,x_1]<[x_3,x_1]<[x_3,x_2]$. \quad Длина 3: \ $[[x_2,x_1],x_3]$ и $[[x_3,x_1],x_2]$ — хорошие;\\[0.15em]
-$[[x_3,x_2],x_1]$ — нет, так как $x_2>x_1$; по Якоби оно равно $[[x_3,x_1],x_2]-[[x_2,x_1],x_3]$.
-\end{exbox}
-\begin{thmbox}{Теорема (М.~Холл, 1950)}
-\small Хорошие слова — базис свободной алгебры Ли; мультилинейных на $k$ буквах — $(k-1)!$.
-\end{thmbox}
+\begin{defbox}{Хорошие слова (алфавит линейно упорядочен)}
+Буквы — хорошие слова; порядок — по длине, затем лексикографически по $(u,v)$. Слово длины $>1$ хорошее, если
+\[ w=[u,v],\qquad u,v\ \text{хорошие},\qquad u>v,\qquad u=[u_1,u_2]\ \Rightarrow\ u_2\le v . \]
+\end{defbox}
+\only<2->{\begin{exbox}{Пример: $x_1<x_2<x_3$; слова длины 2, хорошие длины 3 и нехорошее — по Якоби}
+\[ \begin{gathered}
+{}[x_2,x_1]<[x_3,x_1]<[x_3,x_2];\qquad [[x_2,x_1],x_3],\ \ [[x_3,x_1],x_2];\\
+{}[[x_3,x_2],x_1]=[[x_3,x_1],x_2]-[[x_2,x_1],x_3].
+\end{gathered} \]
+\end{exbox}}
+\only<3->{\begin{thmbox}{Теорема (М.~Холл, 1950)}
+Хорошие слова — базис свободной алгебры Ли; мультилинейных на $k$ буквах — $(k-1)!$.
+\end{thmbox}}
 \end{frame}
 
 \begin{frame}[label=superlie]{Супералгебры Ли: квадраты нечётных}
-Для нечётного $v$: \ $[v,v]=-(-1)^{1\cdot1}[v,v]=[v,v]$ — квадрат \hlt{не обязан} быть нулём.
-\begin{exbox}{Пример: $\mathfrak{gl}(1|1)$, \ $v=E_{12}+E_{21}$ нечётен, \ для нечётных $[a,b]=ab+ba$}
-$$[v,v]=2v^2=2(E_{12}E_{21}+E_{21}E_{12})=2(E_{11}+E_{22})\neq0,\qquad [v,[v,v]]=[v,2E]=0 .$$
-\end{exbox}
-\begin{itemize}\small\setlength{\itemsep}{0.15em}
-  \item Всегда $[v,[v,v]]=0$ и $[[v,v],w]=2[v,[v,w]]$ (Якоби): квадраты нужны только как отдельные элементы базиса.
-  \item Свободная супералгебра Ли на одной нечётной букве $\xi$ двумерна: базис $\xi,\ [\xi,\xi]$.
-\end{itemize}
-\vskip-0.1cm
-\begin{thmbox}{Теорема (А.\,С.~Штерн, 1986)}
-\small Базис свободной супералгебры Ли: хорошие слова и \hlt{квадраты $[v,v]$ нечётных хороших слов $v$}.
-\end{thmbox}
+\small
+Для нечётного $v$ кососимметричность ничего не требует — квадрат \hlt{не обязан} быть нулём:
+\[ [v,v]=-(-1)^{1\cdot1}[v,v]=[v,v]. \]
+\only<2->{\begin{exbox}{Пример: $\mathfrak{gl}(1|1)$, \ $v=E_{12}+E_{21}$ нечётен; для нечётных $[a,b]=ab+ba$}
+\[ [v,v]=2v^2=2(E_{12}E_{21}+E_{21}E_{12})=2(E_{11}+E_{22})\neq0 . \]
+\end{exbox}}
+\onslide<3->
+По Якоби из квадратов ничего нового не растёт; квадраты нужны только как отдельные элементы базиса:
+\[ [v,[v,v]]=0,\qquad [[v,v],w]=2\,[v,[v,w]] . \]
+\only<4->{\begin{thmbox}{Теорема (А.\,С.~Штерн, 1986)}
+Базис свободной супералгебры Ли: хорошие слова и \hlt{квадраты $[v,v]$ нечётных хороших слов $v$}.
+\end{thmbox}}
 \end{frame}
 
 \begin{frame}[label=shestakov]{Алгебры Пуассона: шаблон Шестакова}
+\small
 \begin{thmbox}{Теорема (И.\,П.~Шестаков, 1993)}
-\small Свободная алгебра Пуассона на $X$ — это $S(\mathrm{Lie}(X))$: базис — \hlt{одночлены от хороших слов}.
+Свободная алгебра Пуассона на $X$ — это $S(\mathrm{Lie}(X))$: базис — \hlt{одночлены от хороших слов}.
 \end{thmbox}
-\begin{exbox}{Пример: мультилинейные элементы от $x_1<x_2<x_3$; \ всего $1+3+2=6=3!$}
-$$\underbrace{x_1x_2x_3}_{1},\quad
+\only<2->{\begin{exbox}{Пример: мультилинейные элементы от $x_1<x_2<x_3$; \ всего $1+3+2=6=3!$}
+\[ \underbrace{x_1x_2x_3}_{1},\quad
 \underbrace{\{x_2,x_1\}x_3,\ \{x_3,x_1\}x_2,\ \{x_3,x_2\}x_1}_{3},\quad
-\underbrace{\{\{x_2,x_1\},x_3\},\ \{\{x_3,x_1\},x_2\}}_{2}$$
-\end{exbox}
-\begin{itemize}\small\setlength{\itemsep}{0.15em}
-  \item \hlt{Порождение}: Лейбниц выносит произведения из скобок, $\{x_1,x_2^2\}=-2x_2\{x_2,x_1\}$. \hlt{Независимость}: модель $S(\mathrm{Lie}(X))$.
-  \item \hlt{Почему $n!$}: блоки букв и хорошее слово на каждом; слов на $k$ буквах $(k-1)!$, как циклов, — итого перестановка.
-\end{itemize}
+\underbrace{\{\{x_2,x_1\},x_3\},\ \{\{x_3,x_1\},x_2\}}_{2} \]
+\end{exbox}}
+\onslide<3->
+\hlt{Порождение}: Лейбниц выносит произведения из скобок. \hlt{Независимость}: модель $S(\mathrm{Lie}(X))$.
+\[ \{x_1,x_2^2\}=\{x_1,x_2\}x_2+x_2\{x_1,x_2\}=-2x_2\{x_2,x_1\} \]
+\onslide<4->
+\hlt{Почему $n!$}: блоки букв и хорошее слово на каждом; слов на $k$ буквах $(k-1)!$, как циклов.
 \end{frame}
 
 \begin{frame}[label=letter1]{\ft{Когда $\{a,1\}\neq0$, единица — буква}{Когда {a,1} не нуль, единица — буква}}
-\begin{exbox}{Пример: $\{x_1,x_2x_3\}$ по \ax{5}; буквы чётные, $\rp{x_i}=1$}
-$$\begin{aligned}
+\begin{sidecols}
+\sidecol
+\begin{sidebox}{formulas2}
+\sffive
+\end{sidebox}
+\maincol
+\begin{exbox}{Пример: $\{x_1,x_2x_3\}$ по (5); буквы чётные, $\rp{x_i}=1$}
+\[ \begin{aligned}
 \{x_1,x_2x_3\}&=\{x_1,x_2\}x_3+x_2\{x_1,x_3\}-\{1,x_1\}x_2x_3\\
 &=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} .
-\end{aligned}$$
+\end{aligned} \]
 Слева буквы $1$ нет, а в ответе появилось слово $\{x_1,1\}$.
 \end{exbox}
-\begin{itemize}\setlength{\itemsep}{0.35em}
-  \item Значит, $1$ — \hlt{буква скобки}: $X=\{1<x_1<x_2<\cdots\}$. Новые элементы: $\{x_1,1\}$, $\{\{x_1,1\},1\}$, $\{1,1\}$, \dots
-  \item Чётный случай (Кайгородов 2017): базис — одночлены от базиса свободной супералгебры Ли на $X$, без множителя $1$; мультилинейная часть по $1,x_1,\dots,x_n$ — $n\cdot n!$.
-\end{itemize}
+\onslide<2->
+Значит, $1$ — \hlt{буква скобки}, и появляются новые элементы:
+\[ X=\{1<x_1<x_2<\cdots\},\qquad \{x_1,1\},\ \ \{\{x_1,1\},1\},\ \ \{1,1\},\ \dots \]
+\onslide<3->
+Чётный случай (Кайгородов 2017): базис — одночлены от базиса свободной супералгебры Ли на $X$, без множителя $1$; мультилинейная часть по $1,x_1,\dots,x_n$ имеет размерность $n\cdot n!$.
+\end{sidecols}
 \end{frame}
 
 \begin{frame}[label=qa]{Вопрос}
 \footnotesize\renewcommand{\arraystretch}{1.4}
-\begin{tabular}{@{}L{4.2cm}L{5.4cm}L{2.8cm}@{}}
+\begin{tabular}{@{}L{4.6cm}L{6.0cm}L{3.0cm}@{}}
 \toprule
 \textbf{Класс} & \textbf{Базис свободной алгебры} & \textbf{Кто}\\
 \midrule
@@ -355,150 +460,229 @@ $$\begin{aligned}
 \end{tabular}
 \normalsize
 \vskip0.35cm
-\begin{thmbox}{Вопрос}
+\only<2->{\begin{thmbox}{Вопрос}
 Найти базис свободной унитальной обобщённой алгебры Герстенхабера $\G$ на $X=\{1<x_1<x_2<\cdots\}$ и размерность её мультилинейной части. Что изменят нечётная скобка и элемент $\{1,1\}$?
-\end{thmbox}
+\end{thmbox}}
 \end{frame}
 
 % ================================================================ 3. ответ
 \partslide{03}{Ответ}
 
 \begin{frame}[label=setM]{\ft{Скобочная часть: множество $M$}{Скобочная часть: множество M}}
-$$M=\bigl\{\,u,\ \{v,v\}\ \bigm|\ u,v\ \text{— хорошие слова над}\ X,\ \ |v|=0\,\bigr\},\qquad e_1=1<e_2<e_3<\cdots$$
-\vskip-0.2cm
-\begin{thmbox}{Лемма 4}
-$M$ — базис свободной \tip{нечётной супералгебры Ли}{кососимметричность (3) и Якоби (4); то же, что супералгебра Ли с чётностью ‖a‖} $\LL$ на $X$.\\
-{\small Теорема Штерна для чётности $\rp{\cdot}$: квадраты — для \hlt{чётных} $v$, так что $\{1,1\}\in M$.}
-\end{thmbox}
-\begin{exbox}{Пример: $X=\{1<x_1\}$, \ $x_1$ чётная}
-\small\raggedright
-Степень 1: \ $1,\ x_1$. \qquad Степень 2: \ $\{1,1\}<\{x_1,1\}<\{x_1,x_1\}$.\\
-Степень 3: \ $\{\{x_1,1\},1\},\ \ \{\{x_1,1\},x_1\}$.\\[0.25em]
-Не новые: \ $\{1,x_1\}=\{x_1,1\}$ — скобка чётных симметрична; \ $\{\{1,1\},x_1\}=2\{1,\{1,x_1\}\}=-2\{\{x_1,1\},1\}$ — Якоби.
-\end{exbox}
+\begin{sidecols}
+\sidecol
+\only<3->{\begin{sidebox}{formulas2}
+\sfthree
+\sffour
+\end{sidebox}}
+\maincol
+\[ \begin{gathered} M=\bigl\{\,u,\ \{v,v\}\ \bigm|\ u,v\ \text{— хорошие слова над}\ X,\ |v|=0\,\bigr\},\\ e_1=1<e_2<e_3<\cdots \end{gathered} \]
+\only<2->{\begin{thmbox}{Лемма 4}
+$M$ — базис свободной \tip{нечётной супералгебры Ли}{кососимметричность (3) и Якоби (4); то же, что супералгебра Ли с чётностью ‖a‖} $\LL$ на $X$. Квадраты — у \hlt{чётных} слов (теорема Штерна), так что $\{1,1\}\in M$.
+\end{thmbox}}
+\only<3->{\begin{exbox}{Пример: $X=\{1<x_1\}$, $x_1$ чётная; элементы $M$ степеней 1--3}
+\[ \begin{gathered} 1,\ x_1;\qquad \{1,1\}<\{x_1,1\}<\{x_1,x_1\};\\ \{\{x_1,1\},1\},\ \ \{\{x_1,1\},x_1\}. \end{gathered} \]
+Остальное не новое — по (3) и (4):
+\[ \{1,x_1\}=\{x_1,1\},\qquad \{\{1,1\},x_1\}=2\{1,\{1,x_1\}\}=-2\{\{x_1,1\},1\}. \]
+\end{exbox}}
+\end{sidecols}
 \end{frame}
 
 \begin{frame}[label=thm12]{Главная теорема}
-$$U=\bigl\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\ \bigm|\ 1<i_1<\dots<i_r,\ k_j\ge1,\ k_j=1\ \text{при}\ |e_{i_j}|=1\,\bigr\}$$
-\vskip-0.15cm
-\centerline{\small\color{mute}суперкоммутативные одночлены от $M\setminus\{1\}$; пустой одночлен — это $1$}
-\vskip0.1cm
-\begin{thmbox}{Теорема 12}
-$U$ — базис свободной унитальной обобщённой алгебры Герстенхабера $\G$ на $X$. Более того, $\G\cong S(\LL')$, \ $\LL'=\spn(M\setminus\{1\})$, с явно заданной скобкой.
-\end{thmbox}
-\begin{exbox}{Пример: $X=\{1<x_1\}$, \ $x_1$ чётная}
-\small\raggedright
-В $U$: \ $1$; \ $x_1,\ \{1,1\},\ \{x_1,1\},\ \{x_1,x_1\}$; \ $x_1^2,\ x_1\{1,1\},\ x_1\{x_1,1\},\ \{1,1\}\{x_1,1\},\ \dots$\\[0.15em]
-Не в $U$: \ $\{1,1\}^2=0$ и $\{x_1,1\}^2=0$ — эти элементы нечётны; \ множитель $1$.\\[0.15em]
-Разложение по \ax{5}: \ $\{x_1,x_1^2\}=\{x_1,x_1\}x_1+x_1\{x_1,x_1\}-\{1,x_1\}x_1^2=2x_1\{x_1,x_1\}-x_1^2\{x_1,1\}$.
-\end{exbox}
+\begin{sidecols}
+\sidecol
+\only<3->{\begin{sidebox}{formulas3}
+\sdef{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
+\sffive
+\end{sidebox}}
+\maincol
+Одночлены от $M\setminus\{1\}$, нечётные множители — в первой степени:
+\[ U=\bigl\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\ \bigm|\ 1<i_1<\dots<i_r\,\bigr\}. \]
+\only<2->{\begin{thmbox}{Теорема 12}
+$U$ — базис свободной унитальной обобщённой алгебры Герстенхабера $\G$ на $X$. Более того, $\G$ изоморфна суперполиномам с явно заданной скобкой:
+\[ \G\cong\Sm=S(\LL'),\qquad \LL'=\spn(M\setminus\{1\}). \]
+\end{thmbox}}
+\only<3->{\begin{exbox}{Пример: $X=\{1<x_1\}$, \ $x_1$ чётная}
+Разложение по (5):
+\[ \begin{aligned} \{x_1,x_1^2\}&=\{x_1,x_1\}x_1+x_1\{x_1,x_1\}-\{1,x_1\}x_1^2\\ &=2x_1\{x_1,x_1\}-x_1^2\{x_1,1\}. \end{aligned} \]
+\end{exbox}}
+\end{sidecols}
 \end{frame}
 
 \begin{frame}[label=cor13]{\ft{Следствия: $\{1,1\}\neq0$ и первые размерности}{Следствия}}
+\small
 \begin{thmbox}{Следствие 13}
-В $\G$: \ $\{1,1\}\neq0$, и $\D$ — не дифференцирование.
-Более того, $\{1,1\}$, \ $\{1,1\}x_i$, \ $\{1,x_i\}$ линейно независимы.
+В $\G$ элемент $\{1,1\}$ ненулевой, и $\D$ — не дифференцирование. Более того, линейно независимы
+\[ \{1,1\},\qquad \{1,1\}\,x_i,\qquad \{1,x_i\}. \]
 \end{thmbox}
+\onslide<2->
 {\small\color{mute}Можно и без теоремы 12: гомоморфизм $\G\to V$ в \go{ex1}{пример 1}, $1\mapsto1$, $x_i\mapsto0$, переводит $\{1,1\}$ в $\varepsilon\neq0$.}
-\vskip0.25cm
-\begin{exbox}{Пример 2: элементы $U$, где каждая из букв $1,x_1,\dots,x_n$ входит ровно раз}
-$n=1$: \quad $\{x_1,1\}$ \hfill $1=1\cdot1!$\\[0.4em]
-$n=2$: \quad $\{x_1,1\}\,x_2,\quad \{x_2,1\}\,x_1,\quad \{\{x_1,1\},x_2\},\quad \{\{x_2,1\},x_1\}$ \hfill $4=2\cdot2!$\\[0.4em]
-{\small\color{mute}Не считаются: $\{1,1\}$ — буква $1$ дважды; \ $x_1x_2$ и $\{x_2,x_1\}$ — буквы $1$ нет.}
-\end{exbox}
+\only<3->{\begin{exbox}{Пример 2: элементы $U$, где каждая из букв $1,x_1,\dots,x_n$ входит ровно раз}
+\[ \begin{aligned}
+n=1:&\quad \{x_1,1\} && 1=1\cdot1!\\
+n=2:&\quad \{x_1,1\}\,x_2,\quad \{x_2,1\}\,x_1,\quad \{\{x_1,1\},x_2\},\quad \{\{x_2,1\},x_1\} && 4=2\cdot2!
+\end{aligned} \]
+{\small\color{mute}Не считаются: $\{1,1\}$ — буква $1$ дважды; $x_1x_2$ и $\{x_2,x_1\}$ — буквы $1$ нет.}
+\end{exbox}}
 \end{frame}
 
 % ================================================================ 4. доказательство
 \partslide{04}{Доказательство}
 
-\begin{frame}[label=scheme]{План доказательства}
-\centering
-\begin{tikzpicture}[
-  box/.style={draw=applegreen, line width=0.9pt, fill=softgreen, rounded corners=2pt,
-              text width=5.6cm, align=left, inner sep=7pt, font=\small\nohyph},
-  arr/.style={-{Stealth[length=7pt]}, line width=1pt, deepgreen}]
-  \node[box] (span) {\textbf{\color{deepgreen}Порождение} (\go{lemma5}{лемма 5})\\[0.2em]
-     $U$ линейно порождает $\G$: скобки раскладываются по \ax{5}, индукция по $e$-степени.};
-  \node[box, right=1.1cm of span] (model) {\textbf{\color{deepgreen}Модель} (\go{model}{теорема 11})\\[0.2em]
-     На $\Sm=S(\LL')$ задаём скобку \go{formula8}{формулами (7), (8)} и проверяем \mbox{аксиомы $(1)$--$(5)$}.};
-  \node[box, text width=12.2cm, below=0.9cm of $(span.south)!0.5!(model.south)$, fill=white] (iso)
-     {\textbf{\color{deepgreen}Изоморфизм} (теорема 12)\quad
-      $\varphi\colon\G\to\Sm$, $\varphi|_X=\mathrm{id}$, переводит $U$ в базис $\Sm$ $\Rightarrow$ $U$ независимо, $\G\cong\Sm$.};
-  \draw[arr] (span.south) -- (span.south |- iso.north);
-  \draw[arr] (model.south) -- (model.south |- iso.north);
-\end{tikzpicture}
-\vskip0.35cm
-\raggedright\small
-Так же доказывают теорему Пуанкаре--Биркгофа--Витта: что упорядоченные одночлены \hlt{порождают}, видно сразу, а для \hlt{независимости} строят представление. У Шестакова модель — $S(\mathrm{Lie}(X))$ со скобкой Ли--Пуассона.
-Трудная часть — модель: скобка на $S(\LL')$ со всеми аксиомами при $\{1,1\}\neq0$.
-\end{frame}
-
-\begin{frame}[label=lemma5]{\ft{Порождение: $U$ порождает $\G$}{Порождение: U порождает G}}
-\begin{itemize}\setlength{\itemsep}{0.35em}
-  \item Скобки элементов $M$ лежат в $\spn M$: в $\G$ выполнены (3) и (4), а $M$ — базис $\LL$ (\go{setM}{лемма 4}).
-  \item Скобку с произведением раскладываем по \ax{5}:
-  $$\{u,v_1v_2\}=\{u,v_1\}v_2+(-1)^{\rp u|v_1|}v_1\{u,v_2\}+(-1)^{\rp u}\{1,u\}\,v_1v_2 .$$
-  \item Индукция по сумме \tip{$e$-степеней}{e-степень одночлена из U — число его множителей из M без 1; у единицы она 0} аргументов: справа она у каждой скобки меньше.
-\end{itemize}
-\begin{exbox}{Почему не индукция по числу букв: \ $\{x_1,x_2x_3\}$ \go{letter1}{из части 2}}
-В $\{x_1,x_2x_3\}$ три буквы, а в поправке $-x_2x_3\{x_1,1\}$ — четыре: правило \ax{5} добавляет букву $1$.\\[0.2em]
-Сумма $e$-степеней убывает: \ $1+2=3$ у пары $(x_1,\,x_2x_3)$; \ $2$ у пар $(x_1,x_2)$, $(x_1,x_3)$; \ $1$ у пары $(1,x_1)$.
-\end{exbox}
-\end{frame}
-
-\begin{frame}[label=model]{\ft{Модель: скобка на $S(\LL')$ шаг за шагом}{Модель: скобка на S(L') шаг за шагом}}
+\begin{frame}[label=proofplan]{План доказательства}
+\framesubtitle<1| handout:1>{\planbar{1}}
+\framesubtitle<2| handout:2>{\planbar{2}}
+\framesubtitle<3| handout:3>{\planbar{3}}
+\framesubtitle<4| handout:4>{\planbar{4}}
+\begin{columns}[T,onlytextwidth]
+\column{0.34\textwidth}
+\only<1| handout:1>{\begin{sidebox}{formulas3}
+\sdef{$\G$}{&\text{свободная алгебра нашего класса}\\&\quad\text{на}\ X=\{1<x_1<x_2<\cdots\}}
+\sdef{$M$}{&\{u,\ \{v,v\}\mid u,v\ \text{хорошие},\ |v|=0\}}
+\sdef{$U$}{&\text{одночлены}\ e_{i_1}^{k_1}\cdots e_{i_r}^{k_r},\ \ 1<i_1<\dots<i_r}
+\sffive
+\end{sidebox}}
+\only<2| handout:2>{\begin{sidebox}{formulas3}
+\sdef{$\LL'$}{&\spn(M\setminus\{1\})}
+\sdef{$\Sm$}{&S(\LL')\ \text{— суперполиномы от}\ \LL'}
+\sdef{$U$}{&\text{одночлены от}\ M\setminus\{1\}:\ \text{базис}\ \Sm}
+\end{sidebox}}
+\only<3| handout:3>{\begin{sidebox}{formulas2}
+\sfthree
+\sffour
+\sform{5}{&\{a,bc\}=\{a,b\}c\\&\quad+(-1)^{\rp a|b|}b\{a,c\}\\&\qquad+(-1)^{\rp a}\D(a)\,bc}
+\end{sidebox}}
+\only<4| handout:4>{\begin{sidebox}{formulas3}
+\sdef{$\G$}{&\text{свободная алгебра нашего класса}}
+\sdef{$\Sm$}{&S(\LL'),\ \ \text{базис — одночлены}\ U}
+\end{sidebox}}
+\column{0.63\textwidth}
 \small
-$\LL'=\spn(M\setminus\{1\})$, \ $\Sm=S(\LL')$ — суперполиномы, \ $\Lh=\F1\oplus\LL'\cong\LL$: буква $1$ — это единица $\Sm$. \
-Нужна скобка на $\Sm$, продолжающая скобку $\Lh$, с аксиомами (1)--(5).
-\begin{enumerate}\setlength{\itemsep}{0.45em}
-\item \hlt{Как у Шестакова} ($\D=0$): «каждый множитель с каждым»,
-$$\{a_1\cdots a_m,\;b_1\cdots b_n\}=\sum_{i,j}\pm\,a_{\hat\imath}\,\{a_i,b_j\}\,b_{\hat\jmath},\qquad a_{\hat\imath}\ \text{— произведение без}\ a_i .$$
-\item \hlt{Каждое применение \ax{5} добавляет поправку.} Для $a\in\Lh$:
-$$\{a,b_1b_2b_3\}=\{a,b_1\}b_2b_3\pm b_1\{a,b_2\}b_3\pm b_1b_2\{a,b_3\}\;\mkb{-\,2\,\{a,1\}\,b_1b_2b_3}\,:$$
-$n$ множителей — $n-1$ поправок.
-\item \hlt{Произведения с обеих сторон}: поправки по каждому аргументу и \hlt{поправка к поправке} с $\D(1)=\{1,1\}$.
-\end{enumerate}
+\only<1| handout:1>{\textbf{Цель:} \ $U$ — базис $\G$, то есть $U$ порождает $\G$ и линейно независимо.\par\vskip0.3cm}
+\only<1| handout:1>{{\large\bfseries $U$ порождает $\G$\par}\vskip0.2cm\raggedright
+Каждый элемент $\G$ — линейная комбинация одночленов $U$. Скобку с произведением раскладываем по (5), пока не останутся одночлены. Например,
+\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} . \]
+Это первая половина того, что $U$ — базис.}
+\only<2| handout:2>{{\large\bfseries Строим модель\par}\vskip0.2cm\raggedright
+Для независимости нужна алгебра нашего класса, где $U$ — базис по построению. Берём суперполиномы $\Sm$ из главной теоремы: в них одночлены $U$ независимы.\par\medskip
+Остаётся задать на $\Sm$ скобку. Она будет задана явной формулой: каждый множитель с каждым и поправки, которые требует правило (5).}
+\only<3| handout:3>{{\large\bfseries Проверяем аксиомы\par}\vskip0.2cm\raggedright
+Проверяем, что $\Sm$ с новой скобкой удовлетворяет аксиомам (1)--(5). Кососимметричность (3) и правило (5) проверяются прямо: формула скобки замкнутая.\par\medskip
+Самое трудное — тождество Якоби (4). Для него понадобится мера его нарушения, якобиатор.}
+\only<4| handout:4>{{\large\bfseries $U$ — базис $\G$\par}\vskip0.2cm\raggedright
+По свойству свободной алгебры есть гомоморфизм $\G\to\Sm$, тождественный на $X$, а значит, и на $U$. Комбинация, равная нулю в $\G$, равна нулю и в $\Sm$:
+\[ \sum_u c_u\,u=0\ \text{в}\ \G\ \Longrightarrow\ \sum_u c_u\,u=0\ \text{в}\ \Sm\ \Longrightarrow\ c_u=0 . \]
+Значит, $U$ линейно независимо, и вместе с первым этапом $U$ — базис $\G$.}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label=lemma5]{\ft{Порождение: $U$ порождает $\G$}{Порождение}}
+\framesubtitle{\planbar{1}}
+\begin{sidecols}
+\sidecol
+\begin{sidebox}{formulas2}
+\sfthree
+\sffour
+\only<2->{\sffive}
+\end{sidebox}
+\maincol
+  \bul Скобки элементов $M$ лежат в оболочке $M$: в $\G$ верны (3) и (4), а $M$ — базис $\LL$.
+\onslide<2->
+  \bul Скобку с произведением раскладываем по (5):
+\[ \{u,v_1v_2\}=\{u,v_1\}v_2+(-1)^{\rp u|v_1|}v_1\{u,v_2\}+(-1)^{\rp u}\{1,u\}\,v_1v_2 . \]
+\onslide<3->
+  \bul Индукция по сумме \tip{$e$-степеней}{e-степень одночлена из U — число его множителей из M без 1; у единицы она 0}: справа у каждой скобки она меньше.
+\only<4->{\begin{exbox}{Почему индукция не по числу букв}
+\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} \]
+Слева три буквы, в отмеченном члене четыре. Сумма $e$-степеней падает: 3 слева, 2, 2 и 1 справа.
+\end{exbox}}
+\end{sidecols}
+\end{frame}
+
+\begin{frame}[label=model]{\ft{Модель: скобка на $\Sm$ шаг за шагом}{Модель: скобка на S шаг за шагом}}
+\begin{sidecols}
+\sidecol
+\begin{sidebox}{formulas3}
+\sdef{$\LL'$}{&\spn(M\setminus\{1\})}
+\sdef{$\Sm$}{&S(\LL')\ \text{— суперполиномы}}
+\only<3->{\sffive}
+\end{sidebox}
+\maincol
+Буква $1$ из $\LL$ становится единицей $\Sm$; нужна скобка на $\Sm$, продолжающая скобку
+\[ \Lh=\F1\oplus\LL'\cong\LL . \]
+\onslide<2->
+\textbf{1.} \hlt{Как у Шестакова}: каждый множитель с каждым,
+\[ \{a_1\cdots a_m,\;b_1\cdots b_n\}=\sum_{i,j}\pm\,a_{\hat\imath}\,\{a_i,b_j\}\,b_{\hat\jmath},\qquad a_{\hat\imath}=\textstyle\prod_{k\neq i}a_k . \]
+\onslide<3->
+\textbf{2.} \hlt{Каждое применение (5) добавляет поправку}; для $a\in\Lh$ и трёх множителей их две:
+\only<3->{\[ \begin{aligned}
+\{a,b_1b_2b_3\}={}&\{a,b_1\}b_2b_3\pm b_1\{a,b_2\}b_3\pm b_1b_2\{a,b_3\}\\
+&\mkb{-\,2\,\{a,1\}\,b_1b_2b_3}.
+\end{aligned} \]}
+\onslide<4->
+\textbf{3.} \hlt{Произведения с обеих сторон}: поправки по каждому аргументу и \hlt{поправка к поправке} с $\D(1)=\{1,1\}$.
+\end{sidecols}
 \end{frame}
 
 \begin{frame}[label=formula8]{Формулы (7) и (8)}
-\small
-$a=a_1\cdots a_m$, \ $b=b_1\cdots b_n$, \ $a_i,b_j\in\Lh$; \ \ $a_{<i}=a_1\cdots a_{i-1}$, \ $a_{>i}=a_{i+1}\cdots a_m$, \ $a_{\hat\imath}=a_{<i}a_{>i}$.
-\begin{defbox}{Формулы (7), (8)}
-$$\D(a)=\sum_{i=1}^m(-1)^{|a_{<i}|}\,a_{<i}\{1,a_i\}a_{>i}\;-\;(m-1)\{1,1\}\,a,$$
-$$\begin{aligned}
+\begin{sidecols}
+\sidecol
+\begin{sidebox}{formulas3}
+\sdef{$\Lh$}{&\F1\oplus\LL'\cong\LL}
+\only<4->{\sffive}
+\end{sidebox}
+\maincol
+Множители $a_i$, $b_j$ из $\Lh$; $a_{<i}$, $a_{>i}$ — множители до и после $a_i$:
+\only<1->{\begin{defbox}{Формулы (7), (8)}
+\[ \D(a)=\sum_{i=1}^m(-1)^{|a_{<i}|}\,a_{<i}\{1,a_i\}a_{>i}\;-\;(m-1)\{1,1\}\,a \tag{7} \]
+\only<2->{\[ \begin{aligned}
 \{a,b\}^*={}&\mka{\sum_{i,j}(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}\,a_{\hat\imath}\{a_i,b_j\}b_{\hat\jmath}}\\
-&\mkb{-(m-1)\,a\D(b)+(n-1)(-1)^{\rp a}\D(a)\,b}\;\mkc{-(m-1)(n-1)\,a\D(1)\,b}\,.
-\end{aligned}$$
-\end{defbox}
-\leg{hlA}{Жёлтым} — «каждый с каждым», как у Шестакова. \ \leg{hlB}{Синим} — поправки от \ax{5} по каждому аргументу. \ \leg{hlC}{Розовым} — поправка к поправке; её нет, если $\{1,1\}=0$.\\[0.35em]
-\textbf{Проверка.} При $m=1$, $n=2$ формула (8) — это ровно \ax{5}. При $m=2$ формула (7) — это $\D(bc)=\D(b)c+(-1)^{|b|}b\D(c)-\D(1)bc$ \go{ex1}{из части 1}.
+&\mkb{-(m-1)\,a\D(b)+(n-1)(-1)^{\rp a}\D(a)\,b}\\
+&\mkc{-(m-1)(n-1)\,a\D(1)\,b}
+\end{aligned} \tag{8} \]}
+\end{defbox}}
+\onslide<3->
+\leg{hlA}{каждый с каждым}, как у Шестакова; \ \leg{hlB}{поправки из (5)} по каждому аргументу; \ \leg{hlC}{поправка к поправке}, её нет при $\{1,1\}=0$.\par\smallskip
+\onslide<4->
+\textbf{Проверка:} при $m=1$, $n=2$ формула (8) — ровно (5).
+\end{sidecols}
 \end{frame}
 
 \begin{frame}[label=axioms]{Аксиомы в модели: якобиатор}
-\begin{itemize}\small\setlength{\itemsep}{0.2em}
-  \item \go{props}{Леммы 6--8}: формулы корректны, а \ax{3} и \ax{5} проверяются прямо — формула замкнутая, без рекурсии.
-  \item Трудное — тождество Якоби. \tip{Якобиатор}{J = 0 на всех тройках ⇔ выполнено тождество Якоби}: \ $J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\}$.
-\end{itemize}
-\begin{thmbox}{Лемма 9 (в любой алгебре с аксиомами (1), (2), (3), (5), без Якоби)}
-$J$ суперкососимметричен по любой паре аргументов, и
-$$J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}\,x\,J(a,b,y)\;\mkc{-\,J(a,b,1)\,xy}.$$
-\end{thmbox}
-\begin{itemize}\small\setlength{\itemsep}{0.2em}
-  \item $J$ — «дифференцирование с поправкой» по каждому аргументу. Поэтому $J=0$ на $\Sm$, как только $J=0$ на $\Lh$; а на $\Lh$ это тождество Якоби в $\LL$ (и $1\in\Lh$).
-  \item Итог (\go{finish}{предложение 10, теоремы 11, 12}): $\Sm$ — обобщённая алгебра Герстенхабера, $\varphi\colon\G\to\Sm$ переводит $U$ в базис $\Sm$, значит $U$ — базис $\G$. \hfill$\square$
-\end{itemize}
+\framesubtitle<1-3>{\planbar{3}}
+\framesubtitle<4>{\planbar{4}}
+\begin{sidecols}
+\sidecol
+\begin{sidebox}{formulas4}
+\sfeight
+\sfthree
+\sform{5}{&\{a,bc\}=\{a,b\}c\\&\quad+(-1)^{\rp a|b|}b\{a,c\}\\&\qquad+(-1)^{\rp a}\D(a)\,bc}
+\end{sidebox}
+\maincol
+  \bul \go{props}{Леммы 6--8}: для скобки (8) правила (3) и (5) проверяются прямо.
+\onslide<2->
+  \bul Трудное — тождество Якоби. \tip{Якобиатор}{J = 0 на всех тройках ⇔ выполнено тождество Якоби} — мера его нарушения:
+\[ J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\} \]
+\only<3->{\begin{thmbox}{Лемма 9 (без тождества Якоби)}
+$J$ суперкососимметричен, и
+\[ J(a,b,xy)=J(a,b,x)\,y\pm x\,J(a,b,y)\;\mkc{-\,J(a,b,1)\,xy} . \]
+\end{thmbox}}
+\onslide<4->
+  \bul $J=0$ на $\Sm$, как только $J=0$ на $\Lh$. Итог (\go{finish}{теоремы 11, 12}): $U$ — базис $\G$. \hfill$\square$
+\end{sidecols}
 \end{frame}
 
 % ================================================================ 5. размерность
 \partslide{05}{Размерность}
 
 \begin{frame}[label=multi]{\ft{Мультилинейная часть: $n\cdot n!$}{Мультилинейная часть: n·n!}}
-$X=\{1,x_1,\dots,x_n\}$; \ $\mathrm{GenGer}(n)$ — оболочка элементов $U$, где каждая из букв $1,x_1,\dots,x_n$ входит ровно один раз. \hlt{Буква $1$ тоже считается.}
-\vskip0.15cm
-\begin{thmbox}{Теорема 14}
+\small
+$\mathrm{GenGer}(n)$ — оболочка тех элементов $U$, где каждая из букв $1,x_1,\dots,x_n$ входит ровно один раз. \hlt{Буква $1$ тоже считается.}
+\only<2->{\begin{thmbox}{Теорема 14}
 \centering\Large $\dim\mathrm{GenGer}(n)=n\cdot n!$
-\end{thmbox}
-\vskip0.15cm
+\end{thmbox}}
+\onslide<3->
+\vskip0.1cm
 \centering\small\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
@@ -514,12 +698,15 @@ $n$ & 1 & 2 & 3 & 4\\
 \end{frame}
 
 \begin{frame}[label=perm]{\ft{Подсчёт: перестановки, где $1$ не на месте}{Подсчёт: перестановки, где 1 не на месте}}
-\begin{itemize}\small\setlength{\itemsep}{0.25em}
-\item Элемент $\mathrm{GenGer}(n)$ — разбиение $Y=\{1,x_1,\dots,x_n\}$ на блоки и мультилинейное хорошее слово на каждом блоке; квадраты $\{v,v\}$ не мультилинейны. \hlt{Блока $\{1\}$ нет}: множителя $1$ в $U$ нет.
-\item Хороших слов на $k$ буквах $(k-1)!$ — как циклов на $k$ элементах. Разбиение с циклом на каждом блоке — это перестановка $Y$.
-\item Убираем перестановки, где $1$ — неподвижная точка: \quad $(n+1)!-n!=n\cdot n!$.
+\small
+\begin{itemize}\setlength{\itemsep}{0.25em}
+\item<1-> Элемент $\mathrm{GenGer}(n)$ — разбиение букв $1,x_1,\dots,x_n$ на блоки и мультилинейное хорошее слово на каждом блоке; квадраты не мультилинейны. \hlt{Блока из одной единицы нет}: множителя $1$ в $U$ нет.
+\item<2-> Хороших слов на $k$ буквах $(k-1)!$ — как циклов на $k$ элементах. Разбиение с циклом на каждом блоке — это перестановка.
+\item<3-> Убираем перестановки, где $1$ — неподвижная точка:
 \end{itemize}
-\begin{exbox}{Пример: $n=2$, \ $Y=\{1,x_1,x_2\}$, \ $3!=6$ перестановок}
+\onslide<3->
+\[ (n+1)!-n!=n\cdot n! . \]
+\only<4->{\begin{exbox}{Пример: $n=2$, буквы $1,x_1,x_2$, \ $3!=6$ перестановок}
 \small\renewcommand{\arraystretch}{1.2}
 \begin{tabular}{@{}l@{\qquad}l@{}}
 $(1\,x_1)(x_2)$ & $\{x_1,1\}\,x_2$\\
@@ -527,22 +714,22 @@ $(1\,x_2)(x_1)$ & $\{x_2,1\}\,x_1$\\
 $(1\,x_1\,x_2)$, \ $(1\,x_2\,x_1)$ & $\{\{x_1,1\},x_2\}$, \ $\{\{x_2,1\},x_1\}$\\
 {\color{mute}$(1)(x_1)(x_2)$, \ $(1)(x_1\,x_2)$} & {\color{mute}$1$ на месте — не считаются}\\
 \end{tabular}\\[0.3em]
-Блок $Y$ целиком: два цикла — два хороших слова. \ Итого $6-2=4=2\cdot2!$.
-\end{exbox}
+Итого $6-2=4=2\cdot2!$.
+\end{exbox}}
 \end{frame}
 
 % ================================================================ итоги
 \begin{frame}[label=summary]{Итоги}
+\small
 \begin{itemize}\setlength{\itemsep}{0.5em}
-  \item Базис свободной обобщённой алгебры Герстенхабера: одночлены от хороших слов и квадратов чётных хороших слов; $1$ — \hlt{буква скобки}.
-  \item Новое явление: $\{1,1\}\neq0$, и $\D=\{1,\cdot\}$ — не дифференцирование.
-  \item Модель — замкнутая формула скобки на $S(\LL')$; тождество Якоби — через лемму о якобиаторе, «дифференцировании с поправкой».
-  \item $\dim\mathrm{GenGer}(n)=n\cdot n!$. При $\D=0$ — базис свободной алгебры Герстенхабера, нечётный аналог теоремы Шестакова.
+  \item<1-> Базис свободной обобщённой алгебры Герстенхабера: одночлены от хороших слов и квадратов чётных хороших слов; $1$ — \hlt{буква скобки}.
+  \item<2-> Новое явление: $\{1,1\}\neq0$, и $\D=\{1,\cdot\}$ — не дифференцирование.
+  \item<3-> Модель — замкнутая формула скобки на суперполиномах; тождество Якоби — через лемму о якобиаторе, «дифференцировании с поправкой».
+  \item<4-> Размерность мультилинейной части $n\cdot n!$. При $\D=0$ — базис свободной алгебры Герстенхабера, нечётный аналог теоремы Шестакова.
 \end{itemize}
-\vskip0.1cm
-\begin{exbox}{Открытые вопросы}
-\small Аналог теоремы Фаркаша для PI обобщённых алгебр Герстенхабера; \ свободная алгебра с соотношением $\{1,1\}=0$; \ ненулевая характеристика. \ \go{classes}{Четыре класса рядом} — в запасных слайдах.
-\end{exbox}
+\only<5->{\begin{exbox}{Открытые вопросы}
+Аналог теоремы Фаркаша для PI обобщённых алгебр Герстенхабера; свободная алгебра с соотношением $\{1,1\}=0$; ненулевая характеристика. \go{classes}{Четыре класса рядом} — в запасных слайдах.
+\end{exbox}}
 \end{frame}
 
 % ================================================================ финал
@@ -562,7 +749,7 @@ $(1\,x_1\,x_2)$, \ $(1\,x_2\,x_1)$ & $\{\{x_1,1\},x_2\}$, \ $\{\{x_2,1\},x_1\}$\
 % ================================================================ запасные слайды
 \appendix
 \setbeamertemplate{footline}{%
-  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=1.25cm,rightskip=0.9cm]{footline}
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=0.78cm,rightskip=0.55cm]{footline}
     \usebeamerfont{footline}\color{mute}\hyperlink{plan}{Запасные слайды}\hfill
     \hyperlinkslideprev{$\blacktriangleleft$}\ \ {\color{deepgreen}A\insertframenumber}\ \ \hyperlinkslidenext{$\blacktriangleright$}
   \end{beamercolorbox}}
@@ -689,6 +876,76 @@ $\D$ & $0$ & $0$ & дифференцирование & дифференциро
   \item I.~Kaygorodov, \emph{Algebras of Jordan brackets and generalized Poisson algebras}, Linear Multilinear Algebra \textbf{65} (2017), 1142--1157.
 \end{itemize}
 \end{multicols}
+\end{frame}
+
+
+% ---------------------------------------------------------------- формулы доклада: все нужные формулы по порядку
+\begin{frame}[label=formulas1]{Формулы доклада: откуда эти алгебры}
+\small
+\fe{Алгебра Пуассона}{\go{poisson}{слайд «Алгебры Пуассона»}}{Скобка с фиксированным первым аргументом — дифференцирование, поэтому скобка с единицей равна нулю.}
+\[ \{a,bc\}=\{a,b\}c+b\{a,c\},\qquad \{a,1\}=0 \]
+\fe{Правило знаков}{\go{super}{слайд «Супералгебры»}}{Перестановка двух нечётных элементов даёт минус; супердифференцирование чётности $p$.}
+\[ ab=(-1)^{|a||b|}ba,\qquad d(ab)=d(a)\,b+(-1)^{p|a|}a\,d(b) \]
+\fe{Алгебра Герстенхабера}{\go{gerst}{слайд «Алгебры Герстенхабера»}}{Скобка нечётна, знаки пишутся через обращённую чётность.}
+\[ \begin{gathered}
+\rp a=|a|+1,\qquad \{a,b\}=-(-1)^{\rp a\rp b}\{b,a\},\qquad \{a,bc\}=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\},\\
+\{a,\{b,c\}\}=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\}
+\end{gathered} \]
+\fe{Поправка в правиле Лейбница}{\go{genpoisson}{слайд «Правило Лейбница с поправкой»}}{Скобка чётная; поправка выражается через скобку с единицей.}
+\[ \{a,bc\}=\{a,b\}c+b\{a,c\}\;\mka{-\,\{a,1\}\,bc} \]
+\end{frame}
+
+\begin{frame}[label=formulas2]{Формулы доклада: определение 1}
+\small
+\fe{Обобщённая алгебра Герстенхабера}{\go{def1}{слайд «Обобщённые алгебры Герстенхабера»}}{Суперпространство с единицей, умножением и скобкой; $\D$ — скобка с единицей.}
+\hypertarget{f:5}{}
+\begin{align*}
+&|ab|=|a|+|b|,\qquad |\{a,b\}|=|a|+|b|+1 \tag{1}\\
+&(ab)c=a(bc),\qquad ab=(-1)^{|a||b|}ba,\qquad 1a=a \tag{2}\\
+&\{a,b\}=-(-1)^{\rp a\rp b}\{b,a\} \tag{3}\\
+&\{a,\{b,c\}\}=\{\{a,b\},c\}+(-1)^{\rp a\rp b}\{b,\{a,c\}\} \tag{4}\\
+&\{a,bc\}=\{a,b\}c+(-1)^{\rp a|b|}b\{a,c\}\;\mka{+(-1)^{\rp a}\D(a)\,bc},\qquad \D(a)=\{1,a\} \tag{5}
+\end{align*}
+\fe{Единица в (5)}{\go{ex1}{слайд «Новое явление»}}{$\D$ — дифференцирование ровно тогда, когда $\{1,1\}=0$.}
+\[ \D(bc)=\D(b)\,c+(-1)^{|b|}b\,\D(c)\;\mka{-\,\D(1)\,bc} \]
+\end{frame}
+
+\begin{frame}[label=formulas3]{Формулы доклада: задача и ответ}
+\small
+\fe{Хорошие слова}{\go{good}{слайд «Хорошие слова Холла»}}{Строятся индукцией по длине; порядок — по длине, затем лексикографически.}
+\[ w=[u,v]\ \text{хорошее}\iff u,v\ \text{хорошие},\ \ u>v,\ \ \text{и при}\ u=[u_1,u_2]\ \text{верно}\ u_2\le v \]
+\fe{Квадраты нечётных}{\go{superlie}{слайд «Супералгебры Ли»}}{Других новых элементов квадраты не порождают.}
+\[ [v,[v,v]]=0,\qquad [[v,v],w]=2\,[v,[v,w]] \]
+\fe{Единица становится буквой}{\go{letter1}{слайд «Единица — буква»}}{Буквы чётные; в последнем члене появилась буква $1$.}
+\[ \{x_1,x_2x_3\}=x_3\{x_2,x_1\}+x_2\{x_3,x_1\}\;\mka{-\,x_2x_3\{x_1,1\}} \]
+\fe{Скобочная часть и базис}{\go{setM}{слайды «Множество $M$»} и \go{thm12}{«Главная теорема»}}{Квадраты берутся у чётных слов; одночлены — без множителя $1$; модель — суперполиномы.}
+\[ \begin{gathered}
+M=\{\,u,\ \{v,v\}\mid u,v\ \text{— хорошие слова над}\ X,\ |v|=0\,\},\\
+U=\{\,e_{i_1}^{k_1}\cdots e_{i_r}^{k_r}\mid 1<i_1<\dots<i_r,\ \ k_j=1\ \text{при}\ |e_{i_j}|=1\,\},\qquad \Sm=S(\LL'),\ \ \LL'=\spn(M\setminus\{1\})
+\end{gathered} \]
+\end{frame}
+
+\begin{frame}[label=formulas4]{Формулы доклада: доказательство}
+\small
+\fe{Лемма 5}{\go{lemma5}{слайд «Порождение»}}{Скобку с произведением раскладываем по (5).}
+\[ \{u,v_1v_2\}=\{u,v_1\}v_2+(-1)^{\rp u|v_1|}v_1\{u,v_2\}+(-1)^{\rp u}\{1,u\}\,v_1v_2 \]
+\fe{Модель}{\go{formula8}{слайд «Формулы (7) и (8)»}}{Множители $a_i$, $b_j$ берутся из $\Lh=\F1\oplus\LL'$; формулы задают $\D$ и скобку на произведениях.}
+\hypertarget{f:8}{}
+\begin{align*}
+\D(a_1\cdots a_m)&=\sum_i(-1)^{|a_{<i}|}a_{<i}\{1,a_i\}a_{>i}-(m-1)\{1,1\}\,a \tag{7}\\
+\{a,b\}^*&=\mka{\sum_{i,j}(-1)^{|a_i||a_{>i}|+|b_j||b_{<j}|}a_{\hat\imath}\{a_i,b_j\}b_{\hat\jmath}}\\
+&\quad\mkb{-(m-1)\,a\D(b)+(n-1)(-1)^{\rp a}\D(a)\,b}\;\mkc{-(m-1)(n-1)\,a\D(1)\,b} \tag{8}
+\end{align*}
+\end{frame}
+
+\begin{frame}[label=formulas5]{Формулы доклада: якобиатор и размерность}
+\small
+\fe{Якобиатор}{\go{axioms}{слайд «Аксиомы в модели»}}{Мера нарушения тождества Якоби.}
+\[ J(a,b,c)=\{a,\{b,c\}\}-\{\{a,b\},c\}-(-1)^{\rp a\rp b}\{b,\{a,c\}\} \]
+\fe{Лемма 9}{\go{axioms}{слайд «Аксиомы в модели»}}{Якобиатор — дифференцирование с поправкой по каждому аргументу.}
+\[ J(a,b,xy)=J(a,b,x)\,y+(-1)^{(|a|+|b|)|x|}x\,J(a,b,y)\;\mkc{-\,J(a,b,1)\,xy} \]
+\fe{Теорема 14}{\go{perm}{слайд «Подсчёт»}}{Мультилинейные элементы — перестановки, в которых единица не на месте.}
+\[ \dim\mathrm{GenGer}(n)=(n+1)!-n!=n\cdot n! \]
 \end{frame}
 
 \end{document}
