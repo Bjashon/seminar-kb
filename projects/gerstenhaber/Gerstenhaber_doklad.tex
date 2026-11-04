@@ -622,7 +622,7 @@ $\displaystyle\begin{aligned}[t]
 \end{sidebox}
 \maincol[0.78]\vspace*{-9pt}
 \begin{thmbox}{Теорема (И.\,П.~Шестаков, 1993)}
-Свободная алгебра Пуассона $\cong S(\mathrm{Lie}(X))$; базис — \hlt{одночлены от хороших слов}.
+Свободная алгебра Пуассона $P(X)\cong S(\mathrm{Lie}(X))$; базис — \hlt{одночлены от хороших слов}.
 \end{thmbox}
 \only<2->{\begin{exbox}{Пример: мультилинейные от $x_1<x_2<x_3$: \ $1+3+2=6$}
 \[ \begin{gathered}
@@ -631,11 +631,10 @@ x_1x_2x_3;\qquad \{x_2,x_1\}x_3,\ \ \{x_3,x_1\}x_2,\ \ \{x_3,x_2\}x_1;\\
 \end{gathered} \]
 \end{exbox}}
 \onslide<3->
-\textbf{Схема доказательства:}
+\textbf{Схема доказательства} (\go{shestakovpf}{подробно}):
 \begin{itemize}\setlength{\itemsep}{0pt}
-\item \hlt{Порождение:} по \fn{1.3} и \go{good}{теореме Холла} всякий элемент — комбинация одночленов от хороших слов. Пример:
-\[ \{x_1,x_2^2\}=2x_2\{x_1,x_2\}=-2\,x_2\{x_2,x_1\}\qquad\nm{по \fn{1.3}, \fn{1.2}} \]
-\item \hlt{Независимость:} гомоморфизм в $S(\mathrm{Lie}(X))$ (скобка Ли--Пуассона), тождественный на $X$, переводит их в базис; значит, они независимы.
+\item \hlt{Порождение:} по \fn{1.2}, \fn{1.3} всякий элемент — сумма произведений скобок от букв, а скобки по \go{good}{теореме Холла} — комбинации хороших слов.
+\item \hlt{Независимость:} гомоморфизм $\varphi\colon P(X)\to S(\mathrm{Lie}(X))$, тождественный на $X$, переводит хорошее слово в него же, а одночлен — в тот же одночлен; это базис $S(\mathrm{Lie}(X))$, так как хорошие слова — базис $\mathrm{Lie}(X)$.
 \end{itemize}
 \end{sidecols}
 \end{frame}
@@ -1148,6 +1147,32 @@ $\D$ & $0$ & $0$ & дифференцирование & дифференциро
 \end{tabular}
 \vskip0.15cm
 {\footnotesize Мультилинейная часть: в первых двух столбцах по $x_1,\dots,x_n$, в последних — по $1,x_1,\dots,x_n$.}
+\end{frame}
+
+\begin{frame}[label=shestakovpf]{Теорема Шестакова: доказательство}
+\begin{sidecols}
+\sidecol[0.2]
+\begin{sidebox}{formulas1}
+\sromn{1.2}{&\{a,b\}=-\{b,a\}}
+\sromn{1.3}{&\{a,bc\}=\{a,b\}\,c\\&\;+b\,\{a,c\}}
+\end{sidebox}
+\maincol[0.78]\vspace*{-6pt}
+$P(X)$ и $\mathfrak g=\mathrm{Lie}(X)$ — \go{freealg}{свободные} алгебры Пуассона и Ли на $X$.
+
+\medskip
+\textbf{1. Порождение.} По \fn{1.2}, \fn{1.3} скобка с произведением раскладывается в сумму произведений скобок от букв; скобки от букв по \go{good}{теореме Холла} — комбинации хороших слов:
+\[ \{x_1,x_2^2\}=2x_2\{x_1,x_2\}=-2\,x_2\{x_2,x_1\} \qquad\nm{по \fn{1.3}, \fn{1.2}} \]
+Значит, одночлены от хороших слов порождают $P(X)$.
+
+\onslide<2->
+\medskip
+\textbf{2. Независимость.} $S(\mathfrak g)$ со \go{poisson\fnov{4}}{скобкой Ли--Пуассона} — алгебра Пуассона, поэтому по \go{freealg}{определению свободной алгебры} есть гомоморфизм $\varphi\colon P(X)\to S(\mathfrak g)$, тождественный на $X$:
+\[ \begin{aligned}
+\varphi(u)&=u\in\mathfrak g &&\nm{$u$ — хорошее слово; на $\mathfrak g$ скобка в $S(\mathfrak g)$ — скобка $\mathfrak g$}\\
+\varphi(u_1\cdots u_r)&=u_1\cdots u_r &&\nm{$\varphi$ сохраняет произведение}
+\end{aligned} \]
+Хорошие слова — базис $\mathfrak g$ (\go{good}{Холл}), а одночлены от базиса $\mathfrak g$ — базис $S(\mathfrak g)$. Поэтому $\varphi$ переводит одночлены от хороших слов в попарно различные элементы базиса $S(\mathfrak g)$, и в $P(X)$ они линейно независимы.
+\end{sidecols}
 \end{frame}
 
 \begin{frame}[label=lit]{Литература}
