@@ -25,15 +25,6 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,calc,shapes.symbols}
 \usepackage[most]{tcolorbox}
-% pdfcomment тянет устаревшую заглушку soulutf8 (она только печатает предупреждение) и ещё раз
-% передаёт hyperref опцию xetex; новый soul сам понимает UTF-8, hyperref уже настроен beamer'ом.
-\usepackage{soul}
-\expandafter\def\csname ver@soulutf8.sty\endcsname{2023/11/01}
-\makeatletter
-\let\doklad@hypersetup\hypersetup \let\hypersetup\@gobble
-\usepackage{pdfcomment}         % всплывающие подсказки \tip: видны в Acrobat, Foxit, Chrome, Firefox; не во всех просмотрщиках
-\let\hypersetup\doklad@hypersetup
-\makeatother
 \usepackage{ocgx2}             % слои PDF: подсказки с формулами \ftip (щелчок по серому треугольнику)
 
 % ---------------------------------------------------------------- цвета
@@ -63,18 +54,19 @@
 \newcommand{\Lh}{\widehat{\mathfrak L}}
 \newcommand{\rp}[1]{\|#1\|}
 \DeclareMathOperator{\spn}{span}
-\newcommand{\hlt}[1]{{\color{deepgreen}\textbf{#1}}}   % выделение (не \hl: его занимает soul из pdfcomment)
+\newcommand{\hlt}[1]{{\color{deepgreen}\textbf{#1}}}   % выделение
 \newcommand{\nohyph}{\hyphenpenalty=10000\exhyphenpenalty=10000\relax}
 \newcommand{\ft}[2]{\texorpdfstring{#1}{#2}}   % заголовок кадра с формулой: в закладки PDF идёт текст
 \newcommand{\mins}[1]{\hfill{\color{mute}\small$\approx#1$ мин}}
 \newcommand{\go}[2]{\hyperlink{#1}{\textcolor{deepgreen}{#2}}}   % ссылка на слайд с меткой #1 (зелёный текст)
 \newcommand{\ax}[1]{\go{def1}{(#1)}}                             % ссылка на аксиому определения 1
-\newcommand{\tip}[2]{\pdftooltip{#1}{#2}}                        % подсказка при наведении мыши (только текст)
+% \tip{термин}{текст}: была текстовая подсказка при наведении (чёрная плашка без формул); убрана по её
+% просьбе 04/11/2026, термин печатается как есть. Текст оставлен в исходнике как пояснение.
+\newcommand{\tip}[2]{#1}
 \newcommand{\nm}[1]{\text{\color{mute}\footnotesize(#1)}}          % название правила справа от формулы
 \newcommand{\nmh}[1]{\text{\color{mute}\footnotesize #1}}          % подпись над столбцом формул
 \newcommand{\ano}[1]{\text{\color{deepgreen}\bfseries(#1)}\quad}  % номер аксиомы слева
 % Номера (1)–(8) — как в статье. Вспомогательные формулы доклада нумеруются по частям: (1.1)–(1.6) — часть 1.
-% \fn{метка слайда}{номер} — ссылка на такую формулу: зелёный номер в скобках ведёт на её слайд.
 % \fn{1.2} — ссылка на формулу (1.2): ведёт на тот шаг её слайда, где она уже показана (таблица \deffn ниже).
 \newcommand{\fnov}[1]{<#1>}   % шаг слайда; в handout у слайда один шаг
 \mode<handout>{\renewcommand{\fnov}[1]{}}
@@ -83,7 +75,7 @@
 \deffn{1.4}{superliedef}{1}\deffn{1.5}{superliedef}{1}\deffn{1.6}{genpoisson}{2}
 \newcommand{\fnt}[1]{\csname fnt@#1\endcsname}
 \newcommand{\fn}[1]{\go{\fnt{#1}}{(#1)}}
-% подсказка с формулами: \ftip[сдвиг рамки]{id}{термин}{текст при наведении}{рамка с формулами}.
+% подсказка с формулами: \ftip[сдвиг рамки]{id}{термин}{текст (не показывается, см. \tip)}{рамка с формулами}.
 % Щелчок по серому треугольнику после термина показывает рамку над термином (слой PDF), второй щелчок прячет.
 % Слои понимают Acrobat, Foxit, PDF-XChange; встроенные просмотрщики браузеров — не всегда.
 \newcommand{\ftip}[5][-2cm]{\tip{#3}{#4}\begin{ocg}[printocg=never,listintoolbar=never]{tip #2}{tip#2}{0}%
